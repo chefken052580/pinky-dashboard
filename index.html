@@ -867,19 +867,21 @@
 
     <!-- Scripts -->
     <script>
-        // Define functions IMMEDIATELY so onclick works
+        // Define CRITICAL functions IMMEDIATELY so onclick works before renderer.js loads
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
             const overlay = document.getElementById('sidebarOverlay');
             const toggle = document.getElementById('menuToggle');
             
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-            toggle.classList.toggle('active');
+            if (sidebar && overlay && toggle) {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                toggle.classList.toggle('active');
+            }
         }
         
         function switchToView(viewName) {
-            console.log('[Nav] Switching to view:', viewName);
+            console.log('[Dashboard] switchToView called:', viewName);
             
             // Hide all views
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -888,6 +890,7 @@
             const targetView = document.getElementById(viewName + '-view');
             if (targetView) {
                 targetView.classList.add('active');
+                console.log('[Dashboard] Switched to:', viewName);
             }
             
             // Update active button state
@@ -903,12 +906,26 @@
                 const overlay = document.getElementById('sidebarOverlay');
                 const toggle = document.getElementById('menuToggle');
                 
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                toggle.classList.remove('active');
+                if (sidebar && overlay && toggle) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    toggle.classList.remove('active');
+                }
             }
         }
     </script>
     <script src="renderer.js"></script>
+    <script>
+        // FORCE data load after everything is ready
+        window.addEventListener('load', () => {
+            console.log('[Dashboard] Page fully loaded, forcing data reload...');
+            setTimeout(() => {
+                if (typeof loadActivityData === 'function') {
+                    loadActivityData();
+                    console.log('[Dashboard] Manual data load triggered');
+                }
+            }, 1000);
+        });
+    </script>
 </body>
 </html>

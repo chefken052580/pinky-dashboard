@@ -213,7 +213,9 @@ function loadActivityData() {
                 return r.json();
             })
             .then(data => {
+                console.log('[Monitor] Data loaded successfully!', data);
                 activityData = data;
+                console.log('[Monitor] activityData updated, heartbeats:', activityData.heartbeats.length);
                 updateMonitorStats();
                 renderMonitorChart(currentMonitorView);
                 console.log('[Monitor] Loaded activity data from:', paths[index]);
@@ -226,12 +228,18 @@ function loadActivityData() {
 }
 
 function updateMonitorStats() {
+    console.log('[Monitor] updateMonitorStats called, heartbeats:', activityData.heartbeats.length);
+    
     // Update last heartbeat
     const lastHB = activityData.heartbeats[activityData.heartbeats.length - 1];
     if (lastHB) {
         const lastHBEl = document.getElementById('last-heartbeat');
         if (lastHBEl) {
-            lastHBEl.textContent = new Date(lastHB.timestamp).toLocaleTimeString();
+            const timeStr = new Date(lastHB.timestamp).toLocaleTimeString();
+            lastHBEl.textContent = timeStr;
+            console.log('[Monitor] Updated last heartbeat:', timeStr);
+        } else {
+            console.warn('[Monitor] Element last-heartbeat not found!');
         }
     }
     
@@ -239,6 +247,9 @@ function updateMonitorStats() {
     const wakeupsEl = document.getElementById('total-wakeups');
     if (wakeupsEl) {
         wakeupsEl.textContent = activityData.heartbeats.length;
+        console.log('[Monitor] Updated total wakeups:', activityData.heartbeats.length);
+    } else {
+        console.warn('[Monitor] Element total-wakeups not found!');
     }
     
     // Update usage stats
