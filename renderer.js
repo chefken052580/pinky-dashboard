@@ -1,6 +1,20 @@
 // Pinky Bot Dashboard - Renderer
 console.log('[Dashboard] Initializing...');
 
+// Configuration
+const CONFIG = {
+    // Backend API mode: 'real' or 'simulated'
+    mode: 'simulated', // Change to 'real' when backend is running
+    
+    // Backend API URL (only used in 'real' mode)
+    backendUrl: 'http://localhost:3030',
+    
+    // Fallback to simulated if backend unavailable
+    fallbackToSimulated: true
+};
+
+console.log('[Dashboard] Mode:', CONFIG.mode);
+
 // State
 let currentView = 'dashboard';
 let currentMonitorView = 'heartbeat';
@@ -610,8 +624,52 @@ window.dashboard.submitBotTask = async function(bot) {
     addActivity(bot, `Task started: ${task.substring(0, 50)}...`);
     
     try {
-        // Simulate bot processing (replace with actual API call)
-        const result = await simulateBotTask(bot, task);
+        let result;
+        
+        if (CONFIG.mode === 'real') {
+            // REAL bot processing via backend API!
+            console.log('[Bot] Using REAL backend API at', CONFIG.backendUrl);
+            
+            try {
+                const response = await fetch(`${CONFIG.backendUrl}/api/bot/${bot}/task`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ task })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Task failed');
+                }
+                
+                // Display REAL result from OpenClaw!
+                result = data.output || 'Task completed (no output)';
+                
+            } catch (apiError) {
+                console.error('[Bot] Backend API error:', apiError);
+                
+                if (CONFIG.fallbackToSimulated) {
+                    console.warn('[Bot] Falling back to simulated mode...');
+                    result = await simulateBotTask(bot, task);
+                    result = '⚠️ SIMULATED (Backend unavailable)\n\n' + result;
+                } else {
+                    throw apiError;
+                }
+            }
+            
+        } else {
+            // Simulated mode
+            console.log('[Bot] Using SIMULATED mode');
+            result = await simulateBotTask(bot, task);
+            result = '🎭 SIMULATED MODE\n\n' + result;
+        }
         
         // Display result
         outputEl.innerHTML = `<pre>${result}</pre>`;
