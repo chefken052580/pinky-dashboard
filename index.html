@@ -327,25 +327,54 @@
                     </div>
                 </div>
 
-                <div class="quick-actions">
-                    <h3>⚡ DocsBot Actions</h3>
-                    <div class="action-grid">
-                        <button class="action-btn" onclick="window.dashboard.botAction('docs', 'daily-log')">
-                            <span class="action-icon">📅</span>
-                            <span>Generate Daily Log</span>
-                        </button>
-                        <button class="action-btn" onclick="window.dashboard.botAction('docs', 'memory-update')">
-                            <span class="action-icon">🧠</span>
-                            <span>Update Memory</span>
-                        </button>
-                        <button class="action-btn" onclick="window.dashboard.botAction('docs', 'project-docs')">
-                            <span class="action-icon">📚</span>
-                            <span>Document Project</span>
-                        </button>
-                        <button class="action-btn" onclick="window.dashboard.botAction('docs', 'readme')">
-                            <span class="action-icon">📖</span>
-                            <span>Generate README</span>
-                        </button>
+                <!-- Interactive Bot Interface -->
+                <div class="bot-interface">
+                    <h3>💬 Ask DocsBot</h3>
+                    
+                    <div class="input-panel">
+                        <textarea 
+                            id="docs-input" 
+                            class="bot-input"
+                            placeholder="What documentation do you need? (e.g., 'Generate daily log for today', 'Document the CrackerBot project', 'Create README for my workspace')"
+                            rows="4"
+                        ></textarea>
+                        
+                        <div class="input-controls">
+                            <select id="docs-template" class="template-select" onchange="window.dashboard.loadTemplate('docs', this.value)">
+                                <option value="">Quick Templates</option>
+                                <option value="daily-log">📅 Daily Log</option>
+                                <option value="memory-update">🧠 Memory Update</option>
+                                <option value="project-docs">📚 Project Documentation</option>
+                                <option value="readme">📖 Generate README</option>
+                                <option value="api-docs">🔌 API Documentation</option>
+                                <option value="changelog">📝 Changelog</option>
+                            </select>
+                            
+                            <button class="submit-btn" onclick="window.dashboard.submitBotTask('docs')">
+                                🚀 Generate
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="output-panel">
+                        <h4>📤 Output</h4>
+                        <div id="docs-output" class="bot-output">
+                            <div class="output-placeholder">
+                                Your generated documentation will appear here...
+                            </div>
+                        </div>
+                        
+                        <div class="output-actions">
+                            <button class="btn-small" onclick="window.dashboard.copyOutput('docs')">
+                                📋 Copy
+                            </button>
+                            <button class="btn-small" onclick="window.dashboard.downloadOutput('docs')">
+                                💾 Download
+                            </button>
+                            <button class="btn-small" onclick="window.dashboard.clearOutput('docs')">
+                                🗑️ Clear
+                            </button>
+                        </div>
                     </div>
                 </div>
 

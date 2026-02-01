@@ -518,3 +518,302 @@ window.dashboard = {
 };
 
 console.log('[Dashboard] Ready! Use window.dashboard to access functions.');
+
+// Bot Interaction Functions
+
+// Template definitions
+const botTemplates = {
+    docs: {
+        'daily-log': 'Generate a comprehensive daily log for today including all completed tasks, conversations, and decisions made.',
+        'memory-update': 'Review today\'s activities and update MEMORY.md with significant learnings, decisions, and context worth preserving.',
+        'project-docs': 'Document the current project including purpose, architecture, tech stack, setup instructions, and usage examples.',
+        'readme': 'Create a professional README.md file for this project with installation, usage, features, and contribution guidelines.',
+        'api-docs': 'Generate API documentation including all endpoints, request/response formats, authentication, and examples.',
+        'changelog': 'Create a changelog documenting recent changes, new features, bug fixes, and breaking changes.'
+    },
+    research: {
+        'market-analysis': 'Conduct comprehensive market analysis for [topic] including market size, trends, competitors, and opportunities.',
+        'competitor-research': 'Research and analyze competitors for [product/service] including strengths, weaknesses, pricing, and market position.',
+        'trend-report': 'Identify and analyze current trends in [industry] including emerging technologies, consumer behavior, and future predictions.',
+        'web-search': 'Search the web for information about [topic] and compile relevant findings with sources.'
+    },
+    code: {
+        'generate-function': 'Generate a [language] function that [description] with proper error handling, documentation, and tests.',
+        'refactor-code': 'Refactor the following code to improve readability, performance, and maintainability: [paste code]',
+        'debug-issue': 'Debug this code issue: [describe problem] Code: [paste code]',
+        'write-tests': 'Write comprehensive unit tests for the following code: [paste code]'
+    },
+    social: {
+        'twitter-thread': 'Create an engaging Twitter thread about [topic] with 5-7 tweets, hooks, and call-to-action.',
+        'linkedin-post': 'Write a professional LinkedIn post about [topic] that provides value and encourages engagement.',
+        'instagram-caption': 'Create an Instagram caption for [topic] with relevant hashtags and emoji.',
+        'content-calendar': 'Generate a 7-day social media content calendar for [brand/topic] with post ideas and timing.'
+    },
+    business: {
+        'opportunity-analysis': 'Analyze this business opportunity: [describe] including risks, potential ROI, and recommended actions.',
+        'swot-analysis': 'Conduct a SWOT analysis for [business/product] identifying strengths, weaknesses, opportunities, and threats.',
+        'business-plan': 'Create a business plan outline for [idea] including executive summary, market analysis, financial projections.',
+        'pitch-deck': 'Generate an outline for a pitch deck for [business idea] including problem, solution, market, and ask.'
+    },
+    filesystem: {
+        'organize': 'Organize files in [directory] by type, date, or [criteria]',
+        'cleanup': 'Find and remove duplicate files, temporary files, and unused files in [directory]',
+        'backup': 'Create backup of [directory] with timestamp',
+        'search': 'Find all files matching [pattern] in [directory]'
+    }
+};
+
+// Load template into input field
+window.dashboard.loadTemplate = function(bot, template) {
+    if (!template) return;
+    
+    const inputEl = document.getElementById(`${bot}-input`);
+    if (inputEl && botTemplates[bot] && botTemplates[bot][template]) {
+        inputEl.value = botTemplates[bot][template];
+        inputEl.focus();
+    }
+};
+
+// Submit bot task
+window.dashboard.submitBotTask = async function(bot) {
+    const inputEl = document.getElementById(`${bot}-input`);
+    const outputEl = document.getElementById(`${bot}-output`);
+    const submitBtn = event?.target;
+    
+    if (!inputEl || !outputEl) return;
+    
+    const task = inputEl.value.trim();
+    if (!task) {
+        alert('Please enter a task or select a template!');
+        return;
+    }
+    
+    // Disable button and show loading
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = '⏳ Processing...';
+    }
+    
+    outputEl.innerHTML = '<div class="output-loading">🤖 Bot is working on your request...<br>This may take a moment...</div>';
+    
+    // Log activity
+    addActivity(bot, `Task started: ${task.substring(0, 50)}...`);
+    
+    try {
+        // Simulate bot processing (replace with actual API call)
+        const result = await simulateBotTask(bot, task);
+        
+        // Display result
+        outputEl.innerHTML = `<pre>${result}</pre>`;
+        
+        // Update stats
+        updateBotStats(bot);
+        addActivity(bot, '✅ Task completed successfully!');
+        
+        // Re-enable button
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '🚀 Generate';
+        }
+        
+    } catch (error) {
+        console.error('[Bot] Task error:', error);
+        outputEl.innerHTML = `<div style="color:#dc3545;padding:20px;">
+            ❌ Error: ${error.message}<br><br>
+            Please try again or contact support.
+        </div>`;
+        
+        addActivity(bot, '❌ Task failed: ' + error.message);
+        
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '🚀 Generate';
+        }
+    }
+};
+
+// Simulate bot task (replace with real API integration)
+async function simulateBotTask(bot, task) {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Generate sample output based on bot type
+    const outputs = {
+        docs: `# Documentation Generated
+
+## Task: ${task}
+
+### Overview
+This is a sample documentation output. In a real implementation, this would:
+- Connect to your actual bot system
+- Process the request using OpenClaw sessions
+- Return real generated documentation
+
+### Next Steps
+1. Integrate with OpenClaw sessions API
+2. Connect to actual bot command handlers
+3. Store and retrieve results from your system
+
+Generated at: ${new Date().toLocaleString()}`,
+
+        research: `# Research Results
+
+## Query: ${task}
+
+### Findings
+1. **Key Insight #1**: Sample finding based on your query
+2. **Key Insight #2**: Market trends and data points
+3. **Key Insight #3**: Competitor analysis
+
+### Sources
+- Source 1 (example.com)
+- Source 2 (research.com)
+- Source 3 (industry-report.com)
+
+### Recommendations
+Based on the research, consider these action items...
+
+Compiled at: ${new Date().toLocaleString()}`,
+
+        code: `// Code Generated
+
+/* 
+ * Task: ${task}
+ * Generated: ${new Date().toLocaleString()}
+ */
+
+function generatedFunction(param1, param2) {
+    // TODO: Replace with actual code generation
+    // This is a sample output showing what the bot would generate
+    
+    try {
+        // Implementation logic here
+        return {
+            success: true,
+            data: param1 + param2
+        };
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
+// Export for use
+module.exports = { generatedFunction };`,
+
+        social: `📱 Social Media Content
+
+Task: ${task}
+
+🔥 POST DRAFT:
+
+[Your engaging social media post would appear here]
+
+Key elements:
+✅ Attention-grabbing hook
+✅ Value proposition
+✅ Call to action
+✅ Relevant hashtags
+
+#hashtag1 #hashtag2 #hashtag3
+
+---
+Ready to post! Review and customize as needed.
+Generated: ${new Date().toLocaleString()}`,
+
+        business: `📊 Business Analysis
+
+## ${task}
+
+### Executive Summary
+Sample business analysis output. Real implementation would provide:
+
+### Key Metrics
+- Market Size: $XXX million
+- Growth Rate: XX%
+- Target Audience: [Segments]
+
+### Opportunities
+1. Opportunity #1
+2. Opportunity #2
+3. Opportunity #3
+
+### Risk Assessment
+- Risk Level: Medium
+- Mitigation Strategies: [Listed here]
+
+### Recommendations
+Based on analysis, recommend...
+
+Prepared: ${new Date().toLocaleString()}`,
+
+        filesystem: `📁 FileSystem Operation Result
+
+Task: ${task}
+
+Operation: Simulated
+Status: ✅ Success
+
+In real implementation, this would:
+- Execute actual file operations
+- Return detailed results
+- Show files affected
+
+Sample output for demonstration purposes.
+Executed at: ${new Date().toLocaleString()}`
+    };
+    
+    return outputs[bot] || `✅ Task completed: ${task}\n\nResult would appear here in full implementation.`;
+}
+
+// Copy output to clipboard
+window.dashboard.copyOutput = function(bot) {
+    const outputEl = document.getElementById(`${bot}-output`);
+    if (!outputEl) return;
+    
+    const text = outputEl.innerText;
+    if (!text || text.includes('will appear here')) {
+        alert('No output to copy!');
+        return;
+    }
+    
+    navigator.clipboard.writeText(text).then(() => {
+        alert('✅ Output copied to clipboard!');
+        addActivity(bot, 'Output copied to clipboard');
+    }).catch(err => {
+        console.error('Copy failed:', err);
+        alert('❌ Failed to copy. Please select and copy manually.');
+    });
+};
+
+// Download output as file
+window.dashboard.downloadOutput = function(bot) {
+    const outputEl = document.getElementById(`${bot}-output`);
+    if (!outputEl) return;
+    
+    const text = outputEl.innerText;
+    if (!text || text.includes('will appear here')) {
+        alert('No output to download!');
+        return;
+    }
+    
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${bot}-output-${Date.now()}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    addActivity(bot, 'Output downloaded');
+};
+
+// Clear output
+window.dashboard.clearOutput = function(bot) {
+    const outputEl = document.getElementById(`${bot}-output`);
+    if (!outputEl) return;
+    
+    outputEl.innerHTML = '<div class="output-placeholder">Your generated output will appear here...</div>';
+    addActivity(bot, 'Output cleared');
+};
+

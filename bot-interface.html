@@ -1,0 +1,211 @@
+<!-- Bot Interface Component - Add this to each bot view -->
+
+<!-- Example: DocsBot Interactive Interface -->
+<div class="bot-interface">
+    <h3>💬 Ask DocsBot</h3>
+    
+    <!-- Input Form -->
+    <div class="input-panel">
+        <textarea 
+            id="docs-input" 
+            class="bot-input"
+            placeholder="What documentation do you need? (e.g., 'Generate daily log for today', 'Document the CrackerBot project', 'Create README for my workspace')"
+            rows="4"
+        ></textarea>
+        
+        <div class="input-controls">
+            <select id="docs-template" class="template-select">
+                <option value="">Quick Templates</option>
+                <option value="daily-log">📅 Daily Log</option>
+                <option value="memory-update">🧠 Memory Update</option>
+                <option value="project-docs">📚 Project Documentation</option>
+                <option value="readme">📖 Generate README</option>
+                <option value="api-docs">🔌 API Documentation</option>
+                <option value="changelog">📝 Changelog</option>
+            </select>
+            
+            <button class="submit-btn" onclick="window.dashboard.submitBotTask('docs')">
+                🚀 Generate
+            </button>
+        </div>
+    </div>
+    
+    <!-- Output Panel -->
+    <div class="output-panel">
+        <h4>📤 Output</h4>
+        <div id="docs-output" class="bot-output">
+            <div class="output-placeholder">
+                Your generated documentation will appear here...
+            </div>
+        </div>
+        
+        <div class="output-actions">
+            <button class="btn-small" onclick="window.dashboard.copyOutput('docs')">
+                📋 Copy
+            </button>
+            <button class="btn-small" onclick="window.dashboard.downloadOutput('docs')">
+                💾 Download
+            </button>
+            <button class="btn-small" onclick="window.dashboard.clearOutput('docs')">
+                🗑️ Clear
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Styles for Bot Interface -->
+<style>
+.bot-interface {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px 0;
+}
+
+.bot-interface h3 {
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.input-panel {
+    margin-bottom: 25px;
+}
+
+.bot-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1em;
+    resize: vertical;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+}
+
+.bot-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.input-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.template-select {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.submit-btn {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.output-panel {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.output-panel h4 {
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.bot-output {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95em;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    margin-bottom: 15px;
+}
+
+.output-placeholder {
+    color: #999;
+    font-style: italic;
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.output-loading {
+    color: #667eea;
+    text-align: center;
+    padding: 50px 20px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.output-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-small {
+    padding: 8px 15px;
+    background: white;
+    border: 2px solid #667eea;
+    color: #667eea;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-small:hover {
+    background: #667eea;
+    color: white;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .input-controls {
+        flex-direction: column;
+    }
+    
+    .template-select, .submit-btn {
+        width: 100%;
+    }
+    
+    .output-actions {
+        flex-direction: column;
+    }
+    
+    .btn-small {
+        width: 100%;
+    }
+}
+</style>
