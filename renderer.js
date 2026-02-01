@@ -4,7 +4,7 @@ console.log('[Dashboard] Initializing...');
 // Configuration
 const CONFIG = {
     // Backend API mode: 'real' or 'simulated'
-    mode: 'simulated', // Change to 'real' when backend is running
+    mode: 'real', // ACTIVATED! Backend is running!
     
     // Backend API URL (only used in 'real' mode)
     backendUrl: 'http://localhost:3030',
