@@ -191,8 +191,9 @@ function switchMonitorView(view) {
 function loadActivityData() {
     // Try multiple paths for cross-platform compatibility
     const paths = [
-        '../pinky-activity.json',
         'pinky-activity.json',
+        './pinky-activity.json',
+        '../pinky-activity.json',
         '/mnt/d/pinky-activity.json',
         'D:/pinky-activity.json'
     ];

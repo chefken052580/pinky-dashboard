@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test Data Load</title></head>
+<body>
+<h1>Testing Data Load</h1>
+<div id="result"></div>
+<script>
+fetch('pinky-activity.json')
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('result').innerHTML = 
+      '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+    console.log('Data loaded!', data);
+  })
+  .catch(err => {
+    document.getElementById('result').innerHTML = 
+      'ERROR: ' + err.message;
+    console.error('Failed:', err);
+  });
+</script>
+</body>
+</html>
