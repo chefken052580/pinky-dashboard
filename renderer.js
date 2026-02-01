@@ -174,6 +174,7 @@ function initMonitorButtons() {
 }
 
 function switchMonitorView(view) {
+    console.log('[Monitor] Switching to:', view);
     currentMonitorView = view;
     
     // Update buttons
@@ -181,12 +182,25 @@ function switchMonitorView(view) {
     document.getElementById(`monitor-${view}`)?.classList.add('active');
     
     // Update content
-    document.querySelectorAll('.monitor-content').forEach(c => c.classList.remove('active'));
-    document.getElementById(`${view}-content`)?.classList.add('active');
+    document.querySelectorAll('.monitor-content').forEach(c => {
+        c.classList.remove('active');
+        console.log('[Monitor] Hiding content:', c.id);
+    });
+    const targetContent = document.getElementById(`${view}-content`);
+    if (targetContent) {
+        targetContent.classList.add('active');
+        console.log('[Monitor] Showing content:', targetContent.id);
+    }
     
     // Render appropriate chart
     renderMonitorChart(view);
 }
+
+// Expose globally for onclick handlers
+window.dashboard = window.dashboard || {};
+window.dashboard.switchMonitor = switchMonitorView;
+window.dashboard.botAction = botAction;
+window.dashboard.downloadLogs = downloadLogs;
 
 function loadActivityData() {
     // Try multiple paths for cross-platform compatibility

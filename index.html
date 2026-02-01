@@ -182,13 +182,13 @@
                 <div class="pinky-monitor">
                     <h3>🐭 Pinky Activity Monitor</h3>
                     <div class="monitor-buttons">
-                        <button id="monitor-heartbeat" class="monitor-btn monitor-btn-heartbeat active">
+                        <button id="monitor-heartbeat" class="monitor-btn monitor-btn-heartbeat active" onclick="window.dashboard.switchMonitor('heartbeat')">
                             💓 Heart Beat
                         </button>
-                        <button id="monitor-thinking" class="monitor-btn monitor-btn-thinking">
+                        <button id="monitor-thinking" class="monitor-btn monitor-btn-thinking" onclick="window.dashboard.switchMonitor('thinking')">
                             🧠 Thinking
                         </button>
-                        <button id="monitor-peak" class="monitor-btn monitor-btn-peak">
+                        <button id="monitor-peak" class="monitor-btn monitor-btn-peak" onclick="window.dashboard.switchMonitor('peak')">
                             📊 Peak Usage
                         </button>
                     </div>
