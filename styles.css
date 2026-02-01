@@ -770,3 +770,34 @@ body {
         min-width: 120px;
     }
 }
+
+/* Cache Clear Button */
+.cache-clear-btn {
+    padding: 8px 15px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+
+.cache-clear-btn:hover {
+    background: #c82333;
+    transform: scale(1.05);
+}
+
+.cache-clear-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+    .cache-clear-btn {
+        font-size: 0.75em;
+        padding: 6px 10px;
+    }
+}

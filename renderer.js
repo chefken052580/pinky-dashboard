@@ -827,3 +827,81 @@ window.dashboard.clearOutput = function(bot) {
     addActivity(bot, 'Output cleared');
 };
 
+
+// Clear Cache and Reload
+window.dashboard.clearCacheAndReload = async function() {
+    console.log('[Cache] Clearing all caches and reloading...');
+    
+    try {
+        // Show confirmation
+        if (!confirm('🔄 Clear all cached data and reload?\n\nThis will:\n• Clear localStorage\n• Clear sessionStorage\n• Clear browser cache\n• Force reload the page')) {
+            return;
+        }
+        
+        // Clear localStorage
+        try {
+            localStorage.clear();
+            console.log('[Cache] localStorage cleared');
+        } catch (e) {
+            console.warn('[Cache] Could not clear localStorage:', e);
+        }
+        
+        // Clear sessionStorage
+        try {
+            sessionStorage.clear();
+            console.log('[Cache] sessionStorage cleared');
+        } catch (e) {
+            console.warn('[Cache] Could not clear sessionStorage:', e);
+        }
+        
+        // Clear Service Worker caches if available
+        if ('caches' in window) {
+            try {
+                const cacheNames = await caches.keys();
+                await Promise.all(
+                    cacheNames.map(cacheName => caches.delete(cacheName))
+                );
+                console.log('[Cache] Service Worker caches cleared:', cacheNames.length);
+            } catch (e) {
+                console.warn('[Cache] Could not clear Service Worker caches:', e);
+            }
+        }
+        
+        // Unregister service workers if any
+        if ('serviceWorker' in navigator) {
+            try {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                await Promise.all(
+                    registrations.map(registration => registration.unregister())
+                );
+                console.log('[Cache] Service Workers unregistered:', registrations.length);
+            } catch (e) {
+                console.warn('[Cache] Could not unregister Service Workers:', e);
+            }
+        }
+        
+        console.log('[Cache] All caches cleared! Reloading...');
+        
+        // Force hard reload (bypass cache)
+        // Use location.reload(true) for older browsers, or cache-busting URL for modern ones
+        window.location.href = window.location.href.split('?')[0] + '?cacheBust=' + Date.now();
+        
+    } catch (error) {
+        console.error('[Cache] Error clearing cache:', error);
+        alert('❌ Error clearing cache: ' + error.message + '\n\nTry manually clearing browser cache in settings.');
+    }
+};
+
+// Also add cache-busting to all fetch calls
+const originalFetch = window.fetch;
+window.fetch = function(...args) {
+    let url = args[0];
+    if (typeof url === 'string' && url.includes('pinky-activity.json')) {
+        // Add timestamp to prevent caching
+        url = url.split('?')[0] + '?t=' + Date.now();
+        args[0] = url;
+        console.log('[Fetch] Cache-busted URL:', url);
+    }
+    return originalFetch.apply(this, args);
+};
+
