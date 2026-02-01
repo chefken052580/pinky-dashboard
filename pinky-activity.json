@@ -237,6 +237,20 @@
       "lagMs": 0,
       "tokens": 200,
       "exec": 2
+    },
+    {
+      "timestamp": 1769962065393,
+      "activity": "Committed 25 files to git (3,683 lines)",
+      "lagMs": 0,
+      "tokens": 1500,
+      "exec": 2
+    },
+    {
+      "timestamp": 1769962501444,
+      "activity": "Consolidated MEMORY.md - removed 5 duplicates",
+      "lagMs": 0,
+      "tokens": 2000,
+      "exec": 1
     }
   ],
   "thinking": [
