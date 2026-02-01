@@ -442,6 +442,37 @@ function incrementStat(statId, amount = 1) {
     }
 }
 
+// Mobile sidebar toggle
+window.toggleSidebar = function() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggle = document.getElementById('menuToggle');
+    
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    toggle.classList.toggle('active');
+};
+
+// Close sidebar when clicking a nav item on mobile
+window.closeSidebarOnMobile = function() {
+    if (window.innerWidth <= 768) {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggle = document.getElementById('menuToggle');
+        
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        toggle.classList.remove('active');
+    }
+};
+
+// Update switchToView to close sidebar on mobile
+const originalSwitchToView = window.switchToView;
+window.switchToView = function(viewName) {
+    originalSwitchToView(viewName);
+    closeSidebarOnMobile();
+};
+
 // Export for console access
 window.dashboard = {
     quickAction,
@@ -451,7 +482,8 @@ window.dashboard = {
     switchMonitorView,
     downloadLogs,
     loadActivityData,
-    botAction
+    botAction,
+    toggleSidebar
 };
 
 console.log('[Dashboard] Ready! Use window.dashboard to access functions.');
