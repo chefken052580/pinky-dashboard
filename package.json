@@ -1,0 +1,55 @@
+{
+  "name": "pinky-bot-dashboard",
+  "version": "1.0.0",
+  "description": "Interactive dashboard for Pinky's bot army - Windows desktop app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
+  },
+  "keywords": [
+    "bots",
+    "automation",
+    "dashboard",
+    "social-media",
+    "ai"
+  ],
+  "author": "Pinky & The Brain",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "node-cron": "^3.0.3",
+    "sqlite3": "^5.1.6",
+    "fb": "^3.1.0",
+    "twitter-api-v2": "^1.15.2",
+    "instagram-private-api": "^1.45.3",
+    "linkedin-api": "^1.0.0"
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.pinky.botdashboard",
+    "productName": "Pinky Bot Dashboard",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": ["nsis", "portable"],
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": ["dmg", "zip"],
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "assets/icon.png"
+    }
+  }
+}

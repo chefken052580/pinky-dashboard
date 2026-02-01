@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinky Bot Dashboard - World Domination Control Center</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="logo">
+            <span class="icon">🐭</span>
+            <h1>Pinky Bot Dashboard</h1>
+        </div>
+        <div class="status-indicators">
+            <div class="indicator" id="system-status">
+                <span class="dot online"></span>
+                <span>System Online</span>
+            </div>
+            <div class="indicator" id="bot-count">
+                <span>🤖 5 Bots Active</span>
+            </div>
+            <div class="indicator" id="tasks-today">
+                <span>📊 0 Tasks Today</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="bot-nav">
+                <h3>🤖 Bot Army</h3>
+                <button class="bot-button active" data-bot="dashboard" onclick="switchToView('dashboard')">
+                    <span class="bot-icon">📊</span>
+                    <span class="bot-name">Dashboard</span>
+                </button>
+                <button class="bot-button" data-bot="docs" onclick="switchToView('docs')">
+                    <span class="bot-icon">📝</span>
+                    <span class="bot-name">DocsBot</span>
+                    <span class="bot-status online"></span>
+                </button>
+                <button class="bot-button" data-bot="research" onclick="switchToView('research')">
+                    <span class="bot-icon">🔍</span>
+                    <span class="bot-name">ResearchBot</span>
+                    <span class="bot-status online"></span>
+                </button>
+                <button class="bot-button" data-bot="code" onclick="switchToView('code')">
+                    <span class="bot-icon">💻</span>
+                    <span class="bot-name">CodeBot</span>
+                    <span class="bot-status online"></span>
+                </button>
+                <button class="bot-button" data-bot="social" onclick="switchToView('social')">
+                    <span class="bot-icon">📱</span>
+                    <span class="bot-name">SocialBot</span>
+                    <span class="bot-status online"></span>
+                </button>
+                <button class="bot-button" data-bot="business" onclick="switchToView('business')">
+                    <span class="bot-icon">💼</span>
+                    <span class="bot-name">BusinessBot</span>
+                    <span class="bot-status online"></span>
+                </button>
+                <button class="bot-button" data-bot="filesystem" onclick="switchToView('filesystem')">
+                    <span class="bot-icon">📁</span>
+                    <span class="bot-name">FileSystemBot</span>
+                    <span class="bot-status online"></span>
+                    <span style="font-size:0.7em;opacity:0.7;">Pinky's Slave</span>
+                </button>
+            </nav>
+
+            <nav class="view-nav">
+                <h3>📱 Views</h3>
+                <button class="view-button" data-view="queue" onclick="switchToView('queue')">
+                    <span>📋 Task Queue</span>
+                </button>
+                <button class="view-button" data-view="analytics" onclick="switchToView('analytics')">
+                    <span>📈 Analytics</span>
+                </button>
+                <button class="view-button" data-view="social-media" onclick="switchToView('social-media')">
+                    <span>🌐 Social Media</span>
+                </button>
+                <button class="view-button" data-view="settings" onclick="switchToView('settings')">
+                    <span>⚙️ Settings</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Dashboard View (Default) -->
+            <div id="dashboard-view" class="view active">
+                <h2>🎯 Mission Control</h2>
+                
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="tasks-completed">0</div>
+                            <div class="stat-label">Tasks Completed</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="cost-saved">$0</div>
+                            <div class="stat-label">Cost Saved</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🚀</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="speed-gain">0x</div>
+                            <div class="stat-label">Speed Improvement</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="success-rate">100%</div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3>⚡ Quick Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="quickAction('docs', 'daily-log')">
+                            <span class="action-icon">📝</span>
+                            <span>Generate Daily Log</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('social', 'post')">
+                            <span class="action-icon">📱</span>
+                            <span>Create Social Post</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('research', 'market')">
+                            <span class="action-icon">🔍</span>
+                            <span>Market Research</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('code', 'generate')">
+                            <span class="action-icon">💻</span>
+                            <span>Generate Code</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('business', 'analyze')">
+                            <span class="action-icon">💼</span>
+                            <span>Analyze Opportunity</span>
+                        </button>
+                        <button class="action-btn" onclick="quickAction('all', 'batch')">
+                            <span class="action-icon">🚀</span>
+                            <span>Run Batch Tasks</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <h3>📊 Recent Activity</h3>
+                    <div id="activity-feed" class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Just now</span>
+                            <span class="activity-bot">Dashboard</span>
+                            <span class="activity-message">System initialized successfully</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pinky Activity Monitor -->
+                <div class="pinky-monitor">
+                    <h3>🐭 Pinky Activity Monitor</h3>
+                    <div class="monitor-buttons">
+                        <button id="monitor-heartbeat" class="monitor-btn monitor-btn-heartbeat active">
+                            💓 Heart Beat
+                        </button>
+                        <button id="monitor-thinking" class="monitor-btn monitor-btn-thinking">
+                            🧠 Thinking
+                        </button>
+                        <button id="monitor-peak" class="monitor-btn monitor-btn-peak">
+                            📊 Peak Usage
+                        </button>
+                    </div>
+
+                    <!-- Heart Beat Content -->
+                    <div id="heartbeat-content" class="monitor-content active">
+                        <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+                            <div class="stat-card">
+                                <div class="stat-icon">⏰</div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Last Heartbeat</div>
+                                    <div class="stat-value" id="last-heartbeat" style="font-size:1.5em;">--:--</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💓</div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Total Wake-ups</div>
+                                    <div class="stat-value" id="total-wakeups" style="font-size:1.5em;">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">✅</div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Status</div>
+                                    <div class="stat-value" style="font-size:1.5em;color:#28a745;">ACTIVE</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="heartbeat-log" class="activity-feed" style="margin-top:20px;max-height:300px;">
+                            <div class="activity-item">
+                                <span class="activity-message">Loading heartbeat data...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thinking Content -->
+                    <div id="thinking-content" class="monitor-content">
+                        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+                            <div class="stat-card">
+                                <div class="stat-icon">🧠</div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Think Sessions</div>
+                                    <div class="stat-value" id="think-sessions" style="font-size:1.5em;">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">⏱️</div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Peak Hour</div>
+                                    <div class="stat-value" id="peak-hour" style="font-size:1.5em;">--:--</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="thinking-log" class="activity-feed" style="margin-top:20px;max-height:300px;">
+                            <div class="activity-item">
+                                <span class="activity-message">Loading thinking data...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Peak Usage Content -->
+                    <div id="peak-content" class="monitor-content">
+                        <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                            <div class="stat-card">
+                                <div class="stat-icon">🎯</div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Tokens</div>
+                                    <div class="stat-value" id="tokens-used" style="font-size:1.5em;">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">⚡</div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Exec Calls</div>
+                                    <div class="stat-value" id="exec-calls" style="font-size:1.5em;">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📁</div>
+                                <div class="stat-content">
+                                    <div class="stat-label">File Ops</div>
+                                    <div class="stat-value" id="file-ops" style="font-size:1.5em;">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">⏱️</div>
+                                <div class="stat-content">
+                                    <div class="stat-label">Avg Response</div>
+                                    <div class="stat-value" id="avg-response" style="font-size:1.5em;">0ms</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="peak-log" class="activity-feed" style="margin-top:20px;max-height:300px;">
+                            <div class="activity-item">
+                                <span class="activity-message">Loading usage data...</span>
+                            </div>
+                        </div>
+                        <button onclick="window.dashboard.downloadLogs()" style="margin-top:20px;padding:12px 25px;background:#28a745;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold;">
+                            📥 Download Full Logs
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bot-Specific Views -->
+            
+            <!-- DocsBot View -->
+            <div id="docs-view" class="view">
+                <h2>📝 DocsBot - Documentation Master</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    Generates daily logs, memory updates, and comprehensive documentation.
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📄</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="docs-generated">0</div>
+                            <div class="stat-label">Docs Generated</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✍️</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="docs-words">0</div>
+                            <div class="stat-label">Words Written</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🕒</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="docs-time">0h</div>
+                            <div class="stat-label">Time Saved</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>⚡ DocsBot Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="window.dashboard.botAction('docs', 'daily-log')">
+                            <span class="action-icon">📅</span>
+                            <span>Generate Daily Log</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('docs', 'memory-update')">
+                            <span class="action-icon">🧠</span>
+                            <span>Update Memory</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('docs', 'project-docs')">
+                            <span class="action-icon">📚</span>
+                            <span>Document Project</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('docs', 'readme')">
+                            <span class="action-icon">📖</span>
+                            <span>Generate README</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 DocsBot Activity</h3>
+                    <div id="docs-activity" class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Waiting...</span>
+                            <span class="activity-bot">DocsBot</span>
+                            <span class="activity-message">Ready to generate documentation! 📝</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ResearchBot View -->
+            <div id="research-view" class="view">
+                <h2>🔍 ResearchBot - Intelligence Gatherer</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    Conducts market research, competitor analysis, and trend discovery.
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="research-reports">0</div>
+                            <div class="stat-label">Reports Generated</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🌐</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="research-sources">0</div>
+                            <div class="stat-label">Sources Analyzed</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💡</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="research-insights">0</div>
+                            <div class="stat-label">Insights Found</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>⚡ ResearchBot Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="window.dashboard.botAction('research', 'market')">
+                            <span class="action-icon">📈</span>
+                            <span>Market Research</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('research', 'competitor')">
+                            <span class="action-icon">🎯</span>
+                            <span>Competitor Analysis</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('research', 'trends')">
+                            <span class="action-icon">🔥</span>
+                            <span>Find Trends</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('research', 'summary')">
+                            <span class="action-icon">📋</span>
+                            <span>Generate Summary</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 ResearchBot Activity</h3>
+                    <div id="research-activity" class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Waiting...</span>
+                            <span class="activity-bot">ResearchBot</span>
+                            <span class="activity-message">Ready to research! 🔍</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CodeBot View -->
+            <div id="code-view" class="view">
+                <h2>💻 CodeBot - Development Assistant</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    Generates code, debugs issues, and provides technical solutions.
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="code-files">0</div>
+                            <div class="stat-label">Files Generated</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🐛</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="code-bugs">0</div>
+                            <div class="stat-label">Bugs Fixed</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="code-lines">0</div>
+                            <div class="stat-label">Lines Written</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>⚡ CodeBot Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="window.dashboard.botAction('code', 'generate')">
+                            <span class="action-icon">🚀</span>
+                            <span>Generate Code</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('code', 'debug')">
+                            <span class="action-icon">🐛</span>
+                            <span>Debug Issue</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('code', 'refactor')">
+                            <span class="action-icon">🔄</span>
+                            <span>Refactor Code</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('code', 'test')">
+                            <span class="action-icon">✅</span>
+                            <span>Write Tests</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 CodeBot Activity</h3>
+                    <div id="code-activity" class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Waiting...</span>
+                            <span class="activity-bot">CodeBot</span>
+                            <span class="activity-message">Ready to code! 💻</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SocialBot View -->
+            <div id="social-view" class="view">
+                <h2>📱 SocialBot - Content Creator</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    Creates engaging social media content and manages campaigns.
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">✍️</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="social-posts">0</div>
+                            <div class="stat-label">Posts Created</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="social-engagement">0%</div>
+                            <div class="stat-label">Engagement Rate</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="social-reach">0</div>
+                            <div class="stat-label">Total Reach</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>⚡ SocialBot Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="window.dashboard.botAction('social', 'post')">
+                            <span class="action-icon">📱</span>
+                            <span>Create Post</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('social', 'campaign')">
+                            <span class="action-icon">🎯</span>
+                            <span>Plan Campaign</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('social', 'hashtags')">
+                            <span class="action-icon">#️⃣</span>
+                            <span>Generate Hashtags</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('social', 'analyze')">
+                            <span class="action-icon">📊</span>
+                            <span>Analyze Performance</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 SocialBot Activity</h3>
+                    <div id="social-activity" class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Waiting...</span>
+                            <span class="activity-bot">SocialBot</span>
+                            <span class="activity-message">Ready to create content! 📱</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BusinessBot View -->
+            <div id="business-view" class="view">
+                <h2>💼 BusinessBot - Opportunity Analyzer</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    Analyzes business opportunities, creates strategies, and tracks growth.
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">💡</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="business-opportunities">0</div>
+                            <div class="stat-label">Opportunities Found</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="business-strategies">0</div>
+                            <div class="stat-label">Strategies Created</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="business-revenue">$0</div>
+                            <div class="stat-label">Potential Revenue</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>⚡ BusinessBot Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="window.dashboard.botAction('business', 'analyze')">
+                            <span class="action-icon">🔍</span>
+                            <span>Analyze Opportunity</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('business', 'strategy')">
+                            <span class="action-icon">🎯</span>
+                            <span>Create Strategy</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('business', 'forecast')">
+                            <span class="action-icon">📊</span>
+                            <span>Revenue Forecast</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.botAction('business', 'report')">
+                            <span class="action-icon">📋</span>
+                            <span>Business Report</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 BusinessBot Activity</h3>
+                    <div id="business-activity" class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Waiting...</span>
+                            <span class="activity-bot">BusinessBot</span>
+                            <span class="activity-message">Ready to analyze! 💼</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FileSystemBot View -->
+            <div id="filesystem-view" class="view">
+                <h2>📁 FileSystemBot - Pinky's Personal Slave</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    FileSystemBot helps Pinky stay organized! No permissions outside Pinky's workspace.
+                </p>
+                
+                <div class="quick-actions">
+                    <h3>⚡ FileSystem Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-btn" onclick="window.dashboard.FileSystemBot.organize('/home/lordcracker/.openclaw/workspace')">
+                            <span class="action-icon">🗂️</span>
+                            <span>Organize Workspace</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.FileSystemBot.cleanup('/home/lordcracker/.openclaw/workspace/memory')">
+                            <span class="action-icon">🧹</span>
+                            <span>Clean Memory Files</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.FileSystemBot.search('TODO')">
+                            <span class="action-icon">🔍</span>
+                            <span>Search Files</span>
+                        </button>
+                        <button class="action-btn" onclick="window.dashboard.FileSystemBot.backup('/home/lordcracker/.openclaw/workspace')">
+                            <span class="action-icon">💾</span>
+                            <span>Backup Workspace</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 Recent FileSystem Activity</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Waiting...</span>
+                            <span class="activity-bot">FileSystemBot</span>
+                            <span class="activity-message">Ready to serve Pinky! 🐭</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background:white;border-radius:15px;padding:25px;margin-top:25px;">
+                    <h3 style="color:#667eea;">ℹ️ About FileSystemBot</h3>
+                    <p style="margin-top:15px;line-height:1.6;">
+                        FileSystemBot is Pinky's personal assistant for file management and organization.
+                        It has <strong>limited permissions</strong> - only allowed to work within Pinky's workspace
+                        and memory folders. All actions are logged and can be reviewed.
+                    </p>
+                    <p style="margin-top:15px;line-height:1.6;">
+                        <strong>Capabilities:</strong><br>
+                        • Organize and categorize files<br>
+                        • Clean up temporary files<br>
+                        • Search for specific content<br>
+                        • Create backups<br>
+                        • Generate file reports
+                    </p>
+                    <p style="margin-top:15px;line-height:1.6;">
+                        <strong>Restrictions:</strong><br>
+                        ❌ Cannot access system files<br>
+                        ❌ Cannot delete without Pinky's approval<br>
+                        ❌ Cannot modify code files<br>
+                        ✅ Only works in designated folders
+                    </p>
+                </div>
+            </div>
+
+            <!-- Task Queue View -->
+            <div id="queue-view" class="view">
+                <h2>📋 Task Queue</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    View and manage all pending, running, and completed tasks across all bots.
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Pending Tasks</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-content">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Running Tasks</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Completed Today</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 Task Queue (Coming Soon)</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-message">Task queue functionality will be integrated soon! 🚀</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analytics-view" class="view">
+                <h2>📈 Analytics Dashboard</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    Performance metrics and insights across all bots and operations.
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Total Operations</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-content">
+                            <div class="stat-value">0ms</div>
+                            <div class="stat-label">Avg Response Time</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 Analytics (Coming Soon)</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-message">Detailed analytics and charts coming soon! 📈</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Media View -->
+            <div id="social-media-view" class="view">
+                <h2>🌐 Social Media Dashboard</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    Connect and manage all your social media accounts in one place.
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📱</div>
+                        <div class="stat-content">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Connected Accounts</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✍️</div>
+                        <div class="stat-content">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Posts Today</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">❤️</div>
+                        <div class="stat-content">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Total Engagement</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 Social Media Integration (Coming Soon)</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-message">Connect Facebook, Instagram, Twitter, LinkedIn and more! 🌐</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settings-view" class="view">
+                <h2>⚙️ Settings & Configuration</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    Configure your dashboard, bots, and integrations.
+                </p>
+                
+                <div style="background:white;border-radius:15px;padding:25px;margin-bottom:25px;">
+                    <h3 style="color:#667eea;margin-bottom:20px;">🤖 Bot Configuration</h3>
+                    <p style="line-height:1.6;">
+                        • Enable/disable individual bots<br>
+                        • Configure bot API keys<br>
+                        • Set execution priorities<br>
+                        • Customize bot behavior
+                    </p>
+                </div>
+
+                <div style="background:white;border-radius:15px;padding:25px;margin-bottom:25px;">
+                    <h3 style="color:#667eea;margin-bottom:20px;">🔔 Notifications</h3>
+                    <p style="line-height:1.6;">
+                        • Desktop notifications<br>
+                        • Email alerts<br>
+                        • Task completion notifications<br>
+                        • Error alerts
+                    </p>
+                </div>
+
+                <div style="background:white;border-radius:15px;padding:25px;">
+                    <h3 style="color:#667eea;margin-bottom:20px;">🎨 Appearance</h3>
+                    <p style="line-height:1.6;">
+                        • Theme selection<br>
+                        • Color customization<br>
+                        • Layout preferences<br>
+                        • Font size
+                    </p>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 Settings (Coming Soon)</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-message">Full settings panel coming soon! ⚙️</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notifications"></div>
+
+    <!-- Modal Container -->
+    <div id="modal-overlay" class="modal-overlay"></div>
+    <div id="modal" class="modal"></div>
+
+    <!-- Scripts -->
+    <script src="renderer.js"></script>
+</body>
+</html>
