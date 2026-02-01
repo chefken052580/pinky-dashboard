@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Data Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .data { 
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐭 Simple Data Load Test</h1>
+    
+    <div class="card">
+        <h2>Loading Status:</h2>
+        <div id="status">Loading...</div>
+    </div>
+    
+    <div class="card">
+        <h2>Data Summary:</h2>
+        <div id="summary"></div>
+    </div>
+    
+    <div class="card">
+        <h2>Last 5 Heartbeats:</h2>
+        <div id="heartbeats"></div>
+    </div>
+    
+    <script>
+        console.log('[Test] Starting data load...');
+        
+        fetch('pinky-activity.json')
+            .then(response => {
+                console.log('[Test] Fetch response:', response.status);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                console.log('[Test] Data loaded:', data);
+                
+                document.getElementById('status').innerHTML = 
+                    '<span class="success">✅ Data loaded successfully!</span>';
+                
+                const heartbeats = data.heartbeats || [];
+                const thinking = data.thinking || [];
+                
+                document.getElementById('summary').innerHTML = `
+                    <div class="data">
+                        <strong>Total Heartbeats:</strong> ${heartbeats.length}<br>
+                        <strong>Thinking Sessions:</strong> ${thinking.length}<br>
+                        <strong>Tokens Used:</strong> ${data.usage.tokens}<br>
+                        <strong>Exec Calls:</strong> ${data.usage.exec}
+                    </div>
+                `;
+                
+                const lastHB = heartbeats[heartbeats.length - 1];
+                if (lastHB) {
+                    const time = new Date(lastHB.timestamp).toLocaleString();
+                    document.getElementById('summary').innerHTML += `
+                        <div class="data">
+                            <strong>Last Heartbeat:</strong> ${time}<br>
+                            <strong>Activity:</strong> ${lastHB.activity}<br>
+                            <strong>Lag:</strong> ${lastHB.lagMs}ms
+                        </div>
+                    `;
+                }
+                
+                const last5 = heartbeats.slice(-5).reverse();
+                document.getElementById('heartbeats').innerHTML = last5.map(hb => `
+                    <div class="data">
+                        <strong>${new Date(hb.timestamp).toLocaleString()}</strong><br>
+                        ${hb.activity} (${hb.lagMs}ms lag, ${hb.tokens} tokens)
+                    </div>
+                `).join('');
+                
+            })
+            .catch(error => {
+                console.error('[Test] Error:', error);
+                document.getElementById('status').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+            });
+    </script>
+</body>
+</html>
