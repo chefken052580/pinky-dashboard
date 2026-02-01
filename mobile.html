@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinky Dashboard 🐭</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+        
+        .header .subtitle {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+        
+        /* Status Card */
+        .status-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .status-item {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .status-label {
+            font-size: 0.75em;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .status-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        /* Expandable Sections */
+        .section {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .section-header {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        
+        .section-header:active {
+            background: linear-gradient(135deg, #5568d3 0%, #653a8a 100%);
+        }
+        
+        .section-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+        
+        .section.expanded .section-icon {
+            transform: rotate(180deg);
+        }
+        
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .section.expanded .section-content {
+            max-height: 2000px;
+        }
+        
+        .section-body {
+            padding: 15px;
+        }
+        
+        /* Data Display */
+        .data-grid {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .data-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .data-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .data-value {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        /* Log Entries */
+        .log-entry {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .log-time {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .log-activity {
+            font-size: 0.95em;
+            color: #333;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Error */
+        .error {
+            background: #ff4444;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        
+        .success {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🐭 Pinky Dashboard</h1>
+            <p class="subtitle">World Domination Control Center</p>
+        </div>
+        
+        <!-- Status Overview -->
+        <div class="status-card">
+            <h3 style="margin-bottom: 15px; color: #333;">📊 Status Overview</h3>
+            <div id="loading-status" class="loading pulse">
+                Loading data...
+            </div>
+            <div id="status-grid" class="status-grid" style="display: none;">
+                <div class="status-item">
+                    <div class="status-label">Last Beat</div>
+                    <div class="status-value" id="last-beat">--:--</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Total Beats</div>
+                    <div class="status-value" id="total-beats">0</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Think Sessions</div>
+                    <div class="status-value" id="think-count">0</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Tokens Used</div>
+                    <div class="status-value" id="token-count">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="section" onclick="toggleSection(this)">
+            <div class="section-header">
+                <span>💓 Recent Heartbeats</span>
+                <span class="section-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="section-body" id="heartbeat-list">
+                    <div class="loading">No data yet...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activity Details -->
+        <div class="section" onclick="toggleSection(this)">
+            <div class="section-header">
+                <span>🧠 Thinking Sessions</span>
+                <span class="section-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="section-body" id="thinking-list">
+                    <div class="loading">No data yet...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resource Usage -->
+        <div class="section" onclick="toggleSection(this)">
+            <div class="section-header">
+                <span>📈 Resource Usage</span>
+                <span class="section-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="section-body">
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Tokens</div>
+                            <div class="stat-value" id="tokens-stat">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Exec Calls</div>
+                            <div class="stat-value" id="exec-stat">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">File Ops</div>
+                            <div class="stat-value" id="file-stat">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Avg Lag</div>
+                            <div class="stat-value" id="lag-stat">0ms</div>
+                        </div>
+                    </div>
+                    <div id="usage-details" style="margin-top: 15px;">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Info -->
+        <div class="section" onclick="toggleSection(this)">
+            <div class="section-header">
+                <span>ℹ️ System Info</span>
+                <span class="section-icon">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="section-body" id="system-info">
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Data Source</div>
+                            <div class="data-value">pinky-activity.json</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Last Updated</div>
+                            <div class="data-value" id="last-update">Never</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Auto Refresh</div>
+                            <div class="data-value">Every 10s</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let activityData = null;
+        let lastUpdate = null;
+        
+        // Toggle section expansion
+        function toggleSection(element) {
+            element.classList.toggle('expanded');
+        }
+        
+        // Load data
+        async function loadData() {
+            try {
+                const response = await fetch('pinky-activity.json?t=' + Date.now());
+                if (!response.ok) throw new Error('Failed to fetch data');
+                
+                activityData = await response.json();
+                lastUpdate = new Date();
+                
+                updateUI();
+                
+                // Hide loading, show status
+                document.getElementById('loading-status').style.display = 'none';
+                document.getElementById('status-grid').style.display = 'grid';
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading-status').innerHTML = 
+                    '<div class="error">❌ Failed to load data</div>';
+            }
+        }
+        
+        // Update UI with data
+        function updateUI() {
+            if (!activityData) return;
+            
+            const heartbeats = activityData.heartbeats || [];
+            const thinking = activityData.thinking || [];
+            const usage = activityData.usage || {tokens: 0, exec: 0, files: 0};
+            
+            // Status Overview
+            document.getElementById('total-beats').textContent = heartbeats.length;
+            document.getElementById('think-count').textContent = thinking.length;
+            document.getElementById('token-count').textContent = usage.tokens.toLocaleString();
+            
+            if (heartbeats.length > 0) {
+                const lastHB = heartbeats[heartbeats.length - 1];
+                const time = new Date(lastHB.timestamp);
+                document.getElementById('last-beat').textContent = 
+                    time.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            }
+            
+            // Recent Heartbeats (last 10)
+            const recentHB = heartbeats.slice(-10).reverse();
+            document.getElementById('heartbeat-list').innerHTML = recentHB.map(hb => {
+                const time = new Date(hb.timestamp);
+                return `
+                    <div class="log-entry">
+                        <div class="log-time">${time.toLocaleString()}</div>
+                        <div class="log-activity">
+                            ${hb.activity || 'Heartbeat check'}<br>
+                            <small>Lag: ${hb.lagMs}ms | Tokens: ${hb.tokens || 0}</small>
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<div class="loading">No heartbeats yet</div>';
+            
+            // Thinking Sessions (last 10)
+            const recentThinking = thinking.slice(-10).reverse();
+            document.getElementById('thinking-list').innerHTML = recentThinking.map(t => {
+                const time = new Date(t.timestamp);
+                return `
+                    <div class="log-entry">
+                        <div class="log-time">${time.toLocaleString()}</div>
+                        <div class="log-activity">${t.activity || 'Thinking session'}</div>
+                    </div>
+                `;
+            }).join('') || '<div class="loading">No thinking sessions yet</div>';
+            
+            // Resource Usage Stats
+            document.getElementById('tokens-stat').textContent = usage.tokens.toLocaleString();
+            document.getElementById('exec-stat').textContent = usage.exec;
+            document.getElementById('file-stat').textContent = usage.files;
+            
+            // Calculate average lag
+            if (heartbeats.length > 0) {
+                const avgLag = heartbeats.reduce((sum, hb) => sum + (hb.lagMs || 0), 0) / heartbeats.length;
+                document.getElementById('lag-stat').textContent = Math.round(avgLag) + 'ms';
+            }
+            
+            // Usage details (last 5 activities)
+            const last5 = heartbeats.slice(-5).reverse();
+            document.getElementById('usage-details').innerHTML = `
+                <h4 style="margin-bottom: 10px; color: #333;">Last 5 Activities</h4>
+                ${last5.map(hb => `
+                    <div class="data-item">
+                        <div class="data-label">${new Date(hb.timestamp).toLocaleTimeString()}</div>
+                        <div class="data-value" style="font-size: 0.9em;">
+                            ${hb.activity || 'Activity'}<br>
+                            <small style="color: #666;">
+                                ${hb.tokens || 0} tokens | ${hb.exec || 0} exec | ${hb.lagMs}ms
+                            </small>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            
+            // System info
+            document.getElementById('last-update').textContent = 
+                lastUpdate ? lastUpdate.toLocaleTimeString() : 'Never';
+        }
+        
+        // Initialize
+        loadData();
+        setInterval(loadData, 10000); // Refresh every 10 seconds
+        
+        console.log('🐭 Pinky Mobile Dashboard loaded! NARF!');
+    </script>
+</body>
+</html>
