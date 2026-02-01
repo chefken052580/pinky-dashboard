@@ -43,6 +43,11 @@ window.addEventListener('DOMContentLoaded', () => {
     initBotButtons();
     initViewButtons();
     initMonitorButtons();
+    
+    // Initialize monitor view (show heartbeat by default)
+    console.log('[Dashboard] Initializing monitor view...');
+    switchMonitorView('heartbeat');
+    
     loadActivityData();
     setInterval(loadActivityData, 5000); // Refresh every 5s
     setInterval(updateStats, 10000); // Update stats every 10s
