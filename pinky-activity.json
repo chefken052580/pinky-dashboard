@@ -251,6 +251,20 @@
       "lagMs": 0,
       "tokens": 2000,
       "exec": 1
+    },
+    {
+      "timestamp": 1769963329394,
+      "activity": "Session review - 10 tasks done, all goals exceeded",
+      "lagMs": 0,
+      "tokens": 200,
+      "exec": 2
+    },
+    {
+      "timestamp": 1769964194055,
+      "activity": "All major goals exceeded - standing by",
+      "lagMs": 0,
+      "tokens": 200,
+      "exec": 2
     }
   ],
   "thinking": [
