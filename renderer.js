@@ -197,6 +197,16 @@ function switchMonitorView(view) {
         console.log('[Monitor] Showing content:', targetContent.id);
     }
     
+    // Force update stats when switching views
+    if (activityData && activityData.heartbeats && activityData.heartbeats.length > 0) {
+        console.log('[Monitor] Force updating stats with', activityData.heartbeats.length, 'heartbeats');
+        updateMonitorStats();
+    } else {
+        console.warn('[Monitor] No activity data available yet!');
+        // Force reload data
+        loadActivityData();
+    }
+    
     // Render appropriate chart
     renderMonitorChart(view);
 }
