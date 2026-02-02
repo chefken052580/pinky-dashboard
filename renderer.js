@@ -1,3 +1,4 @@
+// v2.1 - Fixed querySelector syntax
 // Pinky Bot Dashboard - Renderer
 console.log('[Dashboard] Initializing...');
 
