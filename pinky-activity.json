@@ -1,69 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1769926704815,
-      "activity": "Dashboard created",
-      "lagMs": 150,
-      "tokens": 500,
-      "exec": 0
-    },
-    {
-      "timestamp": 1769928435591,
-      "activity": "Fixed dashboard file loading",
-      "lagMs": 100,
-      "tokens": 200,
-      "exec": 0
-    },
-    {
-      "timestamp": 1769928548218,
-      "activity": "Testing live data update",
-      "lagMs": 150,
-      "tokens": 500,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769928665229,
-      "activity": "Updated D: drive with new logger",
-      "lagMs": 100,
-      "tokens": 300,
-      "exec": 0
-    },
-    {
-      "timestamp": 1769930171608,
-      "activity": "Prepared CrackerBot fixes for upload (backend + frontend)",
-      "lagMs": 200,
-      "tokens": 1000,
-      "exec": 5
-    },
-    {
-      "timestamp": 1769930833888,
-      "activity": "FIXED dashboard buttons - now ALL clickable!",
-      "lagMs": 180,
-      "tokens": 800,
-      "exec": 3
-    },
-    {
-      "timestamp": 1769937197936,
-      "activity": "Late night heartbeat - quiet hours",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 1
-    },
-    {
-      "timestamp": 1769938090018,
-      "activity": "Late night heartbeat - quiet hours",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 1
-    },
-    {
-      "timestamp": 1769938989866,
-      "activity": "Late night heartbeat - quiet hours",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 1
-    },
-    {
       "timestamp": 1769939890131,
       "activity": "Late night heartbeat - quiet hours",
       "lagMs": 0,
@@ -699,6 +636,69 @@
       "lagMs": 120,
       "tokens": 1500,
       "exec": 3
+    },
+    {
+      "timestamp": 1770066599958,
+      "activity": "Heartbeat: Mastered bluebubbles skill (read SKILL.md, created cheat sheet), updated self-improvement.md, MEMORY.md, heartbeat-state.json; checked git status and CrackerBot PM2",
+      "lagMs": 150,
+      "tokens": 1800,
+      "exec": 2
+    },
+    {
+      "timestamp": 1770067256148,
+      "activity": "Resolved git rebase conflicts in MEMORY.md, heartbeat-state.json, self-improvement.md; merged changes from 2026-02-01 achievements and skills; continued rebase and pushed to origin",
+      "lagMs": 180,
+      "tokens": 2200,
+      "exec": 3
+    },
+    {
+      "timestamp": 1770067281311,
+      "activity": "Completed git rebase by resolving conflicts, bypassed editor with GIT_EDITOR=true, pushed to origin, created daily notes",
+      "lagMs": 200,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770067315660,
+      "activity": "Resolved additional heartbeat-state.json conflict, completed rebase, pushed to origin, updated daily notes",
+      "lagMs": 220,
+      "tokens": 2800,
+      "exec": 5
+    },
+    {
+      "timestamp": 1770068052209,
+      "activity": "Completed git rebase resolution, merged conflicts, pushed to origin main",
+      "lagMs": 500,
+      "tokens": 1200,
+      "exec": 5
+    },
+    {
+      "timestamp": 1770068364885,
+      "activity": "Starting heartbeat: Checking load and pending tasks",
+      "lagMs": 100,
+      "tokens": 300,
+      "exec": 1
+    },
+    {
+      "timestamp": 1770068366398,
+      "activity": "Created cross-reference index and knowledge graph for learnings, updated self-improvement.md",
+      "lagMs": 600,
+      "tokens": 1500,
+      "exec": 3
+    },
+    {
+      "timestamp": 1770068903153,
+      "activity": "Heartbeat start: Load check and task selection",
+      "lagMs": 200,
+      "tokens": 400,
+      "exec": 1
+    },
+    {
+      "timestamp": 1770068904671,
+      "activity": "Created custom hello-world skill using skill-creator, updated tracking files",
+      "lagMs": 700,
+      "tokens": 1800,
+      "exec": 4
     }
   ],
   "thinking": [
