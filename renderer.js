@@ -5,7 +5,7 @@ console.log('[Dashboard] Initializing...');
 // Configuration
 var CONFIG = {
     mode: 'real',
-    backendUrl: 'https://revolutionary-assumption-retrieve-subjects.trycloudflare.com',
+    backendUrl: 'https://pinky-api.crackerbot.io',
     fallbackToSimulated: true
 };
 
