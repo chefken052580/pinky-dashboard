@@ -8,7 +8,7 @@ const CONFIG = {
     mode: 'real', // ACTIVATED! Backend is running!
     
     // Backend API URL (only used in 'real' mode)
-    backendUrl: 'https://earning-zoloft-feeding-studio.trycloudflare.com',
+    backendUrl: 'https://staffing-grant-constraint-ultimate.trycloudflare.com',
     
     // Fallback to simulated if backend unavailable
     fallbackToSimulated: true
