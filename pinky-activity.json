@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770049468873,
-      "activity": "Heartbeat 11:23 - Learning PM2 process management for final deep dive task, syncing dashboard",
-      "lagMs": 400,
-      "tokens": 3000,
-      "exec": 5
-    },
-    {
-      "timestamp": 1770050378910,
-      "activity": "Heartbeat 11:38 - Writing skill discovery guide to complete documentation improvements",
-      "lagMs": 300,
-      "tokens": 2500,
-      "exec": 4
-    },
-    {
       "timestamp": 1770051246278,
       "activity": "Heartbeat 11:53 - Analyzing CrackerBot backend for improvements as practical work task",
       "lagMs": 400,
@@ -698,6 +684,20 @@
       "activity": "Completed routine maintenance and checks",
       "lagMs": 1200,
       "tokens": 2800,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770154906479,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770154917351,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
       "exec": 4
     }
   ],
