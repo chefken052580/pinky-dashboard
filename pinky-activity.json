@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770069444506,
-      "activity": "Created design proposal for CrackerBot dashboard features, updated self-improvement tracking",
-      "lagMs": 1400,
-      "tokens": 3200,
-      "exec": 5
-    },
-    {
-      "timestamp": 1770069480559,
-      "activity": "Heartbeat activation: Load verification and task choice",
-      "lagMs": 320,
-      "tokens": 550,
-      "exec": 1
-    },
-    {
       "timestamp": 1770069481761,
       "activity": "Proposed new capabilities for bots in CrackerBot, documented proposals, updated progress",
       "lagMs": 1500,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161633491,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161651610,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161662425,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
