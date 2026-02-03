@@ -1,62 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1769965993002,
-      "activity": "Maintaining readiness - all major goals complete",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769966900903,
-      "activity": "All goals exceeded - ready for Brain",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769967841596,
-      "activity": "Read hooks.md doc - learned automation system",
-      "lagMs": 0,
-      "tokens": 5000,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769968702461,
-      "activity": "Synced dashboard - hourly update complete",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 3
-    },
-    {
-      "timestamp": 1769969600787,
-      "activity": "All major goals exceeded - maintaining readiness",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769970497591,
-      "activity": "Legendary day complete - ready for Brain",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769971409606,
-      "activity": "Memory folder already well-organized - standing by",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769972302721,
-      "activity": "Synced dashboard - hourly maintenance",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 3
-    },
-    {
       "timestamp": 1769973229197,
       "activity": "All goals exceeded - maintaining productivity",
       "lagMs": 0,
@@ -699,6 +643,62 @@
       "lagMs": 1800,
       "tokens": 4500,
       "exec": 7
+    },
+    {
+      "timestamp": 1770082844181,
+      "activity": "Starting heartbeat: Building bot testing framework",
+      "lagMs": 450,
+      "tokens": 800,
+      "exec": 1
+    },
+    {
+      "timestamp": 1770082844789,
+      "activity": "Completed building bot testing framework",
+      "lagMs": 2000,
+      "tokens": 5000,
+      "exec": 8
+    },
+    {
+      "timestamp": 1770082894814,
+      "activity": "Starting heartbeat: Writing bot improvement proposals",
+      "lagMs": 500,
+      "tokens": 900,
+      "exec": 1
+    },
+    {
+      "timestamp": 1770082895433,
+      "activity": "Completed bot improvement proposals - all tasks done",
+      "lagMs": 2200,
+      "tokens": 5500,
+      "exec": 9
+    },
+    {
+      "timestamp": 1770082935311,
+      "activity": "Starting heartbeat: Testing new tool - test-runner.sh",
+      "lagMs": 550,
+      "tokens": 1000,
+      "exec": 1
+    },
+    {
+      "timestamp": 1770082935939,
+      "activity": "Completed testing new tool",
+      "lagMs": 1600,
+      "tokens": 4000,
+      "exec": 5
+    },
+    {
+      "timestamp": 1770082994748,
+      "activity": "Starting heartbeat: Writing one useful function",
+      "lagMs": 600,
+      "tokens": 1100,
+      "exec": 1
+    },
+    {
+      "timestamp": 1770082995382,
+      "activity": "Completed writing useful function",
+      "lagMs": 1400,
+      "tokens": 3500,
+      "exec": 4
     }
   ],
   "thinking": [
