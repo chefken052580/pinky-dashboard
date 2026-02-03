@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770016325415,
-      "activity": "Quiet hours - ready",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 1
-    },
-    {
-      "timestamp": 1770016690523,
-      "activity": "Quiet hours - standing by",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 1
-    },
-    {
       "timestamp": 1770020753280,
       "activity": "Quiet hours - minimal check",
       "lagMs": 0,
@@ -699,6 +685,20 @@
       "lagMs": 3000,
       "tokens": 8000,
       "exec": 3
+    },
+    {
+      "timestamp": 1770142327297,
+      "activity": "Starting heartbeat: Practicing coding with Sonnet by building small script",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770142328076,
+      "activity": "Completed coding practice and file updates",
+      "lagMs": 2000,
+      "tokens": 6000,
+      "exec": 4
     }
   ],
   "thinking": [
