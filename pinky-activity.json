@@ -1,27 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770021515996,
-      "activity": "Quiet hours - minimal activity",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 2
-    },
-    {
-      "timestamp": 1770022417396,
-      "activity": "Quiet hours - no urgent issues",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 2
-    },
-    {
-      "timestamp": 1770037910167,
-      "activity": "Initiating morning heartbeat at 08:08 - system load 0.00, starting self-improvement tasks and project checks",
-      "lagMs": 500,
-      "tokens": 2000,
-      "exec": 4
-    },
-    {
       "timestamp": 1770038631854,
       "activity": "Morning work session - committing workspace changes and creating Git helper tool",
       "lagMs": 300,
@@ -698,6 +677,27 @@
       "activity": "Spawned sub-agent for transaction features",
       "lagMs": 2500,
       "tokens": 6500,
+      "exec": 5
+    },
+    {
+      "timestamp": 1770144999828,
+      "activity": "Starting heartbeat: Adding NFT support to CrackerBot",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770145923956,
+      "activity": "Starting heartbeat: Adding NFT support to CrackerBot via sub-agent",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770145941895,
+      "activity": "Spawned sub-agent for NFT features and completed tasks",
+      "lagMs": 2500,
+      "tokens": 7000,
       "exec": 5
     }
   ],
