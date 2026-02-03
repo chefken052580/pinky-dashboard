@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770013472073,
-      "activity": "Quiet hours - standing by",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 2
-    },
-    {
-      "timestamp": 1770014284590,
-      "activity": "Quiet hours - minimal activity",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 2
-    },
-    {
       "timestamp": 1770015182824,
       "activity": "Quiet hours - standing by",
       "lagMs": 0,
@@ -699,6 +685,20 @@
       "lagMs": 0,
       "tokens": 0,
       "exec": 0
+    },
+    {
+      "timestamp": 1770139531582,
+      "activity": "Starting heartbeat work: Updating TOOLS.md with environment notes",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770139533350,
+      "activity": "Completed updating TOOLS.md and committed changes",
+      "lagMs": 2000,
+      "tokens": 5000,
+      "exec": 5
     }
   ],
   "thinking": [
