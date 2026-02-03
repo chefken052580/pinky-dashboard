@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770067281311,
-      "activity": "Completed git rebase by resolving conflicts, bypassed editor with GIT_EDITOR=true, pushed to origin, created daily notes",
-      "lagMs": 200,
-      "tokens": 2500,
-      "exec": 4
-    },
-    {
-      "timestamp": 1770067315660,
-      "activity": "Resolved additional heartbeat-state.json conflict, completed rebase, pushed to origin, updated daily notes",
-      "lagMs": 220,
-      "tokens": 2800,
-      "exec": 5
-    },
-    {
       "timestamp": 1770068052209,
       "activity": "Completed git rebase resolution, merged conflicts, pushed to origin main",
       "lagMs": 500,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161341752,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161357064,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161367916,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
