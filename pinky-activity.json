@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770069312761,
-      "activity": "Created architecture design for bot system, documented components and flow, updated memory",
-      "lagMs": 1000,
-      "tokens": 2400,
-      "exec": 5
-    },
-    {
-      "timestamp": 1770069352679,
-      "activity": "Initiating heartbeat: Load check and task evaluation",
-      "lagMs": 220,
-      "tokens": 450,
-      "exec": 1
-    },
-    {
       "timestamp": 1770069353859,
       "activity": "Applied MVC pattern to task manager app, documented implementation, finalized advanced learning tasks",
       "lagMs": 1100,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161516594,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161535693,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161546556,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
