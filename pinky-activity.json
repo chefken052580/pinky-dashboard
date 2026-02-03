@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770059360440,
-      "activity": "Heartbeat 14:08 - Creating cross-reference index for learned items as Memory & Organization task",
-      "lagMs": 500,
-      "tokens": 4000,
-      "exec": 7
-    },
-    {
-      "timestamp": 1770061182629,
-      "activity": "Heartbeat 14:38 - Deduplicating similar entries in memory files as final Memory & Organization task",
-      "lagMs": 500,
-      "tokens": 4200,
-      "exec": 7
-    },
-    {
       "timestamp": 1770062942763,
       "activity": "Heartbeat 15:08 - Testing cron tool as Quick Wins task",
       "lagMs": 500,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161223166,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161242528,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161251399,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
