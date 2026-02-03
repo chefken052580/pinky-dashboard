@@ -1,48 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1769961502943,
-      "activity": "Synced public dashboard data",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769962065393,
-      "activity": "Committed 25 files to git (3,683 lines)",
-      "lagMs": 0,
-      "tokens": 1500,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769962501444,
-      "activity": "Consolidated MEMORY.md - removed 5 duplicates",
-      "lagMs": 0,
-      "tokens": 2000,
-      "exec": 1
-    },
-    {
-      "timestamp": 1769963329394,
-      "activity": "Session review - 10 tasks done, all goals exceeded",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769964194055,
-      "activity": "All major goals exceeded - standing by",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769965094307,
-      "activity": "Synced dashboard - hourly update",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 3
-    },
-    {
       "timestamp": 1769965993002,
       "activity": "Maintaining readiness - all major goals complete",
       "lagMs": 0,
@@ -699,6 +657,48 @@
       "lagMs": 2000,
       "tokens": 4500,
       "exec": 8
+    },
+    {
+      "timestamp": 1770082657511,
+      "activity": "Starting heartbeat: Checking load and selecting task",
+      "lagMs": 300,
+      "tokens": 500,
+      "exec": 1
+    },
+    {
+      "timestamp": 1770082658436,
+      "activity": "Completed script review and fixes",
+      "lagMs": 1200,
+      "tokens": 3500,
+      "exec": 5
+    },
+    {
+      "timestamp": 1770082736236,
+      "activity": "Starting new heartbeat: Adding error handling to scripts",
+      "lagMs": 350,
+      "tokens": 600,
+      "exec": 1
+    },
+    {
+      "timestamp": 1770082736841,
+      "activity": "Completed adding error handling to scripts",
+      "lagMs": 1500,
+      "tokens": 4000,
+      "exec": 6
+    },
+    {
+      "timestamp": 1770082791452,
+      "activity": "Starting heartbeat: Creating bot usage documentation",
+      "lagMs": 400,
+      "tokens": 700,
+      "exec": 1
+    },
+    {
+      "timestamp": 1770082792058,
+      "activity": "Completed bot usage documentation",
+      "lagMs": 1800,
+      "tokens": 4500,
+      "exec": 7
     }
   ],
   "thinking": [
