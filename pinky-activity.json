@@ -1,34 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770020753280,
-      "activity": "Quiet hours - minimal check",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 2
-    },
-    {
-      "timestamp": 1770021061967,
-      "activity": "Quiet hours - standing by",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 2
-    },
-    {
-      "timestamp": 1770021103408,
-      "activity": "Quiet hours - no urgent issues",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 2
-    },
-    {
-      "timestamp": 1770021121273,
-      "activity": "Quiet hours - standing by",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 2
-    },
-    {
       "timestamp": 1770021515996,
       "activity": "Quiet hours - minimal activity",
       "lagMs": 0,
@@ -699,6 +671,34 @@
       "lagMs": 2000,
       "tokens": 6000,
       "exec": 4
+    },
+    {
+      "timestamp": 1770143239732,
+      "activity": "Starting heartbeat: Testing wallets on live CrackerBot server",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770143378079,
+      "activity": "Completed wallet testing and updates",
+      "lagMs": 3000,
+      "tokens": 7000,
+      "exec": 6
+    },
+    {
+      "timestamp": 1770144174161,
+      "activity": "Starting heartbeat: Adding transaction capabilities to CrackerBot",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770144192077,
+      "activity": "Spawned sub-agent for transaction features",
+      "lagMs": 2500,
+      "tokens": 6500,
+      "exec": 5
     }
   ],
   "thinking": [
