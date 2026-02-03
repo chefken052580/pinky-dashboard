@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770068052209,
-      "activity": "Completed git rebase resolution, merged conflicts, pushed to origin main",
-      "lagMs": 500,
-      "tokens": 1200,
-      "exec": 5
-    },
-    {
-      "timestamp": 1770068364885,
-      "activity": "Starting heartbeat: Checking load and pending tasks",
-      "lagMs": 100,
-      "tokens": 300,
-      "exec": 1
-    },
-    {
       "timestamp": 1770068366398,
       "activity": "Created cross-reference index and knowledge graph for learnings, updated self-improvement.md",
       "lagMs": 600,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161367916,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161385924,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161396750,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
