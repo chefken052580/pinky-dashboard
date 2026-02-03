@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770069353859,
-      "activity": "Applied MVC pattern to task manager app, documented implementation, finalized advanced learning tasks",
-      "lagMs": 1100,
-      "tokens": 2600,
-      "exec": 6
-    },
-    {
-      "timestamp": 1770069381554,
-      "activity": "Heartbeat routine: Checking resources and picking task",
-      "lagMs": 250,
-      "tokens": 480,
-      "exec": 1
-    },
-    {
       "timestamp": 1770069383021,
       "activity": "Researched and documented CrackerBot monetization strategies, updated self-improvement",
       "lagMs": 1200,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161546556,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161565325,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161576193,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
