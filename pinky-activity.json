@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770069515933,
-      "activity": "Completed AI optimization research, marked all self-improvement tasks done",
-      "lagMs": 1600,
-      "tokens": 3600,
-      "exec": 6
-    },
-    {
-      "timestamp": 1770069561471,
-      "activity": "Heartbeat execution: Load analysis and task execution",
-      "lagMs": 380,
-      "tokens": 600,
-      "exec": 1
-    },
-    {
       "timestamp": 1770069562755,
       "activity": "Finalized knowledge graph, marked all self-improvement tasks complete",
       "lagMs": 1700,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161691128,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161709495,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161720323,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
