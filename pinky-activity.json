@@ -1,34 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1769977698460,
-      "activity": "Outstanding productivity maintained - standing by",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769978596508,
-      "activity": "Excellent day complete - ready for Brain",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
-      "timestamp": 1769979496032,
-      "activity": "Dashboard sync complete - hourly update",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 3
-    },
-    {
-      "timestamp": 1769980393204,
-      "activity": "All achievements logged - maintaining readiness",
-      "lagMs": 0,
-      "tokens": 200,
-      "exec": 2
-    },
-    {
       "timestamp": 1769981297422,
       "activity": "Legendary Saturday - standing by for Brain",
       "lagMs": 0,
@@ -696,6 +668,34 @@
     {
       "timestamp": 1770129470513,
       "activity": "Resuming heartbeat work: Fixing MEMORY.md edit failure and advancing Bot Automation to Phase 2",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770129584839,
+      "activity": "Completed Bot Automation Phase 2: Added WebSockets and streaming",
+      "lagMs": 5000,
+      "tokens": 8000,
+      "exec": 8
+    },
+    {
+      "timestamp": 1770129627034,
+      "activity": "Handling server start error (EADDRINUSE), killing old process, restarting bot-backend",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770129672028,
+      "activity": "Handling repeated EADDRINUSE error, cleaning up processes, restarting bot-backend with Phase 2",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770129710827,
+      "activity": "Resolving persistent EADDRINUSE on port 3030 for bot-backend Phase 2",
       "lagMs": 0,
       "tokens": 0,
       "exec": 0
