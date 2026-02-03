@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770039528582,
-      "activity": "Heartbeat 08:38 - Checking git sync, resolving remote changes, and creating automated cleanup script",
-      "lagMs": 400,
-      "tokens": 2500,
-      "exec": 5
-    },
-    {
-      "timestamp": 1770040424481,
-      "activity": "Heartbeat 08:53 - System load low, creating automated cleanup script for self-improvement task",
-      "lagMs": 300,
-      "tokens": 1800,
-      "exec": 2
-    },
-    {
       "timestamp": 1770041355103,
       "activity": "Heartbeat 09:08 - System load low, creating automated cleanup script for self-improvement task",
       "lagMs": 300,
@@ -699,6 +685,20 @@
       "lagMs": 1500,
       "tokens": 4000,
       "exec": 3
+    },
+    {
+      "timestamp": 1770149521536,
+      "activity": "Starting heartbeat: Memory maintenance and sub-agent check",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770149532588,
+      "activity": "Completed status checks and maintenance",
+      "lagMs": 1500,
+      "tokens": 3000,
+      "exec": 4
     }
   ],
   "thinking": [
