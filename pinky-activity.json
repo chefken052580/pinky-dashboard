@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770068366398,
-      "activity": "Created cross-reference index and knowledge graph for learnings, updated self-improvement.md",
-      "lagMs": 600,
-      "tokens": 1500,
-      "exec": 3
-    },
-    {
-      "timestamp": 1770068903153,
-      "activity": "Heartbeat start: Load check and task selection",
-      "lagMs": 200,
-      "tokens": 400,
-      "exec": 1
-    },
-    {
       "timestamp": 1770068904671,
       "activity": "Created custom hello-world skill using skill-creator, updated tracking files",
       "lagMs": 700,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161396750,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161427056,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161435876,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
