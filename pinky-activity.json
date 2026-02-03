@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770069383021,
-      "activity": "Researched and documented CrackerBot monetization strategies, updated self-improvement",
-      "lagMs": 1200,
-      "tokens": 2800,
-      "exec": 5
-    },
-    {
-      "timestamp": 1770069412523,
-      "activity": "Heartbeat: Resource check and task assignment",
-      "lagMs": 280,
-      "tokens": 500,
-      "exec": 1
-    },
-    {
       "timestamp": 1770069413765,
       "activity": "Developed plan for CrackerBot payment system enhancements, documented in md file",
       "lagMs": 1300,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161576193,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161593590,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161604429,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
