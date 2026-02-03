@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770069248122,
-      "activity": "Built Node.js task manager project, installed deps, tested server, updated memory",
-      "lagMs": 800,
-      "tokens": 2000,
-      "exec": 5
-    },
-    {
-      "timestamp": 1770069279453,
-      "activity": "Heartbeat initiated: Load assessment and task prioritization",
-      "lagMs": 180,
-      "tokens": 380,
-      "exec": 1
-    },
-    {
       "timestamp": 1770069281967,
       "activity": "Developed complex bash backup script with multiple options, tested full backup, updated memory files",
       "lagMs": 900,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161464156,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161480779,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161491640,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
