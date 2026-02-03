@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770056734260,
-      "activity": "Heartbeat 13:23 - Building monitoring dashboard for CrackerBot as final practical work task",
-      "lagMs": 550,
-      "tokens": 4200,
-      "exec": 8
-    },
-    {
-      "timestamp": 1770057546995,
-      "activity": "Heartbeat 13:38 - Building knowledge graph of learned skills from Memory & Organization tasks",
-      "lagMs": 450,
-      "tokens": 3800,
-      "exec": 6
-    },
-    {
       "timestamp": 1770059360440,
       "activity": "Heartbeat 14:08 - Creating cross-reference index for learned items as Memory & Organization task",
       "lagMs": 500,
@@ -698,6 +684,20 @@
       "activity": "Completed routine checks and maintenance",
       "lagMs": 1200,
       "tokens": 2800,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161214138,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161223166,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
       "exec": 4
     }
   ],
