@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770068904671,
-      "activity": "Created custom hello-world skill using skill-creator, updated tracking files",
-      "lagMs": 700,
-      "tokens": 1800,
-      "exec": 4
-    },
-    {
-      "timestamp": 1770069244307,
-      "activity": "Starting heartbeat: System load check and task selection",
-      "lagMs": 150,
-      "tokens": 350,
-      "exec": 1
-    },
-    {
       "timestamp": 1770069248122,
       "activity": "Built Node.js task manager project, installed deps, tested server, updated memory",
       "lagMs": 800,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770161435876,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770161455226,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770161464156,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
