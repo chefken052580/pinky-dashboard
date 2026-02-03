@@ -1,13 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770055761765,
-      "activity": "Heartbeat 13:08 - Writing deployment automation script for CrackerBot as practical work task",
-      "lagMs": 500,
-      "tokens": 4000,
-      "exec": 7
-    },
-    {
       "timestamp": 1770056734260,
       "activity": "Heartbeat 13:23 - Building monitoring dashboard for CrackerBot as final practical work task",
       "lagMs": 550,
@@ -695,6 +688,13 @@
     },
     {
       "timestamp": 1770158519803,
+      "activity": "Completed routine checks and maintenance",
+      "lagMs": 1200,
+      "tokens": 2800,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770159445506,
       "activity": "Completed routine checks and maintenance",
       "lagMs": 1200,
       "tokens": 2800,
