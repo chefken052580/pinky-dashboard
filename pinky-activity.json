@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770015182824,
-      "activity": "Quiet hours - standing by",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 2
-    },
-    {
-      "timestamp": 1770015895331,
-      "activity": "Quiet hours maintained",
-      "lagMs": 0,
-      "tokens": 150,
-      "exec": 1
-    },
-    {
       "timestamp": 1770016325415,
       "activity": "Quiet hours - ready",
       "lagMs": 0,
@@ -699,6 +685,20 @@
       "lagMs": 2000,
       "tokens": 5000,
       "exec": 5
+    },
+    {
+      "timestamp": 1770141326289,
+      "activity": "Starting heartbeat: Reviewing OpenClaw docs for new features",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770141326884,
+      "activity": "Completed OpenClaw docs review and updates",
+      "lagMs": 3000,
+      "tokens": 8000,
+      "exec": 3
     }
   ],
   "thinking": [
