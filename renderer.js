@@ -84,10 +84,10 @@ window.addEventListener('DOMContentLoaded', function() {
     setInterval(updateStats, 5000);
     setInterval(updateMonitorStats, 5000);
     
-    // Initialize enhanced TasksBot
+    // DO NOT initialize TasksBot here - it's in a hidden view initially
+    // It will be initialized when the user clicks the TasksBot button
     if (window.tasksBotEnhanced) {
-        console.log('[Dashboard] Initializing TasksBot');
-        window.tasksBotEnhanced.init();
+        console.log('[Dashboard] TasksBot ready, will initialize when viewing');
     }
     
     // Initialize system monitor UI
@@ -261,11 +261,12 @@ window.dashboard.downloadLogs = downloadLogs;
 
 function loadActivityData() {
     var cacheBuster = Date.now();
+    // Try API FIRST (most fresh), then fall back to JSON files for GitHub Pages
     var paths = [
-        'pinky-activity.json?t=' + cacheBuster + '&r=' + Math.random(),
-        './pinky-activity.json?t=' + cacheBuster + '&r=' + Math.random(),
+        'http://localhost:3030/api/activity?t=' + cacheBuster,
         'https://pinky-api.crackerbot.io/api/activity?t=' + cacheBuster,
-        'http://localhost:3030/api/activity?t=' + cacheBuster
+        'pinky-activity.json?t=' + cacheBuster + '&r=' + Math.random(),
+        './pinky-activity.json?t=' + cacheBuster + '&r=' + Math.random()
     ];
     tryLoadFromPath(0);
     function tryLoadFromPath(index) {
@@ -370,24 +371,32 @@ function renderMonitorChart(view) {
 }
 
 function updateRecentActivityFeed() {
-    var feed = document.getElementById('activity-feed');
-    if (!feed) return;
-    feed.innerHTML = '';
+    // Update ALL activity feeds (Dashboard and Analytics both have one)
+    var feeds = document.querySelectorAll('.recent-activity .activity-feed');
     
-    // Show recent heartbeats in the main activity feed
-    if (activityData.heartbeats.length === 0) {
-        feed.innerHTML = '<div class="activity-item"><span class="activity-message">No activity yet...</span></div>';
+    if (feeds.length === 0) {
+        console.log('[Activity] No activity-feed elements found');
         return;
     }
     
-    activityData.heartbeats.slice(-10).reverse().forEach(function(hb) {
-        var entry = document.createElement('div');
-        entry.className = 'activity-item';
-        var timeStr = new Date(hb.timestamp).toLocaleTimeString();
-        entry.innerHTML = '<span class="activity-time">' + timeStr + '</span>' +
-            '<span class="activity-bot">Heartbeat</span>' +
-            '<span class="activity-message">' + (hb.activity || 'Activity check') + '</span>';
-        feed.appendChild(entry);
+    // Build activity items once
+    var itemsHTML = '';
+    if (activityData.heartbeats.length === 0) {
+        itemsHTML = '<div class="activity-item"><span class="activity-message">No activity yet...</span></div>';
+    } else {
+        activityData.heartbeats.slice(-10).reverse().forEach(function(hb) {
+            var timeStr = new Date(hb.timestamp).toLocaleTimeString();
+            itemsHTML += '<div class="activity-item">';
+            itemsHTML += '<span class="activity-time">' + timeStr + '</span>';
+            itemsHTML += '<span class="activity-bot">Heartbeat</span>';
+            itemsHTML += '<span class="activity-message">' + (hb.activity || 'Activity check') + '</span>';
+            itemsHTML += '</div>';
+        });
+    }
+    
+    // Update all feeds with same content
+    feeds.forEach(function(feed) {
+        feed.innerHTML = itemsHTML;
     });
 }
 
