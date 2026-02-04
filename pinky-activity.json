@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770136791292,
-      "activity": "Verifying gateway restart and retrying sub-agent spawn for port fix",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
-      "timestamp": 1770138621876,
-      "activity": "Starting heartbeat work: Organizing files in workspace",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
       "timestamp": 1770139531582,
       "activity": "Starting heartbeat work: Updating TOOLS.md with environment notes",
       "lagMs": 0,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770165204434,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770165225973,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770165236907,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
