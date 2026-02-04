@@ -104,10 +104,13 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 15px;
-    background: #f8f9fa;
+    padding: 10px 18px;
+    background: #e8f0ff;
     border-radius: 20px;
-    font-size: 0.9em;
+    font-size: 1em;
+    font-weight: 600;
+    color: #667eea;
+    border: 2px solid #667eea;
 }
 
 .dot {
