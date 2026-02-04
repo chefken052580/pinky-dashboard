@@ -667,6 +667,7 @@
                 </div>
 
                 <div style="margin-top:25px;">
+                    <div id="social-api-container"></div>
                     <div id="social-content"></div>
                 </div>
             </div>
@@ -853,10 +854,14 @@
                         ✅ Only works in designated folders
                     </p>
                 </div>
+
+                <div id="filesystembot-llm-container"></div>
             </div>
 
             <!-- TasksBot View -->
             <div id="tasks-view" class="view">
+                <h2>🎯 TasksBot - Project & Task Manager</h2>
+                <div id="task-queue-container"></div>
                 <div id="tasksbot-container"></div>
             </div>
 
@@ -1051,15 +1056,20 @@
     <link rel="stylesheet" href="tasks-bot.css">
     <script src="tasks-bot.js"></script>
     
-    <!-- Bot Upgrades -->
+    <!-- Bot Upgrades & New Features -->
     <link rel="stylesheet" href="bot-upgrades.css">
+    <link rel="stylesheet" href="new-features.css">
     <script src="bot-upgrades.js"></script>
     <script src="bot-modules.js"></script>
+    <script src="settings-fixed.js"></script>
+    <script src="task-queue-integration.js"></script>
+    <script src="filesystem-bot-llm.js"></script>
+    <script src="social-api-connectors.js"></script>
     
     <script>
-        // Initialize enhanced bot modules after page load
+        // Initialize all dashboard components
         window.addEventListener('load', () => {
-            console.log('[Dashboard] Initializing bot upgrades...');
+            console.log('[Dashboard] Initializing all modules...');
             setTimeout(() => {
                 // Inject container divs for bot modules
                 const containers = {
@@ -1078,16 +1088,34 @@
                     }
                 }
                 
-                // Initialize Settings UI
-                if (window.settingsManager) {
-                    window.settingsManager.renderSettingsUI();
-                    console.log('[Dashboard] Settings UI rendered');
+                // Initialize Fixed Settings (replaces old broken version)
+                if (window.settingsManagerFixed) {
+                    window.settingsManagerFixed.renderUI();
+                    console.log('[Dashboard] Settings UI rendered (FIXED version)');
                 }
                 
                 // Initialize Social Media Bot Pro
                 if (window.socialBot) {
                     window.socialBot.renderSocialUI();
                     console.log('[Dashboard] SocialBot Pro rendered');
+                }
+                
+                // Initialize Social API Connectors
+                if (window.socialMediaConnectors) {
+                    window.socialMediaConnectors.renderUI();
+                    console.log('[Dashboard] Social API Connectors ready');
+                }
+                
+                // Initialize Task Queue
+                if (window.taskQueueManager) {
+                    window.taskQueueManager.renderUI();
+                    console.log('[Dashboard] Task Queue rendered');
+                }
+                
+                // Initialize FileSystemBot LLM
+                if (window.fileSystemBotLLM) {
+                    window.fileSystemBotLLM.renderUI();
+                    console.log('[Dashboard] FileSystemBot LLM ready');
                 }
                 
                 // Initialize other bot modules
@@ -1103,6 +1131,8 @@
                     loadActivityData();
                     console.log('[Dashboard] Activity data loaded');
                 }
+                
+                console.log('[Dashboard] ✓ All systems initialized!');
             }, 500);
         });
     </script>
