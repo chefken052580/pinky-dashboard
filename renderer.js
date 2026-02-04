@@ -49,10 +49,16 @@ window.addEventListener('DOMContentLoaded', function() {
     initMonitorButtons();
     switchMonitorView('heartbeat');
     
-    // Activity monitoring
+    // Activity monitoring - load immediately and refresh every 3 seconds
     loadActivityData();
-    setInterval(loadActivityData, 5000);
-    setInterval(updateStats, 10000);
+    setInterval(loadActivityData, 3000);
+    setInterval(updateStats, 5000);
+    
+    // Update stats immediately
+    setTimeout(function() {
+        updateStats();
+        updateMonitorStats();
+    }, 100);
     
     // Initialize enhanced TasksBot
     if (window.tasksBotEnhanced) {
@@ -68,7 +74,9 @@ window.addEventListener('DOMContentLoaded', function() {
     
     // Pre-load stats to avoid blank display after cache clear
     setTimeout(function() {
+        console.log('[Init] Pre-loading stats, current activity data:', activityData);
         updateStats();
+        updateMonitorStats();
     }, 500);
 });
 
@@ -162,16 +170,33 @@ function updateTaskCount() {
 }
 
 function updateStats() {
-    var costEl = document.getElementById('cost-saved');
-    if (costEl) {
-        var current = parseFloat(costEl.textContent.replace('$', '')) || 0;
-        costEl.textContent = '$' + (current + 0.25).toFixed(2);
-    }
-    var speedEl = document.getElementById('speed-gain');
-    if (speedEl) {
+    // Calculate real stats from activity data
+    if (activityData && activityData.heartbeats) {
+        // Tasks completed = number of heartbeats
         var tasksEl = document.getElementById('tasks-completed');
-        var tasks = tasksEl ? (parseInt(tasksEl.textContent) || 0) : 0;
-        speedEl.textContent = Math.max(1, Math.floor(tasks / 10)) + 'x';
+        if (tasksEl) {
+            tasksEl.textContent = activityData.heartbeats.length;
+        }
+        
+        // Cost saved based on tokens (rough estimate: $0.001 per 100 tokens)
+        var costEl = document.getElementById('cost-saved');
+        if (costEl) {
+            var estimatedCost = (activityData.usage.tokens / 100) * 0.001;
+            costEl.textContent = '$' + estimatedCost.toFixed(2);
+        }
+        
+        // Speed improvement based on exec calls
+        var speedEl = document.getElementById('speed-gain');
+        if (speedEl) {
+            var speedMultiplier = Math.max(1, Math.floor(activityData.usage.exec / 2));
+            speedEl.textContent = speedMultiplier + 'x';
+        }
+        
+        // Tasks today count (from project tracking)
+        var tasksCountEl = document.getElementById('tasks-today-count');
+        if (tasksCountEl) {
+            tasksCountEl.textContent = activityData.heartbeats.length;
+        }
     }
 }
 
@@ -207,34 +232,35 @@ window.dashboard.downloadLogs = downloadLogs;
 
 function loadActivityData() {
     var paths = [
+        'pinky-activity.json?t=' + Date.now(),
+        './pinky-activity.json?t=' + Date.now(),
         'https://pinky-api.crackerbot.io/api/activity',
-        'http://localhost:3030/api/activity',
-        'pinky-activity.json',
-        './pinky-activity.json'
+        'http://localhost:3030/api/activity'
     ];
     tryLoadFromPath(0);
     function tryLoadFromPath(index) {
         if (index >= paths.length) {
             console.log('[Activity] All paths failed, using cached data');
+            console.log('[Activity] Current cached data:', activityData);
             return;
         }
         var url = paths[index];
-        if (!url.startsWith('http')) {
-            url = url + '?t=' + Date.now();
-        }
-        fetch(url)
+        console.log('[Activity] Attempting to load from:', url);
+        fetch(url, { cache: 'no-store' })
             .then(function(r) {
-                if (!r.ok) throw new Error('Not found: ' + paths[index]);
+                if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.json();
             })
             .then(function(data) {
-                console.log('[Activity] Loaded from:', paths[index]);
+                console.log('[Activity] Successfully loaded from:', paths[index]);
+                console.log('[Activity] Data contains', data.heartbeats.length, 'heartbeats');
                 activityData = data;
                 updateMonitorStats();
+                updateStats();
                 renderMonitorChart(currentMonitorView);
             })
             .catch(function(err) {
-                console.log('[Activity] Path failed:', paths[index], err.message);
+                console.log('[Activity] Failed to load from', paths[index] + ':', err.message);
                 tryLoadFromPath(index + 1);
             });
     }

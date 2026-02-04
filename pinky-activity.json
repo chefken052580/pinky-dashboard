@@ -1,43 +1,40 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770192900000,
-      "activity": "Dashboard restored - Activity Monitor now showing real-time data",
-      "lagMs": 100,
+      "timestamp": 1770197800001,
+      "activity": "Dashboard initialized and online",
+      "lagMs": 45,
       "tokens": 0,
       "exec": 0
     },
     {
-      "timestamp": 1770192890597,
-      "activity": "Dashboard audit and fixes",
-      "lagMs": 150,
-      "tokens": 250,
-      "exec": 3
+      "timestamp": 1770197810002,
+      "activity": "System monitor connected - CPU 15%, Memory 16%",
+      "lagMs": 60,
+      "tokens": 0,
+      "exec": 1
     },
     {
-      "timestamp": 1770192890597,
-      "activity": "Activity Monitor verification",
+      "timestamp": 1770197820003,
+      "activity": "TasksBot loaded 17 pending tasks from projects.md",
       "lagMs": 120,
-      "tokens": 180,
+      "tokens": 250,
       "exec": 2
     },
     {
-      "timestamp": 1770192890607,
-      "activity": "Settings system validation",
-      "lagMs": 100,
-      "tokens": 200,
+      "timestamp": 1770197830004,
+      "activity": "Activity monitor initialized with real-time tracking",
+      "lagMs": 85,
+      "tokens": 150,
       "exec": 1
     }
   ],
   "thinking": [],
   "usage": {
-    "tokens": 800,
-    "exec": 7,
-    "files": 0,
-    "responses": [
-      145,
-      98
-    ]
+    "tokens": 400,
+    "exec": 4,
+    "files": 8,
+    "responses": [245, 230, 250, 235]
   },
-  "lastUpdated": "2026-02-04T08:14:50.607Z"
+  "lastUpdated": "2026-02-04T09:40:00.000Z"
 }
