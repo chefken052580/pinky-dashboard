@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770082935311,
-      "activity": "Starting heartbeat: Testing new tool - test-runner.sh",
-      "lagMs": 550,
-      "tokens": 1000,
-      "exec": 1
-    },
-    {
-      "timestamp": 1770082935939,
-      "activity": "Completed testing new tool",
-      "lagMs": 1600,
-      "tokens": 4000,
-      "exec": 5
-    },
-    {
       "timestamp": 1770082994748,
       "activity": "Starting heartbeat: Writing one useful function",
       "lagMs": 600,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770164955960,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770164980887,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770164991691,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
