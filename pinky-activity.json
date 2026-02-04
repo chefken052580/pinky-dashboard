@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770142327297,
-      "activity": "Starting heartbeat: Practicing coding with Sonnet by building small script",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
-      "timestamp": 1770142328076,
-      "activity": "Completed coding practice and file updates",
-      "lagMs": 2000,
-      "tokens": 6000,
-      "exec": 4
-    },
-    {
       "timestamp": 1770143239732,
       "activity": "Starting heartbeat: Testing wallets on live CrackerBot server",
       "lagMs": 0,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770165300152,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770165322160,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770165333141,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
