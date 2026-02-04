@@ -1016,10 +1016,11 @@
             }
         }
     </script>
-    <script src="renderer.js"></script>
-    <link rel="stylesheet" href="tasks-bot.css">
-    <!-- TasksBot Enhanced - Use the new version from dashboard -->
+    <!-- Load TasksBot FIRST before renderer -->
     <script src="../dashboard/src/tasks-bot-enhanced.js"></script>
+    <link rel="stylesheet" href="tasks-bot.css">
+    <!-- Then load renderer which depends on TasksBot -->
+    <script src="renderer.js"></script>
     
     <!-- Bot Upgrades & New Features -->
     <link rel="stylesheet" href="bot-upgrades.css">

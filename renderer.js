@@ -20,6 +20,25 @@ var activityData = {
     usage: { tokens: 0, exec: 0, files: 0, responses: [] }
 };
 
+// Toggle sidebar for mobile (uses 'active' class to match CSS)
+function toggleSidebar() {
+    var sidebar = document.querySelector('.sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var toggle = document.getElementById('menuToggle');
+    
+    if (sidebar) {
+        sidebar.classList.toggle('active');
+    }
+    if (overlay) {
+        overlay.classList.toggle('active');
+    }
+    if (toggle) {
+        toggle.classList.toggle('active');
+    }
+    
+    console.log('[Sidebar] Toggled');
+}
+
 // Global function for inline onclick handlers
 window.switchToView = function(viewName) {
     console.log('[Nav] Switching to view:', viewName);
@@ -541,13 +560,17 @@ window.dashboard.submitBotTask = function(bot) {
     if (!inputEl || !outputEl) return;
     var task = inputEl.value.trim();
     if (!task) { alert('Please enter a task or select a template!'); return; }
+    
+    // Generate unique task ID for backend correlation
+    var taskId = 'task-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    
     outputEl.innerHTML = '<div class="output-loading">Bot is working on your request...</div>';
     addActivity(bot, 'Task started: ' + task.substring(0, 50) + '...');
     if (CONFIG.mode === 'real') {
         fetch(CONFIG.backendUrl + '/api/bot/' + bot + '/task', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ task: task })
+            body: JSON.stringify({ task: task, taskId: taskId })
         })
         .then(function(response) {
             if (!response.ok) throw new Error('API failed: ' + response.status);

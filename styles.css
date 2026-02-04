@@ -10,14 +10,14 @@
     --accent-primary: #3b82f6;
 }
 
-/* Light Mode Variables */
+/* Light Mode Variables - Darker for better visibility */
 html.light-mode {
-    --bg-primary: #f8fafc;
-    --bg-secondary: #f1f5f9;
-    --bg-tertiary: #e2e8f0;
+    --bg-primary: #e8ecf1;
+    --bg-secondary: #d1d9e3;
+    --bg-tertiary: #bcc4d1;
     --text-primary: #0f172a;
-    --text-secondary: #334155;
-    --accent-primary: #3b82f6;
+    --text-secondary: #1e293b;
+    --accent-primary: #2563eb;
 }
 
 * {
