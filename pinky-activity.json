@@ -1,9 +1,9 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770191768951,
-      "activity": "Dashboard initialized - TasksBot deployed live",
-      "lagMs": 150,
+      "timestamp": 1770192900000,
+      "activity": "Dashboard restored - Activity Monitor now showing real-time data",
+      "lagMs": 100,
       "tokens": 0,
       "exec": 0
     }
@@ -15,5 +15,5 @@
     "files": 0,
     "responses": []
   },
-  "lastUpdated": "2026-02-04T07:56:08.951Z"
+  "lastUpdated": "2026-02-04T08:15:00.000Z"
 }
