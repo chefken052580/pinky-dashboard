@@ -159,21 +159,37 @@ window.dashboard.botAction = botAction;
 window.dashboard.downloadLogs = downloadLogs;
 
 function loadActivityData() {
-    var paths = ['pinky-activity.json', './pinky-activity.json'];
+    var paths = [
+        'https://pinky-api.crackerbot.io/api/activity',
+        'http://localhost:3030/api/activity',
+        'pinky-activity.json',
+        './pinky-activity.json'
+    ];
     tryLoadFromPath(0);
     function tryLoadFromPath(index) {
-        if (index >= paths.length) return;
-        fetch(paths[index] + '?t=' + Date.now())
+        if (index >= paths.length) {
+            console.log('[Activity] All paths failed, using cached data');
+            return;
+        }
+        var url = paths[index];
+        if (!url.startsWith('http')) {
+            url = url + '?t=' + Date.now();
+        }
+        fetch(url)
             .then(function(r) {
-                if (!r.ok) throw new Error('Not found');
+                if (!r.ok) throw new Error('Not found: ' + paths[index]);
                 return r.json();
             })
             .then(function(data) {
+                console.log('[Activity] Loaded from:', paths[index]);
                 activityData = data;
                 updateMonitorStats();
                 renderMonitorChart(currentMonitorView);
             })
-            .catch(function() { tryLoadFromPath(index + 1); });
+            .catch(function(err) {
+                console.log('[Activity] Path failed:', paths[index], err.message);
+                tryLoadFromPath(index + 1);
+            });
     }
 }
 
@@ -312,6 +328,9 @@ function incrementStat(statId, amount) {
         el.textContent = current + amount;
     }
 }
+
+// Make key functions globally available
+window.quickAction = quickAction;
 
 window.toggleSidebar = function() {
     var sidebar = document.querySelector('.sidebar');
