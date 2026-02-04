@@ -141,8 +141,13 @@ function switchView(viewId) {
         currentView = viewId;
         
         // Trigger initialization for specific views
-        if (viewId === 'queue-view' && window.tasksBotEnhanced) {
+        if (viewId === 'tasks-view' && window.tasksBotEnhanced) {
+            console.log('[Dashboard] TasksBot initializing for tasks-view');
             window.tasksBotEnhanced.init();
+        }
+        if (viewId === 'analytics-view' && window.systemMonitorUI) {
+            console.log('[Dashboard] SystemMonitor initializing for analytics-view');
+            window.systemMonitorUI.loadMetrics();
         }
     }
 }
