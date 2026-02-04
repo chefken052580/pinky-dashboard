@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770129627034,
-      "activity": "Handling server start error (EADDRINUSE), killing old process, restarting bot-backend",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
-      "timestamp": 1770129672028,
-      "activity": "Handling repeated EADDRINUSE error, cleaning up processes, restarting bot-backend with Phase 2",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
       "timestamp": 1770129710827,
       "activity": "Resolving persistent EADDRINUSE on port 3030 for bot-backend Phase 2",
       "lagMs": 0,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770165107273,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770165129275,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770165140165,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
