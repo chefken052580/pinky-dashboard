@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770082894814,
-      "activity": "Starting heartbeat: Writing bot improvement proposals",
-      "lagMs": 500,
-      "tokens": 900,
-      "exec": 1
-    },
-    {
-      "timestamp": 1770082895433,
-      "activity": "Completed bot improvement proposals - all tasks done",
-      "lagMs": 2200,
-      "tokens": 5500,
-      "exec": 9
-    },
-    {
       "timestamp": 1770082935311,
       "activity": "Starting heartbeat: Testing new tool - test-runner.sh",
       "lagMs": 550,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770164928008,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770164944955,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770164955960,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
