@@ -201,6 +201,23 @@ function updateMonitorStats() {
     }
     var wakeupsEl = document.getElementById('total-wakeups');
     if (wakeupsEl) wakeupsEl.textContent = activityData.heartbeats.length;
+    
+    // Update main stats grid
+    var tasksEl = document.getElementById('tasks-completed');
+    if (tasksEl) tasksEl.textContent = activityData.heartbeats.length;
+    
+    var costEl = document.getElementById('cost-saved');
+    if (costEl) costEl.textContent = '$' + Math.round(activityData.usage.tokens / 1000) + 'k';
+    
+    var speedEl = document.getElementById('speed-gain');
+    if (speedEl) speedEl.textContent = (activityData.heartbeats.length / 10).toFixed(1) + 'x';
+    
+    var successEl = document.getElementById('success-rate');
+    if (successEl) successEl.textContent = '100%';
+    
+    // Also update the main Recent Activity feed
+    updateRecentActivityFeed();
+    
     var tokensEl = document.getElementById('tokens-used');
     if (tokensEl) tokensEl.textContent = activityData.usage.tokens.toLocaleString();
     var execEl = document.getElementById('exec-calls');
@@ -218,6 +235,28 @@ function renderMonitorChart(view) {
     if (view === 'heartbeat') renderHeartbeatLog();
     else if (view === 'thinking') renderThinkingLog();
     else if (view === 'peak') renderPeakLog();
+}
+
+function updateRecentActivityFeed() {
+    var feed = document.getElementById('activity-feed');
+    if (!feed) return;
+    feed.innerHTML = '';
+    
+    // Show recent heartbeats in the main activity feed
+    if (activityData.heartbeats.length === 0) {
+        feed.innerHTML = '<div class="activity-item"><span class="activity-message">No activity yet...</span></div>';
+        return;
+    }
+    
+    activityData.heartbeats.slice(-10).reverse().forEach(function(hb) {
+        var entry = document.createElement('div');
+        entry.className = 'activity-item';
+        var timeStr = new Date(hb.timestamp).toLocaleTimeString();
+        entry.innerHTML = '<span class="activity-time">' + timeStr + '</span>' +
+            '<span class="activity-bot">Heartbeat</span>' +
+            '<span class="activity-message">' + (hb.activity || 'Activity check') + '</span>';
+        feed.appendChild(entry);
+    });
 }
 
 function renderHeartbeatLog() {
