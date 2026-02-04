@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770082657511,
-      "activity": "Starting heartbeat: Checking load and selecting task",
-      "lagMs": 300,
-      "tokens": 500,
-      "exec": 1
-    },
-    {
-      "timestamp": 1770082658436,
-      "activity": "Completed script review and fixes",
-      "lagMs": 1200,
-      "tokens": 3500,
-      "exec": 5
-    },
-    {
       "timestamp": 1770082736236,
       "activity": "Starting new heartbeat: Adding error handling to scripts",
       "lagMs": 350,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770164817528,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770164834967,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770164845816,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
