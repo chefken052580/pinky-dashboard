@@ -86,6 +86,21 @@ function switchView(viewId) {
 function quickAction(bot, action) {
     console.log('[Quick Action] ' + bot + ' - ' + action);
     addActivity(bot, 'Quick action: ' + action);
+    
+    // Log to activity system
+    fetch('https://pinky-api.crackerbot.io/api/activity/heartbeat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            activity: 'Quick action: ' + bot + ' - ' + action,
+            lagMs: 0,
+            tokens: 0,
+            exec: 1
+        })
+    }).catch(function() {
+        console.log('[QuickAction] API not available, using local only');
+    });
+    
     setTimeout(function() {
         addActivity(bot, 'Completed: ' + action);
         updateTaskCount();
