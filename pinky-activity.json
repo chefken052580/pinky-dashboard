@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770143239732,
-      "activity": "Starting heartbeat: Testing wallets on live CrackerBot server",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
-      "timestamp": 1770143378079,
-      "activity": "Completed wallet testing and updates",
-      "lagMs": 3000,
-      "tokens": 7000,
-      "exec": 6
-    },
-    {
       "timestamp": 1770144174161,
       "activity": "Starting heartbeat: Adding transaction capabilities to CrackerBot",
       "lagMs": 0,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770165333141,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770170227054,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770170238017,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
