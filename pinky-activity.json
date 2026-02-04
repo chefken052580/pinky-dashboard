@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770141326289,
-      "activity": "Starting heartbeat: Reviewing OpenClaw docs for new features",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
-      "timestamp": 1770141326884,
-      "activity": "Completed OpenClaw docs review and updates",
-      "lagMs": 3000,
-      "tokens": 8000,
-      "exec": 3
-    },
-    {
       "timestamp": 1770142327297,
       "activity": "Starting heartbeat: Practicing coding with Sonnet by building small script",
       "lagMs": 0,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770165270006,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770165289310,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770165300152,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
