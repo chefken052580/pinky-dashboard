@@ -84,6 +84,12 @@
                     <span class="bot-status online"></span>
                     <span style="font-size:0.7em;opacity:0.7;">Pinky's Slave</span>
                 </button>
+                <button class="bot-button" data-bot="tasks" onclick="switchToView('tasks')">
+                    <span class="bot-icon">🎯</span>
+                    <span class="bot-name">TasksBot</span>
+                    <span class="bot-status online"></span>
+                    <span style="font-size:0.7em;opacity:0.7;">Project Manager</span>
+                </button>
             </nav>
 
             <nav class="view-nav">
@@ -856,6 +862,11 @@
                 </div>
             </div>
 
+            <!-- TasksBot View -->
+            <div id="tasks-view" class="view">
+                <div id="tasksbot-container"></div>
+            </div>
+
             <!-- Task Queue View -->
             <div id="queue-view" class="view">
                 <h2>📋 Task Queue</h2>
@@ -1085,6 +1096,8 @@
         }
     </script>
     <script src="renderer.js"></script>
+    <link rel="stylesheet" href="tasks-bot.css">
+    <script src="tasks-bot.js"></script>
     <script>
         // FORCE data load after everything is ready
         window.addEventListener('load', () => {
