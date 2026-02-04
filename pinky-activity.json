@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770139531582,
-      "activity": "Starting heartbeat work: Updating TOOLS.md with environment notes",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
-      "timestamp": 1770139533350,
-      "activity": "Completed updating TOOLS.md and committed changes",
-      "lagMs": 2000,
-      "tokens": 5000,
-      "exec": 5
-    },
-    {
       "timestamp": 1770141326289,
       "activity": "Starting heartbeat: Reviewing OpenClaw docs for new features",
       "lagMs": 0,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770165236907,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770165259190,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770165270006,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
