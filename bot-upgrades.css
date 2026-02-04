@@ -1,0 +1,371 @@
+/**
+ * BOT UPGRADES - Styling
+ * Settings UI, Social Bot Pro, Enhanced bot interfaces
+ */
+
+/* ===== SETTINGS UI ===== */
+
+.settings-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.settings-section {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 25px;
+}
+
+.settings-section h3 {
+  color: #00d4ff;
+  margin-bottom: 20px;
+  font-size: 1.3em;
+}
+
+/* API Grid */
+
+.api-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.api-card {
+  background: rgba(10, 10, 20, 0.5);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.api-card:hover {
+  border-color: rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
+}
+
+.api-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.api-icon {
+  font-size: 1.8em;
+  flex-shrink: 0;
+}
+
+.api-header h4 {
+  color: #fff;
+  margin: 0;
+  flex: 1;
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: '';
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #00d4ff;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.api-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.api-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  color: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  transition: all 0.3s ease;
+}
+
+.api-input:focus {
+  outline: none;
+  border-color: #00d4ff;
+  background: rgba(0, 212, 255, 0.05);
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+}
+
+.api-test-btn {
+  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+  border: none;
+  color: #000;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.api-test-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+}
+
+/* Bot Config Grid */
+
+.bot-config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.bot-config-card {
+  background: rgba(10, 10, 20, 0.5);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 10px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.bot-config-card:hover {
+  border-color: rgba(0, 212, 255, 0.5);
+}
+
+.bot-config-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.priority-select {
+  width: 100%;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.priority-select:focus {
+  outline: none;
+  border-color: #00d4ff;
+}
+
+/* Notification Settings */
+
+.notification-settings,
+.appearance-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.setting-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+}
+
+.setting-toggle input {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.appearance-settings label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+}
+
+.appearance-settings input[type="color"],
+.appearance-settings select {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ===== SOCIAL BOT PRO ===== */
+
+.social-pro-interface {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.post-composer {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 25px;
+}
+
+.post-composer h3 {
+  color: #00d4ff;
+  margin-bottom: 15px;
+}
+
+.scheduled-queue,
+.social-analytics {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 25px;
+}
+
+.scheduled-queue h3,
+.social-analytics h3 {
+  color: #a8e6cf;
+  margin-bottom: 15px;
+}
+
+/* ===== BOT ENHANCEMENT MODULES ===== */
+
+.bot-module {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  color: #00d4ff;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.feature-card {
+  background: rgba(10, 10, 20, 0.5);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 10px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  border-color: rgba(0, 212, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.feature-title {
+  color: #fff;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.feature-desc {
+  color: #aaa;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.action-btn {
+  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+  border: none;
+  color: #000;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.progress-bar {
+  background: rgba(0, 212, 255, 0.1);
+  border-radius: 10px;
+  height: 8px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #00d4ff 0%, #00d464 100%);
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .api-grid,
+  .bot-config-grid,
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .api-header {
+    flex-wrap: wrap;
+  }
+}
