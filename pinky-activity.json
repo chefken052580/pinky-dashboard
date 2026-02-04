@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770129710827,
-      "activity": "Resolving persistent EADDRINUSE on port 3030 for bot-backend Phase 2",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
-      "timestamp": 1770135774726,
-      "activity": "Resolving persistent port 3030 conflict by spawning sub-agent for investigation",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
       "timestamp": 1770135795834,
       "activity": "Handling sessions_spawn timeout, checking gateway status, retrying sub-agent for port fix",
       "lagMs": 0,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770165140165,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770165162194,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770165173021,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
