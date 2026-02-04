@@ -312,7 +312,8 @@ function updateMonitorStats() {
         html += '</div>';
         html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
         html += '<div style="font-size: 0.9em; opacity: 0.8;">In Progress</div>';
-        html += '<div id="hb-progress" style="font-size: 2em; font-weight: bold; color: #00d4ff;">0</div>';
+        var inProgressCount = activityData.heartbeats.filter(function(hb) { return hb.activity && hb.activity.includes('running'); }).length;
+        html += '<div id="hb-progress" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + inProgressCount + '</div>';
         html += '</div>';
         html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
         html += '<div style="font-size: 0.9em; opacity: 0.8;">Tokens Used</div>';
@@ -338,18 +339,8 @@ function updateMonitorStats() {
     var wakeupsEl = document.getElementById('total-wakeups');
     if (wakeupsEl) wakeupsEl.textContent = activityData.heartbeats.length;
     
-    // Update main stats grid
-    var tasksEl = document.getElementById('tasks-completed');
-    if (tasksEl) tasksEl.textContent = activityData.heartbeats.length;
-    
-    var costEl = document.getElementById('cost-saved');
-    if (costEl) costEl.textContent = '$' + Math.round(activityData.usage.tokens / 1000) + 'k';
-    
-    var speedEl = document.getElementById('speed-gain');
-    if (speedEl) speedEl.textContent = (activityData.heartbeats.length / 10).toFixed(1) + 'x';
-    
-    var successEl = document.getElementById('success-rate');
-    if (successEl) successEl.textContent = '100%';
+    // DO NOT update stats grid here - updateStats() handles that to avoid conflicts
+    // Just update monitor-specific stats below:
     
     // Also update the main Recent Activity feed
     updateRecentActivityFeed();
