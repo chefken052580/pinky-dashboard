@@ -231,11 +231,12 @@ window.dashboard.botAction = botAction;
 window.dashboard.downloadLogs = downloadLogs;
 
 function loadActivityData() {
+    var cacheBuster = Date.now();
     var paths = [
-        'pinky-activity.json?t=' + Date.now(),
-        './pinky-activity.json?t=' + Date.now(),
-        'https://pinky-api.crackerbot.io/api/activity',
-        'http://localhost:3030/api/activity'
+        'pinky-activity.json?t=' + cacheBuster + '&r=' + Math.random(),
+        './pinky-activity.json?t=' + cacheBuster + '&r=' + Math.random(),
+        'https://pinky-api.crackerbot.io/api/activity?t=' + cacheBuster,
+        'http://localhost:3030/api/activity?t=' + cacheBuster
     ];
     tryLoadFromPath(0);
     function tryLoadFromPath(index) {
