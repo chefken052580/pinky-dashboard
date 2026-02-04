@@ -1,0 +1,215 @@
+/* SYSTEM MONITOR STYLES */
+
+.system-monitor {
+  padding: 20px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.system-monitor h3 {
+  margin-top: 0;
+  color: #fff;
+  font-size: 1.3em;
+  margin-bottom: 15px;
+}
+
+/* Throttle State Banner */
+.throttle-state {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.throttle-state.throttle-normal {
+  background-color: rgba(52, 211, 153, 0.2);
+  border-left: 4px solid #34d399;
+  color: #a7f3d0;
+}
+
+.throttle-state.throttle-high {
+  background-color: rgba(251, 191, 36, 0.2);
+  border-left: 4px solid #fbbf24;
+  color: #fef3c7;
+}
+
+.throttle-state.throttle-critical {
+  background-color: rgba(239, 68, 68, 0.2);
+  border-left: 4px solid #ef4444;
+  color: #fecaca;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.level-badge {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-weight: 700;
+  min-width: 70px;
+  text-align: center;
+}
+
+.reason {
+  flex: 1;
+  font-size: 0.9em;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.metric-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.metric-header {
+  font-size: 0.85em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.metric-value {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 10px 0;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.metric-value.low {
+  color: #34d399;
+}
+
+.metric-value.medium {
+  color: #fbbf24;
+}
+
+.metric-value.high {
+  color: #fb923c;
+}
+
+.metric-value.critical {
+  color: #ef4444;
+}
+
+.metric-value.uptime {
+  color: #60a5fa;
+  font-size: 1.4em;
+}
+
+/* Progress Bar */
+.metric-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.metric-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #34d399, #fbbf24);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.metric-value.high ~ .metric-bar .metric-fill {
+  background: linear-gradient(90deg, #fbbf24, #fb923c);
+}
+
+.metric-value.critical ~ .metric-bar .metric-fill {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  animation: pulse-bar 1s infinite;
+}
+
+@keyframes pulse-bar {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.metric-details {
+  font-size: 0.8em;
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Throttle Info */
+.throttle-info {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid #60a5fa;
+  padding: 12px 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 0.9em;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.throttle-info strong {
+  color: #fff;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* Monitor Info */
+.monitor-info {
+  text-align: right;
+  font-size: 0.8em;
+  color: #64748b;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .metric-value {
+    font-size: 1.5em;
+  }
+  
+  .throttle-state {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .system-monitor {
+    padding: 15px;
+  }
+}
