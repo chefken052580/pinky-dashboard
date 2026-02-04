@@ -1,27 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770069562755,
-      "activity": "Finalized knowledge graph, marked all self-improvement tasks complete",
-      "lagMs": 1700,
-      "tokens": 3800,
-      "exec": 5
-    },
-    {
-      "timestamp": 1770069584176,
-      "activity": "Heartbeat: Final check - all tasks complete, system maintenance",
-      "lagMs": 400,
-      "tokens": 620,
-      "exec": 1
-    },
-    {
-      "timestamp": 1770069586465,
-      "activity": "Performed maintenance, generated reports, added daily summary - wrapping up",
-      "lagMs": 1800,
-      "tokens": 4000,
-      "exec": 7
-    },
-    {
       "timestamp": 1770069600996,
       "activity": "Final heartbeat: Wrapping up and reporting",
       "lagMs": 450,
@@ -699,6 +678,27 @@
       "lagMs": 1000,
       "tokens": 2500,
       "exec": 4
+    },
+    {
+      "timestamp": 1770161736117,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770163940358,
+      "activity": "Starting heartbeat: Routine maintenance, fixing log file inconsistencies",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770163941323,
+      "activity": "Completed heartbeat: Fixed log, routine checks",
+      "lagMs": 1500,
+      "tokens": 3000,
+      "exec": 5
     }
   ],
   "thinking": [
