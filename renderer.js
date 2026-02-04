@@ -287,19 +287,23 @@ function loadActivityData() {
 }
 
 function updateMonitorStats() {
-    // Render heartbeat status container if empty
+    // Render heartbeat status container - ALWAYS update, don't check if empty
     var hbContainer = document.getElementById('heartbeat-status-container');
-    if (hbContainer && !hbContainer.innerHTML.trim()) {
+    if (hbContainer) {
+        // Get current values FIRST, then render with actual data (not 0s)
+        var hbCount = activityData.heartbeats.length || 0;
+        var hbTokens = activityData.usage.tokens || 0;
+        
         var html = '<div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">';
         html += '<h3 style="color: white; margin-top: 0;">💓 Heartbeat Status</h3>';
         html += '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">';
         html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
         html += '<div style="font-size: 0.9em; opacity: 0.8;">Heartbeats</div>';
-        html += '<div id="hb-count" style="font-size: 2em; font-weight: bold; color: #00d4ff;">0</div>';
+        html += '<div id="hb-count" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + hbCount + '</div>';
         html += '</div>';
         html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
         html += '<div style="font-size: 0.9em; opacity: 0.8;">Tasks Today</div>';
-        html += '<div id="hb-tasks" style="font-size: 2em; font-weight: bold; color: #00d4ff;">0</div>';
+        html += '<div id="hb-tasks" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + hbCount + '</div>';
         html += '</div>';
         html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
         html += '<div style="font-size: 0.9em; opacity: 0.8;">In Progress</div>';
@@ -307,20 +311,20 @@ function updateMonitorStats() {
         html += '</div>';
         html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
         html += '<div style="font-size: 0.9em; opacity: 0.8;">Tokens Used</div>';
-        html += '<div id="hb-tokens" style="font-size: 2em; font-weight: bold; color: #00d4ff;">0</div>';
+        html += '<div id="hb-tokens" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + hbTokens + '</div>';
         html += '</div>';
         html += '</div></div>';
         hbContainer.innerHTML = html;
     }
-    
-    // Update heartbeat status values
-    var hbCount = document.getElementById('hb-count');
-    if (hbCount) hbCount.textContent = activityData.heartbeats.length;
-    var hbTasks = document.getElementById('hb-tasks');
-    if (hbTasks) hbTasks.textContent = activityData.heartbeats.length;
-    var hbTokens = document.getElementById('hb-tokens');
-    if (hbTokens) hbTokens.textContent = activityData.usage.tokens;
 
+    // Also update elements if they already exist (safeguard)
+    var hbCountEl = document.getElementById('hb-count');
+    if (hbCountEl) hbCountEl.textContent = activityData.heartbeats.length;
+    var hbTasksEl = document.getElementById('hb-tasks');
+    if (hbTasksEl) hbTasksEl.textContent = activityData.heartbeats.length;
+    var hbTokensEl = document.getElementById('hb-tokens');
+    if (hbTokensEl) hbTokensEl.textContent = activityData.usage.tokens;
+    
     var lastHB = activityData.heartbeats[activityData.heartbeats.length - 1];
     if (lastHB) {
         var lastHBEl = document.getElementById('last-heartbeat');
