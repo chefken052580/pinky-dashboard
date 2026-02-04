@@ -68,16 +68,21 @@ window.addEventListener('DOMContentLoaded', function() {
     initMonitorButtons();
     switchMonitorView('heartbeat');
     
-    // Activity monitoring - load immediately and refresh every 3 seconds
+    // Activity monitoring - LOAD FIRST, THEN update UI
     loadActivityData();
-    setInterval(loadActivityData, 3000);
-    setInterval(updateStats, 5000);
     
-    // Update stats immediately
+    // Delay stat updates until data is actually loaded (500ms to be safe)
     setTimeout(function() {
         updateStats();
         updateMonitorStats();
-    }, 100);
+    }, 500);
+    
+    // Refresh data every 3 seconds
+    setInterval(loadActivityData, 3000);
+    
+    // Update display every 5 seconds (after data loads)
+    setInterval(updateStats, 5000);
+    setInterval(updateMonitorStats, 5000);
     
     // Initialize enhanced TasksBot
     if (window.tasksBotEnhanced) {
