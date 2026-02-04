@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770129470513,
-      "activity": "Resuming heartbeat work: Fixing MEMORY.md edit failure and advancing Bot Automation to Phase 2",
-      "lagMs": 0,
-      "tokens": 0,
-      "exec": 0
-    },
-    {
-      "timestamp": 1770129584839,
-      "activity": "Completed Bot Automation Phase 2: Added WebSockets and streaming",
-      "lagMs": 5000,
-      "tokens": 8000,
-      "exec": 8
-    },
-    {
       "timestamp": 1770129627034,
       "activity": "Handling server start error (EADDRINUSE), killing old process, restarting bot-backend",
       "lagMs": 0,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770165078371,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770165098113,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770165107273,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
