@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770083031372,
-      "activity": "Starting heartbeat: Documenting Observer pattern",
-      "lagMs": 650,
-      "tokens": 1200,
-      "exec": 1
-    },
-    {
-      "timestamp": 1770083031916,
-      "activity": "Completed documenting pattern - all tasks done",
-      "lagMs": 2500,
-      "tokens": 6000,
-      "exec": 10
-    },
-    {
       "timestamp": 1770124172496,
       "activity": "Starting heartbeat work: Mastering skill-creator skill",
       "lagMs": 0,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770165020576,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770165038325,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770165049412,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
