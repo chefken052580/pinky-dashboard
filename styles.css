@@ -1,4 +1,25 @@
-/* Pinky Bot Dashboard Styles */
+/* Pinky Bot Dashboard Styles - with Light/Dark Mode */
+
+/* Dark Mode Variables (Default) */
+:root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --accent-primary: #3b82f6;
+}
+
+/* Light Mode Variables */
+html.light-mode {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --bg-tertiary: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --accent-primary: #3b82f6;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -8,8 +29,9 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #333;
+    color: var(--text-primary);
     overflow-x: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* Hamburger Menu for Mobile */

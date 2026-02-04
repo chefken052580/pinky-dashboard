@@ -42,13 +42,34 @@ window.switchToView = function(viewName) {
 // Initialize
 window.addEventListener('DOMContentLoaded', function() {
     console.log('[Dashboard] DOM loaded');
+    
+    // Initialize all components
     initBotButtons();
     initViewButtons();
     initMonitorButtons();
     switchMonitorView('heartbeat');
+    
+    // Activity monitoring
     loadActivityData();
     setInterval(loadActivityData, 5000);
     setInterval(updateStats, 10000);
+    
+    // Initialize enhanced TasksBot
+    if (window.tasksBotEnhanced) {
+        console.log('[Dashboard] Initializing TasksBot');
+        window.tasksBotEnhanced.init();
+    }
+    
+    // Initialize system monitor UI
+    if (window.systemMonitorUI) {
+        console.log('[Dashboard] Initializing System Monitor');
+        window.systemMonitorUI.init();
+    }
+    
+    // Pre-load stats to avoid blank display after cache clear
+    setTimeout(function() {
+        updateStats();
+    }, 500);
 });
 
 function initBotButtons() {
@@ -76,10 +97,21 @@ function initViewButtons() {
 
 function switchView(viewId) {
     document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+    
+    // Skip non-existent views
+    if (viewId === 'social-view') {
+        return; // Social Media view removed
+    }
+    
     var targetView = document.getElementById(viewId);
     if (targetView) {
         targetView.classList.add('active');
         currentView = viewId;
+        
+        // Trigger initialization for specific views
+        if (viewId === 'queue-view' && window.tasksBotEnhanced) {
+            window.tasksBotEnhanced.init();
+        }
     }
 }
 
@@ -550,3 +582,26 @@ window.dashboard.clearCacheAndReload = function() {
     try { sessionStorage.clear(); } catch(e) {}
     window.location.href = window.location.href.split('?')[0] + '?cacheBust=' + Date.now();
 };
+
+// Theme toggle
+window.toggleTheme = function() {
+    var html = document.documentElement;
+    if (html.classList.contains('light-mode')) {
+        html.classList.remove('light-mode');
+        localStorage.setItem('pinky-theme', 'dark');
+        console.log('[Theme] Switched to dark mode');
+    } else {
+        html.classList.add('light-mode');
+        localStorage.setItem('pinky-theme', 'light');
+        console.log('[Theme] Switched to light mode');
+    }
+};
+
+// Load saved theme on init
+window.addEventListener('DOMContentLoaded', function() {
+    var savedTheme = localStorage.getItem('pinky-theme') || 'dark';
+    if (savedTheme === 'light') {
+        document.documentElement.classList.add('light-mode');
+    }
+    console.log('[Theme] Loaded: ' + savedTheme);
+});
