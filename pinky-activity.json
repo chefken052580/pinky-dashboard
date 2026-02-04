@@ -1,20 +1,6 @@
 {
   "heartbeats": [
     {
-      "timestamp": 1770082791452,
-      "activity": "Starting heartbeat: Creating bot usage documentation",
-      "lagMs": 400,
-      "tokens": 700,
-      "exec": 1
-    },
-    {
-      "timestamp": 1770082792058,
-      "activity": "Completed bot usage documentation",
-      "lagMs": 1800,
-      "tokens": 4500,
-      "exec": 7
-    },
-    {
       "timestamp": 1770082844181,
       "activity": "Starting heartbeat: Building bot testing framework",
       "lagMs": 450,
@@ -695,6 +681,20 @@
     },
     {
       "timestamp": 1770164873609,
+      "activity": "Completed routine checks",
+      "lagMs": 1000,
+      "tokens": 2500,
+      "exec": 4
+    },
+    {
+      "timestamp": 1770164889039,
+      "activity": "Starting heartbeat: Routine maintenance and status checks",
+      "lagMs": 0,
+      "tokens": 0,
+      "exec": 0
+    },
+    {
+      "timestamp": 1770164900097,
       "activity": "Completed routine checks",
       "lagMs": 1000,
       "tokens": 2500,
