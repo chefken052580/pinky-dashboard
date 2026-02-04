@@ -666,15 +666,8 @@
                     </div>
                 </div>
 
-                <div class="recent-activity" style="margin-top:25px;">
-                    <h3>📊 SocialBot Activity</h3>
-                    <div id="social-activity" class="activity-feed">
-                        <div class="activity-item">
-                            <span class="activity-time">Waiting...</span>
-                            <span class="activity-bot">SocialBot</span>
-                            <span class="activity-message">Ready to create content! 📱</span>
-                        </div>
-                    </div>
+                <div style="margin-top:25px;">
+                    <div id="social-content"></div>
                 </div>
             </div>
 
@@ -993,48 +986,7 @@
             <!-- Settings View -->
             <div id="settings-view" class="view">
                 <h2>⚙️ Settings & Configuration</h2>
-                <p style="color:white;margin-bottom:25px;">
-                    Configure your dashboard, bots, and integrations.
-                </p>
-                
-                <div style="background:white;border-radius:15px;padding:25px;margin-bottom:25px;">
-                    <h3 style="color:#667eea;margin-bottom:20px;">🤖 Bot Configuration</h3>
-                    <p style="line-height:1.6;">
-                        • Enable/disable individual bots<br>
-                        • Configure bot API keys<br>
-                        • Set execution priorities<br>
-                        • Customize bot behavior
-                    </p>
-                </div>
-
-                <div style="background:white;border-radius:15px;padding:25px;margin-bottom:25px;">
-                    <h3 style="color:#667eea;margin-bottom:20px;">🔔 Notifications</h3>
-                    <p style="line-height:1.6;">
-                        • Desktop notifications<br>
-                        • Email alerts<br>
-                        • Task completion notifications<br>
-                        • Error alerts
-                    </p>
-                </div>
-
-                <div style="background:white;border-radius:15px;padding:25px;">
-                    <h3 style="color:#667eea;margin-bottom:20px;">🎨 Appearance</h3>
-                    <p style="line-height:1.6;">
-                        • Theme selection<br>
-                        • Color customization<br>
-                        • Layout preferences<br>
-                        • Font size
-                    </p>
-                </div>
-
-                <div class="recent-activity" style="margin-top:25px;">
-                    <h3>📊 Settings (Coming Soon)</h3>
-                    <div class="activity-feed">
-                        <div class="activity-item">
-                            <span class="activity-message">Full settings panel coming soon! ⚙️</span>
-                        </div>
-                    </div>
-                </div>
+                <div id="settings-content" style="padding-top:20px;"></div>
             </div>
         </main>
     </div>
@@ -1098,16 +1050,60 @@
     <script src="renderer.js"></script>
     <link rel="stylesheet" href="tasks-bot.css">
     <script src="tasks-bot.js"></script>
+    
+    <!-- Bot Upgrades -->
+    <link rel="stylesheet" href="../dashboard/src/bot-upgrades.css">
+    <script src="../dashboard/src/bot-upgrades.js"></script>
+    <script src="../dashboard/src/bot-modules.js"></script>
+    
     <script>
-        // FORCE data load after everything is ready
+        // Initialize enhanced bot modules after page load
         window.addEventListener('load', () => {
-            console.log('[Dashboard] Page fully loaded, forcing data reload...');
+            console.log('[Dashboard] Initializing bot upgrades...');
             setTimeout(() => {
+                // Inject container divs for bot modules
+                const containers = {
+                    'docs-view': '<div id="docsbot-container"></div>',
+                    'research-view': '<div id="researchbot-container"></div>',
+                    'code-view': '<div id="codebot-container"></div>',
+                    'business-view': '<div id="businessbot-container"></div>',
+                    'filesystem-view': '<div id="filesystembot-container"></div>',
+                    'tasks-view': '<div id="tasksbot-pro-container"></div>'
+                };
+                
+                for (const [viewId, container] of Object.entries(containers)) {
+                    const view = document.getElementById(viewId);
+                    if (view && !view.querySelector('[id*="bot-container"]')) {
+                        view.insertAdjacentHTML('beforeend', container);
+                    }
+                }
+                
+                // Initialize Settings UI
+                if (window.settingsManager) {
+                    window.settingsManager.renderSettingsUI();
+                    console.log('[Dashboard] Settings UI rendered');
+                }
+                
+                // Initialize Social Media Bot Pro
+                if (window.socialBot) {
+                    window.socialBot.renderSocialUI();
+                    console.log('[Dashboard] SocialBot Pro rendered');
+                }
+                
+                // Initialize other bot modules
+                if (window.docsBotPro) window.docsBotPro.renderUI();
+                if (window.researchBotPro) window.researchBotPro.renderUI();
+                if (window.codeBotPro) window.codeBotPro.renderUI();
+                if (window.businessBotPro) window.businessBotPro.renderUI();
+                if (window.filesystemBotPro) window.filesystemBotPro.renderUI();
+                if (window.tasksBotPro) window.tasksBotPro.renderUI();
+                
+                // Load activity data
                 if (typeof loadActivityData === 'function') {
                     loadActivityData();
-                    console.log('[Dashboard] Manual data load triggered');
+                    console.log('[Dashboard] Activity data loaded');
                 }
-            }, 1000);
+            }, 500);
         });
     </script>
 </body>
