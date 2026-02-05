@@ -187,6 +187,11 @@ function initViewButtons() {
 function switchView(viewId) {
     document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
     
+    // Skip non-existent views
+    if (viewId === 'social-view') {
+        return; // Social Media view removed
+    }
+    
     var targetView = document.getElementById(viewId);
     if (targetView) {
         targetView.classList.add('active');
@@ -200,11 +205,6 @@ function switchView(viewId) {
         if (viewId === 'analytics-view' && window.systemMonitorUI) {
             console.log('[Dashboard] SystemMonitor initializing for analytics-view');
             window.systemMonitorUI.loadMetrics();
-        }
-        // FIX: Render SocialBot interface when social-view is activated
-        if (viewId === 'social-view' && window.socialBot) {
-            console.log('[Dashboard] SocialBot initializing for social-view');
-            window.socialBot.renderSocialUI();
         }
     }
 }

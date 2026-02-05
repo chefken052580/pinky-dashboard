@@ -383,6 +383,8 @@ class TasksBotEnhanced {
     html += '</select>';
     html += '<button onclick="window.tasksBotEnhanced.addTaskFromUI()">Submit</button>';
     html += '</div>';
+    // File attachment section (added by Pinky 2026-02-05)
+    html += '<div id="task-attachments-ui-container" style="margin-top:12px;"></div>';
     html += '<div id="rule-status" style="display:none; margin-top:8px; padding:8px 12px; border-radius:6px; font-size:0.85em;"></div>';
     html += '</div>';
 
@@ -494,6 +496,16 @@ class TasksBotEnhanced {
     if (restoredType && savedTypeVal) restoredType.value = savedTypeVal;
     const restoredPri = document.getElementById('new-task-priority');
     if (restoredPri && savedPriVal) restoredPri.value = savedPriVal;
+
+    // Initialize file attachment UI for task creation (added by Pinky 2026-02-05)
+    if (typeof window.fileAttachmentUI !== 'undefined') {
+      const attachmentContainer = document.getElementById('task-attachments-ui-container');
+      if (attachmentContainer) {
+        const attachmentUI = window.fileAttachmentUI.createAttachmentUI('new-task');
+        attachmentContainer.innerHTML = '';
+        attachmentContainer.appendChild(attachmentUI);
+      }
+    }
 
     // NOTE: Do NOT call setupDragDrop() here - it's only called on init()
     // Re-attaching listeners on every render causes exponential listener growth
