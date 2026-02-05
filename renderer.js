@@ -418,16 +418,22 @@ function updateMonitorStats() {
     // Also update the main Recent Activity feed
     updateRecentActivityFeed();
     
-    var tokensEl = document.getElementById('tokens-used');
-    if (tokensEl) tokensEl.textContent = activityData.usage.tokens.toLocaleString();
-    var execEl = document.getElementById('exec-calls');
-    if (execEl) execEl.textContent = activityData.usage.exec;
-    var filesEl = document.getElementById('file-ops');
-    if (filesEl) filesEl.textContent = activityData.usage.files;
-    if (activityData.usage.responses.length > 0) {
-        var avg = activityData.usage.responses.reduce(function(a, b) { return a + b; }, 0) / activityData.usage.responses.length;
+    // ⚠️ PROTECTED — Peak Usage stats from real API data. Lord_Cracker 2026-02-05.
+    if (usageCache) {
+        var tokensEl = document.getElementById('tokens-used');
+        if (tokensEl) tokensEl.textContent = usageCache.totalTokens.toLocaleString();
+        var execEl = document.getElementById('exec-calls');
+        if (execEl) execEl.textContent = usageCache.messages.toLocaleString();
+        var filesEl = document.getElementById('file-ops');
+        if (filesEl) {
+            var modelCount = Object.keys(usageCache.byModel).length;
+            filesEl.textContent = modelCount;
+        }
         var avgEl = document.getElementById('avg-response');
-        if (avgEl) avgEl.textContent = Math.round(avg) + 'ms';
+        if (avgEl && usageCache.messages > 0) {
+            var avgTokensPerMsg = Math.round(usageCache.totalTokens / usageCache.messages);
+            avgEl.textContent = avgTokensPerMsg.toLocaleString() + ' t/m';
+        }
     }
 }
 
@@ -514,7 +520,7 @@ function renderPeakLog() {
         entry.className = 'activity-item';
         entry.innerHTML = '<span class="activity-time">' + new Date(hb.timestamp).toLocaleTimeString() + '</span>' +
             '<span class="activity-bot">Resources</span>' +
-            '<span class="activity-message">' + (hb.tokens || 0) + ' tokens, ' + (hb.exec || 0) + ' exec, ' + hb.lagMs + 'ms</span>';
+            '<span class="activity-message">' + (hb.tokens || 0) + ' tokens, ' + (hb.exec || 0) + ' exec, ' + (hb.lagMs || 0) + 'ms</span>';
         logEl.appendChild(entry);
     });
 }
