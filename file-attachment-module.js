@@ -394,6 +394,31 @@ class FileAttachmentUI {
   }
 
   /**
+   * Display attachment in task form UI
+   */
+  displayAttachment(attachment) {
+    const listContainer = document.getElementById('task-attachments-list');
+    if (!listContainer) return;
+
+    const item = document.createElement('div');
+    item.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 8px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 4px; font-size: 12px;';
+    item.innerHTML = `
+      <span>${this.getFileIcon(attachment.type)}</span>
+      <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${this.truncate(attachment.filename, 30)}</span>
+      <span style="color: #6b7280; font-size: 11px;">${this.formatFileSize(attachment.size)}</span>
+      <button onclick="window.fileAttachmentManager.removeAttachment('new-task', '${attachment.id}'); this.parentElement.remove();" style="padding: 2px 6px; background: #fee2e2; color: #991b1b; border: none; border-radius: 3px; cursor: pointer; font-size: 11px;">✕</button>
+    `;
+    listContainer.appendChild(item);
+  }
+
+  /**
+   * Get all attachments for new task
+   */
+  getTaskAttachments() {
+    return this.getAttachments('new-task') || [];
+  }
+
+  /**
    * Show notification
    */
   showNotification(message, type = 'info') {

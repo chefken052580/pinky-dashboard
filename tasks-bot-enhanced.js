@@ -291,6 +291,16 @@ class TasksBotEnhanced {
     console.log('[TasksBot] Adding task: ' + taskName);
 
     try {
+      // Check for attached files
+      let notes = '';
+      if (typeof window.fileAttachmentManager !== 'undefined') {
+        const attachments = window.fileAttachmentManager.getTaskAttachments();
+        if (attachments && attachments.length > 0) {
+          const attachmentsList = attachments.map(a => `📎 ${a.filename} (${window.fileAttachmentManager.formatFileSize(a.size)})`).join(', ');
+          notes = `Attachments: ${attachmentsList}`;
+        }
+      }
+
       const response = await fetch(this.apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -300,7 +310,7 @@ class TasksBotEnhanced {
           priority: priority || 'P2',
           status: 'pending',
           assigned: new Date().toISOString(),
-          notes: ''
+          notes: notes
         })
       });
 
@@ -309,6 +319,9 @@ class TasksBotEnhanced {
         // Clear input
         const input = document.getElementById('new-task-input');
         if (input) input.value = '';
+        // Clear attachments display
+        const attachmentsList = document.getElementById('task-attachments-list');
+        if (attachmentsList) attachmentsList.innerHTML = '';
         // Reload tasks
         this.loadTasks();
       } else {
@@ -498,12 +511,42 @@ class TasksBotEnhanced {
     if (restoredPri && savedPriVal) restoredPri.value = savedPriVal;
 
     // Initialize file attachment UI for task creation (added by Pinky 2026-02-05)
-    if (typeof window.fileAttachmentUI !== 'undefined') {
-      const attachmentContainer = document.getElementById('task-attachments-ui-container');
-      if (attachmentContainer) {
-        const attachmentUI = window.fileAttachmentUI.createAttachmentUI('new-task');
-        attachmentContainer.innerHTML = '';
-        attachmentContainer.appendChild(attachmentUI);
+    if (typeof window.fileAttachmentManager !== 'undefined') {
+      // Create file input section for attachments
+      const attachmentSection = document.createElement('div');
+      attachmentSection.id = 'task-attachment-section';
+      attachmentSection.className = 'task-attachment-section';
+      attachmentSection.innerHTML = `
+        <div style="margin-top: 10px; padding: 8px 0;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; background: #f0f0f0; border-radius: 6px; width: fit-content;">
+            <span style="font-size: 18px;">📎</span>
+            <span style="font-size: 13px; font-weight: 600;">Attach Files (.png, .jpeg, .pdf - max 10MB)</span>
+            <input type="file" id="task-file-input" style="display: none;" accept=".png,.jpg,.jpeg,.pdf" multiple>
+          </label>
+          <div id="task-attachments-list" style="margin-top: 8px;"></div>
+        </div>
+      `;
+      
+      // Insert after input area
+      const inputArea = document.querySelector('.add-task-input');
+      if (inputArea && !document.getElementById('task-attachment-section')) {
+        inputArea.parentElement.insertBefore(attachmentSection, inputArea.nextElementSibling);
+        
+        // Set up file input handler
+        const fileInput = document.getElementById('task-file-input');
+        if (fileInput) {
+          fileInput.addEventListener('change', async (e) => {
+            for (const file of e.target.files) {
+              try {
+                const attachment = await window.fileAttachmentManager.addAttachment('new-task', file);
+                window.fileAttachmentManager.displayAttachment(attachment);
+              } catch (error) {
+                alert('Error attaching file: ' + error.message);
+              }
+            }
+            e.target.value = ''; // Reset input
+          });
+        }
       }
     }
 
