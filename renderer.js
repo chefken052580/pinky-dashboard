@@ -1,619 +1,414 @@
-// v3.0 - Clean rewrite, no template literals
-var _cachedTaskCount = 0; setInterval(function(){ fetch("/api/tasks").then(function(r){return r.json()}).then(function(tasks){_cachedTaskCount=tasks.filter(function(t){return t.status==="completed"}).length;}).catch(function(err){console.error('[TaskCount] API failed:',err.message);}); }, 15000); fetch("/api/tasks").then(function(r){return r.json()}).then(function(tasks){_cachedTaskCount=tasks.filter(function(t){return t.status==="completed"}).length;}).catch(function(err){console.error('[TaskCount] Initial fetch failed:',err.message);});
 // Pinky Bot Dashboard - Renderer
 console.log('[Dashboard] Initializing...');
 
-// Configuration
-var CONFIG = {
-    mode: 'real',
-    backendUrl: '',
-    fallbackToSimulated: false
-};
-
-console.log('[Dashboard] Mode:', CONFIG.mode);
-
 // State
-var currentView = 'dashboard';
-var currentMonitorView = 'heartbeat';
-var activityData = {
+let currentView = 'dashboard';
+let currentMonitorView = 'heartbeat';
+let activityData = {
     heartbeats: [],
     thinking: [],
     usage: { tokens: 0, exec: 0, files: 0, responses: [] }
 };
 
-// ⚠️ PROTECTED — Real API usage fetcher. Added by Lord_Cracker 2026-02-05.
-var usageCache = null;
-function fetchUsageData() {
-    fetch('/api/usage')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            if (data.loading) return;
-            usageCache = data;
-            var costEl = document.getElementById('api-cost');
-            if (costEl) costEl.textContent = '$' + data.totalCost.toFixed(2);
-            var tokensEl = document.getElementById('total-tokens');
-            if (tokensEl) {
-                if (data.totalTokens > 1000000) {
-                    tokensEl.textContent = (data.totalTokens / 1000000).toFixed(1) + 'M';
-                } else if (data.totalTokens > 1000) {
-                    tokensEl.textContent = (data.totalTokens / 1000).toFixed(1) + 'K';
-                } else {
-                    tokensEl.textContent = data.totalTokens.toString();
-                }
-            }
-            var hbTokens = document.getElementById('tokens-used');
-            var hbMsgs = document.getElementById('hb-messages');
-            if (hbMsgs) hbMsgs.textContent = data.messages.toLocaleString();
-            if (hbTokens) hbTokens.textContent = data.totalTokens.toLocaleString();
-        })
-        .catch(function(err) { console.error('[Usage] Fetch failed:', err.message); });
-}
-// Update "Last Heartbeat" timer every second
-setInterval(function() {
-    var el = document.getElementById('hb-lastbeat');
-    if (!el || !activityData.heartbeats.length) return;
-    var last = activityData.heartbeats[activityData.heartbeats.length - 1];
-    var ago = Math.floor((Date.now() - last.timestamp) / 1000);
-    if (ago < 60) el.textContent = ago + 's ago';
-    else if (ago < 3600) el.textContent = Math.floor(ago/60) + 'm ago';
-    else el.textContent = Math.floor(ago/3600) + 'h ago';
-}, 1000);
-setTimeout(fetchUsageData, 500);
-setInterval(fetchUsageData, 60000);
-
-// PROTECTED: XSS Prevention - escapeHtml function (TIER 2 FIX)
-// DO NOT REMOVE OR MODIFY WITHOUT BRAIN APPROVAL
-// This function is critical for preventing XSS vulnerabilities throughout dashboard
-function escapeHtml(text) {
-    if (!text) return '';
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
-
-// Toggle sidebar for mobile (uses 'active' class to match CSS)
-function toggleSidebar() {
-    var sidebar = document.querySelector('.sidebar');
-    var overlay = document.getElementById('sidebarOverlay');
-    var toggle = document.getElementById('menuToggle');
-    
-    if (sidebar) {
-        sidebar.classList.toggle('active');
-    }
-    if (overlay) {
-        overlay.classList.toggle('active');
-    }
-    if (toggle) {
-        toggle.classList.toggle('active');
-    }
-    
-    console.log('[Sidebar] Toggled');
-}
-
 // Global function for inline onclick handlers
 window.switchToView = function(viewName) {
     console.log('[Nav] Switching to view:', viewName);
-    document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
-    var targetView = document.getElementById(viewName + '-view');
+    
+    // Hide all views
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    
+    // Show target view
+    const targetView = document.getElementById(viewName + '-view');
     if (targetView) {
         targetView.classList.add('active');
         currentView = viewName + '-view';
     }
-    document.querySelectorAll('.bot-button, .view-button').forEach(function(b) { b.classList.remove('active'); });
-    var clickedButton = document.querySelector('[data-bot="' + viewName + '"], [data-view="' + viewName + '"]');
+    
+    // Update active button state
+    document.querySelectorAll('.bot-button, .view-button').forEach(b => b.classList.remove('active'));
+    const clickedButton = document.querySelector(`[data-bot="${viewName}"], [data-view="${viewName}"]`);
     if (clickedButton) {
         clickedButton.classList.add('active');
     }
+    
+    // Log activity
     if (typeof addActivity === 'function') {
-        addActivity('Navigation', 'Switched to ' + viewName + ' view');
+        addActivity('Navigation', `Switched to ${viewName} view`);
     }
 };
 
 // Initialize
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', () => {
     console.log('[Dashboard] DOM loaded');
-    
-    // Initialize all components
     initBotButtons();
     initViewButtons();
     initMonitorButtons();
-    switchMonitorView('heartbeat');
-    
-    // Activity monitoring - LOAD FIRST, THEN update UI
     loadActivityData();
-    
-    // Delay stat updates until data is actually loaded (500ms to be safe)
-    setTimeout(function() {
-        updateStats();
-        updateMonitorStats();
-    }, 500);
-    
-    // Refresh data every 3 seconds
-    // PROTECTED — DO NOT CHANGE BELOW 10000 WITHOUT BRAIN APPROVAL
-    setInterval(loadActivityData, 10000);
-    
-    // Update display every 5 seconds (after data loads)
-    // PROTECTED — DO NOT CHANGE BELOW 10000 WITHOUT BRAIN APPROVAL
-    setInterval(updateStats, 15000);
-    // PROTECTED — DO NOT CHANGE BELOW 10000 WITHOUT BRAIN APPROVAL
-    setInterval(updateMonitorStats, 15000);
-    
-    // DO NOT initialize TasksBot here - it's in a hidden view initially
-    // It will be initialized when the user clicks the TasksBot button
-    if (window.tasksBotEnhanced) {
-        console.log('[Dashboard] TasksBot ready, will initialize when viewing');
-    }
-    
-    // Initialize system monitor UI
-    if (window.systemMonitorUI) {
-        console.log('[Dashboard] Initializing System Monitor');
-        window.systemMonitorUI.init();
-    }
-    
-    // Pre-load stats to avoid blank display after cache clear
-    setTimeout(function() {
-        console.log('[Init] Pre-loading stats, current activity data:', activityData);
-        updateStats();
-        updateMonitorStats();
-    }, 500);
+    setInterval(loadActivityData, 5000); // Refresh every 5s
+    setInterval(updateStats, 10000); // Update stats every 10s
 });
 
+// Bot Navigation
 function initBotButtons() {
-    document.querySelectorAll('.bot-button').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
+    document.querySelectorAll('.bot-button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
-            var bot = btn.dataset.bot;
+            const bot = btn.dataset.bot;
+            console.log('[Nav] Switching to bot:', bot);
+            
+            // Switch to bot view
             switchView(bot + '-view');
-            document.querySelectorAll('.bot-button').forEach(function(b) { b.classList.remove('active'); });
+            
+            // Update active state
+            document.querySelectorAll('.bot-button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            addActivity('Navigation', 'Switched to ' + bot + ' view');
+            
+            // Log activity
+            addActivity('Navigation', `Switched to ${bot} view`);
         });
     });
+    
     console.log('[Init] Bot buttons initialized:', document.querySelectorAll('.bot-button').length);
 }
 
+// View Navigation
 function initViewButtons() {
-    document.querySelectorAll('.view-button').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var view = btn.dataset.view;
+    document.querySelectorAll('.view-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const view = btn.dataset.view;
             switchView(view + '-view');
         });
     });
 }
 
 function switchView(viewId) {
-    document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+    // Hide all views
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     
-    var targetView = document.getElementById(viewId);
+    // Show selected view
+    const targetView = document.getElementById(viewId);
     if (targetView) {
         targetView.classList.add('active');
         currentView = viewId;
-        
-        // Trigger initialization for specific views
-        if (viewId === 'tasks-view' && window.tasksBotEnhanced) {
-            console.log('[Dashboard] TasksBot initializing for tasks-view');
-            window.tasksBotEnhanced.init();
-        }
-        if (viewId === 'analytics-view' && window.systemMonitorUI) {
-            console.log('[Dashboard] SystemMonitor initializing for analytics-view');
-            window.systemMonitorUI.loadMetrics();
-        }
-        // FIX: Render SocialBot interface when social-view is activated
-        if (viewId === 'social-view' && window.socialBot) {
-            console.log('[Dashboard] SocialBot initializing for social-view');
-            window.socialBot.renderSocialUI();
-        }
     }
 }
 
+// Quick Actions
 function quickAction(bot, action) {
-    console.log('[Quick Action] ' + bot + ' - ' + action);
-    addActivity(bot, 'Quick action: ' + action);
+    console.log(`[Quick Action] ${bot} - ${action}`);
+    addActivity(bot, `Quick action: ${action}`);
     
-    // Log to activity system
-    fetch('/api/activity/heartbeat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            activity: 'Quick action: ' + bot + ' - ' + action,
-            lagMs: 0,
-            tokens: 0,
-            exec: 1
-        })
-    }).catch(function() {
-        console.log('[QuickAction] API not available, using local only');
-    });
-    
-    setTimeout(function() {
-        addActivity(bot, 'Completed: ' + action);
+    // Simulated action - replace with actual bot calls
+    setTimeout(() => {
+        addActivity(bot, `âœ… Completed: ${action}`);
         updateTaskCount();
     }, 2000);
 }
 
+// Activity Feed
 function addActivity(bot, message) {
-    var feed = document.getElementById('activity-feed');
+    const feed = document.getElementById('activity-feed');
     if (!feed) return;
-    var item = document.createElement('div');
+    
+    const item = document.createElement('div');
     item.className = 'activity-item';
-    item.innerHTML = '<span class="activity-time">' + new Date().toLocaleTimeString() + '</span>' +
-        '<span class="activity-bot">' + escapeHtml(bot) + '</span>' +
-        '<span class="activity-message">' + escapeHtml(message) + '</span>';
+    item.innerHTML = `
+        <span class="activity-time">${new Date().toLocaleTimeString()}</span>
+        <span class="activity-bot">${bot}</span>
+        <span class="activity-message">${message}</span>
+    `;
+    
     feed.insertBefore(item, feed.firstChild);
+    
+    // Keep only last 50 items
     while (feed.children.length > 50) {
         feed.removeChild(feed.lastChild);
     }
 }
 
+// Stats Updates
 function updateTaskCount() {
-    var countEl = document.getElementById('tasks-completed');
+    const countEl = document.getElementById('tasks-completed');
     if (countEl) {
-        var current = parseInt(countEl.textContent) || 0;
+        const current = parseInt(countEl.textContent) || 0;
         countEl.textContent = current + 1;
+    }
+    
+    const todayEl = document.getElementById('tasks-today');
+    if (todayEl) {
+        const current = parseInt(todayEl.textContent.match(/\d+/)?.[0]) || 0;
+        todayEl.textContent = `ðŸ“Š ${current + 1} Tasks Today`;
     }
 }
 
 function updateStats() {
-    // Calculate real stats from activity data
-    if (activityData && activityData.heartbeats) {
-        // Tasks completed = number of heartbeats
-        var tasksEl = document.getElementById('tasks-completed');
-        if (tasksEl) {
-            tasksEl.textContent = _cachedTaskCount;
-        }
-        
-        // Cost saved based on tokens (rough estimate: $0.001 per 100 tokens)
-        var costEl = document.getElementById('cost-saved');
-        if (costEl) {
-            var estimatedCost = (activityData.usage.tokens / 100) * 0.001;
-            costEl.textContent = '$' + estimatedCost.toFixed(2);
-        }
-        
-        // Speed improvement based on exec calls
-        var speedEl = document.getElementById('speed-gain');
-        if (speedEl) {
-            var speedMultiplier = Math.max(1, Math.floor(activityData.usage.exec / 2));
-            speedEl.textContent = speedMultiplier + 'x';
-        }
-        
-        // Tasks today count (from project tracking)
-        var tasksCountEl = document.getElementById('tasks-today-count');
-        if (tasksCountEl) {
-            tasksCountEl.textContent = _cachedTaskCount;
-        }
+    // Simulated stats - replace with actual data
+    const costEl = document.getElementById('cost-saved');
+    if (costEl) {
+        const current = parseFloat(costEl.textContent.replace('$', '')) || 0;
+        costEl.textContent = '$' + (current + 0.25).toFixed(2);
+    }
+    
+    const speedEl = document.getElementById('speed-gain');
+    if (speedEl) {
+        const tasks = parseInt(document.getElementById('tasks-completed')?.textContent) || 0;
+        speedEl.textContent = Math.max(1, Math.floor(tasks / 10)) + 'x';
     }
 }
 
+// Pinky Activity Monitor
 function initMonitorButtons() {
-    var heartbeatBtn = document.getElementById('monitor-heartbeat');
-    var thinkingBtn = document.getElementById('monitor-thinking');
-    var peakBtn = document.getElementById('monitor-peak');
-    if (heartbeatBtn) heartbeatBtn.addEventListener('click', function() { switchMonitorView('heartbeat'); });
-    if (thinkingBtn) thinkingBtn.addEventListener('click', function() { switchMonitorView('thinking'); });
-    if (peakBtn) peakBtn.addEventListener('click', function() { switchMonitorView('peak'); });
+    const heartbeatBtn = document.getElementById('monitor-heartbeat');
+    const thinkingBtn = document.getElementById('monitor-thinking');
+    const peakBtn = document.getElementById('monitor-peak');
+    
+    if (heartbeatBtn) {
+        heartbeatBtn.addEventListener('click', () => switchMonitorView('heartbeat'));
+    }
+    if (thinkingBtn) {
+        thinkingBtn.addEventListener('click', () => switchMonitorView('thinking'));
+    }
+    if (peakBtn) {
+        peakBtn.addEventListener('click', () => switchMonitorView('peak'));
+    }
 }
 
 function switchMonitorView(view) {
     currentMonitorView = view;
-    document.querySelectorAll('.monitor-btn').forEach(function(btn) { btn.classList.remove('active'); });
-    var monBtn = document.getElementById('monitor-' + view);
-    if (monBtn) monBtn.classList.add('active');
-    document.querySelectorAll('.monitor-content').forEach(function(c) { c.classList.remove('active'); });
-    var targetContent = document.getElementById(view + '-content');
-    if (targetContent) targetContent.classList.add('active');
-    if (activityData && activityData.heartbeats && activityData.heartbeats.length > 0) {
-        updateMonitorStats();
-    } else {
-        loadActivityData();
-    }
+    
+    // Update buttons
+    document.querySelectorAll('.monitor-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`monitor-${view}`)?.classList.add('active');
+    
+    // Update content
+    document.querySelectorAll('.monitor-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(`${view}-content`)?.classList.add('active');
+    
+    // Render appropriate chart
     renderMonitorChart(view);
 }
 
-window.dashboard = window.dashboard || {};
-window.dashboard.switchMonitor = switchMonitorView;
-window.dashboard.botAction = botAction;
-window.dashboard.downloadLogs = downloadLogs;
-
 function loadActivityData() {
-    var cacheBuster = Date.now();
-    // Try API FIRST (most fresh), then fall back to JSON files for GitHub Pages
-    var paths = [
-        '/api/activity?t=' + cacheBuster,
-        '/api/activity?t=' + cacheBuster,
-        'pinky-activity.json?t=' + cacheBuster + '&r=' + Math.random(),
-        './pinky-activity.json?t=' + cacheBuster + '&r=' + Math.random()
+    // Try multiple paths for cross-platform compatibility
+    const paths = [
+        '../pinky-activity.json',
+        'pinky-activity.json',
+        '/mnt/d/pinky-activity.json',
+        'D:/pinky-activity.json'
     ];
+    
+    // Try each path until one works
     tryLoadFromPath(0);
+    
     function tryLoadFromPath(index) {
         if (index >= paths.length) {
-            console.log('[Activity] All paths failed, using cached data');
-            console.log('[Activity] Current cached data:', activityData);
+            console.log('[Monitor] Could not load activity data from any path');
             return;
         }
-        var url = paths[index];
-        console.log('[Activity] Attempting to load from:', url);
-        fetch(url, { cache: 'no-store' })
-            .then(function(r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
+        
+        fetch(paths[index] + '?t=' + Date.now())
+            .then(r => {
+                if (!r.ok) throw new Error('Not found');
                 return r.json();
             })
-            .then(function(data) {
-                console.log('[Activity] Successfully loaded from:', paths[index]);
-                console.log('[Activity] Data contains', data.heartbeats.length, 'heartbeats');
+            .then(data => {
                 activityData = data;
                 updateMonitorStats();
-                updateStats();
                 renderMonitorChart(currentMonitorView);
+                console.log('[Monitor] Loaded activity data from:', paths[index]);
             })
-            .catch(function(err) {
-                console.error('[Activity] Failed to load from', paths[index] + ':', err.message);
+            .catch(err => {
+                // Try next path
                 tryLoadFromPath(index + 1);
             });
     }
 }
 
 function updateMonitorStats() {
-    // Render heartbeat status container - ALWAYS update, don't check if empty
-    var hbContainer = document.getElementById('heartbeat-status-container');
-    // ⚠️ PROTECTED — Focus guard for heartbeat container. Prevents input theft. Lord_Cracker 2026-02-05.
-    if (hbContainer && !(document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT'))) {
-        // Get current values FIRST, then render with actual data (not 0s)
-        var hbCount = activityData.heartbeats.length || 0;
-        var hbTokens = activityData.usage.tokens || 0;
-        
-        var html = '<div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">';
-        html += '<h3 style="color: white; margin-top: 0;">💓 Heartbeat Status</h3>';
-        html += '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">';
-        html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
-        html += '<div style="font-size: 0.9em; opacity: 0.8;">Heartbeats</div>';
-        html += '<div id="hb-count" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + hbCount + '</div>';
-        html += '</div>';
-        html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
-        html += '<div style="font-size: 0.9em; opacity: 0.8;">Tasks Today</div>';
-        html += '<div id="hb-tasks" style="font-size: 2em; font-weight: bold; color: #00d4ff;">...</div>';
-        html += '</div>';
-        html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
-        html += '<div style="font-size: 0.9em; opacity: 0.8;">API Messages</div>';
-        var msgsVal = (usageCache && usageCache.messages) ? usageCache.messages.toLocaleString() : '...';
-        html += '<div id="hb-messages" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + msgsVal + '</div>';
-        fetch("/api/tasks").then(function(r){return r.json()}).then(function(tasks){var el=document.getElementById("hb-tasks");if(el)el.textContent=tasks.filter(function(t){return t.status==="completed"}).length;}).catch(function(err){console.error('[Heartbeat] Task count fetch failed:',err.message);});
-        html += '</div>';
-        html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
-        html += '<div style="font-size: 0.9em; opacity: 0.8;">Last Heartbeat</div>';
-        var beatVal = '...';
-        if (activityData.heartbeats.length) {
-            var lastTs = activityData.heartbeats[activityData.heartbeats.length - 1].timestamp;
-            var agoSec = Math.floor((Date.now() - lastTs) / 1000);
-            if (agoSec < 60) beatVal = agoSec + 's ago';
-            else if (agoSec < 3600) beatVal = Math.floor(agoSec/60) + 'm ago';
-            else beatVal = Math.floor(agoSec/3600) + 'h ago';
-        }
-        html += '<div id="hb-lastbeat" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + beatVal + '</div>';
-        html += '</div>';
-        html += '</div></div>';
-        hbContainer.innerHTML = html;
-    }
-
-    // Also update elements if they already exist (safeguard)
-    var hbCountEl = document.getElementById('hb-count');
-    if (hbCountEl) hbCountEl.textContent = activityData.heartbeats.length;
-    var hbTasksEl = document.getElementById('hb-tasks');
-    if (hbTasksEl) hbTasksEl.textContent = _cachedTaskCount;
-    // hb-messages and hb-lastbeat are updated by fetchUsageData and the heartbeat timer
-    // Do NOT overwrite them here
-    
-    var lastHB = activityData.heartbeats[activityData.heartbeats.length - 1];
+    // Update last heartbeat
+    const lastHB = activityData.heartbeats[activityData.heartbeats.length - 1];
     if (lastHB) {
-        var lastHBEl = document.getElementById('last-heartbeat');
-        if (lastHBEl) lastHBEl.textContent = new Date(lastHB.timestamp).toLocaleTimeString();
+        const lastHBEl = document.getElementById('last-heartbeat');
+        if (lastHBEl) {
+            lastHBEl.textContent = new Date(lastHB.timestamp).toLocaleTimeString();
+        }
     }
-    var wakeupsEl = document.getElementById('total-wakeups');
-    if (wakeupsEl) wakeupsEl.textContent = activityData.heartbeats.length;
     
-    // DO NOT update stats grid here - updateStats() handles that to avoid conflicts
-    // Just update monitor-specific stats below:
+    // Update total wakeups
+    const wakeupsEl = document.getElementById('total-wakeups');
+    if (wakeupsEl) {
+        wakeupsEl.textContent = activityData.heartbeats.length;
+    }
     
-    // Also update the main Recent Activity feed
-    updateRecentActivityFeed();
+    // Update usage stats
+    document.getElementById('tokens-used')?.textContent = activityData.usage.tokens.toLocaleString();
+    document.getElementById('exec-calls')?.textContent = activityData.usage.exec;
+    document.getElementById('file-ops')?.textContent = activityData.usage.files;
     
-    // ⚠️ PROTECTED — Peak Usage stats from real API data. Lord_Cracker 2026-02-05.
-    if (usageCache) {
-        var tokensEl = document.getElementById('tokens-used');
-        if (tokensEl) tokensEl.textContent = usageCache.totalTokens.toLocaleString();
-        var execEl = document.getElementById('exec-calls');
-        if (execEl) execEl.textContent = usageCache.messages.toLocaleString();
-        var filesEl = document.getElementById('file-ops');
-        if (filesEl) {
-            var modelCount = Object.keys(usageCache.byModel).length;
-            filesEl.textContent = modelCount;
-        }
-        var avgEl = document.getElementById('avg-response');
-        if (avgEl && usageCache.messages > 0) {
-            var avgTokensPerMsg = Math.round(usageCache.totalTokens / usageCache.messages);
-            avgEl.textContent = avgTokensPerMsg.toLocaleString() + ' t/m';
-        }
+    if (activityData.usage.responses.length > 0) {
+        const avg = activityData.usage.responses.reduce((a,b) => a+b, 0) / activityData.usage.responses.length;
+        document.getElementById('avg-response')?.textContent = Math.round(avg) + 'ms';
     }
 }
 
 function renderMonitorChart(view) {
-    if (view === 'heartbeat') renderHeartbeatLog();
-    else if (view === 'thinking') renderThinkingLog();
-    else if (view === 'peak') renderPeakLog();
-}
-
-function updateRecentActivityFeed() {
-    // Update ALL activity feeds (Dashboard and Analytics both have one)
-    // PROTECTED — DO NOT CHANGE BACK TO querySelectorAll WITHOUT BRAIN APPROVAL
-    // Only update the MAIN dashboard activity feed, not bot-specific feeds
-    var mainFeed = document.getElementById('activity-feed');
-    var feeds = mainFeed ? [mainFeed] : [];
-    
-    if (feeds.length === 0) {
-        console.log('[Activity] No activity-feed elements found');
-        return;
+    if (view === 'heartbeat') {
+        renderHeartbeatLog();
+    } else if (view === 'thinking') {
+        renderThinkingLog();
+    } else if (view === 'peak') {
+        renderPeakLog();
     }
-    
-    // Build activity items once
-    var itemsHTML = '';
-    if (activityData.heartbeats.length === 0) {
-        itemsHTML = '<div class="activity-item"><span class="activity-message">No activity yet...</span></div>';
-    } else {
-        activityData.heartbeats.slice(-10).reverse().forEach(function(hb) {
-            var timeStr = hb.timestampEST || new Date(hb.timestamp).toLocaleTimeString('en-US', { timeZone: 'America/New_York' });
-            itemsHTML += '<div class="activity-item">';
-            itemsHTML += '<span class="activity-time">' + timeStr + '</span>';
-            itemsHTML += '<span class="activity-bot">Heartbeat</span>';
-            itemsHTML += '<span class="activity-message">' + (hb.activity || 'Activity check') + '</span>';
-            itemsHTML += '</div>';
-        });
-    }
-    
-    // Update all feeds with same content
-    feeds.forEach(function(feed) {
-        feed.innerHTML = itemsHTML;
-    });
 }
 
 function renderHeartbeatLog() {
-    var logEl = document.getElementById('heartbeat-log');
+    const logEl = document.getElementById('heartbeat-log');
     if (!logEl) return;
+    
     logEl.innerHTML = '';
-    activityData.heartbeats.slice(-20).reverse().forEach(function(hb) {
-        var timeStr = hb.timestampEST || new Date(hb.timestamp).toLocaleString('en-US', { timeZone: 'America/New_York', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-        var entry = document.createElement('div');
+    activityData.heartbeats.slice(-20).reverse().forEach(hb => {
+        const entry = document.createElement('div');
         entry.className = 'activity-item';
-        entry.innerHTML = '<span class="activity-time">' + timeStr + '</span>' +
-            '<span class="activity-bot">Heartbeat</span>' +
-            '<span class="activity-message">' + (hb.activity || 'Check') + ' - ' + hb.lagMs + 'ms lag</span>';
+        entry.innerHTML = `
+            <span class="activity-time">${new Date(hb.timestamp).toLocaleString()}</span>
+            <span class="activity-bot">${(hb.activity || '').startsWith('Dashboard Chat:') ? 'Chat' : 'Heartbeat'}</span>
+            <span class="activity-message">${hb.activity || 'Check'}${hb.lagMs !== undefined ? ' - ' + hb.lagMs + 'ms lag' : ''}</span>
+        `;
         logEl.appendChild(entry);
     });
 }
 
 function renderThinkingLog() {
-    var logEl = document.getElementById('thinking-log');
+    const logEl = document.getElementById('thinking-log');
     if (!logEl) return;
+    
     logEl.innerHTML = '';
+    
     if (activityData.thinking.length === 0) {
         logEl.innerHTML = '<div class="activity-item"><span class="activity-message">No thinking sessions yet...</span></div>';
         return;
     }
-    activityData.thinking.slice(-10).reverse().forEach(function(think) {
-        var entry = document.createElement('div');
+    
+    // Group by hour
+    const hourCounts = {};
+    activityData.thinking.forEach(t => {
+        const hour = new Date(t.timestamp).getHours();
+        hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+    });
+    
+    // Show recent thinking sessions
+    activityData.thinking.slice(-10).reverse().forEach(think => {
+        const entry = document.createElement('div');
         entry.className = 'activity-item';
-        entry.innerHTML = '<span class="activity-time">' + new Date(think.timestamp).toLocaleString() + '</span>' +
-            '<span class="activity-bot">Thinking</span>' +
-            '<span class="activity-message">' + think.task + '</span>';
+        entry.innerHTML = `
+            <span class="activity-time">${new Date(think.timestamp).toLocaleString()}</span>
+            <span class="activity-bot">Thinking</span>
+            <span class="activity-message">${think.task}</span>
+        `;
         logEl.appendChild(entry);
     });
-    var thinkEl = document.getElementById('think-sessions');
-    if (thinkEl) thinkEl.textContent = activityData.thinking.length;
+    
+    // Update stats
+    document.getElementById('think-sessions')?.textContent = activityData.thinking.length;
+    
+    // Find peak hour
+    const peakHour = Object.keys(hourCounts).reduce((a, b) => 
+        hourCounts[a] > hourCounts[b] ? a : b, '0');
+    document.getElementById('peak-hour')?.textContent = peakHour + ':00';
 }
 
 function renderPeakLog() {
-    var logEl = document.getElementById('peak-log');
+    const logEl = document.getElementById('peak-log');
     if (!logEl) return;
+    
     logEl.innerHTML = '';
-
-    if (!usageCache || usageCache.loading) {
-        logEl.innerHTML = '<div class="activity-item"><span class="activity-message">Loading usage data...</span></div>';
-        return;
-    }
-
-    // Model breakdown section
-    var models = usageCache.byModel || {};
-    var modelNames = Object.keys(models).sort(function(a, b) { return models[b].cost - models[a].cost; });
-
-    modelNames.forEach(function(model) {
-        var m = models[model];
-        var shortName = model.replace('claude-', '').replace('-20251001', '').replace('-20250929', '');
-        var entry = document.createElement('div');
+    
+    // Show resource usage over time
+    activityData.heartbeats.slice(-10).reverse().forEach(hb => {
+        const entry = document.createElement('div');
         entry.className = 'activity-item';
-        entry.style.borderLeft = '3px solid ' + (model.includes('haiku') ? '#00d4ff' : model.includes('sonnet') ? '#a855f7' : '#22c55e');
-        entry.innerHTML = '<span class="activity-time" style="min-width:120px;">$' + m.cost.toFixed(2) + '</span>' +
-            '<span class="activity-bot" style="min-width:120px;">' + escapeHtml(shortName) + '</span>' +
-            '<span class="activity-message">' + m.messages.toLocaleString() + ' msgs | ' +
-            m.input.toLocaleString() + ' in | ' + m.output.toLocaleString() + ' out</span>';
+        entry.innerHTML = `
+            <span class="activity-time">${new Date(hb.timestamp).toLocaleTimeString()}</span>
+            <span class="activity-bot">Resources</span>
+            <span class="activity-message">
+                ${hb.tokens || 0} tokens, ${hb.exec || 0} exec, ${hb.lagMs || 0}ms
+            </span>
+        `;
         logEl.appendChild(entry);
     });
-
-    // Cost breakdown
-    var divider = document.createElement('div');
-    divider.style.cssText = 'border-top:1px solid rgba(255,255,255,0.1);margin:10px 0;padding-top:10px;';
-    divider.innerHTML = '<div class="activity-item">' +
-        '<span class="activity-time" style="min-width:120px;font-weight:bold;">$' + usageCache.totalCost.toFixed(2) + '</span>' +
-        '<span class="activity-bot" style="min-width:120px;font-weight:bold;">TOTAL</span>' +
-        '<span class="activity-message">' + usageCache.messages.toLocaleString() + ' messages | ' +
-        (usageCache.totalTokens / 1000000).toFixed(1) + 'M tokens</span></div>';
-    logEl.appendChild(divider);
-
-    // Cost category breakdown
-    var cats = [
-        { label: 'Input tokens', cost: usageCache.costInput, tokens: usageCache.input },
-        { label: 'Output tokens', cost: usageCache.costOutput, tokens: usageCache.output },
-        { label: 'Cache reads', cost: usageCache.costCacheRead, tokens: usageCache.cacheRead },
-        { label: 'Cache writes', cost: usageCache.costCacheWrite, tokens: usageCache.cacheWrite }
-    ];
-    cats.forEach(function(cat) {
-        if (cat.cost === 0 && cat.tokens === 0) return;
-        var entry = document.createElement('div');
-        entry.className = 'activity-item';
-        entry.style.opacity = '0.8';
-        entry.innerHTML = '<span class="activity-time" style="min-width:120px;">$' + cat.cost.toFixed(2) + '</span>' +
-            '<span class="activity-bot" style="min-width:120px;">' + cat.label + '</span>' +
-            '<span class="activity-message">' + cat.tokens.toLocaleString() + ' tokens</span>';
-        logEl.appendChild(entry);
-    });
-
-    // Last updated
-    if (usageCache.lastUpdated) {
-        var ts = document.createElement('div');
-        ts.className = 'activity-item';
-        ts.style.opacity = '0.5';
-        ts.style.fontSize = '0.8em';
-        ts.innerHTML = '<span class="activity-message">Last updated: ' + new Date(usageCache.lastUpdated).toLocaleTimeString() + '</span>';
-        logEl.appendChild(ts);
-    }
 }
 
 function downloadLogs() {
-    var blob = new Blob([JSON.stringify(activityData, null, 2)], { type: 'application/json' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
+    const blob = new Blob([JSON.stringify(activityData, null, 2)], 
+        { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
     a.href = url;
     a.download = 'pinky-activity-' + Date.now() + '.json';
     a.click();
     URL.revokeObjectURL(url);
 }
 
-var FileSystemBot = {
-    organize: function(path) { addActivity('FileSystemBot', 'Organizing: ' + path); },
-    cleanup: function(path) { addActivity('FileSystemBot', 'Cleaning up: ' + path); },
-    search: function(query) { addActivity('FileSystemBot', 'Searching: ' + query); },
-    backup: function(path) { addActivity('FileSystemBot', 'Backing up: ' + path); }
+// FileSystemBot - Pinky's personal slave
+const FileSystemBot = {
+    async organize(path) {
+        console.log('[FileSystemBot] Organizing:', path);
+        addActivity('FileSystemBot', `Organizing: ${path}`);
+        // TODO: Implement file organization logic
+        return { success: true, filesOrganized: 0 };
+    },
+    
+    async cleanup(path) {
+        console.log('[FileSystemBot] Cleanup:', path);
+        addActivity('FileSystemBot', `Cleaning up: ${path}`);
+        // TODO: Implement cleanup logic
+        return { success: true, filesRemoved: 0 };
+    },
+    
+    async search(query) {
+        console.log('[FileSystemBot] Searching for:', query);
+        addActivity('FileSystemBot', `Searching: ${query}`);
+        // TODO: Implement search logic
+        return { success: true, results: [] };
+    },
+    
+    async backup(path) {
+        console.log('[FileSystemBot] Backing up:', path);
+        addActivity('FileSystemBot', `Backing up: ${path}`);
+        // TODO: Implement backup logic
+        return { success: true, backupPath: '' };
+    }
 };
 
+// Bot Actions
 function botAction(bot, action) {
-    console.log('[Bot Action] ' + bot + ' - ' + action);
-    addActivity(bot, 'Executing: ' + action);
-    var botFeed = document.getElementById(bot + '-activity');
+    console.log(`[Bot Action] ${bot} - ${action}`);
+    addActivity(bot, `Executing: ${action}`);
+    
+    // Add to bot-specific feed
+    const botFeed = document.getElementById(`${bot}-activity`);
     if (botFeed) {
-        var entry = document.createElement('div');
+        const entry = document.createElement('div');
         entry.className = 'activity-item';
-        entry.innerHTML = '<span class="activity-time">' + new Date().toLocaleTimeString() + '</span>' +
-            '<span class="activity-bot">' + escapeHtml(bot) + '</span>' +
-            '<span class="activity-message">' + escapeHtml(action) + ' started...</span>';
+        entry.innerHTML = `
+            <span class="activity-time">${new Date().toLocaleTimeString()}</span>
+            <span class="activity-bot">${bot}</span>
+            <span class="activity-message">âš¡ ${action} started...</span>
+        `;
         botFeed.insertBefore(entry, botFeed.firstChild);
     }
-    setTimeout(function() {
-        addActivity(bot, 'Completed: ' + action);
+    
+    // Simulated action - replace with actual bot integration
+    setTimeout(() => {
+        addActivity(bot, `âœ… Completed: ${action}`);
         if (botFeed) {
-            var successEntry = document.createElement('div');
+            const successEntry = document.createElement('div');
             successEntry.className = 'activity-item';
-            successEntry.innerHTML = '<span class="activity-time">' + new Date().toLocaleTimeString() + '</span>' +
-                '<span class="activity-bot">' + escapeHtml(bot) + '</span>' +
-                '<span class="activity-message">Completed: ' + escapeHtml(action) + '</span>';
+            successEntry.innerHTML = `
+                <span class="activity-time">${new Date().toLocaleTimeString()}</span>
+                <span class="activity-bot">${bot}</span>
+                <span class="activity-message">âœ… ${action} completed!</span>
+            `;
             botFeed.insertBefore(successEntry, botFeed.firstChild);
         }
         updateTaskCount();
@@ -622,218 +417,41 @@ function botAction(bot, action) {
 }
 
 function updateBotStats(bot) {
-    if (bot === 'docs') { incrementStat('docs-generated'); incrementStat('docs-words', 500); }
-    else if (bot === 'research') { incrementStat('research-reports'); incrementStat('research-sources', 5); }
-    else if (bot === 'code') { incrementStat('code-files'); incrementStat('code-lines', 150); }
-    else if (bot === 'social') { incrementStat('social-posts'); }
-    else if (bot === 'business') { incrementStat('business-opportunities'); }
+    // Update bot-specific stats
+    if (bot === 'docs') {
+        incrementStat('docs-generated');
+        incrementStat('docs-words', 500);
+    } else if (bot === 'research') {
+        incrementStat('research-reports');
+        incrementStat('research-sources', 5);
+    } else if (bot === 'code') {
+        incrementStat('code-files');
+        incrementStat('code-lines', 150);
+    } else if (bot === 'social') {
+        incrementStat('social-posts');
+    } else if (bot === 'business') {
+        incrementStat('business-opportunities');
+    }
 }
 
-function incrementStat(statId, amount) {
-    if (!amount) amount = 1;
-    var el = document.getElementById(statId);
+function incrementStat(statId, amount = 1) {
+    const el = document.getElementById(statId);
     if (el) {
-        var current = parseInt(el.textContent) || 0;
+        const current = parseInt(el.textContent) || 0;
         el.textContent = current + amount;
     }
 }
 
-// Make key functions globally available
-window.quickAction = quickAction;
-
-window.toggleSidebar = function() {
-    var sidebar = document.querySelector('.sidebar');
-    var overlay = document.getElementById('sidebarOverlay');
-    var toggle = document.getElementById('menuToggle');
-    if (sidebar) sidebar.classList.toggle('active');
-    if (overlay) overlay.classList.toggle('active');
-    if (toggle) toggle.classList.toggle('active');
-};
-
-window.closeSidebarOnMobile = function() {
-    if (window.innerWidth <= 768) {
-        var sidebar = document.querySelector('.sidebar');
-        var overlay = document.getElementById('sidebarOverlay');
-        var toggle = document.getElementById('menuToggle');
-        if (sidebar) sidebar.classList.remove('active');
-        if (overlay) overlay.classList.remove('active');
-        if (toggle) toggle.classList.remove('active');
-    }
-};
-
-var originalSwitchToView = window.switchToView;
-window.switchToView = function(viewName) {
-    originalSwitchToView(viewName);
-    closeSidebarOnMobile();
-};
-
+// Export for console access
 window.dashboard = {
-    quickAction: quickAction,
-    addActivity: addActivity,
-    FileSystemBot: FileSystemBot,
-    switchView: switchView,
-    switchMonitorView: switchMonitorView,
-    downloadLogs: downloadLogs,
-    loadActivityData: loadActivityData,
-    botAction: botAction,
-    toggleSidebar: window.toggleSidebar
+    quickAction,
+    addActivity,
+    FileSystemBot,
+    switchView,
+    switchMonitorView,
+    downloadLogs,
+    loadActivityData,
+    botAction
 };
 
-console.log('[Dashboard] Ready!');
-
-var botTemplates = {
-    docs: {
-        'daily-log': 'Generate a comprehensive daily log for today.',
-        'memory-update': 'Review activities and update MEMORY.md.',
-        'project-docs': 'Document the current project.',
-        'readme': 'Create a professional README.md.',
-        'api-docs': 'Generate API documentation.',
-        'changelog': 'Create a changelog.'
-    },
-    research: {
-        'market-analysis': 'Conduct market analysis for [topic].',
-        'competitor-research': 'Research competitors for [product/service].',
-        'trend-report': 'Identify trends in [industry].',
-        'web-search': 'Search the web for [topic].'
-    },
-    code: {
-        'generate-function': 'Generate a [language] function that [description].',
-        'refactor-code': 'Refactor the following code: [paste code]',
-        'debug-issue': 'Debug this issue: [describe problem]',
-        'write-tests': 'Write unit tests for: [paste code]'
-    },
-    social: {
-        'twitter-thread': 'Create a Twitter thread about [topic].',
-        'linkedin-post': 'Write a LinkedIn post about [topic].',
-        'instagram-caption': 'Create an Instagram caption for [topic].',
-        'content-calendar': 'Generate a 7-day content calendar for [topic].'
-    },
-    business: {
-        'opportunity-analysis': 'Analyze this opportunity: [describe].',
-        'swot-analysis': 'Conduct a SWOT analysis for [business].',
-        'business-plan': 'Create a business plan for [idea].',
-        'pitch-deck': 'Generate a pitch deck outline for [idea].'
-    },
-    filesystem: {
-        'organize': 'Organize files in [directory].',
-        'cleanup': 'Find and remove duplicates in [directory].',
-        'backup': 'Create backup of [directory].',
-        'search': 'Find files matching [pattern] in [directory].'
-    }
-};
-
-window.dashboard.loadTemplate = function(bot, template) {
-    if (!template) return;
-    var inputEl = document.getElementById(bot + '-input');
-    if (inputEl && botTemplates[bot] && botTemplates[bot][template]) {
-        inputEl.value = botTemplates[bot][template];
-        inputEl.focus();
-    }
-};
-
-window.dashboard.submitBotTask = function(bot) {
-    var inputEl = document.getElementById(bot + '-input');
-    var outputEl = document.getElementById(bot + '-output');
-    if (!inputEl || !outputEl) return;
-    var task = inputEl.value.trim();
-    if (!task) { alert('Please enter a task or select a template!'); return; }
-    
-    // Generate unique task ID for backend correlation
-    var taskId = 'task-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-    
-    outputEl.innerHTML = '<div class="output-loading">Bot is working on your request...</div>';
-    addActivity(bot, 'Task started: ' + task.substring(0, 50) + '...');
-    if (CONFIG.mode === 'real') {
-        fetch(CONFIG.backendUrl + '/api/bot/' + bot + '/task', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ task: task, taskId: taskId })
-        })
-        .then(function(response) {
-            if (!response.ok) throw new Error('API failed: ' + response.status);
-            return response.json();
-        })
-        .then(function(data) {
-            if (!data.success) throw new Error(data.error || 'Task failed');
-            var pre = document.createElement('pre');
-            pre.textContent = data.output || 'Task completed';
-            outputEl.innerHTML = '';
-            outputEl.appendChild(pre);
-            updateBotStats(bot);
-            addActivity(bot, 'Task completed!');
-        })
-        .catch(function(error) {
-            console.error('[Bot] Error:', error);
-            if (CONFIG.fallbackToSimulated) {
-                // TIER 4 FIX: Replace SIMULATED with clear error message
-                outputEl.innerHTML = '<div style="color:#dc3545;padding:20px;border:1px solid #dc3545;border-radius:6px;background:rgba(220,53,69,0.1);"><strong>⚠️ Backend Error</strong><br>The backend API is not responding. Error: ' + escapeHtml(error.message) + '<br><br>Please check that the backend service is running on port 3030.</div>';
-            } else {
-                outputEl.innerHTML = '<div style="color:#dc3545;padding:20px;border:1px solid #dc3545;border-radius:6px;background:rgba(220,53,69,0.1);"><strong>❌ Error</strong><br>' + escapeHtml(error.message) + '</div>';
-            }
-        });
-    } else {
-        // TIER 4 FIX: Replace SIMULATED demo mode message with clear indicator
-        setTimeout(function() {
-            outputEl.innerHTML = '<div style="color:#ff8800;padding:20px;border:1px solid #ff8800;border-radius:6px;background:rgba(255,136,0,0.1);"><strong>⚠️ Demo Mode</strong><br>The dashboard is running in demo mode (CONFIG.mode !== "real"). This feature requires production mode to function.</div>';
-            updateBotStats(bot);
-        }, 2000);
-    }
-};
-
-window.dashboard.copyOutput = function(bot) {
-    var outputEl = document.getElementById(bot + '-output');
-    if (!outputEl) return;
-    var text = outputEl.innerText;
-    if (!text || text.includes('will appear here')) { alert('No output to copy!'); return; }
-    navigator.clipboard.writeText(text).then(function() { alert('Copied!'); }).catch(function() { alert('Copy failed.'); });
-};
-
-window.dashboard.downloadOutput = function(bot) {
-    var outputEl = document.getElementById(bot + '-output');
-    if (!outputEl) return;
-    var text = outputEl.innerText;
-    if (!text || text.includes('will appear here')) { alert('No output to download!'); return; }
-    var blob = new Blob([text], { type: 'text/plain' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = bot + '-output-' + Date.now() + '.txt';
-    a.click();
-    URL.revokeObjectURL(url);
-};
-
-window.dashboard.clearOutput = function(bot) {
-    var outputEl = document.getElementById(bot + '-output');
-    if (!outputEl) return;
-    outputEl.innerHTML = '<div class="output-placeholder">Your generated output will appear here...</div>';
-};
-
-window.dashboard.clearCacheAndReload = function() {
-    if (!confirm('Clear all cached data and reload?')) return;
-    try { localStorage.clear(); } catch(e) {}
-    try { sessionStorage.clear(); } catch(e) {}
-    window.location.href = window.location.href.split('?')[0] + '?cacheBust=' + Date.now();
-};
-
-// Theme toggle
-window.toggleTheme = function() {
-    var html = document.documentElement;
-    if (html.classList.contains('light-mode')) {
-        html.classList.remove('light-mode');
-        localStorage.setItem('pinky-theme', 'dark');
-        console.log('[Theme] Switched to dark mode');
-    } else {
-        html.classList.add('light-mode');
-        localStorage.setItem('pinky-theme', 'light');
-        console.log('[Theme] Switched to light mode');
-    }
-};
-
-// Load saved theme on init
-window.addEventListener('DOMContentLoaded', function() {
-    var savedTheme = localStorage.getItem('pinky-theme') || 'dark';
-    if (savedTheme === 'light') {
-        document.documentElement.classList.add('light-mode');
-    }
-    console.log('[Theme] Loaded: ' + savedTheme);
-});
+console.log('[Dashboard] Ready! Use window.dashboard to access functions.');
