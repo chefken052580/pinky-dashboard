@@ -515,14 +515,66 @@ function renderPeakLog() {
     var logEl = document.getElementById('peak-log');
     if (!logEl) return;
     logEl.innerHTML = '';
-    activityData.heartbeats.slice(-10).reverse().forEach(function(hb) {
+
+    if (!usageCache || usageCache.loading) {
+        logEl.innerHTML = '<div class="activity-item"><span class="activity-message">Loading usage data...</span></div>';
+        return;
+    }
+
+    // Model breakdown section
+    var models = usageCache.byModel || {};
+    var modelNames = Object.keys(models).sort(function(a, b) { return models[b].cost - models[a].cost; });
+
+    modelNames.forEach(function(model) {
+        var m = models[model];
+        var shortName = model.replace('claude-', '').replace('-20251001', '').replace('-20250929', '');
         var entry = document.createElement('div');
         entry.className = 'activity-item';
-        entry.innerHTML = '<span class="activity-time">' + new Date(hb.timestamp).toLocaleTimeString() + '</span>' +
-            '<span class="activity-bot">Resources</span>' +
-            '<span class="activity-message">' + (hb.tokens || 0) + ' tokens, ' + (hb.exec || 0) + ' exec, ' + (hb.lagMs || 0) + 'ms</span>';
+        entry.style.borderLeft = '3px solid ' + (model.includes('haiku') ? '#00d4ff' : model.includes('sonnet') ? '#a855f7' : '#22c55e');
+        entry.innerHTML = '<span class="activity-time" style="min-width:120px;">$' + m.cost.toFixed(2) + '</span>' +
+            '<span class="activity-bot" style="min-width:120px;">' + escapeHtml(shortName) + '</span>' +
+            '<span class="activity-message">' + m.messages.toLocaleString() + ' msgs | ' +
+            m.input.toLocaleString() + ' in | ' + m.output.toLocaleString() + ' out</span>';
         logEl.appendChild(entry);
     });
+
+    // Cost breakdown
+    var divider = document.createElement('div');
+    divider.style.cssText = 'border-top:1px solid rgba(255,255,255,0.1);margin:10px 0;padding-top:10px;';
+    divider.innerHTML = '<div class="activity-item">' +
+        '<span class="activity-time" style="min-width:120px;font-weight:bold;">$' + usageCache.totalCost.toFixed(2) + '</span>' +
+        '<span class="activity-bot" style="min-width:120px;font-weight:bold;">TOTAL</span>' +
+        '<span class="activity-message">' + usageCache.messages.toLocaleString() + ' messages | ' +
+        (usageCache.totalTokens / 1000000).toFixed(1) + 'M tokens</span></div>';
+    logEl.appendChild(divider);
+
+    // Cost category breakdown
+    var cats = [
+        { label: 'Input tokens', cost: usageCache.costInput, tokens: usageCache.input },
+        { label: 'Output tokens', cost: usageCache.costOutput, tokens: usageCache.output },
+        { label: 'Cache reads', cost: usageCache.costCacheRead, tokens: usageCache.cacheRead },
+        { label: 'Cache writes', cost: usageCache.costCacheWrite, tokens: usageCache.cacheWrite }
+    ];
+    cats.forEach(function(cat) {
+        if (cat.cost === 0 && cat.tokens === 0) return;
+        var entry = document.createElement('div');
+        entry.className = 'activity-item';
+        entry.style.opacity = '0.8';
+        entry.innerHTML = '<span class="activity-time" style="min-width:120px;">$' + cat.cost.toFixed(2) + '</span>' +
+            '<span class="activity-bot" style="min-width:120px;">' + cat.label + '</span>' +
+            '<span class="activity-message">' + cat.tokens.toLocaleString() + ' tokens</span>';
+        logEl.appendChild(entry);
+    });
+
+    // Last updated
+    if (usageCache.lastUpdated) {
+        var ts = document.createElement('div');
+        ts.className = 'activity-item';
+        ts.style.opacity = '0.5';
+        ts.style.fontSize = '0.8em';
+        ts.innerHTML = '<span class="activity-message">Last updated: ' + new Date(usageCache.lastUpdated).toLocaleTimeString() + '</span>';
+        logEl.appendChild(ts);
+    }
 }
 
 function downloadLogs() {
