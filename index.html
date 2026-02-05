@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="styles.css?v=2">
     <link rel="stylesheet" href="system-monitor.css">
     <link rel="stylesheet" href="pinky-chat.css">
+    <link rel="stylesheet" href="task-statistics.css">
 </head>
 <body>
     <!-- Mobile Menu Toggle -->
@@ -170,6 +171,10 @@
                             <div class="stat-label">Success Rate</div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Task Statistics Widget -->
+                <div id="task-statistics-container" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
                 </div>
 
                 <!-- Quick Actions -->
@@ -1109,6 +1114,9 @@
     
     <!-- Health Dashboard - Bot-Backend Status Monitor -->
     <script src="health-dashboard.js"></script>
+    
+    <!-- Task Statistics - Task Completion Metrics -->
+    <script src="task-statistics.js"></script>
     
     <script>
         // Initialize all dashboard components
