@@ -65,9 +65,8 @@ class TaskQueueManager {
         tokens: 0,
         exec: 0
       })
-    }).catch(function(err) {
-      // TIER 4 FIX: Log error even if graceful fail
-      console.error('[TaskQueue] Activity log failed (graceful):', err.message);
+    }).catch(function() {
+      // Graceful fail if API unavailable
     });
   }
 

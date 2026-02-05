@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/x-icon" href="pinky.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
@@ -10,6 +11,7 @@
     <title>Pinky Bot Dashboard - World Domination Control Center</title>
     <link rel="stylesheet" href="styles.css?v=2">
     <link rel="stylesheet" href="system-monitor.css">
+    <link rel="stylesheet" href="pinky-chat.css">
 </head>
 <body>
     <!-- Mobile Menu Toggle -->
@@ -92,6 +94,12 @@
                     <span class="bot-status online"></span>
                     <span style="font-size:0.7em;opacity:0.7;">Project Manager</span>
                 </button>
+            <button class="bot-button" data-bot="chat">
+                    <span class="bot-icon">💬</span>
+                    <span class="bot-name">Chat</span>
+                    <span class="bot-status online"></span>
+                    <span style="font-size:0.7em;opacity:0.7;">Talk to Pinky</span>
+                </button>
             </nav>
 
             <nav class="view-nav">
@@ -129,15 +137,15 @@
                     <div class="stat-card">
                         <div class="stat-icon">💰</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="cost-saved">$0</div>
-                            <div class="stat-label">Cost Saved</div>
+                            <div class="stat-value" id="api-cost">$0.00</div>
+                            <div class="stat-label">API Cost (Total)</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">🚀</div>
+                        <div class="stat-icon">🔤</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="speed-gain">0x</div>
-                            <div class="stat-label">Speed Improvement</div>
+                            <div class="stat-value" id="total-tokens">0</div>
+                            <div class="stat-label">Tokens Used</div>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -180,17 +188,7 @@
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="recent-activity">
-                    <h3>📊 Recent Activity</h3>
-                    <div id="activity-feed" class="activity-feed">
-                        <div class="activity-item">
-                            <span class="activity-time">Just now</span>
-                            <span class="activity-bot">Dashboard</span>
-                            <span class="activity-message">System initialized successfully</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Recent Activity removed — Pinky Activity Monitor is the primary feed -->
 
                 <!-- Pinky Activity Monitor -->
                 <div class="pinky-monitor">
@@ -955,6 +953,48 @@
             </div>
 
             <!-- Settings View -->
+        <!-- 💬 Chat View -->
+        <div id="chat-view" class="view">
+            <div class="chat-container">
+                <div class="chat-sidebar">
+                    <div class="chat-sidebar-header">
+                        <h3>💬 CONVERSATIONS</h3>
+                        <button class="chat-new-btn" id="chat-new-session">+ NEW CHAT</button>
+                        <div class="chat-search-box">
+                            <input type="text" id="chat-search" placeholder="Search chats...">
+                        </div>
+                    </div>
+                    <div class="chat-session-list" id="chat-session-list"></div>
+                </div>
+                <div class="chat-main">
+                    <div class="chat-header">
+                        <div class="chat-header-title">
+                            <span class="status-dot"></span>
+                            <span id="chat-header-title-text">New Conversation</span>
+                        </div>
+                        <div class="chat-header-stats" id="chat-header-stats"></div>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="chat-empty-state">
+                            <div class="pinky-ascii" style="font-family:monospace;font-size:0.7em;color:#1e2a40;white-space:pre;line-height:1.2;">    ╭──────────────────╮
+    │   🐭  PINKY AI   │
+    │    Dashboard     │
+    │     Chat v1      │
+    ╰──────────────────╯</div>
+                            <h3 style="color:#556070;font-size:1.1em;margin:0;">Chat with Pinky</h3>
+                            <p style="color:#3a4560;font-size:0.85em;margin:0;max-width:400px;">Ask about tasks, check status, give commands, or just say hi. Conversations are saved and searchable.</p>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="chat-input-wrapper">
+                            <textarea id="chat-input" placeholder="Message Pinky... (Enter to send, Shift+Enter for new line)" rows="1"></textarea>
+                            <button class="chat-send-btn" id="chat-send-btn">SEND</button>
+                        </div>
+                        <div class="chat-input-hint">Shift+Enter for new line · Conversations saved to memory/chats/</div>
+                    </div>
+                </div>
+            </div>
+        </div>
             <div id="settings-view" class="view">
                 <h2>⚙️ Settings & Configuration</h2>
                 <div id="settings-content" style="padding-top:20px;"></div>
@@ -1131,5 +1171,6 @@
             }, 500);
         });
     </script>
+    <script src="pinky-chat.js"></script>
 </body>
 </html>

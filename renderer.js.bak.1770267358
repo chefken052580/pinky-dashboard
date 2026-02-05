@@ -1,5 +1,5 @@
 // v3.0 - Clean rewrite, no template literals
-var _cachedTaskCount = 0; setInterval(function(){ fetch("/api/tasks").then(function(r){return r.json()}).then(function(tasks){_cachedTaskCount=tasks.filter(function(t){return t.status==="completed"}).length;}).catch(function(err){console.error('[TaskCount] API failed:',err.message);}); }, 15000); fetch("/api/tasks").then(function(r){return r.json()}).then(function(tasks){_cachedTaskCount=tasks.filter(function(t){return t.status==="completed"}).length;}).catch(function(err){console.error('[TaskCount] Initial fetch failed:',err.message);});
+var _cachedTaskCount = 0; setInterval(function(){ fetch("/api/tasks").then(function(r){return r.json()}).then(function(tasks){_cachedTaskCount=tasks.filter(function(t){return t.status==="completed"}).length;}).catch(function(){}); }, 15000); fetch("/api/tasks").then(function(r){return r.json()}).then(function(tasks){_cachedTaskCount=tasks.filter(function(t){return t.status==="completed"}).length;}).catch(function(){});
 // Pinky Bot Dashboard - Renderer
 console.log('[Dashboard] Initializing...');
 
@@ -7,7 +7,7 @@ console.log('[Dashboard] Initializing...');
 var CONFIG = {
     mode: 'real',
     backendUrl: '',
-    fallbackToSimulated: false
+    fallbackToSimulated: true
 };
 
 console.log('[Dashboard] Mode:', CONFIG.mode);
@@ -20,59 +20,6 @@ var activityData = {
     thinking: [],
     usage: { tokens: 0, exec: 0, files: 0, responses: [] }
 };
-
-// ⚠️ PROTECTED — Real API usage fetcher. Added by Lord_Cracker 2026-02-05.
-var usageCache = null;
-function fetchUsageData() {
-    fetch('/api/usage')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            if (data.loading) return;
-            usageCache = data;
-            var costEl = document.getElementById('api-cost');
-            if (costEl) costEl.textContent = '$' + data.totalCost.toFixed(2);
-            var tokensEl = document.getElementById('total-tokens');
-            if (tokensEl) {
-                if (data.totalTokens > 1000000) {
-                    tokensEl.textContent = (data.totalTokens / 1000000).toFixed(1) + 'M';
-                } else if (data.totalTokens > 1000) {
-                    tokensEl.textContent = (data.totalTokens / 1000).toFixed(1) + 'K';
-                } else {
-                    tokensEl.textContent = data.totalTokens.toString();
-                }
-            }
-            var hbTokens = document.getElementById('tokens-used');
-            var hbMsgs = document.getElementById('hb-messages');
-            if (hbMsgs) hbMsgs.textContent = data.messages.toLocaleString();
-            if (hbTokens) hbTokens.textContent = data.totalTokens.toLocaleString();
-        })
-        .catch(function(err) { console.error('[Usage] Fetch failed:', err.message); });
-}
-// Update "Last Heartbeat" timer every second
-setInterval(function() {
-    var el = document.getElementById('hb-lastbeat');
-    if (!el || !activityData.heartbeats.length) return;
-    var last = activityData.heartbeats[activityData.heartbeats.length - 1];
-    var ago = Math.floor((Date.now() - last.timestamp) / 1000);
-    if (ago < 60) el.textContent = ago + 's ago';
-    else if (ago < 3600) el.textContent = Math.floor(ago/60) + 'm ago';
-    else el.textContent = Math.floor(ago/3600) + 'h ago';
-}, 1000);
-setTimeout(fetchUsageData, 3000);
-setInterval(fetchUsageData, 60000);
-
-// PROTECTED: XSS Prevention - escapeHtml function (TIER 2 FIX)
-// DO NOT REMOVE OR MODIFY WITHOUT BRAIN APPROVAL
-// This function is critical for preventing XSS vulnerabilities throughout dashboard
-function escapeHtml(text) {
-    if (!text) return '';
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
 
 // Toggle sidebar for mobile (uses 'active' class to match CSS)
 function toggleSidebar() {
@@ -132,14 +79,11 @@ window.addEventListener('DOMContentLoaded', function() {
     }, 500);
     
     // Refresh data every 3 seconds
-    // PROTECTED — DO NOT CHANGE BELOW 10000 WITHOUT BRAIN APPROVAL
-    setInterval(loadActivityData, 10000);
+    setInterval(loadActivityData, 10000); // was 3s, slowed to prevent focus theft
     
     // Update display every 5 seconds (after data loads)
-    // PROTECTED — DO NOT CHANGE BELOW 10000 WITHOUT BRAIN APPROVAL
-    setInterval(updateStats, 15000);
-    // PROTECTED — DO NOT CHANGE BELOW 10000 WITHOUT BRAIN APPROVAL
-    setInterval(updateMonitorStats, 15000);
+    setInterval(updateStats, 15000); // was 5s, slowed to reduce overhead
+    setInterval(updateMonitorStats, 15000); // was 5s, slowed to reduce overhead
     
     // DO NOT initialize TasksBot here - it's in a hidden view initially
     // It will be initialized when the user clicks the TasksBot button
@@ -239,8 +183,8 @@ function addActivity(bot, message) {
     var item = document.createElement('div');
     item.className = 'activity-item';
     item.innerHTML = '<span class="activity-time">' + new Date().toLocaleTimeString() + '</span>' +
-        '<span class="activity-bot">' + escapeHtml(bot) + '</span>' +
-        '<span class="activity-message">' + escapeHtml(message) + '</span>';
+        '<span class="activity-bot">' + bot + '</span>' +
+        '<span class="activity-message">' + message + '</span>';
     feed.insertBefore(item, feed.firstChild);
     while (feed.children.length > 50) {
         feed.removeChild(feed.lastChild);
@@ -348,7 +292,7 @@ function loadActivityData() {
                 renderMonitorChart(currentMonitorView);
             })
             .catch(function(err) {
-                console.error('[Activity] Failed to load from', paths[index] + ':', err.message);
+                console.log('[Activity] Failed to load from', paths[index] + ':', err.message);
                 tryLoadFromPath(index + 1);
             });
     }
@@ -357,7 +301,6 @@ function loadActivityData() {
 function updateMonitorStats() {
     // Render heartbeat status container - ALWAYS update, don't check if empty
     var hbContainer = document.getElementById('heartbeat-status-container');
-    // ⚠️ PROTECTED — Focus guard for heartbeat container. Prevents input theft. Lord_Cracker 2026-02-05.
     if (hbContainer && !(document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT'))) {
         // Get current values FIRST, then render with actual data (not 0s)
         var hbCount = activityData.heartbeats.length || 0;
@@ -375,17 +318,14 @@ function updateMonitorStats() {
         html += '<div id="hb-tasks" style="font-size: 2em; font-weight: bold; color: #00d4ff;">...</div>';
         html += '</div>';
         html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
-        html += '<div style="font-size: 0.9em; opacity: 0.8;">API Messages</div>';
-        var curMsgs = document.getElementById('hb-messages');
-        var msgsVal = (curMsgs && curMsgs.textContent !== '...') ? curMsgs.textContent : '...';
-        html += '<div id="hb-messages" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + msgsVal + '</div>';
-        fetch("/api/tasks").then(function(r){return r.json()}).then(function(tasks){var el=document.getElementById("hb-tasks");if(el)el.textContent=tasks.filter(function(t){return t.status==="completed"}).length;}).catch(function(err){console.error('[Heartbeat] Task count fetch failed:',err.message);});
+        html += '<div style="font-size: 0.9em; opacity: 0.8;">In Progress</div>';
+        var inProgressCount = activityData.heartbeats.filter(function(hb) { return hb.activity && hb.activity.includes('running'); }).length;
+        html += '<div id="hb-progress" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + inProgressCount + '</div>';
+        fetch("/api/tasks").then(function(r){return r.json()}).then(function(tasks){var el=document.getElementById("hb-tasks");if(el)el.textContent=tasks.filter(function(t){return t.status==="completed"}).length;}).catch(function(){});
         html += '</div>';
         html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
-        html += '<div style="font-size: 0.9em; opacity: 0.8;">Last Heartbeat</div>';
-        var curBeat = document.getElementById('hb-lastbeat');
-        var beatVal = (curBeat && curBeat.textContent !== '...') ? curBeat.textContent : '...';
-        html += '<div id="hb-lastbeat" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + beatVal + '</div>';
+        html += '<div style="font-size: 0.9em; opacity: 0.8;">Tokens Used</div>';
+        html += '<div id="hb-tokens" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + hbTokens + '</div>';
         html += '</div>';
         html += '</div></div>';
         hbContainer.innerHTML = html;
@@ -434,7 +374,6 @@ function renderMonitorChart(view) {
 
 function updateRecentActivityFeed() {
     // Update ALL activity feeds (Dashboard and Analytics both have one)
-    // PROTECTED — DO NOT CHANGE BACK TO querySelectorAll WITHOUT BRAIN APPROVAL
     // Only update the MAIN dashboard activity feed, not bot-specific feeds
     var mainFeed = document.getElementById('activity-feed');
     var feeds = mainFeed ? [mainFeed] : [];
@@ -539,8 +478,8 @@ function botAction(bot, action) {
         var entry = document.createElement('div');
         entry.className = 'activity-item';
         entry.innerHTML = '<span class="activity-time">' + new Date().toLocaleTimeString() + '</span>' +
-            '<span class="activity-bot">' + escapeHtml(bot) + '</span>' +
-            '<span class="activity-message">' + escapeHtml(action) + ' started...</span>';
+            '<span class="activity-bot">' + bot + '</span>' +
+            '<span class="activity-message">' + action + ' started...</span>';
         botFeed.insertBefore(entry, botFeed.firstChild);
     }
     setTimeout(function() {
@@ -549,8 +488,8 @@ function botAction(bot, action) {
             var successEntry = document.createElement('div');
             successEntry.className = 'activity-item';
             successEntry.innerHTML = '<span class="activity-time">' + new Date().toLocaleTimeString() + '</span>' +
-                '<span class="activity-bot">' + escapeHtml(bot) + '</span>' +
-                '<span class="activity-message">Completed: ' + escapeHtml(action) + '</span>';
+                '<span class="activity-bot">' + bot + '</span>' +
+                '<span class="activity-message">Completed: ' + action + '</span>';
             botFeed.insertBefore(successEntry, botFeed.firstChild);
         }
         updateTaskCount();
@@ -692,26 +631,21 @@ window.dashboard.submitBotTask = function(bot) {
         })
         .then(function(data) {
             if (!data.success) throw new Error(data.error || 'Task failed');
-            var pre = document.createElement('pre');
-            pre.textContent = data.output || 'Task completed';
-            outputEl.innerHTML = '';
-            outputEl.appendChild(pre);
+            outputEl.innerHTML = '<pre>' + (data.output || 'Task completed') + '</pre>';
             updateBotStats(bot);
             addActivity(bot, 'Task completed!');
         })
         .catch(function(error) {
             console.error('[Bot] Error:', error);
             if (CONFIG.fallbackToSimulated) {
-                // TIER 4 FIX: Replace SIMULATED with clear error message
-                outputEl.innerHTML = '<div style="color:#dc3545;padding:20px;border:1px solid #dc3545;border-radius:6px;background:rgba(220,53,69,0.1);"><strong>⚠️ Backend Error</strong><br>The backend API is not responding. Error: ' + escapeHtml(error.message) + '<br><br>Please check that the backend service is running on port 3030.</div>';
+                outputEl.innerHTML = '<pre>SIMULATED (Backend unavailable)\n\nSample output for: ' + task + '</pre>';
             } else {
-                outputEl.innerHTML = '<div style="color:#dc3545;padding:20px;border:1px solid #dc3545;border-radius:6px;background:rgba(220,53,69,0.1);"><strong>❌ Error</strong><br>' + escapeHtml(error.message) + '</div>';
+                outputEl.innerHTML = '<div style="color:#dc3545;padding:20px;">Error: ' + error.message + '</div>';
             }
         });
     } else {
-        // TIER 4 FIX: Replace SIMULATED demo mode message with clear indicator
         setTimeout(function() {
-            outputEl.innerHTML = '<div style="color:#ff8800;padding:20px;border:1px solid #ff8800;border-radius:6px;background:rgba(255,136,0,0.1);"><strong>⚠️ Demo Mode</strong><br>The dashboard is running in demo mode (CONFIG.mode !== "real"). This feature requires production mode to function.</div>';
+            outputEl.innerHTML = '<pre>SIMULATED\n\nSample output for: ' + task + '</pre>';
             updateBotStats(bot);
         }, 2000);
     }

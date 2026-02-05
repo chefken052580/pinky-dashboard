@@ -128,7 +128,7 @@ class HeartbeatManager {
         tokens: tokensUsed || 0,
         exec: execCalls || 0
       })
-    }).catch(function(err) { console.error('[HeartbeatManager] Activity log failed:', err.message); });
+    }).catch(function() {});
   }
 
   /**

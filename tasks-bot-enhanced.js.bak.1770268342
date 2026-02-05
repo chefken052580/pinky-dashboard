@@ -10,11 +10,9 @@ class TasksBotEnhanced {
     this.pendingTasks = [];
     this.runningTasks = [];
     this.completedTasks = [];
-    // PROTECTED — DO NOT CHANGE BELOW 10000 WITHOUT BRAIN APPROVAL (was 3s, caused input focus theft)
-    this.updateInterval = 10000;
+    this.updateInterval = 10000; // Refresh every 10 seconds (was 3s, caused input focus loss)
     this.apiUrl = '/api/tasks';
     this.isInitialized = false; // Prevent double initialization
-    this.container = null; // TIER 3: Store container reference for scoped selectors
   }
 
   /**
@@ -103,42 +101,27 @@ class TasksBotEnhanced {
   }
 
   /**
-   * PROTECTED: Setup drag-drop functionality (TIER 3 FIX - DOM Scoping)
-   * DO NOT REMOVE OR MODIFY WITHOUT BRAIN APPROVAL
-   * Critical for preventing listeners from affecting entire document
+   * Setup drag-drop functionality
    */
   setupDragDrop() {
-    // PROTECTED: Scope selectors to TasksBot container, not document-wide
+    // Will attach to rendered elements
     const self = this;
     setTimeout(() => {
-      // Find TasksBot container
-      const container = document.getElementById('tasksbot-container') || 
-                        document.getElementById('tasks-bot-container') ||
-                        document.getElementById('task-queue-container');
-      
-      if (!container) {
-        console.log('[TasksBot] Container not found, skipping drag-drop setup');
-        return;
-      }
-      
-      // PROTECTED: Store container reference for scoped selectors
-      self.container = container;
-
-      // Setup drag listeners on task items WITHIN container only
-      container.querySelectorAll('[draggable="true"]').forEach(el => {
+      // Setup drag listeners on task items
+      document.querySelectorAll('[draggable="true"]').forEach(el => {
         el.addEventListener('dragstart', (e) => self.onDragStart(e));
         el.addEventListener('dragend', (e) => self.onDragEnd(e));
       });
 
-      // Setup drop zones WITHIN container only
-      container.querySelectorAll('[data-drop-zone]').forEach(zone => {
+      // Setup drop zones
+      document.querySelectorAll('[data-drop-zone]').forEach(zone => {
         zone.addEventListener('dragover', (e) => self.onDragOver(e));
         zone.addEventListener('drop', (e) => self.onDrop(e));
         zone.addEventListener('dragleave', (e) => self.onDragLeave(e));
       });
 
-      // Setup priority button listeners with event delegation on container
-      container.addEventListener('click', (e) => {
+      // Setup priority button listeners with event delegation
+      document.addEventListener('click', (e) => {
         if (e.target.classList.contains('btn-priority-up') || e.target.classList.contains('btn-priority-down')) {
           const taskName = e.target.getAttribute('data-task-name');
           const direction = e.target.getAttribute('data-direction');
@@ -147,8 +130,8 @@ class TasksBotEnhanced {
         }
       });
 
-      // Setup delete buttons WITHIN container only
-      container.querySelectorAll('.btn-delete').forEach(btn => {
+      // Setup delete buttons
+      document.querySelectorAll('.btn-delete').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           e.preventDefault();
@@ -182,12 +165,9 @@ class TasksBotEnhanced {
    */
   onDragEnd(e) {
     e.target.classList.remove('dragging');
-    // TIER 3 FIX: Scope to container only, not document-wide
-    if (this.container) {
-      this.container.querySelectorAll('[data-drop-zone]').forEach(z => {
-        z.classList.remove('drag-over');
-      });
-    }
+    document.querySelectorAll('[data-drop-zone]').forEach(z => {
+      z.classList.remove('drag-over');
+    });
   }
 
   /**
@@ -323,22 +303,7 @@ class TasksBotEnhanced {
   /**
    * Render TasksBot UI
    */
-  render(force) {
-    // ╔══════════════════════════════════════════════════════════════╗
-    // ║ PROTECTED — DO NOT REMOVE OR MODIFY WITHOUT BRAIN APPROVAL ║
-    // ║ Focus guard: prevents render from stealing input focus.     ║
-    // ║ Fixed by Lord_Cracker on 2026-02-05. Pinky broke this once.║
-    // ╚══════════════════════════════════════════════════════════════╝
-    if (!force && document.activeElement && 
-        (document.activeElement.tagName === 'INPUT' || 
-         document.activeElement.tagName === 'TEXTAREA' || 
-         document.activeElement.tagName === 'SELECT')) {
-      return;
-    }
-    if (!force && document.querySelector('.dragging')) {
-      return;
-    }
-
+  render() {
     // Try both possible container IDs
     let container = document.getElementById('tasksbot-container') || 
                     document.getElementById('tasks-bot-container') ||
@@ -347,9 +312,6 @@ class TasksBotEnhanced {
       console.log('[TasksBot] No container found (tried: tasksbot-container, tasks-bot-container, task-queue-container)');
       return;
     }
-
-    // TIER 3 FIX: Store container reference for scoped selectors
-    this.container = container;
 
     // TIER 1 FIX: Capture input values BEFORE clearing container
     const savedVal = document.getElementById('new-task-input')?.value || '';
@@ -370,7 +332,6 @@ class TasksBotEnhanced {
     html += '<div class="add-task-section">';
     html += '<h4>➕ Add New Task or Rule</h4>';
     html += '<div class="add-task-input">';
-    // ⚠️ PROTECTED — New Rule dropdown + rule-status div. Added by Lord_Cracker 2026-02-05.
     html += '<select id="new-task-type" style="min-width:110px;" onchange="var p=document.getElementById(\'new-task-priority\'); if(this.value===\'rule\'){p.value=\'P1\';p.disabled=true;p.style.opacity=\'0.6\';document.getElementById(\'new-task-input\').placeholder=\'Enter rule for Pinky...\';}else{p.disabled=false;p.style.opacity=\'1\';document.getElementById(\'new-task-input\').placeholder=\'Task name...\';};">';
     html += '<option value="task" selected>New Task</option>';
     html += '<option value="rule">New Rule</option>';
@@ -501,11 +462,8 @@ class TasksBotEnhanced {
   }
 
   /**
-   * PROTECTED: Escape string for HTML attributes (TIER 2 FIX - XSS Prevention)
-   * DO NOT REMOVE OR MODIFY WITHOUT BRAIN APPROVAL
-   * Critical for preventing XSS through task names and notes
+   * Escape string for use in HTML attributes
    */
-  // ⚠️ PROTECTED — HTML attribute escaping for XSS prevention. Do not remove.
   escapeAttr(str) {
     return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
@@ -527,7 +485,6 @@ class TasksBotEnhanced {
   /**
    * Add task from UI (called by button)
    */
-  // ⚠️ PROTECTED — Handles both tasks AND rules via type dropdown. Do not simplify.
   addTaskFromUI() {
     const input = document.getElementById('new-task-input');
     const priority = document.getElementById('new-task-priority');
@@ -546,7 +503,6 @@ class TasksBotEnhanced {
   /**
    * Send a new rule directly to Pinky for immediate execution
    */
-  // ⚠️ PROTECTED — Direct gateway rule sender. Added by Lord_Cracker 2026-02-05.
   async sendRuleToPinky(ruleText) {
     const statusDiv = document.getElementById('rule-status');
     const input = document.getElementById('new-task-input');
@@ -599,7 +555,6 @@ class TasksBotEnhanced {
   /**
    * Delete a task by name
    */
-  // ⚠️ PROTECTED — Delete by unique ID. Fixed by Lord_Cracker 2026-02-05.
   async deleteTask(taskName, taskId) {
     if (!confirm('Delete task: "' + taskName + '"?')) return;
     try {

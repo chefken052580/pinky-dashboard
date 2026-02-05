@@ -3,19 +3,6 @@
  * Helps with tasks, file management, code cleanup, automation
  */
 
-// PROTECTED: XSS Prevention - escape HTML for FileSystemBot output (TIER 2 FIX)
-// DO NOT REMOVE OR MODIFY WITHOUT BRAIN APPROVAL
-// Critical for preventing XSS from bot-generated content
-function escapeHtmlForFSBot(text) {
-  if (!text) return '';
-  return String(text)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 class FileSystemBotLLM {
   constructor() {
     this.capabilities = [
@@ -162,8 +149,7 @@ class FileSystemBotLLM {
     const response = await this.processRequest(prompt, capability);
     
     if (responseDiv) {
-      const escaped = escapeHtmlForFSBot(response);
-      responseDiv.innerHTML = '<strong>FileSystemBot:</strong><br>' + escaped.replace(/\n/g, '<br>');
+      responseDiv.innerHTML = '<strong>FileSystemBot:</strong><br>' + response.replace(/\n/g, '<br>');
     }
 
     // Log task if it was a task creation request

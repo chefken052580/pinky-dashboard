@@ -34,7 +34,7 @@ class SystemMonitorUI {
    */
   async loadMetrics() {
     try {
-      const response = await fetch('http://localhost:3030/api/system/metrics');
+      const response = await fetch('/api/system/metrics');
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
@@ -161,6 +161,8 @@ class SystemMonitorUI {
     html += '</div>';
 
     html += '</div>'; // Close system-monitor
+    // ⚠️ PROTECTED — Focus guard for system monitor. Prevents input theft. Lord_Cracker 2026-02-05.
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) return;
     container.innerHTML = html;
   }
 
@@ -208,7 +210,7 @@ class SystemMonitorUI {
    */
   async getSummary() {
     try {
-      const response = await fetch('http://localhost:3030/api/system/summary');
+      const response = await fetch('/api/system/summary');
       if (response.ok) {
         const data = await response.json();
         return data.summary;
@@ -224,7 +226,7 @@ class SystemMonitorUI {
    */
   async getHistory(limit) {
     try {
-      const response = await fetch('http://localhost:3030/api/system/history?limit=' + (limit || 60));
+      const response = await fetch('/api/system/history?limit=' + (limit || 60));
       if (response.ok) {
         const data = await response.json();
         return data.history;
