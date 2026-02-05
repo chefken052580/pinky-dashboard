@@ -215,143 +215,435 @@ class SettingsManager {
 // SOCIAL MEDIA BOT UPGRADES
 // ===========================
 
+// ===========================
+// SOCIAL MEDIA BOT PRO - ENHANCED
+// ===========================
 class SocialMediaBotPro {
   constructor(settingsManager) {
     this.settings = settingsManager;
-    this.scheduledPosts = [];
+    this.companies = [];
+    this.allPosts = [];
+    this.currentTab = 'companies';
+    this.selectedCompanies = [];
     this.postTemplates = {
-      twitter: { charLimit: 280, hashtags: 3, mentions: 5 },
-      instagram: { charLimit: 2200, hashtags: 30, images: 1 },
-      tiktok: { charLimit: 2200, hashtags: 15, videos: 1 },
-      linkedin: { charLimit: 3000, hashtags: 5, images: 1 }
+      twitter: { charLimit: 280, hashtags: 3 },
+      instagram: { charLimit: 2200, hashtags: 30 },
+      tiktok: { charLimit: 2200, hashtags: 15 },
+      linkedin: { charLimit: 3000, hashtags: 5 },
+      bluesky: { charLimit: 300, hashtags: 5 },
+      mastodon: { charLimit: 500, hashtags: 5 },
+      discord: { charLimit: 4000 },
+      telegram: { charLimit: 4096 }
     };
+    this.loadCompanies();
+    this.loadPosts();
   }
 
-  generatePostForPlatform(platform, topic, style) {
-    const templates = {
-      twitter: 'Tweet about: ' + topic + ' (' + style + ' tone)',
-      instagram: 'Instagram post: ' + topic + ' with hashtags and engagement hook',
-      tiktok: 'TikTok script: ' + topic + ' (trending, viral)',
-      linkedin: 'LinkedIn article: ' + topic + ' (professional, B2B)'
-    };
-    return templates[platform] || 'Post about: ' + topic;
+  loadCompanies() {
+    fetch('/api/companies')
+      .then(r => r.json())
+      .then(data => {
+        this.companies = data.companies || [];
+        console.log('[SocialBot] Loaded', this.companies.length, 'companies');
+      })
+      .catch(err => console.error('[SocialBot] Company load error:', err));
   }
 
-  schedulePost(platform, content, scheduledTime) {
-    const post = {
-      id: Date.now(),
-      platform: platform,
-      content: content,
-      scheduledTime: scheduledTime,
-      status: 'scheduled',
-      created: new Date().toISOString()
-    };
-    this.scheduledPosts.push(post);
-    return post;
+  loadPosts() {
+    fetch('/api/posts')
+      .then(r => r.json())
+      .then(data => {
+        this.allPosts = data.posts || [];
+        console.log('[SocialBot] Loaded', this.allPosts.length, 'posts');
+      })
+      .catch(err => console.error('[SocialBot] Posts load error:', err));
   }
 
-  publishPost(platform, content) {
-    // Would integrate with actual platform API
-    console.log('[SocialBot] Publishing to', platform, ':', content);
-    return { success: true, postId: 'post_' + Date.now(), url: 'https://' + platform + '.com/post/' + Date.now() };
+  getPlatformIcon(platform) {
+    const icons = {
+      twitter: '𝕏', instagram: '📸', tiktok: '🎵', linkedin: '💼',
+      bluesky: '🌊', mastodon: '🐘', discord: '💬', telegram: '✈️'
+    };
+    return icons[platform] || '📱';
   }
 
-  getAnalytics(platform) {
-    return {
-      totalPosts: Math.floor(Math.random() * 100),
-      engagement: Math.floor(Math.random() * 50) + '%',
-      reach: Math.floor(Math.random() * 10000),
-      followers: Math.floor(Math.random() * 50000)
-    };
+  getCompanyColor(index) {
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
+    return colors[index % colors.length];
   }
 
   renderSocialUI() {
     const container = document.getElementById('social-content');
     if (!container) return;
 
-    let html = '<div class="social-pro-interface">';
+    let html = '<div class="social-pro-interface" style="padding:20px;">';
     
-    // Multi-platform post composer
-    html += '<div class="post-composer">';
-    html += '<h3>✨ AI Post Composer</h3>';
-    html += '<textarea id="social-topic" placeholder="What do you want to post about?" rows="3" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px;"></textarea>';
-    html += '<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">';
-    html += '<select id="social-platform"><option value="">Select Platform(s)</option><option value="twitter">𝕏 Twitter</option><option value="instagram">📸 Instagram</option><option value="tiktok">🎵 TikTok</option><option value="linkedin">💼 LinkedIn</option></select>';
-    html += '<select id="social-style"><option value="professional">Professional</option><option value="casual">Casual</option><option value="funny">Funny</option><option value="viral">Viral/Trending</option></select>';
-    html += '</div>';
-    html += '<div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">';
-    html += '<button class="action-btn" onclick="window.socialBot.generatePost()">Generate Post</button>';
-    html += '<button class="action-btn" onclick="window.socialBot.schedulePost()">Schedule Post</button>';
-    html += '<button class="action-btn" onclick="window.socialBot.publishNow()">Publish Now</button>';
+    // Company Selector at top
+    html += '<div style="margin-bottom:20px; padding:15px; background:#1a1a2e; border-radius:8px; border-left:3px solid #00d4ff;">';
+    html += '<label style="display:block; margin-bottom:10px; font-weight:bold;">📦 Select Companies:</label>';
+    html += '<div style="display:flex; flex-wrap:wrap; gap:10px;">';
+    
+    this.companies.forEach((company, idx) => {
+      const isSelected = this.selectedCompanies.includes(company.id);
+      html += '<button style="' +
+        'padding:8px 15px; ' +
+        'background:' + (isSelected ? this.getCompanyColor(idx) : '#333') + '; ' +
+        'color:white; ' +
+        'border:2px solid ' + (isSelected ? this.getCompanyColor(idx) : '#555') + '; ' +
+        'border-radius:20px; ' +
+        'cursor:pointer; ' +
+        'font-weight:' + (isSelected ? 'bold' : 'normal') + '; ' +
+        'opacity:' + (isSelected ? '1' : '0.7') + '; ' +
+        'transition:all 0.2s;" ' +
+        'onclick="window.socialBot.toggleCompany(\'' + company.id + '\')">' +
+        company.name +
+      '</button>';
+    });
+    
     html += '</div>';
     html += '</div>';
 
-    // Scheduled posts queue
-    html += '<div class="scheduled-queue">';
-    html += '<h3>📅 Scheduled Posts (' + this.scheduledPosts.length + ')</h3>';
-    html += '<div id="scheduled-list" style="max-height:400px; overflow-y:auto;">';
+    // Tabs
+    html += '<div style="display:flex; gap:10px; margin-bottom:20px; border-bottom:2px solid #333; flex-wrap:wrap;">';
+    const tabs = [
+      { id: 'companies', label: '🏢 Companies', icon: '📊' },
+      { id: 'create', label: '✍️ Create Post', icon: '✏️' },
+      { id: 'scheduled', label: '📅 Scheduled', icon: '⏰' },
+      { id: 'history', label: '📜 History', icon: '📈' }
+    ];
     
-    if (this.scheduledPosts.length === 0) {
-      html += '<p style="color:#999;">No scheduled posts. Create one above!</p>';
-    } else {
-      this.scheduledPosts.forEach(post => {
-        html += '<div style="background:#1a1a2e; padding:15px; margin-bottom:10px; border-radius:8px; border-left:3px solid #00d4ff;">';
-        html += '<div style="font-weight:bold; margin-bottom:5px;">' + post.platform.toUpperCase() + ' • ' + new Date(post.scheduledTime).toLocaleString() + '</div>';
-        html += '<div style="color:#aaa; margin-bottom:10px; word-break:break-word;">' + post.content.substring(0, 100) + '...</div>';
-        html += '<div style="display:flex; gap:10px;">';
-        html += '<button onclick="window.socialBot.publishScheduled(' + post.id + ')" style="padding:5px 10px; background:#00d464; border:none; border-radius:4px; cursor:pointer;">Publish Now</button>';
-        html += '<button onclick="window.socialBot.cancelScheduled(' + post.id + ')" style="padding:5px 10px; background:#ff6464; border:none; border-radius:4px; cursor:pointer;">Cancel</button>';
-        html += '</div>';
-        html += '</div>';
-      });
+    tabs.forEach(tab => {
+      const isActive = this.currentTab === tab.id;
+      html += '<button style="' +
+        'padding:10px 15px; ' +
+        'background:none; ' +
+        'color:' + (isActive ? '#00d4ff' : '#999') + '; ' +
+        'border:none; ' +
+        'border-bottom:3px solid ' + (isActive ? '#00d4ff' : 'transparent') + '; ' +
+        'cursor:pointer; ' +
+        'font-weight:' + (isActive ? 'bold' : 'normal') + '; ' +
+        'transition:all 0.2s;" ' +
+        'onclick="window.socialBot.switchTab(\'' + tab.id + '\')">' +
+        tab.label +
+      '</button>';
+    });
+    html += '</div>';
+
+    // Tab Content
+    if (this.currentTab === 'companies') {
+      html += this.renderCompaniesTab();
+    } else if (this.currentTab === 'create') {
+      html += this.renderCreatePostTab();
+    } else if (this.currentTab === 'scheduled') {
+      html += this.renderScheduledTab();
+    } else if (this.currentTab === 'history') {
+      html += this.renderHistoryTab();
     }
-    
-    html += '</div></div>';
-
-    // Analytics
-    html += '<div class="social-analytics">';
-    html += '<h3>📊 Platform Analytics</h3>';
-    html += '<div id="analytics-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">';
-    html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; border-top:2px solid #00d4ff;"><div style="font-size:0.9em; color:#999;">Posts This Month</div><div style="font-size:2em; color:#00d4ff; font-weight:bold;" id="analytics-posts">0</div></div>';
-    html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; border-top:2px solid #a8e6cf;"><div style="font-size:0.9em; color:#999;">Total Engagement</div><div style="font-size:2em; color:#a8e6cf; font-weight:bold;" id="analytics-engagement">0%</div></div>';
-    html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; border-top:2px solid #ffd97d;"><div style="font-size:0.9em; color:#999;">Total Reach</div><div style="font-size:2em; color:#ffd97d; font-weight:bold;" id="analytics-reach">0</div></div>';
-    html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; border-top:2px solid #ff9f9f;"><div style="font-size:0.9em; color:#999;">Followers</div><div style="font-size:2em; color:#ff9f9f; font-weight:bold;" id="analytics-followers">0</div></div>';
-    html += '</div></div>';
 
     html += '</div>';
     container.innerHTML = html;
   }
 
-  generatePost() {
-    const topic = document.getElementById('social-topic')?.value || 'exciting update';
-    const platform = document.getElementById('social-platform')?.value || 'twitter';
-    const style = document.getElementById('social-style')?.value || 'professional';
+  renderCompaniesTab() {
+    let html = '<div class="companies-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:15px;">';
     
-    const post = this.generatePostForPlatform(platform, topic, style);
-    alert('Generated ' + platform + ' post:\n\n' + post);
+    if (this.companies.length === 0) {
+      html += '<p style="color:#999; grid-column:1/-1;">No companies configured. Add companies in CompanyManager.</p>';
+    } else {
+      this.companies.forEach((company, idx) => {
+        const platforms = company.platforms ? Object.keys(company.platforms) : [];
+        html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; border-top:3px solid ' + this.getCompanyColor(idx) + ';">';
+        html += '<h4 style="margin-top:0; color:' + this.getCompanyColor(idx) + ';">' + company.name + '</h4>';
+        html += '<div style="font-size:0.9em; color:#999; margin-bottom:10px;">Platforms: ' + platforms.length + '</div>';
+        html += '<div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;">';
+        
+        platforms.forEach(p => {
+          html += '<span style="background:#333; padding:4px 10px; border-radius:12px; font-size:0.85em;">' + this.getPlatformIcon(p) + ' ' + p + '</span>';
+        });
+        
+        html += '</div>';
+        html += '<button style="width:100%; padding:8px; background:#00d4ff; color:#000; border:none; border-radius:4px; cursor:pointer; font-weight:bold;" onclick="window.socialBot.editCompany(\'' + company.id + '\')">';
+        html += 'Edit Accounts';
+        html += '</button>';
+        html += '</div>';
+      });
+    }
+    
+    html += '</div>';
+    return html;
   }
 
-  schedulePost() {
-    const topic = document.getElementById('social-topic')?.value || 'post';
-    alert('Schedule post: ' + topic + '\nWould show date/time picker');
+  renderCreatePostTab() {
+    let html = '<div style="max-width:800px;">';
+    html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; margin-bottom:15px;">';
+    html += '<label style="display:block; margin-bottom:10px; font-weight:bold;">📝 Post Content:</label>';
+    html += '<textarea id="social-content-text" placeholder="Write your post content here..." style="width:100%; height:150px; padding:10px; border-radius:4px; background:#0a0a0a; color:#fff; border:1px solid #333; font-family:monospace;" />';
+    html += '</div>';
+
+    html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; margin-bottom:15px;">';
+    html += '<label style="display:block; margin-bottom:10px; font-weight:bold;">🎯 Platform Filter:</label>';
+    html += '<div style="display:flex; flex-wrap:wrap; gap:8px;">';
+    
+    const allPlatforms = ['twitter', 'instagram', 'tiktok', 'linkedin', 'bluesky', 'mastodon', 'discord', 'telegram'];
+    allPlatforms.forEach(p => {
+      // Only show platforms that selected companies support
+      const isAvailable = this.selectedCompanies.length === 0 || 
+        this.selectedCompanies.some(cId => {
+          const company = this.companies.find(c => c.id === cId);
+          return company && company.platforms && company.platforms[p];
+        });
+      
+      if (!isAvailable) return;
+      
+      html += '<label style="display:flex; align-items:center; gap:8px; padding:8px 12px; background:' + (isAvailable ? '#333' : '#222') + '; border-radius:4px; cursor:pointer;">';
+      html += '<input type="checkbox" value="' + p + '" class="social-platform-check" style="cursor:pointer;" />';
+      html += this.getPlatformIcon(p) + ' ' + p.charAt(0).toUpperCase() + p.slice(1);
+      html += '</label>';
+    });
+    
+    html += '</div>';
+    html += '</div>';
+
+    html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; margin-bottom:15px;">';
+    html += '<label style="display:block; margin-bottom:10px; font-weight:bold;">⏰ Schedule:</label>';
+    html += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">';
+    html += '<div>';
+    html += '<label style="display:block; font-size:0.9em; color:#999; margin-bottom:5px;">Date</label>';
+    html += '<input type="date" id="social-schedule-date" style="width:100%; padding:8px; border-radius:4px; background:#0a0a0a; color:#fff; border:1px solid #333;" />';
+    html += '</div>';
+    html += '<div>';
+    html += '<label style="display:block; font-size:0.9em; color:#999; margin-bottom:5px;">Time (optional)</label>';
+    html += '<input type="time" id="social-schedule-time" style="width:100%; padding:8px; border-radius:4px; background:#0a0a0a; color:#fff; border:1px solid #333;" />';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    html += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">';
+    html += '<button style="padding:12px; background:#00d464; color:#000; border:none; border-radius:4px; cursor:pointer; font-weight:bold; font-size:1em;" onclick="window.socialBot.scheduleNewPost()">📅 Schedule Post</button>';
+    html += '<button style="padding:12px; background:#a8e6cf; color:#000; border:none; border-radius:4px; cursor:pointer; font-weight:bold; font-size:1em;" onclick="window.socialBot.publishImmediately()">🚀 Publish Now</button>';
+    html += '</div>';
+    html += '</div>';
+    
+    return html;
   }
 
-  publishNow() {
-    const topic = document.getElementById('social-topic')?.value || 'update';
-    alert('Publishing: ' + topic);
+  renderScheduledTab() {
+    const scheduled = this.allPosts.filter(p => p.status === 'scheduled');
+    
+    let html = '<div style="display:grid; gap:15px;">';
+    
+    if (scheduled.length === 0) {
+      html += '<p style="color:#999;">No scheduled posts. Create one in the Create Post tab.</p>';
+    } else {
+      scheduled.forEach(post => {
+        html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; border-left:3px solid #ffd97d;">';
+        html += '<div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">';
+        html += '<div>';
+        html += '<div style="font-weight:bold; margin-bottom:5px;">📅 ' + new Date(post.scheduledTime).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }) + '</div>';
+        html += '<div style="display:flex; gap:5px; flex-wrap:wrap;">';
+        
+        post.companies.forEach(companyId => {
+          const company = this.companies.find(c => c.id === companyId);
+          if (company) {
+            html += '<span style="background:#333; padding:3px 8px; border-radius:12px; font-size:0.85em;">' + company.name + '</span>';
+          }
+        });
+        
+        html += '</div>';
+        html += '<div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:8px;">';
+        
+        post.platforms.forEach(platform => {
+          html += '<span style="background:#00d4ff; color:#000; padding:3px 8px; border-radius:12px; font-size:0.85em;">' + this.getPlatformIcon(platform) + '</span>';
+        });
+        
+        html += '</div>';
+        html += '</div>';
+        html += '<button style="padding:6px 12px; background:#ff6464; border:none; border-radius:4px; cursor:pointer; color:white;" onclick="window.socialBot.cancelPost(\'' + post.id + '\')">✕ Cancel</button>';
+        html += '</div>';
+        html += '<div style="color:#aaa; word-break:break-word; max-height:100px; overflow:hidden;">' + post.content.substring(0, 200) + '...</div>';
+        html += '</div>';
+      });
+    }
+    
+    html += '</div>';
+    return html;
   }
 
-  publishScheduled(postId) {
-    const idx = this.scheduledPosts.findIndex(p => p.id === postId);
-    if (idx !== -1) {
-      this.scheduledPosts[idx].status = 'published';
-      this.renderSocialUI();
+  renderHistoryTab() {
+    const history = this.allPosts.filter(p => p.status === 'posted' || p.status === 'failed');
+    
+    let html = '<div style="display:grid; gap:15px;">';
+    
+    if (history.length === 0) {
+      html += '<p style="color:#999;">No post history yet. Posts will appear here after they are published.</p>';
+    } else {
+      history.forEach(post => {
+        const bgColor = post.status === 'posted' ? '#1a3a1a' : '#3a1a1a';
+        const borderColor = post.status === 'posted' ? '#00d464' : '#ff6464';
+        
+        html += '<div style="background:' + bgColor + '; padding:15px; border-radius:8px; border-left:3px solid ' + borderColor + ';">';
+        html += '<div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">';
+        html += '<div>';
+        html += '<div style="font-weight:bold; margin-bottom:5px;">' + (post.status === 'posted' ? '✓ Posted' : '✗ Failed') + ' • ' + new Date(post.updatedAt).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }) + '</div>';
+        html += '<div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px;">';
+        
+        post.companies.forEach(companyId => {
+          const company = this.companies.find(c => c.id === companyId);
+          if (company) {
+            html += '<span style="background:#333; padding:3px 8px; border-radius:12px; font-size:0.85em;">' + company.name + '</span>';
+          }
+        });
+        
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '<div style="color:#aaa; font-size:0.9em; max-height:80px; overflow:hidden;">' + post.content.substring(0, 150) + '...</div>';
+        html += '</div>';
+      });
+    }
+    
+    html += '</div>';
+    return html;
+  }
+
+  switchTab(tabName) {
+    this.currentTab = tabName;
+    this.renderSocialUI();
+  }
+
+  toggleCompany(companyId) {
+    const idx = this.selectedCompanies.indexOf(companyId);
+    if (idx === -1) {
+      this.selectedCompanies.push(companyId);
+    } else {
+      this.selectedCompanies.splice(idx, 1);
+    }
+    this.renderSocialUI();
+  }
+
+  async scheduleNewPost() {
+    const content = document.getElementById('social-content-text')?.value;
+    const dateStr = document.getElementById('social-schedule-date')?.value;
+    const timeStr = document.getElementById('social-schedule-time')?.value;
+    
+    if (!content) {
+      alert('Please enter post content');
+      return;
+    }
+    
+    if (!dateStr) {
+      alert('Please select a date');
+      return;
+    }
+    
+    if (this.selectedCompanies.length === 0) {
+      alert('Please select at least one company');
+      return;
+    }
+
+    const platforms = Array.from(document.querySelectorAll('.social-platform-check:checked')).map(c => c.value);
+    if (platforms.length === 0) {
+      alert('Please select at least one platform');
+      return;
+    }
+
+    const time = timeStr || '09:00';
+    const scheduledTime = new Date(dateStr + 'T' + time).toISOString();
+
+    try {
+      const response = await fetch('/api/posts/schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content,
+          companies: this.selectedCompanies,
+          platforms,
+          scheduledTime
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        alert('Post scheduled successfully!');
+        this.loadPosts();
+        this.renderSocialUI();
+      } else {
+        alert('Error: ' + result.error);
+      }
+    } catch (err) {
+      console.error('[SocialBot] Schedule error:', err);
+      alert('Failed to schedule post: ' + err.message);
     }
   }
 
-  cancelScheduled(postId) {
-    this.scheduledPosts = this.scheduledPosts.filter(p => p.id !== postId);
-    this.renderSocialUI();
+  async publishImmediately() {
+    const content = document.getElementById('social-content-text')?.value;
+    
+    if (!content) {
+      alert('Please enter post content');
+      return;
+    }
+    
+    if (this.selectedCompanies.length === 0) {
+      alert('Please select at least one company');
+      return;
+    }
+
+    const platforms = Array.from(document.querySelectorAll('.social-platform-check:checked')).map(c => c.value);
+    if (platforms.length === 0) {
+      alert('Please select at least one platform');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/posts/schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content,
+          companies: this.selectedCompanies,
+          platforms,
+          scheduledTime: null  // null = post now
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        alert('Post published immediately!');
+        document.getElementById('social-content-text').value = '';
+        this.loadPosts();
+        this.renderSocialUI();
+      } else {
+        alert('Error: ' + result.error);
+      }
+    } catch (err) {
+      console.error('[SocialBot] Publish error:', err);
+      alert('Failed to publish post: ' + err.message);
+    }
+  }
+
+  async cancelPost(postId) {
+    if (!confirm('Cancel this post?')) return;
+
+    try {
+      const response = await fetch('/api/posts/' + postId, { method: 'DELETE' });
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('Post cancelled');
+        this.loadPosts();
+        this.renderSocialUI();
+      } else {
+        alert('Error: ' + result.error);
+      }
+    } catch (err) {
+      console.error('[SocialBot] Cancel error:', err);
+      alert('Failed to cancel post: ' + err.message);
+    }
+  }
+
+  editCompany(companyId) {
+    alert('Edit company: ' + companyId + ' (switching to Settings tab would allow API key management)');
   }
 }
 
