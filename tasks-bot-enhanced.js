@@ -377,6 +377,9 @@ class TasksBotEnhanced {
     html += '<div class="stat">Pending: <strong>' + this.pendingTasks.length + '</strong></div>';
     html += '<div class="stat">Running: <strong>' + this.runningTasks.length + '</strong></div>';
     html += '<div class="stat">Completed: <strong>' + this.completedTasks.length + '</strong></div>';
+    const totalTasks = this.pendingTasks.length + this.runningTasks.length + this.completedTasks.length;
+    const completionRate = totalTasks > 0 ? Math.round((this.completedTasks.length / totalTasks) * 100) : 0;
+    html += '<div class="stat">Completion Rate: <strong>' + completionRate + '%</strong></div>';
     html += '</div>';
 
     // Add new task / rule section
@@ -536,12 +539,35 @@ class TasksBotEnhanced {
         const fileInput = document.getElementById('task-file-input');
         if (fileInput) {
           fileInput.addEventListener('change', async (e) => {
+            const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+            const ALLOWED_TYPES = ['.png', '.jpeg', '.jpg', '.pdf'];
+            
             for (const file of e.target.files) {
+              // Pre-validate file before attempting to attach
+              const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+              
+              // Validate file type
+              if (!ALLOWED_TYPES.includes(fileExt)) {
+                console.error('[TasksBot] Invalid file type: ' + file.name + ' (' + fileExt + '). Allowed: .png, .jpeg, .jpg, .pdf');
+                this.showFileNotification('❌ Invalid file type: ' + fileExt, 'error');
+                continue;
+              }
+              
+              // Validate file size
+              if (file.size > MAX_FILE_SIZE) {
+                console.error('[TasksBot] File too large: ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + 'MB). Max: 10MB');
+                this.showFileNotification('❌ File too large: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB (max 10MB)', 'error');
+                continue;
+              }
+              
               try {
                 const attachment = await window.fileAttachmentManager.addAttachment('new-task', file);
                 window.fileAttachmentManager.displayAttachment(attachment);
+                console.log('[TasksBot] Attached: ' + file.name + ' (' + (file.size / 1024).toFixed(1) + 'KB)');
+                this.showFileNotification('✅ Attached: ' + file.name, 'success');
               } catch (error) {
-                alert('Error attaching file: ' + error.message);
+                console.error('[TasksBot] Attachment failed for ' + file.name + ': ' + error.message);
+                this.showFileNotification('❌ Failed to attach: ' + file.name, 'error');
               }
             }
             e.target.value = ''; // Reset input
@@ -673,6 +699,44 @@ class TasksBotEnhanced {
     } catch (err) {
       console.error('[TasksBot] Delete failed:', err);
     }
+  }
+
+  /**
+   * Show file notification (in-app instead of alert)
+   */
+  showFileNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'file-upload-notification ' + type;
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 1000;
+      animation: slideInNotif 0.3s ease;
+      ${type === 'success' ? 'background:#dcfce7;color:#166534;border:1px solid #22c55e;' : ''}
+      ${type === 'error' ? 'background:#fee2e2;color:#991b1b;border:1px solid #ef4444;' : ''}
+      ${type === 'info' ? 'background:#dbeafe;color:#1e40af;border:1px solid #3b82f6;' : ''}
+    `;
+    
+    // Add keyframe animation
+    if (!document.getElementById('notif-style')) {
+      const style = document.createElement('style');
+      style.id = 'notif-style';
+      style.textContent = '@keyframes slideInNotif { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }';
+      document.head.appendChild(style);
+    }
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 4 seconds
+    setTimeout(() => notification.remove(), 4000);
   }
 
   /**
