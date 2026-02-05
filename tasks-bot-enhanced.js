@@ -517,7 +517,12 @@ class TasksBotEnhanced {
 
     // Completed tasks with history
     html += '<div class="task-section completed-section">';
-    html += '<h4>✅ Completed Tasks (' + this.completedTasks.length + ')</h4>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+    html += '<h4 style="margin:0;">✅ Completed Tasks (' + this.completedTasks.length + ')</h4>';
+    if (this.completedTasks.length > 0) {
+      html += '<button onclick="window.tasksBotEnhanced.clearCompletedTasks();" title="Clear all completed tasks" style="background:#ff9500;color:#fff;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:0.85em;font-weight:500;hover:opacity:0.9;">Clear All</button>';
+    }
+    html += '</div>';
     html += '<div class="task-list" data-drop-zone="completed">';
     
     if (this.completedTasks.length === 0) {
@@ -745,6 +750,58 @@ class TasksBotEnhanced {
     } catch (err) {
       console.error('[TasksBot] Delete failed:', err);
       this.showFileNotification('Error deleting task: ' + err.message, 'error');
+    }
+  }
+
+  /**
+   * Clear all completed tasks with confirmation
+   */
+  async clearCompletedTasks() {
+    if (this.completedTasks.length === 0) {
+      this.showFileNotification('No completed tasks to clear', 'info');
+      return;
+    }
+    
+    if (!confirm('Delete all ' + this.completedTasks.length + ' completed tasks? This cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      let failedCount = 0;
+      console.log('[TasksBot] Clearing ' + this.completedTasks.length + ' completed tasks...');
+      
+      // Delete each completed task
+      for (const task of this.completedTasks) {
+        try {
+          const body = { action: 'delete', name: task.name };
+          if (task.id) body.id = parseFloat(task.id);
+          const response = await this.fetchWithRetry(this.apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          }, 2);
+          if (!response.ok) {
+            failedCount++;
+            console.error('[TasksBot] Failed to delete: ' + task.name);
+          }
+        } catch (err) {
+          failedCount++;
+          console.error('[TasksBot] Error deleting ' + task.name + ':', err);
+        }
+      }
+      
+      // Reload and render
+      await this.loadTasks();
+      this.render(true);
+      
+      if (failedCount === 0) {
+        this.showFileNotification('✅ Cleared ' + this.completedTasks.length + ' completed tasks', 'success');
+      } else {
+        this.showFileNotification('⚠️ Cleared ' + (this.completedTasks.length - failedCount) + '/' + this.completedTasks.length + ' tasks (' + failedCount + ' failed)', 'error');
+      }
+    } catch (err) {
+      console.error('[TasksBot] Clear completed failed:', err);
+      this.showFileNotification('Error clearing tasks: ' + err.message, 'error');
     }
   }
 
