@@ -58,7 +58,7 @@ setInterval(function() {
     else if (ago < 3600) el.textContent = Math.floor(ago/60) + 'm ago';
     else el.textContent = Math.floor(ago/3600) + 'h ago';
 }, 1000);
-setTimeout(fetchUsageData, 3000);
+setTimeout(fetchUsageData, 500);
 setInterval(fetchUsageData, 60000);
 
 // PROTECTED: XSS Prevention - escapeHtml function (TIER 2 FIX)
@@ -376,15 +376,20 @@ function updateMonitorStats() {
         html += '</div>';
         html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
         html += '<div style="font-size: 0.9em; opacity: 0.8;">API Messages</div>';
-        var curMsgs = document.getElementById('hb-messages');
-        var msgsVal = (curMsgs && curMsgs.textContent !== '...') ? curMsgs.textContent : '...';
+        var msgsVal = (usageCache && usageCache.messages) ? usageCache.messages.toLocaleString() : '...';
         html += '<div id="hb-messages" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + msgsVal + '</div>';
         fetch("/api/tasks").then(function(r){return r.json()}).then(function(tasks){var el=document.getElementById("hb-tasks");if(el)el.textContent=tasks.filter(function(t){return t.status==="completed"}).length;}).catch(function(err){console.error('[Heartbeat] Task count fetch failed:',err.message);});
         html += '</div>';
         html += '<div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; color: white;">';
         html += '<div style="font-size: 0.9em; opacity: 0.8;">Last Heartbeat</div>';
-        var curBeat = document.getElementById('hb-lastbeat');
-        var beatVal = (curBeat && curBeat.textContent !== '...') ? curBeat.textContent : '...';
+        var beatVal = '...';
+        if (activityData.heartbeats.length) {
+            var lastTs = activityData.heartbeats[activityData.heartbeats.length - 1].timestamp;
+            var agoSec = Math.floor((Date.now() - lastTs) / 1000);
+            if (agoSec < 60) beatVal = agoSec + 's ago';
+            else if (agoSec < 3600) beatVal = Math.floor(agoSec/60) + 'm ago';
+            else beatVal = Math.floor(agoSec/3600) + 'h ago';
+        }
         html += '<div id="hb-lastbeat" style="font-size: 2em; font-weight: bold; color: #00d4ff;">' + beatVal + '</div>';
         html += '</div>';
         html += '</div></div>';
@@ -396,8 +401,8 @@ function updateMonitorStats() {
     if (hbCountEl) hbCountEl.textContent = activityData.heartbeats.length;
     var hbTasksEl = document.getElementById('hb-tasks');
     if (hbTasksEl) hbTasksEl.textContent = _cachedTaskCount;
-    var hbTokensEl = document.getElementById('hb-tokens');
-    if (hbTokensEl) hbTokensEl.textContent = activityData.usage.tokens;
+    // hb-messages and hb-lastbeat are updated by fetchUsageData and the heartbeat timer
+    // Do NOT overwrite them here
     
     var lastHB = activityData.heartbeats[activityData.heartbeats.length - 1];
     if (lastHB) {
