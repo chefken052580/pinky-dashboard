@@ -518,7 +518,7 @@ class TasksBotEnhanced {
       attachmentSection.className = 'task-attachment-section';
       attachmentSection.innerHTML = `
         <div style="margin-top: 10px; padding: 8px 0;">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; background: #f0f0f0; border-radius: 6px; width: fit-content; color: #333; font-weight: 500;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; background: #f0f0f0; border-radius: 6px; width: fit-content; color: #000000; font-weight: 500;">
             <span style="font-size: 18px;">📎</span>
             <span style="font-size: 13px; font-weight: 600;">Attach Files (.png, .jpeg, .pdf - max 10MB)</span>
             <input type="file" id="task-file-input" style="display: none;" accept=".png,.jpg,.jpeg,.pdf" multiple>
