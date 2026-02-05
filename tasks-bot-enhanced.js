@@ -43,6 +43,54 @@ class TasksBotEnhanced {
   }
 
   /**
+   * Fetch with auto-retry logic (exponential backoff)
+   */
+  async fetchWithRetry(url, options = {}, maxRetries = 3) {
+    let lastError;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), options.timeout || 5000);
+        
+        const response = await fetch(url, {
+          ...options,
+          signal: controller.signal,
+          cache: 'no-store'
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          return response;
+        }
+        
+        // On server error, retry
+        if (response.status >= 500) {
+          lastError = 'Server error ' + response.status;
+          if (attempt < maxRetries) {
+            const delay = Math.pow(2, attempt - 1) * 100; // 100ms, 200ms, 400ms
+            await new Promise(r => setTimeout(r, delay));
+          }
+          continue;
+        }
+        
+        // On client error, don't retry
+        lastError = 'HTTP ' + response.status;
+        break;
+      } catch (err) {
+        lastError = err.name === 'AbortError' ? 'Timeout' : err.message;
+        if (attempt < maxRetries && err.name !== 'AbortError') {
+          const delay = Math.pow(2, attempt - 1) * 100;
+          await new Promise(r => setTimeout(r, delay));
+          continue;
+        }
+        break;
+      }
+    }
+    throw new Error('[TasksBot] Failed after ' + maxRetries + ' attempts: ' + lastError);
+  }
+
+  /**
    * Load tasks from API (reads projects.md)
    */
   async loadTasks() {
@@ -59,12 +107,7 @@ class TasksBotEnhanced {
     for (const url of apiUrls) {
       try {
         console.log('[TasksBot] Trying to load from: ' + url);
-        const response = await fetch(url, { cache: 'no-store', timeout: 3000 });
-        
-        if (!response.ok) {
-          console.log('[TasksBot] ' + url + ' returned ' + response.status);
-          continue;
-        }
+        const response = await this.fetchWithRetry(url);
         
         const data = await response.json();
         
@@ -686,18 +729,22 @@ class TasksBotEnhanced {
     try {
       const body = { action: 'delete', name: taskName };
       if (taskId) body.id = parseFloat(taskId);
-      const response = await fetch(this.apiUrl, {
+      const response = await this.fetchWithRetry(this.apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
-      });
+      }, 2);
       if (response.ok) {
         console.log('[TasksBot] Deleted: ' + taskName);
         await this.loadTasks();
         this.render(true);
+        this.showFileNotification('Task deleted successfully', 'success');
+      } else {
+        this.showFileNotification('Failed to delete task', 'error');
       }
     } catch (err) {
       console.error('[TasksBot] Delete failed:', err);
+      this.showFileNotification('Error deleting task: ' + err.message, 'error');
     }
   }
 
