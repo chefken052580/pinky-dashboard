@@ -32,21 +32,38 @@ class HealthDashboard {
   }
 
   /**
-   * Update health metrics
+   * Update health metrics with actual response time measurement
    */
   async update() {
     try {
-      // Check API health
+      // Check API health with timing
+      const healthStart = performance.now();
       const healthRes = await fetch(this.apiBase + '/api/health', { timeout: 3000 });
+      const healthTime = Math.round(performance.now() - healthStart);
+      
+      // Record health endpoint metric
+      if (window.metricsPersistence) {
+        window.metricsPersistence.recordMetric('/api/health', healthTime, healthRes.ok ? 'success' : 'error');
+      }
+      
       if (healthRes.ok) {
         const health = await healthRes.json();
         this.isOnline = health.status === 'online';
         
-        // Get task stats
+        // Get task stats with timing
+        const tasksStart = performance.now();
         const tasksRes = await fetch(this.apiBase + '/api/tasks', { timeout: 3000 });
+        const tasksTime = Math.round(performance.now() - tasksStart);
+        
+        // Record tasks endpoint metric
+        if (window.metricsPersistence) {
+          window.metricsPersistence.recordMetric('/api/tasks', tasksTime, tasksRes.ok ? 'success' : 'error');
+        }
+        
         const tasks = tasksRes.ok ? await tasksRes.json() : [];
         
         const now = new Date();
+        const avgResponseTime = (healthTime + tasksTime) / 2;
         const metric = {
           timestamp: now.toISOString(),
           online: this.isOnline,
@@ -56,7 +73,7 @@ class HealthDashboard {
           totalTasks: tasks.length,
           pendingTasks: tasks.filter(t => t.status === 'pending').length,
           completedTasks: tasks.filter(t => t.status === 'completed').length,
-          responseTime: Math.random() * 100 + 50 // Simulated for now
+          responseTime: avgResponseTime
         };
 
         this.history.push(metric);
@@ -72,6 +89,12 @@ class HealthDashboard {
     } catch (err) {
       this.isOnline = false;
       console.log('[HealthDashboard] Update error:', err.message);
+      
+      // Record error metric
+      if (window.metricsPersistence) {
+        window.metricsPersistence.recordMetric('/api/health', 0, 'error');
+      }
+      
       this.render();
     }
   }

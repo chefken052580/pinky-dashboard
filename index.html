@@ -41,6 +41,21 @@
             <div class="indicator" id="tasks-today">
                 <span>📊 <span id="tasks-today-count">0</span> Tasks Today</span>
             </div>
+            <!-- Approval Notifications -->
+            <div class="approval-notification">
+                <button class="notification-bell" onclick="window.dashboard.toggleApprovals()" title="Pending Approvals">
+                    🔔
+                    <span id="approval-badge" class="notification-badge hidden">0</span>
+                </button>
+                <div id="approval-dropdown" class="approval-dropdown hidden">
+                    <div class="approval-header">
+                        <h3>🐭 Brain's Approval Queue</h3>
+                    </div>
+                    <div id="approval-list" class="approval-list">
+                        <p class="no-approvals">No pending approvals</p>
+                    </div>
+                </div>
+            </div>
             <button class="cache-clear-btn" onclick="window.dashboard.clearCacheAndReload()" title="Clear cache and reload">
                 🔄 Clear Cache
             </button>
@@ -144,8 +159,8 @@
                     <div class="stat-card">
                         <div class="stat-icon">🔤</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="total-tokens">0</div>
-                            <div class="stat-label">Tokens Used</div>
+                            <div class="stat-value" id="total-messages">0</div>
+                            <div class="stat-label">Messages</div>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -1083,10 +1098,14 @@
     <script src="task-queue-integration.js"></script>
     <script src="filesystem-bot-llm.js"></script>
     <script src="social-api-connectors.js"></script>
-    <script src="heartbeat-manager.js"></script>
+    <!-- DISABLED: Using renderer.js instead -->
+    <!-- <script src="heartbeat-manager.js"></script> -->
     <script src="analytics-advanced.js"></script>
     <!-- System Monitor UI - Real-time resource monitoring -->
     <script src="system-monitor-ui.js"></script>
+    
+    <!-- Metrics Persistence Layer - API health tracking (HB#111) -->
+    <script src="metrics-persistence.js"></script>
     
     <!-- Health Dashboard - Bot-Backend Status Monitor -->
     <script src="health-dashboard.js"></script>
