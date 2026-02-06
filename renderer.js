@@ -244,40 +244,23 @@ function switchMonitorView(view) {
 }
 
 function loadActivityData() {
-    // Try multiple paths for cross-platform compatibility
-    const paths = [
-        '../pinky-activity.json',
-        'pinky-activity.json',
-        '/mnt/d/pinky-activity.json',
-        'D:/pinky-activity.json'
-    ];
-    
-    // Try each path until one works
-    tryLoadFromPath(0);
-    
-    function tryLoadFromPath(index) {
-        if (index >= paths.length) {
-            console.log('[Monitor] Could not load activity data from any path');
-            return;
-        }
-        
-        fetch(paths[index] + '?t=' + Date.now())
-            .then(r => {
-                if (!r.ok) throw new Error('Not found');
-                return r.json();
-            })
-            .then(data => {
-                activityData = data;
-                updateMonitorStats();
-                renderMonitorChart(currentMonitorView);
-                renderHeaderStats();
-                console.log('[Monitor] Loaded activity data from:', paths[index]);
-            })
-            .catch(err => {
-                // Try next path
-                tryLoadFromPath(index + 1);
-            });
-    }
+    // Fetch activity data from API
+    fetch('/api/activity')
+        .then(r => r.json())
+        .then(data => {
+            // Convert API response to expected format
+            activityData = {
+                heartbeats: data || [],
+                heartbeatCount: (data || []).length
+            };
+            updateMonitorStats();
+            renderMonitorChart(currentMonitorView);
+            renderHeaderStats();
+            console.log('[Monitor] Loaded activity data from /api/activity');
+        })
+        .catch(err => {
+            console.error('[Monitor] Failed to load activity data:', err);
+        });
 }
 
 function updateMonitorStats() {
@@ -523,29 +506,31 @@ function renderHeaderStats() {
     
     const heartbeats = activityData.heartbeatCount || activityData.heartbeats?.length || 0;
     
-    // Fetch both APIs in parallel, then render
+    // Fetch APIs in parallel, then render
     Promise.all([
         fetch('/api/usage').then(r => r.json()).catch(() => ({})),
+        fetch('/api/tasks/stats').then(r => r.json()).catch(() => ({})),
         fetch('/api/tasks').then(r => r.json()).catch(() => [])
-    ]).then(([usage, tasks]) => {
+    ]).then(([usage, statsResponse, tasks]) => {
         const tokensUsed = usage.totalTokens || 0;
         const apiCost = usage.totalCost || 0;
+        const messages = usage.messages || 0;
         
-        // Count completed tasks (all time)
-        const allCompleted = tasks.filter(t => t.status === 'completed').length;
+        // Get stats from /api/tasks/stats
+        const stats = statsResponse.stats || {};
+        const allCompleted = stats.completed || 0;
+        const completionRate = stats.completionRate || '0%';
+        const pending = stats.pending || 0;
         
-        // Count tasks completed TODAY (last 24 hours)
+        // Calculate tasks completed today (for header only)
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const tasksToday = tasks.filter(t => {
+        const tasksToday = Array.isArray(tasks) ? tasks.filter(t => {
             if (t.status !== 'completed') return false;
             const updated = new Date(t.updated || t.assigned);
             const taskDate = new Date(updated.getFullYear(), updated.getMonth(), updated.getDate());
             return taskDate.getTime() === today.getTime();
-        }).length;
-        
-        // Count pending tasks (waiting to be started)
-        const pending = tasks.filter(t => t.status === 'pending').length;
+        }).length : 0;
         
         // Render header stats
         let html = '<div class="heartbeat-status">';
@@ -558,13 +543,17 @@ function renderHeaderStats() {
         html += '</div></div>';
         container.innerHTML = html;
         
-        // Update bottom stat cards
+        // Update bottom stat cards with data from /api/tasks/stats and /api/usage
         const tasksCompletedEl = document.getElementById("tasks-completed");
         if (tasksCompletedEl) tasksCompletedEl.textContent = allCompleted;
         const apiCostEl = document.getElementById("api-cost");
         if (apiCostEl) apiCostEl.textContent = "$" + apiCost.toFixed(2);
         const messagesEl = document.getElementById("total-messages");
-        if (messagesEl) messagesEl.textContent = (usage.messages || 0).toLocaleString();
+        if (messagesEl) messagesEl.textContent = messages.toLocaleString();
+        const successRateEl = document.getElementById("success-rate");
+        if (successRateEl) successRateEl.textContent = completionRate;
+        
+        console.log('[HeaderStats] Updated: ' + allCompleted + ' tasks, $' + apiCost.toFixed(2) + ' cost, ' + messages + ' messages, ' + completionRate + ' success rate');
     });
 }
 document.addEventListener('DOMContentLoaded', function() {
