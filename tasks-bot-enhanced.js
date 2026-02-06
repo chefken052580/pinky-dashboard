@@ -151,7 +151,7 @@ class TasksBotEnhanced {
       return (priorityOrder[a.priority] || 999) - (priorityOrder[b.priority] || 999);
     });
     
-    this.runningTasks = tasks.filter(t => t.status === 'in-progress');
+    this.runningTasks = tasks.filter(t => t.status === 'running');
     
     this.completedTasks = tasks.filter(t => t.status === 'completed');
 
@@ -573,7 +573,7 @@ class TasksBotEnhanced {
         html += '</div>';
         
         // Timer UI for running task (HB#115)
-        if (taskTimer && typeof taskTimer === 'object') {
+        if (typeof taskTimer !== 'undefined' && taskTimer && typeof taskTimer === 'object') {
           const timerState = taskTimer.getState(task.id);
           const elapsedDisplay = taskTimer.formatElapsed(timerState.elapsed);
           const isRunning = timerState.running;
