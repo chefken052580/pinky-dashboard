@@ -455,6 +455,9 @@
         var now = new Date();
         var diff = now - date;
         
+        // Convert to EST (UTC-5)
+        var estDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+        
         if (diff < 60000) return 'Just now';
         if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
         
@@ -462,7 +465,13 @@
         var msgDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         
         if (msgDay.getTime() === today.getTime()) {
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            // Show time with EST explicitly
+            var hours = estDate.getHours();
+            var minutes = estDate.getMinutes();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            return hours + ':' + minutes + ' ' + ampm + ' EST';
         }
         
         var yesterday = new Date(today);
@@ -471,7 +480,7 @@
             return 'Yesterday';
         }
         
-        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        return estDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/New_York' });
     }
 
     function scrollToBottom() {
