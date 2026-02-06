@@ -5,10 +5,11 @@
 
 class TaskStatistics {
   constructor() {
-    this.apiBase = 'http://192.168.254.4:3030';
+    this.apiBase = ''; // Use relative paths for cross-origin compatibility
     this.updateInterval = 10000; // 10 seconds
     this.tasks = [];
     this.history = [];
+    this.rawStats = null; // Store raw API stats for accurate calculations
     this.initialized = false;
   }
 
@@ -35,11 +36,11 @@ class TaskStatistics {
   }
 
   /**
-   * Fetch tasks from API with robust error handling
+   * Fetch task stats from API with robust error handling
    */
   async fetchTasks() {
     try {
-      const res = await fetch(this.apiBase + '/api/tasks', { timeout: 5000 });
+      const res = await fetch(this.apiBase + '/api/tasks/stats', { timeout: 5000 });
       console.log('[TaskStatistics] Fetch response status:', res.status, 'OK:', res.ok);
       
       if (!res.ok) {
@@ -54,9 +55,22 @@ class TaskStatistics {
         return false;
       }
 
-      this.tasks = await res.json();
-      console.log('[TaskStatistics] Fetched', this.tasks.length, 'tasks');
-      return true;
+      const data = await res.json();
+      if (data.success && data.stats) {
+        // Map API stats format to internal format
+        this.tasks = [
+          { status: 'completed', count: data.stats.completed },
+          { status: 'pending', count: data.stats.pending },
+          { status: 'in-progress', count: data.stats.inProgress },
+          { status: 'analysis-ready', count: data.stats.analysisReady }
+        ];
+        this.rawStats = data.stats; // Store raw stats for direct access
+        console.log('[TaskStatistics] Fetched stats:', data.stats);
+        return true;
+      } else {
+        console.error('[TaskStatistics] Invalid response format:', data);
+        return false;
+      }
     } catch (err) {
       console.error('[TaskStatistics] Fetch error:', err.message);
       return false;
@@ -67,20 +81,46 @@ class TaskStatistics {
    * Calculate task statistics with debug logging
    */
   calculateStats() {
-    const stats = {
-      total: this.tasks.length,
-      completed: this.tasks.filter(t => t.status === 'completed').length,
-      inProgress: this.tasks.filter(t => t.status === 'in-progress').length,
-      blocked: this.tasks.filter(t => t.status === 'analysis-ready').length,
-      pending: this.tasks.filter(t => t.status === 'pending').length,
-      completionRate: 0,
-      trend: 'stable',
-      avgTasksPerHeartbeat: 0
-    };
+    let stats;
+    
+    // Use raw stats from API if available (more accurate)
+    if (this.rawStats) {
+      const total = this.rawStats.total || 0;
+      const completed = this.rawStats.completed || 0;
+      const parseRate = (rateStr) => {
+        if (typeof rateStr === 'string' && rateStr.includes('%')) {
+          return parseInt(rateStr);
+        }
+        return typeof rateStr === 'number' ? rateStr : 0;
+      };
+      
+      stats = {
+        total: total,
+        completed: completed,
+        inProgress: this.rawStats.inProgress || 0,
+        blocked: this.rawStats.analysisReady || 0,
+        pending: this.rawStats.pending || 0,
+        completionRate: parseRate(this.rawStats.completionRate),
+        trend: 'stable',
+        avgTasksPerHeartbeat: 0
+      };
+    } else {
+      // Fallback to calculating from tasks array
+      stats = {
+        total: this.tasks.length,
+        completed: this.tasks.filter(t => t.status === 'completed').length,
+        inProgress: this.tasks.filter(t => t.status === 'in-progress').length,
+        blocked: this.tasks.filter(t => t.status === 'analysis-ready').length,
+        pending: this.tasks.filter(t => t.status === 'pending').length,
+        completionRate: 0,
+        trend: 'stable',
+        avgTasksPerHeartbeat: 0
+      };
 
-    // Calculate completion rate
-    if (stats.total > 0) {
-      stats.completionRate = Math.round((stats.completed / stats.total) * 100);
+      // Calculate completion rate for fallback
+      if (stats.total > 0) {
+        stats.completionRate = Math.round((stats.completed / stats.total) * 100);
+      }
     }
 
     console.log('[TaskStatistics] Stats calculated:', stats);
