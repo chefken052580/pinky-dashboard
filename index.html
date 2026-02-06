@@ -934,6 +934,19 @@
                 <h2>🎯 TasksBot - Project & Task Manager</h2>
                 <!-- TasksBotEnhanced - Primary renderer with full CRUD -->
                 <div id="tasksbot-container"></div>
+                
+                <!-- Collapsible Analytics Section -->
+                <div class="tasks-analytics-section" style="margin-top: 30px;">
+                    <button class="analytics-accordion-btn" onclick="toggleTasksAnalytics()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.3s ease;">
+                        <span>📊 Task Analytics & Insights</span>
+                        <span id="tasks-analytics-toggle-icon" style="font-size: 20px;">▼</span>
+                    </button>
+                    <div id="tasks-analytics-content" style="display: none; margin-top: 15px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <!-- Analytics content will be populated here by task-analytics.js -->
+                        <div id="task-analytics-widget"></div>
+                    </div>
+                </div>
+                
                 <!-- Old TaskQueue kept hidden for compatibility -->
                 <div id="task-queue-container" style="display: none;"></div>
             </div>
@@ -1275,6 +1288,29 @@
             }, 500);
         });
     </script>
+    
+    <!-- Toggle function for Tasks Analytics accordion -->
+    <script>
+        function toggleTasksAnalytics() {
+            const content = document.getElementById('tasks-analytics-content');
+            const icon = document.getElementById('tasks-analytics-toggle-icon');
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                icon.textContent = '▲';
+                
+                // Initialize analytics if not already loaded
+                if (typeof window.renderTasksViewAnalytics === 'function') {
+                    window.renderTasksViewAnalytics();
+                    console.log('[Tasks View] Analytics accordion opened');
+                }
+            } else {
+                content.style.display = 'none';
+                icon.textContent = '▼';
+            }
+        }
+    </script>
+    
     <script src="pinky-chat.js"></script>
     <script src="settings-page.js"></script>
     

@@ -4,8 +4,9 @@
  */
 
 class TaskAnalyticsDashboard {
-    constructor() {
+    constructor(targetContainerId = null) {
         this.containerId = 'task-analytics-widget';
+        this.targetContainerId = targetContainerId; // Where to render the widget
         this.data = {
             totalTasks: 0,
             completedTasks: 0,
@@ -158,7 +159,17 @@ class TaskAnalyticsDashboard {
             </div>
         `;
 
-        document.body.appendChild(container);
+        // Append to target container or body
+        const targetElement = this.targetContainerId 
+            ? document.getElementById(this.targetContainerId) 
+            : document.body;
+        
+        if (targetElement) {
+            targetElement.appendChild(container);
+        } else {
+            console.warn(`[TaskAnalytics] Target container '${this.targetContainerId}' not found, appending to body`);
+            document.body.appendChild(container);
+        }
 
         // Add event listeners
         document.getElementById('analytics-refresh-btn')?.addEventListener('click', () => this.loadAnalytics());
@@ -337,13 +348,20 @@ class TaskAnalyticsDashboard {
     }
 }
 
-// Auto-initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        const analytics = new TaskAnalyticsDashboard();
-        analytics.initialize();
-    });
-} else {
-    const analytics = new TaskAnalyticsDashboard();
-    analytics.initialize();
-}
+// Export class for manual initialization
+window.TaskAnalyticsDashboard = TaskAnalyticsDashboard;
+
+// Create a singleton instance for tasks view analytics (doesn't auto-initialize)
+window.tasksViewAnalytics = null;
+
+// Function to render analytics in tasks view
+window.renderTasksViewAnalytics = function() {
+    if (!window.tasksViewAnalytics) {
+        window.tasksViewAnalytics = new TaskAnalyticsDashboard('task-analytics-widget');
+        window.tasksViewAnalytics.initialize();
+        console.log('[Tasks View] Analytics initialized');
+    } else {
+        window.tasksViewAnalytics.loadAnalytics();
+        console.log('[Tasks View] Analytics refreshed');
+    }
+};
