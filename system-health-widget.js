@@ -196,8 +196,8 @@ class SystemHealthWidget {
         // Uptime
         const uptimeSec = (typeof m.uptime === 'number') ? m.uptime : (m.uptime.process || 0);
         const processHours = Math.floor(uptimeSec / 3600);
-        const processMins = Math.floor((m.uptime.process % 3600) / 60);
-        const systemHours = Math.floor(m.uptime.system / 3600);
+        const processMins = Math.floor((uptimeSec % 3600) / 60);
+        const systemHours = Math.floor(uptimeSec / 3600);
         const systemDays = Math.floor(systemHours / 24);
         
         document.getElementById('uptime-value').textContent = `${processHours}h ${processMins}m`;
