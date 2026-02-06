@@ -489,23 +489,37 @@ function renderHeaderStats() {
     ]).then(([usage, tasks]) => {
         const tokensUsed = usage.totalTokens || 0;
         const apiCost = usage.totalCost || 0;
-        const completed = tasks.filter(t => t.status === 'completed').length;
-        const inProgress = tasks.filter(t => t.status === 'in-progress').length;
+        
+        // Count completed tasks (all time)
+        const allCompleted = tasks.filter(t => t.status === 'completed').length;
+        
+        // Count tasks completed TODAY (last 24 hours)
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const tasksToday = tasks.filter(t => {
+            if (t.status !== 'completed') return false;
+            const updated = new Date(t.updated || t.assigned);
+            const taskDate = new Date(updated.getFullYear(), updated.getMonth(), updated.getDate());
+            return taskDate.getTime() === today.getTime();
+        }).length;
+        
+        // Count pending tasks (waiting to be started)
+        const pending = tasks.filter(t => t.status === 'pending').length;
         
         // Render header stats
         let html = '<div class="heartbeat-status">';
         html += '<h3>💓 Heartbeat Status</h3>';
         html += '<div class="heartbeat-grid">';
         html += '<div class="heartbeat-stat"><span class="stat-label">Heartbeats</span><span class="stat-value">' + heartbeats + '</span></div>';
-        html += '<div class="heartbeat-stat"><span class="stat-label">Tasks Today</span><span class="stat-value">' + completed + '</span></div>';
-        html += '<div class="heartbeat-stat"><span class="stat-label">In Progress</span><span class="stat-value">' + inProgress + '</span></div>';
+        html += '<div class="heartbeat-stat"><span class="stat-label">Tasks Today</span><span class="stat-value">' + tasksToday + '</span></div>';
+        html += '<div class="heartbeat-stat"><span class="stat-label">Pending</span><span class="stat-value">' + pending + '</span></div>';
         html += '<div class="heartbeat-stat"><span class="stat-label">Tokens Used</span><span class="stat-value">' + (tokensUsed / 1000000).toFixed(1) + 'M</span></div>';
         html += '</div></div>';
         container.innerHTML = html;
         
         // Update bottom stat cards
         const tasksCompletedEl = document.getElementById("tasks-completed");
-        if (tasksCompletedEl) tasksCompletedEl.textContent = completed;
+        if (tasksCompletedEl) tasksCompletedEl.textContent = allCompleted;
         const apiCostEl = document.getElementById("api-cost");
         if (apiCostEl) apiCostEl.textContent = "$" + apiCost.toFixed(2);
         const messagesEl = document.getElementById("total-messages");
