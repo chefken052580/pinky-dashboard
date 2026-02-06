@@ -519,9 +519,12 @@ class TasksBotEnhanced {
     html += '<div class="task-section completed-section">';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
     html += '<h4 style="margin:0;">✅ Completed Tasks (' + this.completedTasks.length + ')</h4>';
+    html += '<div style="display:flex;gap:8px;">';
     if (this.completedTasks.length > 0) {
-      html += '<button onclick="window.tasksBotEnhanced.clearCompletedTasks();" title="Clear all completed tasks" style="background:#ff9500;color:#fff;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:0.85em;font-weight:500;hover:opacity:0.9;">Clear All</button>';
+      html += '<button onclick="window.tasksBotEnhanced.clearCompletedTasks();" title="Clear all completed tasks" style="background:#ff9500;color:#fff;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:0.85em;font-weight:500;">Clear All</button>';
     }
+    html += '<button onclick="window.tasksBotEnhanced.exportTasks();" title="Export all tasks to JSON file" style="background:#3b82f6;color:#fff;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:0.85em;font-weight:500;">Export JSON</button>';
+    html += '</div>';
     html += '</div>';
     html += '<div class="task-list" data-drop-zone="completed">';
     
@@ -805,6 +808,74 @@ class TasksBotEnhanced {
     } catch (err) {
       console.error('[TasksBot] Clear completed failed:', err);
       this.showFileNotification('Error clearing tasks: ' + err.message, 'error');
+    }
+  }
+
+  /**
+   * Export all tasks to JSON file
+   */
+  async exportTasks() {
+    try {
+      // Compile all tasks (pending, running, completed)
+      const exportData = {
+        exportedAt: new Date().toISOString(),
+        timestamp: Date.now(),
+        summary: {
+          totalTasks: this.allTasks.length,
+          pendingTasks: this.pendingTasks.length,
+          runningTasks: this.runningTasks.length,
+          completedTasks: this.completedTasks.length
+        },
+        tasks: {
+          pending: this.pendingTasks.map(t => ({
+            id: t.id,
+            name: t.name,
+            status: 'pending',
+            priority: t.priority,
+            assigned: t.assigned,
+            updated: t.updated,
+            notes: t.notes
+          })),
+          running: this.runningTasks.map(t => ({
+            id: t.id,
+            name: t.name,
+            status: 'running',
+            priority: t.priority,
+            assigned: t.assigned,
+            updated: t.updated,
+            notes: t.notes
+          })),
+          completed: this.completedTasks.map(t => ({
+            id: t.id,
+            name: t.name,
+            status: 'completed',
+            priority: t.priority,
+            assigned: t.assigned,
+            updated: t.updated,
+            notes: t.notes
+          }))
+        }
+      };
+
+      // Create JSON blob
+      const jsonString = JSON.stringify(exportData, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'pinky-tasks-' + new Date().toISOString().split('T')[0] + '.json';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      console.log('[TasksBot] Exported ' + this.allTasks.length + ' tasks to JSON');
+      this.showFileNotification('✅ Exported ' + this.allTasks.length + ' tasks to JSON', 'success');
+    } catch (err) {
+      console.error('[TasksBot] Export failed:', err);
+      this.showFileNotification('❌ Export failed: ' + err.message, 'error');
     }
   }
 
