@@ -1,0 +1,621 @@
+/* Mobile Responsive Dashboard Enhancement
+   Optimized for phones and tablets
+   Breakpoints: 480px (small), 768px (tablet), 1024px (large) */
+
+/* ============================================
+   SMALL PHONES (< 480px)
+   ============================================ */
+@media screen and (max-width: 480px) {
+    /* Body & Layout */
+    body {
+        font-size: 13px;
+    }
+
+    /* Header */
+    .dashboard-header {
+        padding: 10px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .logo {
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .logo h1 {
+        font-size: 1.3em;
+        margin: 5px 0 0 0;
+    }
+
+    .status-indicators {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .indicator {
+        width: 100%;
+        text-align: center;
+        padding: 8px;
+        font-size: 0.85em;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 999;
+        max-width: 100%;
+    }
+
+    .bot-nav {
+        padding: 10px;
+    }
+
+    .bot-button {
+        padding: 12px;
+        font-size: 0.95em;
+        margin-bottom: 8px;
+    }
+
+    .bot-icon {
+        font-size: 1.3em;
+    }
+
+    /* Main Container */
+    .main-container {
+        padding: 10px 5px;
+    }
+
+    /* Cards */
+    .card {
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .card h2 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+
+    /* Grid Layout */
+    .stats-grid,
+    .metrics-grid,
+    .widgets-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .stat-value {
+        font-size: 1.5em;
+    }
+
+    /* Forms */
+    input, select, textarea {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+
+    .input-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Buttons */
+    button {
+        padding: 12px;
+        font-size: 0.95em;
+        min-height: 44px; /* Touch-friendly */
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Tabs */
+    .tab-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .tab-button {
+        padding: 12px;
+        font-size: 0.9em;
+        width: 100%;
+    }
+
+    /* Tasks List */
+    .task-item {
+        padding: 12px;
+        flex-direction: column;
+    }
+
+    .task-content {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .task-actions {
+        width: 100%;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .task-action-btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 0.85em;
+    }
+
+    /* Chat */
+    .chat-container {
+        height: calc(100vh - 250px);
+    }
+
+    .chat-message {
+        max-width: 90%;
+        padding: 10px;
+        margin: 8px 0;
+    }
+
+    .chat-input-area {
+        padding: 10px;
+        gap: 5px;
+    }
+
+    #chat-input {
+        min-height: 44px;
+        font-size: 16px;
+    }
+
+    /* Settings */
+    .settings-tab {
+        padding: 10px;
+    }
+
+    .setting-group {
+        margin-bottom: 15px;
+    }
+
+    .setting-input {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    /* Modal/Dropdown */
+    .dropdown-menu {
+        min-width: auto;
+        max-width: 90vw;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    /* Hide elements that don't fit on small screens */
+    .hide-on-mobile {
+        display: none !important;
+    }
+
+    /* Text truncation */
+    .truncate-mobile {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Menu toggle visibility */
+    .menu-toggle {
+        display: block !important;
+    }
+
+    /* Reduce padding on many elements */
+    .content-area {
+        padding: 0;
+    }
+
+    h1 { font-size: 1.3em; }
+    h2 { font-size: 1.1em; }
+    h3 { font-size: 1em; }
+    h4 { font-size: 0.95em; }
+
+    /* Notification badge */
+    .notification-badge {
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+}
+
+/* ============================================
+   TABLETS (480px - 768px)
+   ============================================ */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+    /* Header */
+    .dashboard-header {
+        padding: 12px;
+        flex-wrap: wrap;
+    }
+
+    .logo h1 {
+        font-size: 1.5em;
+    }
+
+    .status-indicators {
+        flex-wrap: wrap;
+        justify-content: space-around;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .indicator {
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+        padding: 10px;
+        font-size: 0.9em;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: 200px;
+    }
+
+    .bot-button {
+        padding: 12px;
+        font-size: 0.95em;
+    }
+
+    /* Main Container */
+    .main-container {
+        padding: 12px;
+    }
+
+    /* Grid */
+    .stats-grid,
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .widgets-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* Cards */
+    .card {
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    /* Forms */
+    input, select, textarea {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    /* Buttons */
+    button {
+        padding: 10px 15px;
+        min-height: 40px;
+    }
+
+    /* Tasks */
+    .task-item {
+        padding: 12px;
+    }
+
+    /* Chat */
+    .chat-container {
+        height: calc(100vh - 300px);
+    }
+
+    .chat-message {
+        max-width: 85%;
+    }
+
+    /* Settings */
+    .setting-input {
+        width: 100%;
+    }
+
+    /* Menu */
+    .menu-toggle {
+        display: block !important;
+    }
+}
+
+/* ============================================
+   LANDSCAPE MODE (any width, height < 500px)
+   ============================================ */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    /* Reduce vertical spacing in landscape */
+    .dashboard-header {
+        padding: 8px;
+    }
+
+    .status-indicators {
+        gap: 5px;
+        font-size: 0.85em;
+    }
+
+    .indicator {
+        padding: 5px;
+    }
+
+    .bot-button {
+        padding: 8px;
+        margin-bottom: 5px;
+        font-size: 0.9em;
+    }
+
+    .card {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    .card h2 {
+        margin-bottom: 8px;
+        font-size: 1em;
+    }
+
+    /* Reduce grid gaps */
+    .stats-grid,
+    .metrics-grid,
+    .widgets-grid {
+        gap: 6px;
+    }
+
+    .main-container {
+        padding: 8px;
+    }
+
+    /* Hide unnecessary elements */
+    .sidebar {
+        width: 150px;
+    }
+
+    input, select, textarea {
+        padding: 8px;
+        margin-bottom: 6px;
+    }
+
+    button {
+        padding: 8px 10px;
+        min-height: 36px;
+        font-size: 0.9em;
+    }
+}
+
+/* ============================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ============================================ */
+@media (hover: none) and (pointer: coarse) {
+    /* Touch devices don't have hover */
+
+    button,
+    .tab-button,
+    .bot-button,
+    input[type="checkbox"],
+    input[type="radio"] {
+        /* Larger touch targets */
+        min-width: 44px;
+        min-height: 44px;
+        padding: 12px;
+    }
+
+    /* Reduce hover effects */
+    button:hover,
+    .tab-button:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Remove transitions that feel slow on touch */
+    .chat-message {
+        transition: none;
+    }
+
+    /* Improve readability */
+    input, select, textarea {
+        font-size: 16px;
+    }
+
+    /* Reduce opacity changes */
+    .card:active {
+        opacity: 0.95;
+    }
+}
+
+/* ============================================
+   LANDSCAPE PHONES (width > 768px, height < 600px)
+   ============================================ */
+@media screen and (min-width: 768px) and (max-height: 600px) {
+    .dashboard-header {
+        padding: 8px 12px;
+    }
+
+    .logo h1 {
+        font-size: 1.2em;
+    }
+
+    .main-container {
+        padding: 8px;
+    }
+
+    .card {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+
+    /* Compact grid */
+    .stats-grid,
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .stat-value {
+        font-size: 1.3em;
+    }
+
+    .stat-label {
+        font-size: 0.85em;
+    }
+
+    /* Reduce spacing */
+    input, select {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    button {
+        padding: 8px 12px;
+        margin-bottom: 6px;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY - LARGE TEXT MODE
+   ============================================ */
+@media screen and (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@media screen and (prefers-contrast: more) {
+    /* Increase contrast for users with vision impairments */
+    :root {
+        --text-primary: #ffffff;
+        --bg-primary: #000000;
+        --bg-secondary: #1a1a1a;
+    }
+
+    html.light-mode {
+        --text-primary: #000000;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f0f0f0;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+    .dashboard-header,
+    .sidebar,
+    .menu-toggle,
+    button,
+    .cache-clear-btn,
+    .chat-input-area {
+        display: none !important;
+    }
+
+    .main-container {
+        width: 100%;
+        padding: 0;
+    }
+
+    .card {
+        page-break-inside: avoid;
+        border: 1px solid #000;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES FOR MOBILE
+   ============================================ */
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stack-vertical {
+    display: flex;
+    flex-direction: column;
+}
+
+.stack-horizontal {
+    display: flex;
+    flex-direction: row;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.half-width {
+    width: 50%;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.py-10 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.py-5 {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+@media screen and (max-width: 768px) {
+    .hide-on-mobile {
+        display: none !important;
+    }
+
+    .show-on-mobile {
+        display: block !important;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .hide-on-desktop {
+        display: none !important;
+    }
+
+    .show-on-desktop {
+        display: block !important;
+    }
+}

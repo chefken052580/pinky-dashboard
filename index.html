@@ -10,6 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Pinky Bot Dashboard - World Domination Control Center</title>
     <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="mobile-responsive.css">
     <link rel="stylesheet" href="system-monitor.css">
     <link rel="stylesheet" href="pinky-chat.css">
     <link rel="stylesheet" href="task-statistics.css">
@@ -17,6 +18,7 @@
     <link rel="stylesheet" href="settings.css">
     <link rel="stylesheet" href="export-package.css">
     <link rel="stylesheet" href="system-health-widget.css">
+    <link rel="stylesheet" href="changelog-widget.css">
 </head>
 <body>
     <!-- Onboarding Screen -->
@@ -64,6 +66,9 @@
                     </div>
                 </div>
             </div>
+            <button id="theme-toggle-header" class="theme-toggle-btn" onclick="window.themeManager && window.themeManager.toggleTheme()" title="Toggle Dark/Light Mode">
+                ☀️
+            </button>
             <button class="cache-clear-btn" onclick="window.dashboard.clearCacheAndReload()" title="Clear cache and reload">
                 🔄 Clear Cache
             </button>
@@ -907,6 +912,9 @@
                 <!-- Health Dashboard Widget (NEW) -->
                 <div id="health-dashboard-container" style="margin-bottom: 30px;"></div>
                 
+                <!-- Changelog Widget - Recent Updates -->
+                <div id="changelog-widget" style="margin-bottom: 30px;"></div>
+                
                 <!-- System Resource Monitor Widget -->
                 <div id="system-monitor-container" style="margin-bottom: 30px;"></div>
                 
@@ -1126,6 +1134,7 @@
     <script src="bot-upgrades.js"></script>
     <script src="bot-modules.js"></script>
     <script src="settings-fixed.js"></script>
+    <script src="theme-manager.js"></script>
     <script src="task-queue-integration.js"></script>
     <script src="filesystem-bot-llm.js"></script>
     <script src="social-api-connectors.js"></script>
@@ -1263,5 +1272,6 @@
     <script src="export-package.js"></script>
     <script src="export-package-ui.js"></script>
     <script src="system-health-widget.js"></script>
+    <script src="changelog-widget.js"></script>
 </body>
 </html>

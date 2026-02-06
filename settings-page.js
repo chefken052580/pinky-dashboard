@@ -550,7 +550,13 @@ class SettingsPageUI {
     saveAllSettings() {
         try {
             // General tab
-            this.settings.updateSetting('ui.theme', document.getElementById('ui-theme').value);
+            const selectedTheme = document.getElementById('ui-theme').value;
+            this.settings.updateSetting('ui.theme', selectedTheme);
+            
+            // Apply theme immediately via ThemeManager
+            if (window.themeManager) {
+                window.themeManager.setTheme(selectedTheme);
+            }
             this.settings.updateSetting('ui.layout', document.getElementById('ui-layout').value);
             this.settings.updateSetting('ui.soundEnabled', document.getElementById('ui-sound').checked);
             this.settings.updateSetting('ui.notificationBadges', document.getElementById('ui-notifications').checked);
