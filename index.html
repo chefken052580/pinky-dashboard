@@ -1153,6 +1153,12 @@
     <script src="export-package.js"></script>
     
     <script>
+        // Auto-set onboarded for existing installs
+        if (!localStorage.getItem('pinky_onboarded')) {
+          localStorage.setItem('pinky_onboarded', 'true');
+          localStorage.setItem('pinky_user_name', 'Ken');
+          localStorage.setItem('pinky_api_key', 'local');
+        }
         // Load Onboarding Screen First
         (async function() {
           const response = await fetch('onboarding.html');
