@@ -132,7 +132,7 @@ class SystemHealthWidget {
      */
     async updateMetrics() {
         try {
-            const response = await fetch('http://192.168.254.4:3030/api/system-health');
+            const response = await fetch('/api/system/metrics');
             if (!response.ok) {
                 throw new Error(`API error: ${response.status}`);
             }
