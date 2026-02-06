@@ -9,38 +9,54 @@ class TaskStatistics {
     this.updateInterval = 10000; // 10 seconds
     this.tasks = [];
     this.history = [];
+    this.initialized = false;
   }
 
   /**
    * Initialize task statistics widget
    */
   async init() {
-    console.log('[TaskStatistics] Initializing');
+    console.log('[TaskStatistics] Init called, document ready:', document.readyState);
     const container = document.getElementById('task-statistics-container');
     if (!container) {
-      console.log('[TaskStatistics] Container not found');
+      console.error('[TaskStatistics] Container not found. Retrying in 500ms...');
+      setTimeout(() => this.init(), 500);
       return;
     }
 
-    this.render();
-    await this.update();
+    console.log('[TaskStatistics] Container found, fetching initial data...');
+    this.initialized = true;
+    this.render(); // Show initial state
+    await this.update(); // Fetch real data
 
     // Auto-update every 10 seconds
     setInterval(() => this.update(), this.updateInterval);
+    console.log('[TaskStatistics] Initialization complete');
   }
 
   /**
-   * Fetch tasks from API
+   * Fetch tasks from API with robust error handling
    */
   async fetchTasks() {
     try {
       const res = await fetch(this.apiBase + '/api/tasks', { timeout: 5000 });
-      if (res.ok) {
-        this.tasks = await res.json();
-        this.calculateStats();
-        return true;
+      console.log('[TaskStatistics] Fetch response status:', res.status, 'OK:', res.ok);
+      
+      if (!res.ok) {
+        console.error('[TaskStatistics] API error:', res.status, res.statusText);
+        return false;
       }
-      return false;
+
+      // Check content type before parsing JSON
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('[TaskStatistics] Invalid content type:', contentType);
+        return false;
+      }
+
+      this.tasks = await res.json();
+      console.log('[TaskStatistics] Fetched', this.tasks.length, 'tasks');
+      return true;
     } catch (err) {
       console.error('[TaskStatistics] Fetch error:', err.message);
       return false;
@@ -48,7 +64,7 @@ class TaskStatistics {
   }
 
   /**
-   * Calculate task statistics
+   * Calculate task statistics with debug logging
    */
   calculateStats() {
     const stats = {
@@ -66,6 +82,8 @@ class TaskStatistics {
     if (stats.total > 0) {
       stats.completionRate = Math.round((stats.completed / stats.total) * 100);
     }
+
+    console.log('[TaskStatistics] Stats calculated:', stats);
 
     // Analyze trend (if we have history, compare recent vs older)
     if (this.history.length >= 2) {
@@ -85,29 +103,46 @@ class TaskStatistics {
     }
 
     // Average tasks per heartbeat from activity log
-    if (window.pinkyActivity && window.pinkyActivity.length > 0) {
+    if (window.pinkyActivity && Array.isArray(window.pinkyActivity) && window.pinkyActivity.length > 0) {
       const heartbeatCount = window.pinkyActivity.filter(a => a.type === 'heartbeat').length;
       const taskCount = window.pinkyActivity.filter(a => a.type === 'task').length;
       if (heartbeatCount > 0) {
         stats.avgTasksPerHeartbeat = (taskCount / heartbeatCount).toFixed(1);
       }
+    } else {
+      console.log('[TaskStatistics] pinkyActivity not available yet:', typeof window.pinkyActivity);
     }
 
     return stats;
   }
 
   /**
-   * Update statistics display
+   * Update statistics display with error status
    */
   async update() {
+    const statusEl = document.getElementById('task-stats-status');
+    if (statusEl) {
+      statusEl.textContent = '⏳ Loading...';
+    }
+
     const success = await this.fetchTasks();
     if (!success) {
-      document.getElementById('task-stats-status').textContent = '⚠️ Offline';
+      console.error('[TaskStatistics] Update failed - API unavailable');
+      if (statusEl) {
+        statusEl.textContent = '⚠️ API Error';
+        statusEl.style.color = '#ff6644';
+      }
       return;
     }
 
     const stats = this.calculateStats();
+    console.log('[TaskStatistics] Rendering with stats:', stats);
     this.render(stats);
+
+    if (statusEl) {
+      statusEl.textContent = '✅ Live';
+      statusEl.style.color = 'inherit';
+    }
   }
 
   /**
@@ -220,13 +255,19 @@ class TaskStatistics {
   }
 }
 
-// Initialize on page load
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    window.taskStatistics = new TaskStatistics();
-    window.taskStatistics.init();
-  });
-} else {
+// Initialize on page load with better timing
+console.log('[TaskStatistics] Script loaded, document state:', document.readyState);
+
+function initTaskStatistics() {
+  console.log('[TaskStatistics] Attempting to initialize...');
   window.taskStatistics = new TaskStatistics();
   window.taskStatistics.init();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTaskStatistics);
+} else if (document.readyState === 'interactive') {
+  setTimeout(initTaskStatistics, 100); // Small delay for DOM to fully settle
+} else {
+  initTaskStatistics();
 }
