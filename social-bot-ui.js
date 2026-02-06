@@ -93,6 +93,21 @@ window.switchSocialTab = function(tabName) {
         renderCreatePostTab();
     } else if (tabName === 'companies') {
         renderCompaniesTab();
+    } else if (tabName === 'wordpress') {
+        // Initialize WordPress Page Maker in the social tab
+        if (typeof WordPressPageMaker !== 'undefined' && window.wordPressPageMaker) {
+            var wpContainer = document.getElementById('wordpress-page-maker-social');
+            if (wpContainer && !wpContainer.hasChildNodes()) {
+                // Clone the WordPress UI from the standalone view
+                var standaloneWP = document.getElementById('wordpress-page-maker');
+                if (standaloneWP && standaloneWP.firstChild) {
+                    wpContainer.appendChild(standaloneWP.firstChild.cloneNode(true));
+                } else {
+                    // Or create a new instance inline
+                    wpContainer.innerHTML = '<p style="color:#aaa;">WordPress Page Maker loading... Please use the WordPress button in the sidebar for full functionality.</p>';
+                }
+            }
+        }
     }
 };
 
