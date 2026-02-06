@@ -539,7 +539,9 @@ class TasksBotEnhanced {
         }
         
         html += '<div class="task-meta">';
-        html += '<span class="assigned">Assigned: ' + (task.assigned || 'unknown') + '</span>';
+        const taskAge = this.calculateTaskAge(task.assigned);
+        const ageColor = taskAge.includes('w') ? '#ff6b6b' : taskAge.includes('d') && parseInt(taskAge) > 3 ? '#ffa500' : '#999';
+        html += '<span class="assigned">Age: <span style="color:' + ageColor + ';font-weight:bold;">' + taskAge + '</span></span>';
         html += '</div>';
         html += '</div>';
       });
@@ -730,6 +732,33 @@ class TasksBotEnhanced {
   /**
    * Format timestamp
    */
+  /**
+   * HB#124: Calculate task age (how long it's been waiting)
+   * Returns human-readable format like "2 days old", "3 hours old", etc.
+   */
+  calculateTaskAge(timestamp) {
+    try {
+      if (!timestamp) return 'unknown age';
+      const assignedDate = new Date(timestamp);
+      if (isNaN(assignedDate.getTime())) return 'unknown age';
+      
+      const now = new Date();
+      const diffMs = now.getTime() - assignedDate.getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+      
+      if (diffMins < 1) return 'just now';
+      if (diffMins < 60) return diffMins + 'm old';
+      if (diffHours < 24) return diffHours + 'h old';
+      if (diffDays < 7) return diffDays + 'd old';
+      const diffWeeks = Math.floor(diffDays / 7);
+      return diffWeeks + 'w old';
+    } catch (e) {
+      return 'unknown age';
+    }
+  }
+
   formatTime(timestamp) {
     try {
       if (!timestamp) return 'unknown';

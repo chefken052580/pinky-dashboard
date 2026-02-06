@@ -1,0 +1,256 @@
+<!-- Pinky Onboarding Screen -->
+<div id="onboarding-overlay" style="
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0a1428 0%, #1a2847 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #e0e0e0;
+">
+  <div style="
+    background: rgba(20, 40, 80, 0.9);
+    border: 2px solid rgba(68, 150, 255, 0.3);
+    border-radius: 12px;
+    padding: 3rem;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  ">
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div style="font-size: 3em; margin-bottom: 0.5rem;">🐭</div>
+      <h1 style="margin: 0; font-size: 1.8em; color: #4496ff;">Welcome to PinkyBot</h1>
+      <p style="color: #9999cc; margin: 0.5rem 0 0 0;">Your autonomous AI assistant</p>
+    </div>
+
+    <!-- Form -->
+    <form id="onboarding-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
+      <!-- Name Input -->
+      <div>
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #aaaadd;">
+          Your Name
+        </label>
+        <input 
+          type="text" 
+          id="user-name" 
+          placeholder="e.g., Ken" 
+          required
+          style="
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(68, 150, 255, 0.3);
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            box-sizing: border-box;
+          "
+        />
+      </div>
+
+      <!-- API Key Input -->
+      <div>
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #aaaadd;">
+          API Key
+        </label>
+        <textarea 
+          id="api-key" 
+          placeholder="Paste your gateway token here (stored locally, never transmitted)" 
+          required
+          rows="4"
+          style="
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(68, 150, 255, 0.3);
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            font-family: monospace;
+            resize: vertical;
+          "
+        ></textarea>
+        <p style="font-size: 0.85em; color: #6666aa; margin: 0.5rem 0 0 0;">
+          🔐 Your token is stored locally and never sent to external servers.
+        </p>
+      </div>
+
+      <!-- Persona Selection -->
+      <div>
+        <label style="display: block; margin-bottom: 0.75rem; font-weight: 500; color: #aaaadd;">
+          Pinky's Personality
+        </label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <label style="
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(68, 150, 255, 0.1);
+            border: 1px solid rgba(68, 150, 255, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+          ">
+            <input type="radio" name="persona" value="professional" checked style="margin-right: 0.5rem;" />
+            <span>Professional</span>
+          </label>
+          <label style="
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(68, 150, 255, 0.1);
+            border: 1px solid rgba(68, 150, 255, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+          ">
+            <input type="radio" name="persona" value="casual" style="margin-right: 0.5rem;" />
+            <span>Casual</span>
+          </label>
+          <label style="
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(68, 150, 255, 0.1);
+            border: 1px solid rgba(68, 150, 255, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+          ">
+            <input type="radio" name="persona" value="creative" style="margin-right: 0.5rem;" />
+            <span>Creative</span>
+          </label>
+          <label style="
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(68, 150, 255, 0.1);
+            border: 1px solid rgba(68, 150, 255, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+          ">
+            <input type="radio" name="persona" value="analytical" style="margin-right: 0.5rem;" />
+            <span>Analytical</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit"
+        style="
+          padding: 1rem;
+          background: linear-gradient(135deg, #4496ff 0%, #2270dd 100%);
+          color: white;
+          border: none;
+          border-radius: 6px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+          margin-top: 1rem;
+        "
+        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(68, 150, 255, 0.4)';"
+        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+      >
+        Start Using Pinky 🚀
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <p style="
+      text-align: center;
+      font-size: 0.85em;
+      color: #6666aa;
+      margin-top: 1.5rem;
+      margin-bottom: 0;
+    ">
+      <a href="https://pinkybot.io" style="color: #4496ff; text-decoration: none;">PinkyBot.io</a> • Your autonomous AI assistant
+    </p>
+  </div>
+</div>
+
+<script>
+  (function() {
+    'use strict';
+
+    // Check if user already onboarded
+    function isUserOnboarded() {
+      return localStorage.getItem('pinky_user_name') && localStorage.getItem('pinky_api_key');
+    }
+
+    // Hide onboarding if already set
+    function hideOnboarding() {
+      const overlay = document.getElementById('onboarding-overlay');
+      if (overlay) {
+        overlay.style.display = 'none';
+      }
+    }
+
+    // Show onboarding
+    function showOnboarding() {
+      const overlay = document.getElementById('onboarding-overlay');
+      if (overlay) {
+        overlay.style.display = 'flex';
+      }
+    }
+
+    // Handle form submission
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('onboarding-form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const userName = document.getElementById('user-name').value;
+          const apiKey = document.getElementById('api-key').value;
+          const persona = document.querySelector('input[name="persona"]:checked').value;
+
+          // Validate
+          if (!userName.trim() || !apiKey.trim()) {
+            alert('Please fill in all fields');
+            return;
+          }
+
+          // Save to localStorage
+          localStorage.setItem('pinky_user_name', userName);
+          localStorage.setItem('pinky_api_key', apiKey);
+          localStorage.setItem('pinky_persona', persona);
+          localStorage.setItem('pinky_onboarded', 'true');
+
+          console.log('[Onboarding] User setup complete:', userName);
+
+          // Hide onboarding
+          hideOnboarding();
+
+          // Notify dashboard
+          if (window.pinkySettings) {
+            window.pinkySettings.loadSettings();
+          }
+        });
+      }
+
+      // Check if onboarded on load
+      if (!isUserOnboarded()) {
+        showOnboarding();
+      } else {
+        hideOnboarding();
+      }
+    });
+
+    // Expose to global
+    window.onboardingUI = {
+      show: showOnboarding,
+      hide: hideOnboarding,
+      isOnboarded: isUserOnboarded
+    };
+  })();
+</script>

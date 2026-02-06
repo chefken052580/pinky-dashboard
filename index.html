@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="task-timer.css">
 </head>
 <body>
+    <!-- Onboarding Screen -->
+    <div id="onboarding-container"></div>
+    
     <!-- Mobile Menu Toggle -->
     <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
         <span></span>
@@ -126,6 +129,9 @@
                 </button>
                 <button class="view-button" data-view="social-media">
                     <span>🌐 Social Media</span>
+                </button>
+                <button class="view-button" data-view="export">
+                    <span>📦 Export</span>
                 </button>
                 <button class="view-button" data-view="settings">
                     <span>⚙️ Settings</span>
@@ -1037,6 +1043,11 @@
                 <h2>⚙️ Settings & Configuration</h2>
                 <div id="settings-content" style="padding-top:20px;"></div>
             </div>
+
+            <div id="export-view" class="view" style="display:none;">
+                <h2>📦 Export & Distribute</h2>
+                <div id="export-package-container"></div>
+            </div>
         </main>
     </div>
 
@@ -1138,7 +1149,18 @@
     <!-- Task Timer - Time Tracking for Running Tasks -->
     <script src="task-timer.js"></script>
     
+    <!-- Export Package Manager - Distributable packages -->
+    <script src="export-package.js"></script>
+    
     <script>
+        // Load Onboarding Screen First
+        (async function() {
+          const response = await fetch('onboarding.html');
+          const html = await response.text();
+          document.getElementById('onboarding-container').innerHTML = html;
+          console.log('[Dashboard] Onboarding screen loaded');
+        })();
+        
         // Initialize all dashboard components
         window.addEventListener('load', () => {
             console.log('[Dashboard] Initializing all modules...');

@@ -142,21 +142,7 @@ class TaskStatistics {
       this.history.shift(); // Keep last 24 updates
     }
 
-    // Average tasks per heartbeat from activity log
-    // Fetch heartbeat count from activity API
-    try {
-      const actRes = await fetch("/api/activity");
-      if (actRes.ok) {
-        const actData = await actRes.json();
-        const hbCount = actData.heartbeatCount || 0;
-        if (hbCount > 0 && stats.completed > 0) {
-          stats.avgTasksPerHeartbeat = (stats.completed / hbCount).toFixed(1);
-        }
-      }
-    } catch (e) {
-      console.log("[TaskStatistics] Activity API unavailable:", e.message);
-    }
-    }
+    // Average tasks per heartbeat - will be calculated in async update() after API fetch
 
     return stats;
   }
@@ -182,6 +168,22 @@ class TaskStatistics {
 
     const stats = this.calculateStats();
     console.log('[TaskStatistics] Rendering with stats:', stats);
+    
+    // Fetch heartbeat count from activity API to calculate avg
+    try {
+      const actRes = await fetch("/api/activity");
+      if (actRes.ok) {
+        const actData = await actRes.json();
+        const hbCount = (actData.heartbeats && Array.isArray(actData.heartbeats)) ? actData.heartbeats.length : 0;
+        if (hbCount > 0 && stats.completed > 0) {
+          stats.avgTasksPerHeartbeat = (stats.completed / hbCount).toFixed(1);
+          console.log('[TaskStatistics] Avg: ' + stats.completed + ' / ' + hbCount + ' = ' + stats.avgTasksPerHeartbeat);
+        }
+      }
+    } catch (e) {
+      console.log("[TaskStatistics] Activity fetch failed:", e.message);
+    }
+    
     this.render(stats);
 
     if (statusEl) {
