@@ -93,7 +93,7 @@
                 if (list) {
                     list.innerHTML = '<div style="padding:20px;text-align:center;color:#e74c3c;font-size:0.8em;">' +
                         '⚠️ Failed to load sessions<br>' +
-                        '<small>' + (err.message || 'Unknown error') + '</small></div>';
+                        '<small>Could not load chats right now</small></div>';
                 }
             });
     }
@@ -146,7 +146,7 @@
                 console.error('[PinkyChat] Failed to load session:', err);
                 var msgs = document.getElementById('chat-messages');
                 if (msgs) {
-                    msgs.innerHTML = '<div class="chat-empty-state" style="color:#e74c3c;">⚠️ Failed to load conversation: ' + (err.message || 'Unknown error') + '</div>';
+                    msgs.innerHTML = '<div class="chat-empty-state" style="color:#e74c3c;">🐭 Couldn\'t load this conversation right now. Try refreshing!</div>';
                 }
             });
     }
@@ -265,16 +265,16 @@
                 // If response is HTML (error page), provide better error message
                 var contentType = r.headers.get('content-type');
                 if (contentType && contentType.includes('text/html')) {
-                    return Promise.reject(new Error('Server returned HTML error (HTTP ' + r.status + '). Chat API may be down.'));
+                    return Promise.reject(new Error('Oops! Pinky\'s brain hiccupped 🧠 Give me a sec and try again!'));
                 }
                 // For other errors, include status code
-                return Promise.reject(new Error('HTTP ' + r.status + ': ' + r.statusText));
+                return Promise.reject(new Error('Hmm, something went wrong on my end 🐭 Try again in a moment!'));
             }
             
             // Check if response is JSON before parsing
             var contentType = r.headers.get('content-type');
             if (!contentType || !contentType.includes('application/json')) {
-                return Promise.reject(new Error('Server returned non-JSON response (Content-Type: ' + contentType + '). Expected JSON.'));
+                return Promise.reject(new Error('I got a weird response back... 🤔 Try again!'));
             }
             
             return r.json();
@@ -284,7 +284,7 @@
             setWaiting(false);
 
             if (data.error) {
-                appendMessage('assistant', '⚠️ Error: ' + data.error);
+                appendMessage('assistant', '🐭 ' + (data.error || 'Something went wrong'));
                 return;
             }
 
@@ -312,9 +312,9 @@
             // Provide clear error message (avoid exposing raw JSON parse errors)
             var errorMsg = err.message || 'Connection error';
             if (errorMsg.includes('Unexpected token')) {
-                errorMsg = 'Invalid response from server. Chat API may be misconfigured.';
+                errorMsg = 'My wires got crossed for a sec! Try sending that again.';
             }
-            appendMessage('assistant', '⚠️ ' + errorMsg);
+            appendMessage('assistant', '🐭 ' + errorMsg + ' (If this keeps happening, check that the backend is running)');
         });
     }
 
