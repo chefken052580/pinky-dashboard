@@ -17,6 +17,7 @@ class TasksBotEnhanced {
     this.container = null; // TIER 3: Store container reference for scoped selectors
     this.priorityFilter = null; // HB#115: Priority filter (null = show all, 'P1'/'P2'/'P3' = filter by priority)
     this.searchFilter = ''; // HB#116: Search filter for task names (empty string = show all)
+    this.undoStack = []; // HB#117: Undo stack - stores last deleted tasks (max 10)
   }
 
   /**
@@ -436,6 +437,14 @@ class TasksBotEnhanced {
     html += '<div class="stat">Completion Rate: <strong>' + completionRate + '%</strong></div>';
     html += '</div>';
 
+    // HB#117: Undo button - show if undo stack has items
+    if (this.undoStack.length > 0) {
+      html += '<div style="margin:12px 0;padding:8px;background:#fff3cd;border-left:4px solid #ffc107;border-radius:4px;">';
+      html += '<button onclick="window.tasksBotEnhanced.restoreLastDeletedTask();" title="Restore last deleted task" style="background:#ffc107;color:#000;border:none;border-radius:4px;padding:8px 14px;cursor:pointer;font-size:0.9em;font-weight:600;">↶ Undo Delete (' + this.undoStack.length + ')</button>';
+      html += '<span style="margin-left:8px;font-size:0.85em;color:#666;">' + this.undoStack[this.undoStack.length - 1].name + '</span>';
+      html += '</div>';
+    }
+
     // Add new task / rule section
     html += '<div class="add-task-section">';
     html += '<h4>➕ Add New Task or Rule</h4>';
@@ -790,6 +799,15 @@ class TasksBotEnhanced {
   async deleteTask(taskName, taskId) {
     if (!confirm('Delete task: "' + taskName + '"?')) return;
     try {
+      // HB#117: Find and save task to undo stack before deletion
+      const taskToDelete = this.allTasks.find(t => t.name === taskName);
+      if (taskToDelete) {
+        this.undoStack.push({ ...taskToDelete, deletedAt: new Date().toISOString() });
+        // Keep only last 10 deletions
+        if (this.undoStack.length > 10) this.undoStack.shift();
+        console.log('[TasksBot] Saved to undo stack:', taskName);
+      }
+      
       // WORKAROUND (HB#113): Delete by name only, NOT by ID
       // Reason: Backend ID persistence bug — IDs regenerate on reload, causing delete-by-ID to fail
       // Brain is reviewing the protected code fix (tasks-api.js line 135)
@@ -804,13 +822,57 @@ class TasksBotEnhanced {
         console.log('[TasksBot] Deleted: ' + taskName);
         await this.loadTasks();
         this.render(true);
-        this.showFileNotification('Task deleted successfully', 'success');
+        this.showFileNotification('Task deleted successfully (Undo available)', 'success');
       } else {
         this.showFileNotification('Failed to delete task', 'error');
       }
     } catch (err) {
       console.error('[TasksBot] Delete failed:', err);
       this.showFileNotification('Error deleting task: ' + err.message, 'error');
+    }
+  }
+
+  /**
+   * HB#117: Restore last deleted task from undo stack
+   */
+  async restoreLastDeletedTask() {
+    if (this.undoStack.length === 0) {
+      this.showFileNotification('No deleted tasks to restore', 'info');
+      return;
+    }
+    
+    try {
+      const deletedTask = this.undoStack.pop();
+      console.log('[TasksBot] Restoring:', deletedTask.name);
+      
+      // Re-create the task with original properties
+      const body = {
+        action: 'create',
+        name: deletedTask.name,
+        status: deletedTask.status || 'pending',
+        priority: deletedTask.priority || '-',
+        notes: deletedTask.notes || ''
+      };
+      
+      const response = await this.fetchWithRetry(this.apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }, 2);
+      
+      if (response.ok) {
+        console.log('[TasksBot] Restored: ' + deletedTask.name);
+        await this.loadTasks();
+        this.render(true);
+        this.showFileNotification('Task restored: ' + deletedTask.name, 'success');
+      } else {
+        this.showFileNotification('Failed to restore task', 'error');
+        // Put it back on the stack if restore failed
+        this.undoStack.push(deletedTask);
+      }
+    } catch (err) {
+      console.error('[TasksBot] Restore failed:', err);
+      this.showFileNotification('Error restoring task: ' + err.message, 'error');
     }
   }
 
