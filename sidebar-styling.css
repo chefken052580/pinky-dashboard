@@ -1,0 +1,75 @@
+/* Sidebar Styling Improvements - T1 */
+/* Enhanced section headers and spacing */
+
+.sidebar h3 {
+    color: #667eea !important;
+    margin-bottom: 18px !important;
+    margin-top: 20px !important;
+    padding: 12px 15px !important;
+    font-size: 1.15em !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* First section header (Bot Army) - no top margin */
+.bot-nav h3 {
+    margin-top: 0 !important;
+}
+
+/* Improved spacing between sections */
+.bot-nav {
+    margin-bottom: 40px !important;
+    padding-bottom: 25px !important;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.2) !important;
+}
+
+.view-nav {
+    margin-bottom: 30px !important;
+    padding-top: 10px;
+}
+
+/* Enhanced button spacing */
+.bot-button, .view-button {
+    margin-bottom: 14px !important;
+}
+
+/* About button special styling */
+#about-nav {
+    margin-top: 20px;
+    border-top: 1px solid rgba(102, 126, 234, 0.15);
+    padding-top: 20px;
+}
+
+/* Dark theme adjustments */
+body.dark-mode .sidebar h3 {
+    color: #8b9cff !important;
+    background: rgba(139, 156, 255, 0.1);
+    border-left-color: #8b9cff;
+}
+
+body.dark-mode .bot-nav {
+    border-bottom-color: rgba(139, 156, 255, 0.2) !important;
+}
+
+body.dark-mode #about-nav {
+    border-top-color: rgba(139, 156, 255, 0.15);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar h3 {
+        font-size: 1em !important;
+        padding: 10px 12px !important;
+        letter-spacing: 1.5px !important;
+    }
+    
+    .bot-nav {
+        margin-bottom: 30px !important;
+        padding-bottom: 20px !important;
+    }
+}
