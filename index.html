@@ -1161,6 +1161,7 @@
         }
         // Load Onboarding Screen First
         (async function() {
+          if (localStorage.getItem('pinky_onboarded') === 'true') return;
           const response = await fetch('onboarding.html');
           const html = await response.text();
           document.getElementById('onboarding-container').innerHTML = html;
