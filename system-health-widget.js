@@ -133,11 +133,23 @@ class SystemHealthWidget {
     async updateMetrics() {
         try {
             const response = await fetch('/api/system/metrics');
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
+            if (!response.ok) throw new Error('Metrics API error');
+            const data = await response.json();
+            this.metrics = data.metrics || data;
+            // Fetch host stats (PowerShell is slow ~2s, so non-blocking)
+            if (!this.hostInfo) {
+                fetch('/api/system/host').then(r => r.json()).then(hd => {
+                    if (hd.success) { this.hostInfo = hd.host; this.renderMetrics(); }
+                }).catch(() => {});
+            } else {
+                // Refresh host stats every 30s
+                if (!this._lastHostFetch || Date.now() - this._lastHostFetch > 30000) {
+                    this._lastHostFetch = Date.now();
+                    fetch('/api/system/host').then(r => r.json()).then(hd => {
+                        if (hd.success) { this.hostInfo = hd.host; this.renderMetrics(); }
+                    }).catch(() => {});
+                }
             }
-
-            const data = await response.json(); this.metrics = data.metrics || data;
             this.renderMetrics();
             this.setStatus('online');
         } catch (error) {
