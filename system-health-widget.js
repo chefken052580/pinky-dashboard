@@ -164,7 +164,10 @@ class SystemHealthWidget {
         document.getElementById('cpu-usage').textContent = cpuPercent.toFixed(1) + '%';
         document.getElementById('cpu-bar').style.width = Math.min(cpuPercent, 100) + '%';
         document.getElementById('cpu-bar').className = 'metric-fill ' + this.getHealthStatus(cpuPercent, 80, 90);
-        document.getElementById('cpu-cores').textContent = m.cpu.cores;
+        const hostCores = this.hostInfo ? this.hostInfo.cores : 0;
+        document.getElementById('cpu-cores').textContent = hostCores
+            ? m.cpu.cores + ' WSL / ' + hostCores + ' Host'
+            : m.cpu.cores;
         document.getElementById('cpu-load').textContent = parseFloat(m.cpu.loadAvg['1min']).toFixed(2);
 
         // Memory
@@ -189,7 +192,8 @@ class SystemHealthWidget {
         }
 
         // Uptime
-        const processHours = Math.floor(m.uptime.process / 3600);
+        const uptimeSec = (typeof m.uptime === 'number') ? m.uptime : (m.uptime.process || 0);
+        const processHours = Math.floor(uptimeSec / 3600);
         const processMins = Math.floor((m.uptime.process % 3600) / 60);
         const systemHours = Math.floor(m.uptime.system / 3600);
         const systemDays = Math.floor(systemHours / 24);
