@@ -143,14 +143,19 @@ class TaskStatistics {
     }
 
     // Average tasks per heartbeat from activity log
-    if (window.pinkyActivity && Array.isArray(window.pinkyActivity) && window.pinkyActivity.length > 0) {
-      const heartbeatCount = window.pinkyActivity.filter(a => a.type === 'heartbeat').length;
-      const taskCount = window.pinkyActivity.filter(a => a.type === 'task').length;
-      if (heartbeatCount > 0) {
-        stats.avgTasksPerHeartbeat = (taskCount / heartbeatCount).toFixed(1);
+    // Fetch heartbeat count from activity API
+    try {
+      const actRes = await fetch("/api/activity");
+      if (actRes.ok) {
+        const actData = await actRes.json();
+        const hbCount = actData.heartbeatCount || 0;
+        if (hbCount > 0 && stats.completed > 0) {
+          stats.avgTasksPerHeartbeat = (stats.completed / hbCount).toFixed(1);
+        }
       }
-    } else {
-      console.log('[TaskStatistics] pinkyActivity not available yet:', typeof window.pinkyActivity);
+    } catch (e) {
+      console.log("[TaskStatistics] Activity API unavailable:", e.message);
+    }
     }
 
     return stats;
