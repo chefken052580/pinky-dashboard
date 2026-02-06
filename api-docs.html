@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PinkyBot API Documentation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1428 0%, #1a2847 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        h1 {
+            color: #4496ff;
+            font-size: 2.5em;
+            margin-bottom: 0.5rem;
+        }
+        h2 {
+            color: #4496ff;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid rgba(68, 150, 255, 0.3);
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            color: #aaaadd;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+        .endpoint {
+            background: rgba(20, 40, 80, 0.5);
+            border: 1px solid rgba(68, 150, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .method {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-right: 1rem;
+        }
+        .get { background: #4496ff; color: white; }
+        .post { background: #44ff44; color: #000; }
+        .put { background: #ffbb44; color: #000; }
+        .delete { background: #ff4444; color: white; }
+        .url {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+        .description {
+            color: #aaaadd;
+            margin: 1rem 0;
+        }
+        .request, .response {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            border-left: 3px solid #4496ff;
+        }
+        .request { border-left-color: #44ff44; }
+        .response { border-left-color: #ffbb44; }
+        pre {
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.9em;
+        }
+        code {
+            color: #ffdd99;
+        }
+        .base-url {
+            background: rgba(68, 150, 255, 0.1);
+            border: 1px solid rgba(68, 150, 255, 0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-family: monospace;
+            font-size: 1.1em;
+            color: #4496ff;
+        }
+        .note {
+            background: rgba(255, 187, 68, 0.1);
+            border-left: 3px solid #ffbb44;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .auth {
+            background: rgba(68, 150, 255, 0.1);
+            border-left: 3px solid #4496ff;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐭 PinkyBot API Documentation</h1>
+            <p>Complete reference for all PinkyBot REST API endpoints</p>
+        </header>
+
+        <div class="base-url">
+            Base URL: <code>http://192.168.254.4:3030</code> or <code>https://pinky-api.crackerbot.io</code>
+        </div>
+
+        <div class="auth">
+            <strong>Authentication:</strong> API keys are configured locally in Settings. No Authorization header needed for local deployment.
+        </div>
+
+        <!-- HEALTH ENDPOINTS -->
+        <h2>🏥 Health & Status</h2>
+
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /api/health</h3>
+            <p class="description">Check server status, uptime, and available models</p>
+            <div class="response">
+                <strong>Response:</strong>
+                <pre><code>{
+  "status": "online",
+  "mode": "LIVE",
+  "model": "xai/grok-4-latest",
+  "codeModel": "anthropic/claude-sonnet-4-5",
+  "hasXaiKey": true,
+  "hasAnthropicKey": true,
+  "uptime": 3600.5,
+  "timestamp": "2026-02-06T07:00:00.000Z",
+  "wsClients": 0
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- TASK ENDPOINTS -->
+        <h2>📋 Tasks</h2>
+
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /api/tasks</h3>
+            <p class="description">Get all tasks (pending, running, completed)</p>
+            <div class="response">
+                <strong>Response (array):</strong>
+                <pre><code>[{
+  "id": "create-readme-install-guide",
+  "name": "Create README.md install guide for new PinkyBot users",
+  "assigned": "2026-02-06",
+  "status": "completed",
+  "updated": "2026-02-06",
+  "priority": "P2",
+  "notes": "6.7KB with installation guide, features, pricing, troubleshooting",
+  "sort_order": 0
+}]</code></pre>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <h3><span class="method post">POST</span> /api/tasks</h3>
+            <p class="description">Create, update, or delete tasks</p>
+            <div class="request">
+                <strong>Create Task:</strong>
+                <pre><code>{
+  "action": "create",
+  "name": "My task",
+  "status": "pending",
+  "priority": "P1",
+  "notes": "Task description"
+}</code></pre>
+            </div>
+            <div class="request">
+                <strong>Update Status:</strong>
+                <pre><code>{
+  "action": "update_status",
+  "taskName": "My task",
+  "newStatus": "running"
+}</code></pre>
+            </div>
+            <div class="request">
+                <strong>Delete Task:</strong>
+                <pre><code>{
+  "action": "delete",
+  "name": "My task"
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- ACTIVITY ENDPOINTS -->
+        <h2>📊 Activity & Logging</h2>
+
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /api/activity</h3>
+            <p class="description">Get heartbeat activity log (last 100 entries)</p>
+            <div class="response">
+                <strong>Response:</strong>
+                <pre><code>{
+  "heartbeats": [{
+    "timestamp": 1707190800000,
+    "activity": "Heartbeat #129: Completed 2 P2 tasks...",
+    "lagMs": 0,
+    "tokens": 2100,
+    "exec": 12
+  }],
+  "heartbeatCount": 129,
+  "lastUpdated": "2026-02-06T07:00:00.000Z"
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- SYSTEM ENDPOINTS -->
+        <h2>💻 System Health</h2>
+
+        <div class="endpoint">
+            <h3><span class="method get">GET</span> /api/system/metrics</h3>
+            <p class="description">Get live CPU, memory, disk usage</p>
+            <div class="note">
+                Returns system resource metrics in real-time
+            </div>
+        </div>
+
+        <!-- AUTH NOTES -->
+        <h2>🔐 Authentication</h2>
+        <p class="description">
+            For self-hosted PinkyBot, no API key is required — the server is local and assumes trusted access.<br>
+            For cloud-hosted instances, API keys are managed in Settings > API Configuration.
+        </p>
+
+        <!-- RATE LIMITS -->
+        <h2>⚡ Rate Limits</h2>
+        <p class="description">
+            Local deployment: Unlimited<br>
+            Cloud deployment: Pro tier gets 10,000 req/hour, Enterprise gets 100,000 req/hour
+        </p>
+
+        <!-- ERROR HANDLING -->
+        <h2>❌ Error Handling</h2>
+        <p class="description">
+            All responses return HTTP status codes:
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li><code>200</code> — Success</li>
+                <li><code>400</code> — Bad request (invalid parameters)</li>
+                <li><code>404</code> — Not found</li>
+                <li><code>500</code> — Server error</li>
+            </ul>
+        </p>
+
+        <!-- EXAMPLES -->
+        <h2>📚 Examples</h2>
+
+        <h3>1. Check if PinkyBot is online</h3>
+        <pre><code>curl http://192.168.254.4:3030/api/health</code></pre>
+
+        <h3>2. Get all pending tasks</h3>
+        <pre><code>curl http://192.168.254.4:3030/api/tasks | jq '.[] | select(.status=="pending")'</code></pre>
+
+        <h3>3. Create a new task</h3>
+        <pre><code>curl -X POST http://192.168.254.4:3030/api/tasks \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "action": "create",
+    "name": "Write documentation",
+    "priority": "P1",
+    "notes": "Create user guide"
+  }'</code></pre>
+
+        <h3>4. Update task status to running</h3>
+        <pre><code>curl -X POST http://192.168.254.4:3030/api/tasks \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "action": "update_status",
+    "taskName": "Write documentation",
+    "newStatus": "running"
+  }'</code></pre>
+
+        <h3>5. View recent activity</h3>
+        <pre><code>curl http://192.168.254.4:3030/api/activity | jq '.heartbeats | last'</code></pre>
+
+        <!-- SUPPORT -->
+        <h2>💬 Support</h2>
+        <p class="description">
+            For API questions, feature requests, or bug reports:
+            <ul style="margin-left: 2rem; margin-top: 1rem;">
+                <li>📧 Email: support@pinkybot.io</li>
+                <li>💬 Discord: https://discord.com/invite/pinkybot</li>
+                <li>🐙 GitHub: https://github.com/chefken052580/pinkybot</li>
+            </ul>
+        </p>
+
+        <hr style="margin: 3rem 0; border: none; border-top: 1px solid rgba(68, 150, 255, 0.2);">
+        <p style="text-align: center; color: #6666aa;">
+            PinkyBot API © 2026 | Built by Ken & Pinky 🐭
+        </p>
+    </div>
+</body>
+</html>

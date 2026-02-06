@@ -1,0 +1,241 @@
+/* Task History Chart Styles */
+
+.task-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: linear-gradient(135deg, rgba(68, 136, 255, 0.1), rgba(68, 255, 68, 0.1));
+  border-radius: 8px;
+  border-left: 4px solid #4488ff;
+}
+
+.task-history-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #fff;
+}
+
+.update-status {
+  font-size: 0.85em;
+  padding: 4px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  color: #ddd;
+}
+
+.task-history-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.history-stat {
+  background: linear-gradient(135deg, rgba(68, 136, 255, 0.15), rgba(68, 136, 255, 0.05));
+  border: 1px solid rgba(68, 136, 255, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.history-stat .stat-label {
+  display: block;
+  font-size: 0.8em;
+  color: #aaa;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-stat .stat-value {
+  display: block;
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #44ff44;
+  font-family: 'Courier New', monospace;
+}
+
+.task-history-chart {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(68, 136, 255, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.chart-bars {
+  display: flex;
+  gap: 8px;
+  height: 200px;
+  align-items: flex-end;
+  justify-content: space-around;
+  min-width: 100%;
+}
+
+.chart-bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chart-bar-container:hover {
+  transform: translateY(-5px);
+}
+
+.chart-bar-container:hover .chart-bar {
+  filter: brightness(1.3);
+  box-shadow: 0 0 10px rgba(68, 255, 68, 0.4);
+}
+
+.chart-bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: #4488ff;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.chart-bar::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), transparent);
+  border-radius: 4px 4px 0 0;
+}
+
+.chart-label {
+  font-size: 0.75em;
+  color: #999;
+  margin-top: 8px;
+  white-space: nowrap;
+  transform: rotate(-45deg);
+  transform-origin: left;
+  margin-left: 10px;
+  opacity: 0.8;
+}
+
+.chart-value {
+  font-size: 0.7em;
+  color: #ddd;
+  margin-top: 4px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+}
+
+.task-history-legend {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+  color: #aaa;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .task-history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .task-history-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .chart-bars {
+    height: 150px;
+    gap: 4px;
+  }
+
+  .chart-bar-container {
+    min-width: 20px;
+  }
+
+  .chart-label {
+    font-size: 0.6em;
+    margin-left: 8px;
+  }
+
+  .task-history-legend {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* Dark mode (if using dark theme) */
+html.light-mode .task-history-header {
+  background: linear-gradient(135deg, rgba(200, 220, 255, 0.2), rgba(200, 255, 200, 0.2));
+  border-left-color: #0066ff;
+}
+
+html.light-mode .task-history-stats {
+  background: rgba(200, 220, 255, 0.1);
+}
+
+html.light-mode .history-stat {
+  background: linear-gradient(135deg, rgba(100, 150, 255, 0.2), rgba(100, 150, 255, 0.05));
+  border-color: rgba(100, 150, 255, 0.4);
+}
+
+html.light-mode .history-stat .stat-label {
+  color: #666;
+}
+
+html.light-mode .history-stat .stat-value {
+  color: #00aa00;
+}
+
+html.light-mode .task-history-chart {
+  background: rgba(200, 220, 255, 0.1);
+  border-color: rgba(100, 150, 255, 0.3);
+}
+
+html.light-mode .chart-bar-container:hover .chart-bar {
+  box-shadow: 0 0 10px rgba(0, 100, 255, 0.4);
+}
+
+html.light-mode .chart-label {
+  color: #666;
+}
+
+html.light-mode .chart-value {
+  color: #333;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+html.light-mode .task-history-legend {
+  background: rgba(200, 220, 255, 0.1);
+}
+
+html.light-mode .legend-item {
+  color: #666;
+}

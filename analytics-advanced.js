@@ -17,45 +17,77 @@ class AnalyticsEngine {
   }
 
   /**
-   * Get real data from activity and task managers
+   * Get real data from API
    */
-  getMetrics() {
-    const activity = activityData || {};
-    const tasks = window.taskQueueManager || {};
-    const heartbeat = window.heartbeatManager || {};
+  async getMetrics() {
+    try {
+      const usageResp = await fetch('/api/usage').then(r => r.json());
+      const tasksResp = await fetch('/api/tasks').then(r => r.json());
+      const activityResp = await fetch('/api/activity').then(r => r.json());
 
-    return {
-      botsActive: this.bots.length,
-      tasksToday: (tasks.completedTasks?.length || 0) + (tasks.tasks?.length || 0),
-      heartbeatCount: heartbeat.metrics?.heartbeatsCompleted || 0,
-      tokensUsed: activity.usage?.tokens || 0,
-      execCalls: activity.usage?.exec || 0,
-      filesProcessed: activity.usage?.files || 0,
-      avgResponseTime: activity.usage?.responses?.length > 0 ? 
-        Math.round(activity.usage.responses.reduce((a,b) => a+b) / activity.usage.responses.length) : 0
-    };
+      const completedCount = tasksResp.filter(t => t.status === 'completed').length;
+      const pendingCount = tasksResp.filter(t => t.status !== 'completed').length;
+
+      return {
+        botsActive: this.bots.length,
+        tasksCompleted: completedCount,
+        tasksPending: pendingCount,
+        tasksToday: activityResp?.activities?.filter(a => {
+          const date = new Date(a.timestampEST || a.timestamp);
+          const today = new Date();
+          return date.toDateString() === today.toDateString();
+        }).length || 0,
+        heartbeatCount: activityResp?.activities?.filter(a => a.activity?.includes('Heartbeat')).length || 0,
+        tokensUsed: usageResp.totalTokens || 0,
+        tokensInput: usageResp.input || 0,
+        tokensOutput: usageResp.output || 0,
+        tokensCacheRead: usageResp.cacheRead || 0,
+        tokensCacheWrite: usageResp.cacheWrite || 0,
+        totalCost: usageResp.totalCost || 0,
+        byModel: usageResp.byModel || {}
+      };
+    } catch (err) {
+      console.log('[AnalyticsEngine] Error fetching metrics:', err.message);
+      return {
+        botsActive: this.bots.length,
+        tasksCompleted: 0,
+        tasksPending: 0,
+        tasksToday: 0,
+        heartbeatCount: 0,
+        tokensUsed: 0,
+        tokensInput: 0,
+        tokensOutput: 0,
+        tokensCacheRead: 0,
+        tokensCacheWrite: 0,
+        totalCost: 0,
+        byModel: {}
+      };
+    }
   }
 
   /**
    * Render full analytics dashboard
    */
-  renderUI() {
+  async renderUI() {
     const container = document.getElementById('analytics-view');
     if (!container) return;
 
-    const metrics = this.getMetrics();
+    const metrics = await this.getMetrics();
     let html = '<div class="analytics-dashboard">';
     
     html += '<h2>📊 Analytics Dashboard</h2>';
     
+    // Format numbers with commas
+    const fmt = (n) => Math.round(n).toLocaleString();
+    
     // Key Metrics Grid
     html += '<div class="metrics-grid">';
     html += '<div class="metric-card"><span class="metric-icon">🤖</span><div><div class="metric-label">Active Bots</div><div class="metric-value">' + metrics.botsActive + '</div></div></div>';
-    html += '<div class="metric-card"><span class="metric-icon">📋</span><div><div class="metric-label">Tasks Today</div><div class="metric-value">' + metrics.tasksToday + '</div></div></div>';
+    html += '<div class="metric-card"><span class="metric-icon">✅</span><div><div class="metric-label">Completed Tasks</div><div class="metric-value">' + metrics.tasksCompleted + '</div></div></div>';
+    html += '<div class="metric-card"><span class="metric-icon">⏳</span><div><div class="metric-label">Pending Tasks</div><div class="metric-value">' + metrics.tasksPending + '</div></div></div>';
     html += '<div class="metric-card"><span class="metric-icon">💓</span><div><div class="metric-label">Heartbeats</div><div class="metric-value">' + metrics.heartbeatCount + '</div></div></div>';
-    html += '<div class="metric-card"><span class="metric-icon">🎯</span><div><div class="metric-label">Tokens Used</div><div class="metric-value">' + metrics.tokensUsed + '</div></div></div>';
-    html += '<div class="metric-card"><span class="metric-icon">⚡</span><div><div class="metric-label">Exec Calls</div><div class="metric-value">' + metrics.execCalls + '</div></div></div>';
-    html += '<div class="metric-card"><span class="metric-icon">📁</span><div><div class="metric-label">Files</div><div class="metric-value">' + metrics.filesProcessed + '</div></div></div>';
+    html += '<div class="metric-card"><span class="metric-icon">🎯</span><div><div class="metric-label">Total Tokens</div><div class="metric-value">' + fmt(metrics.tokensUsed) + '</div></div></div>';
+    html += '<div class="metric-card"><span class="metric-icon">💰</span><div><div class="metric-label">Total Cost</div><div class="metric-value">$' + metrics.totalCost.toFixed(2) + '</div></div></div>';
     html += '</div>';
 
     // Bot Status Table
@@ -75,25 +107,45 @@ class AnalyticsEngine {
     html += '</tbody></table>';
     html += '</div>';
 
-    // Token Usage Breakdown
+    // Token Usage Breakdown by Model
     html += '<div class="analytics-section">';
-    html += '<h3>🎯 Token Allocation</h3>';
+    html += '<h3>🎯 Token Allocation by Model</h3>';
     html += '<div class="token-breakdown">';
-    const tasks = [
-      { name: 'Code Analysis', percent: 35 },
-      { name: 'Documentation', percent: 25 },
-      { name: 'Research', percent: 20 },
-      { name: 'Task Management', percent: 12 },
-      { name: 'Other', percent: 8 }
-    ];
-    tasks.forEach(task => {
-      const tokens = Math.round(metrics.tokensUsed * task.percent / 100);
+    
+    const models = Object.entries(metrics.byModel).map(([name, data]) => ({
+      name: name,
+      tokens: data.tokens || 0,
+      percent: (data.tokens / metrics.tokensUsed) * 100 || 0,
+      cost: data.cost || 0
+    })).sort((a, b) => b.tokens - a.tokens);
+    
+    models.forEach(model => {
+      const percent = Math.round(model.percent);
       html += '<div class="token-row">';
-      html += '<span class="token-name">' + task.name + '</span>';
-      html += '<div class="token-bar-container"><div class="token-bar" style="width:' + task.percent + '%"></div></div>';
-      html += '<span class="token-count">' + tokens + ' tokens</span>';
+      html += '<span class="token-name">' + model.name + '</span>';
+      html += '<div class="token-bar-container"><div class="token-bar" style="width:' + percent + '%"></div></div>';
+      html += '<span class="token-count">' + fmt(model.tokens) + ' tokens ($' + model.cost.toFixed(2) + ')</span>';
       html += '</div>';
     });
+    
+    // Token type breakdown
+    html += '<hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">';
+    html += '<h4>📊 Token Types</h4>';
+    const typeBreakdown = [
+      { name: 'Input Tokens', value: metrics.tokensInput, icon: '📥' },
+      { name: 'Output Tokens', value: metrics.tokensOutput, icon: '📤' },
+      { name: 'Cache Read', value: metrics.tokensCacheRead, icon: '📖' },
+      { name: 'Cache Write', value: metrics.tokensCacheWrite, icon: '💾' }
+    ];
+    typeBreakdown.forEach(type => {
+      const percent = (type.value / metrics.tokensUsed) * 100 || 0;
+      html += '<div class="token-row">';
+      html += '<span class="token-name">' + type.icon + ' ' + type.name + '</span>';
+      html += '<div class="token-bar-container"><div class="token-bar" style="width:' + percent + '%"></div></div>';
+      html += '<span class="token-count">' + fmt(type.value) + '</span>';
+      html += '</div>';
+    });
+    
     html += '</div>';
     html += '</div>';
 

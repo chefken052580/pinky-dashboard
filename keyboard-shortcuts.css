@@ -1,0 +1,259 @@
+/* KEYBOARD SHORTCUTS STYLES */
+
+/* Modal Overlay */
+.shortcuts-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease;
+}
+
+/* Dialog Container */
+.shortcuts-dialog {
+    background: linear-gradient(135deg, #0f1821 0%, #1a2540 100%);
+    border: 1px solid rgba(68, 150, 255, 0.3);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+                0 0 40px rgba(68, 150, 255, 0.2);
+    animation: slideUp 0.3s ease;
+}
+
+html.light-mode .shortcuts-dialog {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f5ff 100%);
+    border-color: rgba(68, 150, 255, 0.2);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1),
+                0 0 40px rgba(68, 150, 255, 0.1);
+}
+
+/* Dialog Header */
+.shortcuts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(68, 150, 255, 0.2);
+}
+
+.shortcuts-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #4496ff;
+}
+
+html.light-mode .shortcuts-header h2 {
+    color: #2563eb;
+}
+
+.shortcuts-close {
+    background: rgba(68, 150, 255, 0.1);
+    border: 1px solid rgba(68, 150, 255, 0.2);
+    color: #4496ff;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shortcuts-close:hover {
+    background: rgba(68, 150, 255, 0.2);
+    border-color: rgba(68, 150, 255, 0.4);
+}
+
+html.light-mode .shortcuts-close {
+    background: rgba(68, 150, 255, 0.05);
+    color: #2563eb;
+    border-color: rgba(68, 150, 255, 0.15);
+}
+
+html.light-mode .shortcuts-close:hover {
+    background: rgba(68, 150, 255, 0.1);
+    border-color: rgba(68, 150, 255, 0.3);
+}
+
+/* Shortcuts List */
+.shortcuts-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 500px) {
+    .shortcuts-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Shortcut Item */
+.shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(68, 150, 255, 0.05);
+    border: 1px solid rgba(68, 150, 255, 0.1);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.shortcut-item:hover {
+    background: rgba(68, 150, 255, 0.1);
+    border-color: rgba(68, 150, 255, 0.2);
+    transform: translateX(4px);
+}
+
+html.light-mode .shortcut-item {
+    background: rgba(68, 150, 255, 0.02);
+    border-color: rgba(68, 150, 255, 0.1);
+}
+
+html.light-mode .shortcut-item:hover {
+    background: rgba(68, 150, 255, 0.08);
+    border-color: rgba(68, 150, 255, 0.2);
+}
+
+/* Keyboard Key */
+kbd {
+    background: rgba(68, 150, 255, 0.2);
+    border: 1px solid rgba(68, 150, 255, 0.3);
+    color: #4496ff;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: 600;
+    font-size: 0.85rem;
+    min-width: 40px;
+    text-align: center;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+html.light-mode kbd {
+    background: rgba(68, 150, 255, 0.1);
+    border-color: rgba(68, 150, 255, 0.2);
+    color: #2563eb;
+}
+
+.shortcut-item span {
+    color: #ddd;
+    font-size: 0.95rem;
+}
+
+html.light-mode .shortcut-item span {
+    color: #444;
+}
+
+/* Hint Text */
+.shortcuts-hint {
+    text-align: center;
+    color: #888;
+    font-size: 0.85rem;
+    margin: 0;
+    padding: 0.75rem;
+    background: rgba(68, 150, 255, 0.05);
+    border-radius: 6px;
+}
+
+html.light-mode .shortcuts-hint {
+    color: #999;
+    background: rgba(68, 150, 255, 0.02);
+}
+
+/* Notification */
+.keyboard-shortcut-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(20, 40, 80, 0.9);
+    border: 1px solid rgba(68, 150, 255, 0.3);
+    color: #4496ff;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.keyboard-shortcut-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+html.light-mode .keyboard-shortcut-notification {
+    background: rgba(240, 250, 255, 0.95);
+    color: #2563eb;
+    border-color: rgba(68, 150, 255, 0.2);
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+    .shortcuts-dialog {
+        padding: 1.5rem;
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .shortcuts-header {
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+    }
+
+    .shortcuts-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .shortcut-item {
+        padding: 0.6rem 0.8rem;
+        gap: 0.75rem;
+    }
+
+    .keyboard-shortcut-notification {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

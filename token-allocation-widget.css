@@ -1,0 +1,331 @@
+/**
+ * Token Allocation Widget Styles
+ */
+
+.token-allocation-widget {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+html.dark-mode .token-allocation-widget {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.token-widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.token-widget-header h3 {
+  margin: 0;
+  font-size: 1.4em;
+  font-weight: 600;
+  color: #333;
+}
+
+html.dark-mode .token-widget-header h3 {
+  color: #e0e0e0;
+}
+
+.refresh-btn {
+  background: none;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: all 0.2s;
+}
+
+.refresh-btn:hover {
+  background: #f0f0f0;
+  transform: rotate(180deg);
+}
+
+html.dark-mode .refresh-btn {
+  border-color: #444;
+}
+
+html.dark-mode .refresh-btn:hover {
+  background: #333;
+}
+
+/* Metric Cards */
+.token-metric-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+html.dark-mode .metric-card {
+  background: #0f3460;
+  border-color: #333;
+}
+
+.metric-card.total {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+}
+
+.metric-card.avg {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+}
+
+.metric-card.efficiency {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  border: none;
+}
+
+.metric-label {
+  font-size: 0.9em;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+html.dark-mode .metric-card:not(.total):not(.avg):not(.efficiency) .metric-label {
+  color: #999;
+}
+
+.metric-value {
+  font-size: 1.8em;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.metric-detail {
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+html.dark-mode .metric-card:not(.total):not(.avg):not(.efficiency) .metric-detail {
+  color: #aaa;
+}
+
+/* Token Breakdown Section */
+.token-breakdown {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+html.dark-mode .token-breakdown {
+  background: #0f3460;
+  border-color: #333;
+}
+
+.token-breakdown h4 {
+  margin: 0 0 16px 0;
+  font-size: 1.1em;
+  color: #333;
+}
+
+html.dark-mode .token-breakdown h4 {
+  color: #e0e0e0;
+}
+
+.allocation-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.allocation-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.allocation-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95em;
+}
+
+.category-name {
+  font-weight: 500;
+  color: #555;
+}
+
+html.dark-mode .category-name {
+  color: #bbb;
+}
+
+.percentage {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #666;
+}
+
+html.dark-mode .percentage {
+  color: #999;
+}
+
+.allocation-bar {
+  background: #f0f0f0;
+  border-radius: 6px;
+  height: 28px;
+  overflow: hidden;
+  position: relative;
+}
+
+html.dark-mode .allocation-bar {
+  background: #1a1a2e;
+}
+
+.allocation-fill {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 8px;
+  transition: width 0.3s ease;
+  position: relative;
+  min-width: 60px;
+}
+
+.allocation-fill.code {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.allocation-fill.docs {
+  background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+}
+
+.allocation-fill.research {
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.allocation-fill.taskMgmt {
+  background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.allocation-fill.other {
+  background: linear-gradient(90deg, #fa709a 0%, #fee140 100%);
+}
+
+.tokens-label {
+  color: white;
+  font-size: 0.85em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Heartbeat Metrics */
+.heartbeat-metrics {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+html.dark-mode .heartbeat-metrics {
+  background: #0f3460;
+  border-color: #333;
+}
+
+.heartbeat-metrics h4 {
+  margin: 0 0 12px 0;
+  font-size: 1.1em;
+  color: #333;
+}
+
+html.dark-mode .heartbeat-metrics h4 {
+  color: #e0e0e0;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.95em;
+}
+
+html.dark-mode .metric-row {
+  border-color: #1a1a2e;
+}
+
+.metric-row:last-child {
+  border-bottom: none;
+}
+
+.metric-name {
+  color: #666;
+  font-weight: 500;
+}
+
+html.dark-mode .metric-name {
+  color: #999;
+}
+
+.metric-val {
+  color: #333;
+  font-weight: 600;
+}
+
+html.dark-mode .metric-val {
+  color: #e0e0e0;
+}
+
+/* Widget Footer */
+.widget-footer {
+  text-align: right;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+}
+
+html.dark-mode .widget-footer {
+  border-color: #333;
+}
+
+.widget-footer small {
+  color: #999;
+  font-size: 0.85em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .token-allocation-widget {
+    padding: 16px;
+  }
+
+  .token-metric-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}

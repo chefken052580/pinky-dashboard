@@ -1,0 +1,247 @@
+/* Task Search & Filter Controls Styles */
+
+.task-search-filter-controls {
+  background: linear-gradient(135deg, rgba(68, 100, 180, 0.1), rgba(68, 180, 100, 0.1));
+  border: 1px solid rgba(68, 136, 255, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.search-filter-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(68, 136, 255, 0.2);
+}
+
+.search-filter-header h3 {
+  margin: 0;
+  font-size: 1.1em;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-filter-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 0.8fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.search-control,
+.filter-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.search-control label,
+.filter-control label {
+  font-size: 0.85em;
+  color: #aaa;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.task-search-input,
+.task-filter-select {
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(68, 136, 255, 0.3);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.95em;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.task-search-input::placeholder {
+  color: rgba(200, 200, 200, 0.5);
+}
+
+.task-search-input:focus,
+.task-filter-select:focus {
+  outline: none;
+  border-color: rgba(68, 255, 136, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 8px rgba(68, 255, 136, 0.2);
+}
+
+.task-filter-select {
+  cursor: pointer;
+}
+
+.task-filter-select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.search-hint {
+  font-size: 0.75em;
+  color: rgba(200, 200, 200, 0.5);
+  margin-top: 2px;
+}
+
+.clear-filters-btn {
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgba(255, 100, 68, 0.2), rgba(255, 150, 68, 0.2));
+  border: 1px solid rgba(255, 100, 68, 0.4);
+  border-radius: 6px;
+  color: #ffbb44;
+  font-size: 0.95em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.clear-filters-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 100, 68, 0.3), rgba(255, 150, 68, 0.3));
+  border-color: rgba(255, 100, 68, 0.6);
+  box-shadow: 0 0 8px rgba(255, 100, 68, 0.3);
+  transform: translateY(-2px);
+}
+
+.clear-filters-btn:active {
+  transform: translateY(0);
+}
+
+.task-filter-status {
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  font-size: 0.9em;
+  color: #aaa;
+  text-align: center;
+  font-style: italic;
+}
+
+.task-filter-status.active {
+  background: rgba(68, 255, 136, 0.1);
+  border: 1px solid rgba(68, 255, 136, 0.2);
+  color: #44ff44;
+  font-style: normal;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .search-filter-grid {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+
+  .filter-control:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .filter-control:last-child label {
+    display: none;
+  }
+
+  .clear-filters-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .task-search-filter-controls {
+    padding: 15px;
+  }
+
+  .search-filter-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .search-filter-header h3 {
+    font-size: 1em;
+  }
+
+  .task-search-input,
+  .task-filter-select {
+    font-size: 0.9em;
+    padding: 9px 10px;
+  }
+
+  .clear-filters-btn {
+    width: 100%;
+    padding: 9px 10px;
+  }
+}
+
+/* Light Mode Support */
+html.light-mode .task-search-filter-controls {
+  background: linear-gradient(135deg, rgba(100, 150, 255, 0.1), rgba(100, 200, 150, 0.1));
+  border-color: rgba(100, 150, 255, 0.3);
+}
+
+html.light-mode .search-filter-header {
+  border-bottom-color: rgba(100, 150, 255, 0.3);
+}
+
+html.light-mode .search-control label,
+html.light-mode .filter-control label {
+  color: #666;
+}
+
+html.light-mode .task-search-input,
+html.light-mode .task-filter-select {
+  background: rgba(200, 220, 255, 0.2);
+  border-color: rgba(100, 150, 255, 0.4);
+  color: #333;
+}
+
+html.light-mode .task-search-input::placeholder {
+  color: rgba(100, 100, 100, 0.5);
+}
+
+html.light-mode .task-search-input:focus,
+html.light-mode .task-filter-select:focus {
+  border-color: rgba(50, 150, 255, 0.6);
+  background: rgba(200, 220, 255, 0.3);
+  box-shadow: 0 0 8px rgba(50, 150, 255, 0.2);
+}
+
+html.light-mode .task-filter-select option {
+  background: #f5f5f5;
+  color: #333;
+}
+
+html.light-mode .search-hint {
+  color: rgba(100, 100, 100, 0.5);
+}
+
+html.light-mode .clear-filters-btn {
+  background: linear-gradient(135deg, rgba(255, 100, 68, 0.15), rgba(255, 150, 68, 0.15));
+  border-color: rgba(255, 100, 68, 0.3);
+  color: #cc6600;
+}
+
+html.light-mode .clear-filters-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 100, 68, 0.25), rgba(255, 150, 68, 0.25));
+  border-color: rgba(255, 100, 68, 0.5);
+  box-shadow: 0 0 8px rgba(255, 100, 68, 0.2);
+}
+
+html.light-mode .task-filter-status {
+  background: rgba(200, 220, 255, 0.1);
+  color: #666;
+}
+
+html.light-mode .task-filter-status.active {
+  background: rgba(100, 200, 100, 0.15);
+  border-color: rgba(100, 200, 100, 0.3);
+  color: #00aa00;
+}
+
+/* Task Item Hide Animation */
+.task-item {
+  transition: all 0.3s ease;
+}
+
+.task-item[style*="display: none"] {
+  pointer-events: none;
+}

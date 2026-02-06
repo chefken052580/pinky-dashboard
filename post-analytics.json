@@ -1,0 +1,12 @@
+{
+  "posted": [],
+  "failed": [],
+  "totals": {
+    "twitter": 0,
+    "instagram": 0,
+    "discord": 0,
+    "linkedin": 0,
+    "mastodon": 0,
+    "bluesky": 0
+  }
+}

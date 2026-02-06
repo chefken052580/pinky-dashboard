@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="error-page-pinky.css">
     <link rel="stylesheet" href="notification-sounds.css">
     <link rel="stylesheet" href="task-analytics.css">
+    <link rel="stylesheet" href="tooltip-system.css">
 </head>
 <body>
     <!-- Onboarding Screen -->
@@ -88,14 +89,14 @@
                     <span class="bot-icon">📊</span>
                     <span class="bot-name">Dashboard</span>
                 </button>
-                <button class="bot-button" data-bot="chat">
+                <button class="bot-button" id="chat-view" data-bot="chat">
                     <span class="bot-icon">💬</span>
                     <span class="bot-name">Chat</span>
                     <span class="notification-badge chat-badge hidden">0</span>
                     <span class="bot-status online"></span>
                     <span style="font-size:0.7em;opacity:0.7;">Talk to Pinky</span>
                 </button>
-                <button class="bot-button" data-bot="tasks">
+                <button class="bot-button" id="tasks-nav" data-bot="tasks">
                     <span class="bot-icon">🎯</span>
                     <span class="bot-name">TasksBot</span>
                     <span class="notification-badge tasks-badge hidden">0</span>
@@ -143,16 +144,19 @@
 
             <nav class="view-nav">
                 <h3>📱 Views</h3>
-                <button class="view-button" data-view="analytics">
+                <button class="view-button" id="analytics-view" data-view="analytics">
                     <span>📈 Analytics</span>
                 </button>
                 <button class="view-button" data-view="social-media">
                     <span>🌐 Social Media</span>
                 </button>
+                <button class="view-button" data-view="wordpress">
+                    <span>📝 WordPress</span>
+                </button>
                 <button class="view-button" data-view="export">
                     <span>📦 Export</span>
                 </button>
-                <button class="view-button" data-view="settings">
+                <button class="view-button" id="settings-nav" data-view="settings">
                     <span>⚙️ Settings</span>
                 </button>
             </nav>
@@ -1063,6 +1067,12 @@
         </div>
             <div id="settings-view" class="view"></div>
 
+            <div id="wordpress-view" class="view" style="display:none;">
+                <h2>📝 WordPress Page Maker</h2>
+                <p style="color:#666;margin-bottom:25px;">Create SEO-optimized WordPress pages using Research Bot</p>
+                <div id="wordpress-page-maker"></div>
+            </div>
+
             <div id="export-view" class="view" style="display:none;">
                 <h2>📦 Export & Distribute</h2>
                 <div id="export-package-container"></div>
@@ -1245,19 +1255,18 @@
                     console.log('[Dashboard] Heartbeat status rendered');
                 }
                 
-                // Initialize Analytics Engine
+                // Initialize Analytics Engine (async)
                 if (window.analyticsEngine) {
-                    window.analyticsEngine.renderUI();
-                    console.log('[Dashboard] Analytics dashboard rendered');
-                }
-                
-                // Update live counters
-                if (window.analyticsEngine) {
-                    const metrics = window.analyticsEngine.getMetrics();
-                    const botsCount = document.getElementById('bots-active-count');
-                    const tasksCount = document.getElementById('tasks-today-count');
-                    if (botsCount) botsCount.textContent = metrics.botsActive;
-                    if (tasksCount) tasksCount.textContent = metrics.tasksToday;
+                    window.analyticsEngine.renderUI().then(() => {
+                        console.log('[Dashboard] Analytics dashboard rendered');
+                        // Update live counters after metrics load
+                        window.analyticsEngine.getMetrics().then(metrics => {
+                            const botsCount = document.getElementById('bots-active-count');
+                            const tasksCount = document.getElementById('tasks-today-count');
+                            if (botsCount) botsCount.textContent = metrics.botsActive;
+                            if (tasksCount) tasksCount.textContent = metrics.tasksCompleted + ' ✅';
+                        });
+                    }).catch(err => console.log('[Dashboard] Analytics error:', err.message));
                 }
                 
                 // Initialize other bot modules
@@ -1296,5 +1305,38 @@
 
     <!-- Task Analytics Dashboard with completion trends and metrics -->
     <script src="task-analytics.js"></script>
+
+    <!-- Tooltip System for first-time users -->
+    <script src="tooltip-system.js"></script>
+
+    <!-- WordPress Page Maker -->
+    <script src="wordpress-page-maker.js"></script>
+    <script>
+        // Initialize tooltip system on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof TooltipSystem !== 'undefined') {
+                window.tooltipSystem = new TooltipSystem();
+                window.tooltipSystem.init();
+                console.log('[Dashboard] Tooltip system initialized for first-time visitors');
+            }
+            
+            // Initialize WordPress Page Maker
+            if (typeof WordPressPageMaker !== 'undefined') {
+                window.wordPressMaker = new WordPressPageMaker();
+                window.wordPressMaker.initialize().catch(err => {
+                    console.log('[Dashboard] WordPress maker initialization error:', err.message);
+                });
+                console.log('[Dashboard] WordPress Page Maker initialized');
+            }
+            
+            // Add WordPress view button listener
+            const wpButton = document.querySelector('[data-view="wordpress"]');
+            if (wpButton) {
+                wpButton.addEventListener('click', () => {
+                    switchToView('wordpress');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

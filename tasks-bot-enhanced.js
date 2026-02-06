@@ -306,26 +306,34 @@ class TasksBotEnhanced {
       const dropZone = e.currentTarget;
       const targetStatus = dropZone.dataset.dropZone;
 
-      // If same zone, handle reordering by swapping priorities
+      // If same zone, handle reordering by sort_order
       if (taskData.status === targetStatus) {
         // Find which task we dropped onto
         var dropTarget = e.target.closest('.task-item');
         if (dropTarget && dropTarget !== e.currentTarget) {
           var targetTaskData = JSON.parse(dropTarget.getAttribute('data-task') || '{}');
-          if (targetTaskData.name && targetTaskData.name !== taskData.name) {
-            // Swap priorities
-            var tempPri = taskData.priority || 'P2';
-            await fetch(this.apiUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ action: 'update_priority', taskName: taskData.name, priority: targetTaskData.priority || 'P2' })
-            });
-            await fetch(this.apiUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ action: 'update_priority', taskName: targetTaskData.name, priority: tempPri })
-            });
-            this.loadTasks();
+          if (targetTaskData.id && targetTaskData.id !== taskData.id) {
+            // Get current sort order index of dropped task
+            var tasksInZone = this.allTasks.filter(t => t.status === targetStatus);
+            var newIndex = tasksInZone.findIndex(t => t.id === targetTaskData.id);
+            var fromIndex = tasksInZone.findIndex(t => t.id === taskData.id);
+            
+            if (newIndex !== -1 && fromIndex !== -1) {
+              // Update sort_order via API
+              console.log('[TasksBot] Reordering task: ' + taskData.name + ' from index ' + fromIndex + ' to ' + newIndex);
+              await fetch(this.apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  action: 'update_sort_order',
+                  taskId: taskData.id,
+                  taskName: taskData.name,
+                  newIndex: newIndex,
+                  fromIndex: fromIndex
+                })
+              });
+              this.loadTasks();
+            }
           }
         }
         return;
@@ -333,7 +341,7 @@ class TasksBotEnhanced {
 
       console.log('[TasksBot] Moving task to: ' + targetStatus);
       
-      // Update via API
+      // Update via API (cross-zone move changes status)
       const response = await fetch(this.apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -345,7 +353,7 @@ class TasksBotEnhanced {
       });
 
       if (response.ok) {
-        console.log('[TasksBot] Task updated');
+        console.log('[TasksBot] Task status updated');
         this.loadTasks();
       }
     } catch (err) {
@@ -511,7 +519,7 @@ class TasksBotEnhanced {
     html += '<option value="P2" selected>P2 (Normal)</option>';
     html += '<option value="P3">P3 (Low)</option>';
     html += '</select>';
-    html += '<button onclick="window.tasksBotEnhanced.addTaskFromUI()">Submit</button>';
+    html += '<button id="add-task-btn" onclick="window.tasksBotEnhanced.addTaskFromUI()">Submit</button>';
     html += '</div>';
     // File attachment section (added by Pinky 2026-02-05)
     html += '<div id="task-attachments-ui-container" style="margin-top:12px;"></div>';
