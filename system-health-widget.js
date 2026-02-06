@@ -175,8 +175,10 @@ class SystemHealthWidget {
         document.getElementById('memory-usage').textContent = memPercent.toFixed(1) + '%';
         document.getElementById('memory-bar').style.width = Math.min(memPercent, 100) + '%';
         document.getElementById('memory-bar').className = 'metric-fill ' + this.getHealthStatus(memPercent, 75, 90);
-        document.getElementById('memory-detail').textContent = 
-            `${(m.memory.used / 1024).toFixed(2)} / ${(m.memory.total / 1024).toFixed(2)} GB`;
+        const wslMemUsed = (m.memory.used / 1024).toFixed(1);
+        const wslMemTotal = (m.memory.total / 1024).toFixed(1);
+        const hostMem = this.hostInfo ? this.hostInfo.ramGB : 0;
+        document.getElementById('memory-detail').textContent = hostMem ? wslMemUsed + ' / ' + wslMemTotal + ' GB (WSL) — ' + hostMem + ' GB Host' : wslMemUsed + ' / ' + wslMemTotal + ' GB';
 
         // Disk
         if (m.disk) {
@@ -184,8 +186,8 @@ class SystemHealthWidget {
             document.getElementById('disk-usage').textContent = diskPercent.toFixed(1) + '%';
             document.getElementById('disk-bar').style.width = Math.min(diskPercent, 100) + '%';
             document.getElementById('disk-bar').className = 'metric-fill ' + this.getHealthStatus(diskPercent, 80, 90);
-            document.getElementById('disk-detail').textContent = 
-                `${(m.disk.used / 1024 / 1024 / 1024).toFixed(2)} / ${(m.disk.total / 1024 / 1024 / 1024).toFixed(2)} GB`;
+            const wslDisk = (m.disk.used / 1024).toFixed(0) + ' / ' + (m.disk.total / 1024).toFixed(0) + ' GB (WSL)';
+            if (this.hostInfo && this.hostInfo.disks && this.hostInfo.disks.length > 0) { document.getElementById('disk-detail').textContent = this.hostInfo.disks.map(d => d.drive + ' ' + d.freeGB + '/' + d.totalGB + 'GB free').join(' | '); } else { document.getElementById('disk-detail').textContent = wslDisk; }
         } else {
             document.getElementById('disk-usage').textContent = 'N/A';
             document.getElementById('disk-detail').textContent = 'Not available';
