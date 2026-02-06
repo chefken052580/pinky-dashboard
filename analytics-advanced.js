@@ -129,7 +129,7 @@ class AnalyticsEngine {
     });
     
     // Token type breakdown
-    html += '<hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">';
+    html += '<hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-color);">';
     html += '<h4>📊 Token Types</h4>';
     const typeBreakdown = [
       { name: 'Input Tokens', value: metrics.tokensInput, icon: '📥' },
@@ -155,7 +155,7 @@ class AnalyticsEngine {
     html += '<div class="timeline">';
     const responses = (activityData?.usage?.responses || []).slice(-10);
     if (responses.length === 0) {
-      html += '<p style="color:#aaa;">No data yet</p>';
+      html += '<p style="color:var(--text-secondary);">No data yet</p>';
     } else {
       responses.forEach((time, idx) => {
         const color = time < 100 ? '#00d464' : time < 200 ? '#ffa500' : '#ff6464';
