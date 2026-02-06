@@ -159,52 +159,56 @@ class SystemHealthWidget {
             second: '2-digit' 
         });
 
-        // CPU
-        const cpuPercent = m.cpu.usage || 0;
-        document.getElementById('cpu-usage').textContent = cpuPercent.toFixed(1) + '%';
+        // Use host stats as primary if available, fall back to container metrics
+        const h = this.hostInfo || {};
+        const hasHost = h.ramGB > 0;
+
+        // CPU - prefer host live CPU
+        const cpuPercent = hasHost ? (h.cpuPercent || 0) : (m.cpu.usage || 0);
+        document.getElementById('cpu-usage').textContent = (typeof cpuPercent === 'number' ? cpuPercent.toFixed(1) : cpuPercent) + '%';
         document.getElementById('cpu-bar').style.width = Math.min(cpuPercent, 100) + '%';
         document.getElementById('cpu-bar').className = 'metric-fill ' + this.getHealthStatus(cpuPercent, 80, 90);
-        const hostCores = this.hostInfo ? this.hostInfo.cores : 0;
-        document.getElementById('cpu-cores').textContent = hostCores
-            ? m.cpu.cores + ' WSL / ' + hostCores + ' Host'
-            : m.cpu.cores;
+        document.getElementById('cpu-cores').textContent = hasHost ? h.cores + ' cores' : m.cpu.cores + ' cores';
         document.getElementById('cpu-load').textContent = parseFloat(m.cpu.loadAvg['1min']).toFixed(2);
 
-        // Memory
-        const memPercent = m.memory.usage || 0;
+        // Memory - show host actual usage
+        const memUsed = hasHost ? h.memUsedGB : (m.memory.used / 1024);
+        const memTotal = hasHost ? h.memTotalGB : (m.memory.total / 1024);
+        const memPercent = memTotal > 0 ? (memUsed / memTotal * 100) : 0;
         document.getElementById('memory-usage').textContent = memPercent.toFixed(1) + '%';
         document.getElementById('memory-bar').style.width = Math.min(memPercent, 100) + '%';
         document.getElementById('memory-bar').className = 'metric-fill ' + this.getHealthStatus(memPercent, 75, 90);
-        const wslMemUsed = (m.memory.used / 1024).toFixed(1);
-        const wslMemTotal = (m.memory.total / 1024).toFixed(1);
-        const hostMem = this.hostInfo ? this.hostInfo.ramGB : 0;
-        document.getElementById('memory-detail').textContent = hostMem ? wslMemUsed + ' / ' + wslMemTotal + ' GB (WSL) — ' + hostMem + ' GB Host' : wslMemUsed + ' / ' + wslMemTotal + ' GB';
+        document.getElementById('memory-detail').textContent = parseFloat(memUsed).toFixed(1) + ' / ' + parseFloat(memTotal).toFixed(1) + ' GB';
 
-        // Disk
-        if (m.disk) {
-            const diskPercent = m.disk.usage || 0;
+        // Disk - show all host drives
+        if (hasHost && h.disks && h.disks.length > 0) {
+            const totalDisk = h.disks.reduce((a, d) => a + d.totalGB, 0);
+            const usedDisk = h.disks.reduce((a, d) => a + d.usedGB, 0);
+            const diskPercent = totalDisk > 0 ? (usedDisk / totalDisk * 100) : 0;
             document.getElementById('disk-usage').textContent = diskPercent.toFixed(1) + '%';
             document.getElementById('disk-bar').style.width = Math.min(diskPercent, 100) + '%';
             document.getElementById('disk-bar').className = 'metric-fill ' + this.getHealthStatus(diskPercent, 80, 90);
-            const wslDisk = (m.disk.used / 1024).toFixed(0) + ' / ' + (m.disk.total / 1024).toFixed(0) + ' GB (WSL)';
-            if (this.hostInfo && this.hostInfo.disks && this.hostInfo.disks.length > 0) { document.getElementById('disk-detail').textContent = this.hostInfo.disks.map(d => d.drive + ' ' + d.freeGB + '/' + d.totalGB + 'GB free').join(' | '); } else { document.getElementById('disk-detail').textContent = wslDisk; }
-        } else {
-            document.getElementById('disk-usage').textContent = 'N/A';
-            document.getElementById('disk-detail').textContent = 'Not available';
+            document.getElementById('disk-detail').textContent = h.disks.map(function(d) { return d.drive + ' ' + d.freeGB + '/' + d.totalGB + 'GB'; }).join(' | ');
+        } else if (m.disk) {
+            document.getElementById('disk-usage').textContent = (m.disk.usage || 0).toFixed(1) + '%';
+            document.getElementById('disk-bar').style.width = Math.min(m.disk.usage || 0, 100) + '%';
+            document.getElementById('disk-detail').textContent = (m.disk.used / 1024).toFixed(0) + ' / ' + (m.disk.total / 1024).toFixed(0) + ' GB';
         }
 
-        // Uptime
-        const uptimeSec = (typeof m.uptime === 'number') ? m.uptime : (m.uptime.process || 0);
-        const processHours = Math.floor(uptimeSec / 3600);
-        const processMins = Math.floor((uptimeSec % 3600) / 60);
-        const systemHours = Math.floor(uptimeSec / 3600);
-        const systemDays = Math.floor(systemHours / 24);
-        
-        document.getElementById('uptime-value').textContent = `${processHours}h ${processMins}m`;
-        document.getElementById('process-uptime').textContent = `${processHours}h ${processMins}m`;
-        document.getElementById('system-uptime').textContent = `${systemDays}d ${systemHours % 24}h`;
+        // Uptime - prefer host uptime
+        if (hasHost && h.uptime) {
+            document.getElementById('uptime-value').textContent = h.uptime;
+            document.getElementById('process-uptime').textContent = h.uptime;
+            document.getElementById('system-uptime').textContent = h.platform || '';
+        } else {
+            const uptimeSec = (typeof m.uptime === 'number') ? m.uptime : 0;
+            const ph = Math.floor(uptimeSec / 3600);
+            const pm = Math.floor((uptimeSec % 3600) / 60);
+            document.getElementById('uptime-value').textContent = ph + 'h ' + pm + 'm';
+            document.getElementById('process-uptime').textContent = ph + 'h ' + pm + 'm';
+            document.getElementById('system-uptime').textContent = '';
+        }
 
-        // Last update time
         document.getElementById('last-update').textContent = now;
     }
 
