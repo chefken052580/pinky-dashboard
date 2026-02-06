@@ -749,9 +749,8 @@ class TasksBotEnhanced {
       }
     }
 
-    // NOTE: Do NOT call setupDragDrop() here - it's only called on init()
-    // Re-attaching listeners on every render causes exponential listener growth
-    // Use event delegation in setupDragDrop() to handle dynamically added elements
+    // Re-attach drag-drop handlers after render since DOM was rebuilt
+    this.setupDragDrop();
   }
 
   /**
