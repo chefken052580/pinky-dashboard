@@ -172,7 +172,8 @@ class TasksBotEnhanced {
     // Auto-start timers for running tasks, auto-stop for completed
     if (typeof taskTimer !== 'undefined' && taskTimer) {
       this.runningTasks.forEach(t => {
-        if (!taskTimer.isRunning(t.id)) {
+        // Only start if no timer exists at all (don't restart existing timers)
+        if (!taskTimer.timers[t.id] && !taskTimer.isRunning(t.id)) {
           taskTimer.start(t.id);
         }
       });
