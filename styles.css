@@ -165,6 +165,7 @@ body {
     align-items: center;
     gap: 12px;
     font-size: 1em;
+    position: relative;
 }
 
 .bot-button:hover, .view-button:hover {

@@ -9,6 +9,42 @@ let activityData = {
     thinking: [],
     usage: { tokens: 0, exec: 0, files: 0, responses: [] }
 };
+let notificationCounts = {
+    chat: 0,
+    tasks: 0,
+    filesystem: 0,
+    docs: 0,
+    research: 0,
+    code: 0,
+    social: 0,
+    business: 0
+};
+
+// Notification Badge Manager
+function updateBadgeCount(botName, count) {
+    notificationCounts[botName] = Math.max(0, count);
+    const badge = document.querySelector(`.${botName}-badge`);
+    if (badge) {
+        badge.textContent = count;
+        if (count > 0) {
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+}
+
+function clearBotBadge(botName) {
+    updateBadgeCount(botName, 0);
+}
+
+function incrementBadgeCount(botName, amount = 1) {
+    updateBadgeCount(botName, notificationCounts[botName] + amount);
+}
+
+function getTotalNotificationCount() {
+    return Object.values(notificationCounts).reduce((a, b) => a + b, 0);
+}
 
 // Global function for inline onclick handlers
 window.switchToView = function(viewName) {
@@ -33,6 +69,11 @@ window.switchToView = function(viewName) {
     const clickedButton = document.querySelector(`[data-bot="${viewName}"], [data-view="${viewName}"]`);
     if (clickedButton) {
         clickedButton.classList.add('active');
+    }
+    
+    // Clear badge when viewing that bot
+    if (notificationCounts.hasOwnProperty(viewName)) {
+        clearBotBadge(viewName);
     }
     
     // Log activity

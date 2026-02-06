@@ -120,11 +120,25 @@ class SystemHealthWidget {
                             document.body;
         mainContainer.appendChild(container);
 
-        // Attach button listener
-        const refreshBtn = document.getElementById('health-refresh-btn');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => { this.hostInfo = null; this.updateMetrics(); });
-        }
+        // Attach button listener with retry and event delegation
+        const attachRefreshListener = () => {
+            const refreshBtn = document.getElementById('health-refresh-btn');
+            if (refreshBtn) {
+                refreshBtn.onclick = null; // Clear any previous listeners
+                refreshBtn.addEventListener('click', (e) => { 
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('[SystemHealth] Refresh clicked');
+                    this.hostInfo = null; 
+                    this.updateMetrics(); 
+                });
+                console.log('[SystemHealth] Refresh button listener attached');
+            } else {
+                // Retry if button not found yet
+                setTimeout(attachRefreshListener, 100);
+            }
+        };
+        attachRefreshListener();
     }
 
     /**
