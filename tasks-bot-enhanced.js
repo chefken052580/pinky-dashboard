@@ -305,8 +305,28 @@ class TasksBotEnhanced {
       const dropZone = e.currentTarget;
       const targetStatus = dropZone.dataset.dropZone;
 
-      // Don't move if dropping in same zone
+      // If same zone, handle reordering by swapping priorities
       if (taskData.status === targetStatus) {
+        // Find which task we dropped onto
+        var dropTarget = e.target.closest('.task-item');
+        if (dropTarget && dropTarget !== e.currentTarget) {
+          var targetTaskData = JSON.parse(dropTarget.getAttribute('data-task') || '{}');
+          if (targetTaskData.name && targetTaskData.name !== taskData.name) {
+            // Swap priorities
+            var tempPri = taskData.priority || 'P2';
+            await fetch(this.apiUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'update_priority', taskName: taskData.name, priority: targetTaskData.priority || 'P2' })
+            });
+            await fetch(this.apiUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'update_priority', taskName: targetTaskData.name, priority: tempPri })
+            });
+            this.loadTasks();
+          }
+        }
         return;
       }
 
