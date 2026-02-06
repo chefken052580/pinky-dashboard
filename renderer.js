@@ -1,6 +1,33 @@
 // Pinky Bot Dashboard - Renderer
 console.log('[Dashboard] Initializing...');
 
+// Utility: Format date/time in EST timezone
+function formatDateEST(timestamp) {
+    if (!timestamp) return '--:--';
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', { 
+        timeZone: 'America/New_York',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
+}
+
+function formatTimeEST(timestamp) {
+    if (!timestamp) return '--:--';
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString('en-US', { 
+        timeZone: 'America/New_York',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
+}
+
 // State
 let currentView = 'dashboard';
 let currentMonitorView = 'heartbeat';
@@ -168,7 +195,7 @@ function addActivity(bot, message) {
     const item = document.createElement('div');
     item.className = 'activity-item';
     item.innerHTML = `
-        <span class="activity-time">${new Date().toLocaleTimeString()}</span>
+        <span class="activity-time">${formatTimeEST(new Date())}</span>
         <span class="activity-bot">${bot}</span>
         <span class="activity-message">${message}</span>
     `;
@@ -270,7 +297,7 @@ function updateMonitorStats() {
     if (lastHB) {
         const lastHBEl = document.getElementById('last-heartbeat');
         if (lastHBEl) {
-            lastHBEl.textContent = new Date(lastHB.timestamp).toLocaleTimeString();
+            lastHBEl.textContent = formatTimeEST(lastHB.timestamp);
         }
     }
     
@@ -310,7 +337,7 @@ function renderHeartbeatLog() {
         const entry = document.createElement('div');
         entry.className = 'activity-item';
         entry.innerHTML = `
-            <span class="activity-time">${new Date(hb.timestamp).toLocaleString()}</span>
+            <span class="activity-time">${formatDateEST(hb.timestamp)}</span>
             <span class="activity-bot">${(hb.activity || '').startsWith('Dashboard Chat:') ? 'Chat' : 'Heartbeat'}</span>
             <span class="activity-message">${hb.activity || 'Check'}${hb.lagMs !== undefined ? ' - ' + hb.lagMs + 'ms lag' : ''}</span>
         `;
@@ -341,7 +368,7 @@ function renderThinkingLog() {
         const entry = document.createElement('div');
         entry.className = 'activity-item';
         entry.innerHTML = `
-            <span class="activity-time">${new Date(think.timestamp).toLocaleString()}</span>
+            <span class="activity-time">${formatDateEST(think.timestamp)}</span>
             <span class="activity-bot">Thinking</span>
             <span class="activity-message">${think.task}</span>
         `;
@@ -368,7 +395,7 @@ function renderPeakLog() {
         const entry = document.createElement('div');
         entry.className = 'activity-item';
         entry.innerHTML = `
-            <span class="activity-time">${new Date(hb.timestamp).toLocaleTimeString()}</span>
+            <span class="activity-time">${formatTimeEST(hb.timestamp)}</span>
             <span class="activity-bot">Resources</span>
             <span class="activity-message">
                 ${hb.tokens || 0} tokens, ${hb.exec || 0} exec, ${hb.lagMs || 0}ms
@@ -431,7 +458,7 @@ function botAction(bot, action) {
         const entry = document.createElement('div');
         entry.className = 'activity-item';
         entry.innerHTML = `
-            <span class="activity-time">${new Date().toLocaleTimeString()}</span>
+            <span class="activity-time">${formatTimeEST(new Date())}</span>
             <span class="activity-bot">${bot}</span>
             <span class="activity-message">âš¡ ${action} started...</span>
         `;
@@ -445,7 +472,7 @@ function botAction(bot, action) {
             const successEntry = document.createElement('div');
             successEntry.className = 'activity-item';
             successEntry.innerHTML = `
-                <span class="activity-time">${new Date().toLocaleTimeString()}</span>
+                <span class="activity-time">${formatTimeEST(new Date())}</span>
                 <span class="activity-bot">${bot}</span>
                 <span class="activity-message">âœ… ${action} completed!</span>
             `;
@@ -607,7 +634,7 @@ function loadApprovals() {
                         <button class="btn-approve" onclick="respondApproval('${req.id}', true)">✅ Approve</button>
                         <button class="btn-deny" onclick="respondApproval('${req.id}', false)">❌ Deny</button>
                     </div>
-                    <div class="approval-time">Requested: ${new Date(req.createdAt).toLocaleString()}</div>
+                    <div class="approval-time">Requested: ${formatDateEST(req.createdAt)}</div>
                 </div>
             `).join('');
         })
