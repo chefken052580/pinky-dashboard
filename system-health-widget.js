@@ -165,19 +165,19 @@ class SystemHealthWidget {
         document.getElementById('cpu-bar').style.width = Math.min(cpuPercent, 100) + '%';
         document.getElementById('cpu-bar').className = 'metric-fill ' + this.getHealthStatus(cpuPercent, 80, 90);
         document.getElementById('cpu-cores').textContent = m.cpu.cores;
-        document.getElementById('cpu-load').textContent = m.cpu.loadAverage['1min'].toFixed(2);
+        document.getElementById('cpu-load').textContent = parseFloat(m.cpu.loadAvg['1min']).toFixed(2);
 
         // Memory
-        const memPercent = m.memory.percent || 0;
+        const memPercent = m.memory.usage || 0;
         document.getElementById('memory-usage').textContent = memPercent.toFixed(1) + '%';
         document.getElementById('memory-bar').style.width = Math.min(memPercent, 100) + '%';
         document.getElementById('memory-bar').className = 'metric-fill ' + this.getHealthStatus(memPercent, 75, 90);
         document.getElementById('memory-detail').textContent = 
-            `${m.memory.usedGB.toFixed(2)} / ${m.memory.totalGB.toFixed(2)} GB`;
+            `${(m.memory.used / 1024).toFixed(2)} / ${(m.memory.total / 1024).toFixed(2)} GB`;
 
         // Disk
         if (m.disk) {
-            const diskPercent = m.disk.percent || 0;
+            const diskPercent = m.disk.usage || 0;
             document.getElementById('disk-usage').textContent = diskPercent.toFixed(1) + '%';
             document.getElementById('disk-bar').style.width = Math.min(diskPercent, 100) + '%';
             document.getElementById('disk-bar').className = 'metric-fill ' + this.getHealthStatus(diskPercent, 80, 90);
