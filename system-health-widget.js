@@ -123,7 +123,7 @@ class SystemHealthWidget {
         // Attach button listener
         const refreshBtn = document.getElementById('health-refresh-btn');
         if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => this.updateMetrics());
+            refreshBtn.addEventListener('click', () => { this.hostInfo = null; this.updateMetrics(); });
         }
     }
 
@@ -211,7 +211,7 @@ class SystemHealthWidget {
         if (hasHost && h.uptime) {
             document.getElementById('uptime-value').textContent = h.uptime;
             document.getElementById('process-uptime').textContent = h.uptime;
-            document.getElementById('system-uptime').textContent = h.platform || '';
+            document.getElementById('system-uptime').textContent = (h.platform || '').replace('windows','Windows').replace('linux','Linux').replace('mac','macOS');
         } else {
             const uptimeSec = (typeof m.uptime === 'number') ? m.uptime : 0;
             const ph = Math.floor(uptimeSec / 3600);
