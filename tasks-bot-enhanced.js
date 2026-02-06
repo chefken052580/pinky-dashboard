@@ -18,6 +18,8 @@ class TasksBotEnhanced {
     this.priorityFilter = null; // HB#115: Priority filter (null = show all, 'P1'/'P2'/'P3' = filter by priority)
     this.searchFilter = ''; // HB#116: Search filter for task names (empty string = show all)
     this.undoStack = []; // HB#117: Undo stack - stores last deleted tasks (max 10)
+    this.selectedTasks = new Set(); // HB#118: Batch operations - track selected tasks by id
+    this.batchSelectMode = false; // HB#118: Toggle batch mode on/off
   }
 
   /**
@@ -479,8 +481,22 @@ class TasksBotEnhanced {
     html += '<button onclick="window.tasksBotEnhanced.setPriorityFilter(\'P2\')" style="background:' + (this.priorityFilter === 'P2' ? '#ff9500' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">P2</button>';
     html += '<button onclick="window.tasksBotEnhanced.setPriorityFilter(\'P3\')" style="background:' + (this.priorityFilter === 'P3' ? '#4caf50' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">P3</button>';
     html += '<button onclick="window.tasksBotEnhanced.setPriorityFilter(null)" style="background:' + (this.priorityFilter === null ? '#2196f3' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">All</button>';
+    // HB#118: Batch mode toggle
+    html += '<button onclick="window.tasksBotEnhanced.toggleBatchMode()" style="background:' + (this.batchSelectMode ? '#9c27b0' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;margin-left:4px;">☑ Batch</button>';
     html += '</div>';
     html += '</div>';
+    // HB#118: Batch action buttons (show when tasks are selected)
+    if (this.batchSelectMode && this.selectedTasks.size > 0) {
+      html += '<div style="background:#f0f0f0;padding:10px;border-radius:4px;margin-bottom:12px;display:flex;gap:8px;align-items:center;border-left:4px solid #9c27b0;">';
+      html += '<strong style="margin-right:12px;">' + this.selectedTasks.size + ' selected</strong>';
+      html += '<button onclick="window.tasksBotEnhanced.batchComplete()" style="background:#4caf50;color:#fff;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:0.85em;">✓ Complete</button>';
+      html += '<button onclick="window.tasksBotEnhanced.batchDelete()" style="background:#ff4444;color:#fff;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:0.85em;">✕ Delete</button>';
+      html += '<button onclick="window.tasksBotEnhanced.batchSetPriority(\'P1\')" style="background:#ff4444;color:#fff;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:0.85em;">→ P1</button>';
+      html += '<button onclick="window.tasksBotEnhanced.batchSetPriority(\'P2\')" style="background:#ff9500;color:#fff;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:0.85em;">→ P2</button>';
+      html += '<button onclick="window.tasksBotEnhanced.batchSetPriority(\'P3\')" style="background:#4caf50;color:#fff;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:0.85em;">→ P3</button>';
+      html += '<button onclick="window.tasksBotEnhanced.batchSelectNone()" style="background:#999;color:#fff;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:0.85em;">Clear</button>';
+      html += '</div>';
+    }
     html += '<div class="task-list" data-drop-zone="pending">';
     
     // HB#115: Filter pending tasks based on priorityFilter
@@ -504,6 +520,11 @@ class TasksBotEnhanced {
         
         html += '<div class="task-item ' + priorityColor + '" draggable="true" id="' + taskId + '" data-task="' + JSON.stringify(task).replace(/"/g, '&quot;') + '" data-task-name="' + this.escapeAttr(task.name) + '">';
         html += '<div class="task-header">';
+        // HB#118: Batch mode checkbox
+        if (this.batchSelectMode) {
+          const isSelected = this.selectedTasks.has(task.id);
+          html += '<input type="checkbox" onclick="event.stopPropagation();window.tasksBotEnhanced.toggleTaskSelection(\'' + task.id + '\')" ' + (isSelected ? 'checked' : '') + ' style="margin-right:8px;cursor:pointer;width:18px;height:18px;">';
+        }
         html += '<span class="priority-badge">' + (task.priority || 'P3') + '</span>';
         html += '<span class="task-name">' + this.escapeAttr(task.name) + '</span>';
         html += '<div class="task-actions">';
@@ -1065,8 +1086,223 @@ class TasksBotEnhanced {
     this.render(); // Re-render with new search
     console.log('[TasksBot] Search filter set to:', searchTerm || '(cleared)');
   }
+
+  /**
+   * HB#118: Toggle batch selection mode on/off
+   */
+  toggleBatchMode() {
+    this.batchSelectMode = !this.batchSelectMode;
+    this.selectedTasks.clear(); // Clear selections when toggling off
+    this.render();
+    console.log('[TasksBot] Batch mode:', this.batchSelectMode ? 'ON' : 'OFF');
+  }
+
+  /**
+   * HB#118: Toggle a task's selection status
+   */
+  toggleTaskSelection(taskId) {
+    if (this.selectedTasks.has(taskId)) {
+      this.selectedTasks.delete(taskId);
+      console.log('[TasksBot] Deselected:', taskId);
+    } else {
+      this.selectedTasks.add(taskId);
+      console.log('[TasksBot] Selected:', taskId);
+    }
+    this.render();
+  }
+
+  /**
+   * HB#118: Clear all selected tasks
+   */
+  batchSelectNone() {
+    this.selectedTasks.clear();
+    this.render();
+    console.log('[TasksBot] All selections cleared');
+  }
+
+  /**
+   * HB#118: Mark all selected tasks as completed
+   */
+  async batchComplete() {
+    if (this.selectedTasks.size === 0) {
+      this.showFileNotification('No tasks selected', 'info');
+      return;
+    }
+    
+    if (!confirm('Mark ' + this.selectedTasks.size + ' tasks as completed?')) {
+      return;
+    }
+    
+    try {
+      let successCount = 0;
+      let failedCount = 0;
+      
+      // Find tasks to complete
+      const tasksToComplete = this.allTasks.filter(t => this.selectedTasks.has(t.id));
+      
+      console.log('[TasksBot] Completing ' + tasksToComplete.length + ' tasks...');
+      
+      for (const task of tasksToComplete) {
+        try {
+          const response = await this.fetchWithRetry(this.apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'update_status',
+              taskName: task.name,
+              newStatus: 'completed'
+            })
+          }, 2);
+          
+          if (response.ok) {
+            successCount++;
+          } else {
+            failedCount++;
+          }
+        } catch (err) {
+          failedCount++;
+          console.error('[TasksBot] Failed to complete:', task.name, err);
+        }
+      }
+      
+      // Reload and render
+      await this.loadTasks();
+      this.render(true);
+      this.selectedTasks.clear();
+      
+      if (failedCount === 0) {
+        this.showFileNotification('✅ Completed ' + successCount + ' tasks', 'success');
+      } else {
+        this.showFileNotification('⚠️ Completed ' + successCount + '/' + tasksToComplete.length + ' tasks', 'error');
+      }
+    } catch (err) {
+      console.error('[TasksBot] Batch complete failed:', err);
+      this.showFileNotification('Error completing tasks: ' + err.message, 'error');
+    }
+  }
+
+  /**
+   * HB#118: Delete all selected tasks
+   */
+  async batchDelete() {
+    if (this.selectedTasks.size === 0) {
+      this.showFileNotification('No tasks selected', 'info');
+      return;
+    }
+    
+    if (!confirm('Delete ' + this.selectedTasks.size + ' tasks? This cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      let successCount = 0;
+      let failedCount = 0;
+      
+      // Find tasks to delete
+      const tasksToDelete = this.allTasks.filter(t => this.selectedTasks.has(t.id));
+      
+      console.log('[TasksBot] Deleting ' + tasksToDelete.length + ' tasks...');
+      
+      for (const task of tasksToDelete) {
+        try {
+          // Add to undo stack before deletion
+          this.undoStack.push({ ...task, deletedAt: new Date().toISOString() });
+          if (this.undoStack.length > 10) this.undoStack.shift();
+          
+          const response = await this.fetchWithRetry(this.apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'delete',
+              name: task.name
+            })
+          }, 2);
+          
+          if (response.ok) {
+            successCount++;
+          } else {
+            failedCount++;
+          }
+        } catch (err) {
+          failedCount++;
+          console.error('[TasksBot] Failed to delete:', task.name, err);
+        }
+      }
+      
+      // Reload and render
+      await this.loadTasks();
+      this.render(true);
+      this.selectedTasks.clear();
+      
+      if (failedCount === 0) {
+        this.showFileNotification('✅ Deleted ' + successCount + ' tasks (Undo available)', 'success');
+      } else {
+        this.showFileNotification('⚠️ Deleted ' + successCount + '/' + tasksToDelete.length + ' tasks', 'error');
+      }
+    } catch (err) {
+      console.error('[TasksBot] Batch delete failed:', err);
+      this.showFileNotification('Error deleting tasks: ' + err.message, 'error');
+    }
+  }
+
+  /**
+   * HB#118: Set priority for all selected tasks
+   */
+  async batchSetPriority(newPriority) {
+    if (this.selectedTasks.size === 0) {
+      this.showFileNotification('No tasks selected', 'info');
+      return;
+    }
+    
+    try {
+      let successCount = 0;
+      let failedCount = 0;
+      
+      // Find tasks to update
+      const tasksToUpdate = this.allTasks.filter(t => this.selectedTasks.has(t.id));
+      
+      console.log('[TasksBot] Setting priority to ' + newPriority + ' for ' + tasksToUpdate.length + ' tasks...');
+      
+      for (const task of tasksToUpdate) {
+        try {
+          const response = await this.fetchWithRetry(this.apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'update_priority',
+              taskName: task.name,
+              newPriority: newPriority
+            })
+          }, 2);
+          
+          if (response.ok) {
+            successCount++;
+          } else {
+            failedCount++;
+          }
+        } catch (err) {
+          failedCount++;
+          console.error('[TasksBot] Failed to update:', task.name, err);
+        }
+      }
+      
+      // Reload and render
+      await this.loadTasks();
+      this.render(true);
+      this.selectedTasks.clear();
+      
+      if (failedCount === 0) {
+        this.showFileNotification('✅ Updated priority to ' + newPriority + ' for ' + successCount + ' tasks', 'success');
+      } else {
+        this.showFileNotification('⚠️ Updated ' + successCount + '/' + tasksToUpdate.length + ' tasks', 'error');
+      }
+    } catch (err) {
+      console.error('[TasksBot] Batch priority update failed:', err);
+      this.showFileNotification('Error updating priority: ' + err.message, 'error');
+    }
+  }
 }
 
 // Initialize globally
 window.tasksBotEnhanced = new TasksBotEnhanced();
-console.log('[TasksBot] Enhanced version ready');
+console.log('[TasksBot] Enhanced version ready with HB#118 Batch Operations');
