@@ -16,48 +16,48 @@
 .wp-maker-header h3 {
   font-size: 2em;
   margin: 0 0 8px 0;
-  color: #333;
+  color: #e0e0e0;
 }
 
-html.dark-mode .wp-maker-header h3 {
+.wp-maker-header h3 {
   color: #e0e0e0;
 }
 
 .wp-maker-header .subtitle {
-  color: #666;
+  color: #aaa;
   font-size: 1em;
   margin: 0;
 }
 
-html.dark-mode .wp-maker-header .subtitle {
+.wp-maker-header .subtitle {
   color: #aaa;
 }
 
 /* Configuration Panel */
 .wp-configuration-panel,
 .page-creation-form {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: rgba(20, 40, 80, 0.3);
+  border: 1px solid rgba(68, 150, 255, 0.2);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 24px;
 }
 
-html.dark-mode .wp-configuration-panel,
-html.dark-mode .page-creation-form {
+.wp-configuration-panel,
+.page-creation-form {
   background: #1e1e2e;
-  border-color: #333;
+  border-color: #e0e0e0;
 }
 
 .wp-configuration-panel h4,
 .page-creation-form h4 {
   margin: 0 0 16px 0;
   font-size: 1.2em;
-  color: #333;
+  color: #e0e0e0;
 }
 
-html.dark-mode .wp-configuration-panel h4,
-html.dark-mode .page-creation-form h4 {
+.wp-configuration-panel h4,
+.page-creation-form h4 {
   color: #e0e0e0;
 }
 
@@ -78,11 +78,11 @@ html.dark-mode .page-creation-form h4 {
 .form-group label {
   margin-bottom: 8px;
   font-weight: 500;
-  color: #333;
+  color: #e0e0e0;
   font-size: 0.95em;
 }
 
-html.dark-mode .form-group label {
+.form-group label {
   color: #bbb;
 }
 
@@ -90,17 +90,17 @@ html.dark-mode .form-group label {
 .form-input,
 .form-textarea {
   padding: 10px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(68, 150, 255, 0.2);
   border-radius: 6px;
   font-size: 1em;
   font-family: inherit;
-  background: white;
-  color: #333;
+  background: rgba(20, 40, 80, 0.3);
+  color: #e0e0e0;
 }
 
-html.dark-mode .config-input,
-html.dark-mode .form-input,
-html.dark-mode .form-textarea {
+.config-input,
+.form-input,
+.form-textarea {
   background: #2a2a3e;
   border-color: #444;
   color: #e0e0e0;
@@ -167,11 +167,11 @@ html.dark-mode .form-textarea {
 
 .btn-secondary {
   background: #f0f0f0;
-  color: #333;
-  border: 1px solid #ddd;
+  color: #e0e0e0;
+  border: 1px solid rgba(68, 150, 255, 0.2);
 }
 
-html.dark-mode .btn-secondary {
+.btn-secondary {
   background: #2a2a3e;
   color: #e0e0e0;
   border-color: #444;
@@ -181,7 +181,7 @@ html.dark-mode .btn-secondary {
   background: #e0e0e0;
 }
 
-html.dark-mode .btn-secondary:hover {
+.btn-secondary:hover {
   background: #3a3a4e;
 }
 
@@ -208,36 +208,36 @@ html.dark-mode .btn-secondary:hover {
   border: 1px solid #ffcdd2;
 }
 
-html.dark-mode .status-indicator.success {
+.status-indicator.success {
   background: #1b4d2b;
   color: #81c784;
 }
 
-html.dark-mode .status-indicator.error {
+.status-indicator.error {
   background: #4d1b1b;
   color: #ef5350;
 }
 
 /* Progress Section */
 .generation-progress {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: rgba(20, 40, 80, 0.3);
+  border: 1px solid rgba(68, 150, 255, 0.2);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 24px;
 }
 
-html.dark-mode .generation-progress {
+.generation-progress {
   background: #1e1e2e;
-  border-color: #333;
+  border-color: #e0e0e0;
 }
 
 .generation-progress h4 {
   margin: 0 0 16px 0;
-  color: #333;
+  color: #e0e0e0;
 }
 
-html.dark-mode .generation-progress h4 {
+.generation-progress h4 {
   color: #e0e0e0;
 }
 
@@ -263,11 +263,11 @@ html.dark-mode .generation-progress h4 {
 .step-title {
   font-size: 0.9em;
   font-weight: 500;
-  color: #333;
+  color: #e0e0e0;
   margin-bottom: 4px;
 }
 
-html.dark-mode .step-title {
+.step-title {
   color: #bbb;
 }
 
@@ -277,13 +277,13 @@ html.dark-mode .step-title {
   height: 20px;
 }
 
-html.dark-mode .step-status {
-  color: #666;
+.step-status {
+  color: #aaa;
 }
 
 .progress-log {
   background: #f5f5f5;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(68, 150, 255, 0.2);
   border-radius: 4px;
   padding: 12px;
   height: 150px;
@@ -292,7 +292,7 @@ html.dark-mode .step-status {
   font-size: 0.85em;
 }
 
-html.dark-mode .progress-log {
+.progress-log {
   background: #2a2a3e;
   border-color: #444;
   color: #e0e0e0;
@@ -300,10 +300,10 @@ html.dark-mode .progress-log {
 
 .log-entry {
   margin-bottom: 4px;
-  color: #333;
+  color: #e0e0e0;
 }
 
-html.dark-mode .log-entry {
+.log-entry {
   color: #bbb;
 }
 
@@ -331,11 +331,11 @@ html.dark-mode .log-entry {
   padding: 12px;
   text-align: left;
   font-weight: 600;
-  color: #333;
+  color: #e0e0e0;
   border-bottom: 2px solid #ddd;
 }
 
-html.dark-mode .pages-table th {
+.pages-table th {
   background: #2a2a3e;
   color: #e0e0e0;
   border-bottom-color: #444;
@@ -344,11 +344,11 @@ html.dark-mode .pages-table th {
 .pages-table td {
   padding: 12px;
   border-bottom: 1px solid #e0e0e0;
-  color: #333;
+  color: #e0e0e0;
 }
 
-html.dark-mode .pages-table td {
-  border-bottom-color: #333;
+.pages-table td {
+  border-bottom-color: #e0e0e0;
   color: #bbb;
 }
 
@@ -356,29 +356,29 @@ html.dark-mode .pages-table td {
   background: #f9f9f9;
 }
 
-html.dark-mode .pages-table tr:hover {
+.pages-table tr:hover {
   background: #262635;
 }
 
 /* SEO Metrics */
 .seo-metrics {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: rgba(20, 40, 80, 0.3);
+  border: 1px solid rgba(68, 150, 255, 0.2);
   border-radius: 8px;
   padding: 20px;
 }
 
-html.dark-mode .seo-metrics {
+.seo-metrics {
   background: #1e1e2e;
-  border-color: #333;
+  border-color: #e0e0e0;
 }
 
 .seo-metrics h4 {
   margin: 0 0 16px 0;
-  color: #333;
+  color: #e0e0e0;
 }
 
-html.dark-mode .seo-metrics h4 {
+.seo-metrics h4 {
   color: #e0e0e0;
 }
 
