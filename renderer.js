@@ -416,7 +416,7 @@ function downloadLogs() {
     URL.revokeObjectURL(url);
 }
 
-// FileSystemBot - Pinky's personal slave
+// FileSystemBot - AI File Assistant
 const FileSystemBot = {
     async organize(path) {
         console.log('[FileSystemBot] Organizing:', path);
