@@ -589,6 +589,7 @@ class TasksBotEnhanced {
         html += '<div class="task-actions">';
         html += '<button class="btn-priority-up" data-task-name="' + this.escapeAttr(task.name) + '" data-direction="up" title="Higher priority">↑</button>';
         html += '<button class="btn-priority-down" data-task-name="' + this.escapeAttr(task.name) + '" data-direction="down" title="Lower priority">↓</button>';
+        html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.startTaskNow(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + task.id + '\');" title="Start this task now" style="background:#00d4ff;color:#0f0e1a;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:4px;font-size:0.8em;font-weight:bold;position:relative;z-index:10;">▶ Start</button>';
         html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.deleteTask(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + task.id + '\');" title="Delete task" style="background:#ff4444;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:4px;font-size:0.8em;position:relative;z-index:10;">✕</button>';
         html += '</div>';
         html += '</div>';
@@ -942,6 +943,36 @@ class TasksBotEnhanced {
         statusDiv.style.color = '#ff4444';
         statusDiv.innerHTML = '❌ Failed: ' + err.message;
       }
+    }
+  }
+
+  /**
+   * Start a task now - Send wake-up call to Pinky
+   */
+  async startTaskNow(taskName, taskId) {
+    if (!confirm('Send wake-up call to start task: "' + taskName + '"?\n\nThis will notify Pinky to begin work immediately.')) return;
+    
+    try {
+      // Send wake-up message via chat API
+      const wakeMessage = '🔔 START NOW: ' + taskName;
+      const response = await fetch('/api/chat/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: wakeMessage,
+          priority: 'high'
+        })
+      });
+
+      if (response.ok) {
+        alert('✅ Wake-up call sent! Pinky will start this task shortly.');
+        console.log('[TasksBot] Start Now triggered for:', taskName);
+      } else {
+        throw new Error('API returned status ' + response.status);
+      }
+    } catch (error) {
+      console.error('[TasksBot] Start Now error:', error);
+      alert('❌ Failed to send wake-up call. Check console for details.');
     }
   }
 
