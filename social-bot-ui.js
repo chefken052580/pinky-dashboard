@@ -95,17 +95,35 @@ window.switchSocialTab = function(tabName) {
         renderCompaniesTab();
     } else if (tabName === 'wordpress') {
         // Initialize WordPress Page Maker in the social tab
-        if (typeof WordPressPageMaker !== 'undefined' && window.wordPressPageMaker) {
-            var wpContainer = document.getElementById('wordpress-page-maker-social');
-            if (wpContainer && !wpContainer.hasChildNodes()) {
-                // Clone the WordPress UI from the standalone view
-                var standaloneWP = document.getElementById('wordpress-page-maker');
-                if (standaloneWP && standaloneWP.firstChild) {
-                    wpContainer.appendChild(standaloneWP.firstChild.cloneNode(true));
-                } else {
-                    // Or create a new instance inline
-                    wpContainer.innerHTML = '<p style="color:#aaa;">WordPress Page Maker loading... Please use the WordPress button in the sidebar for full functionality.</p>';
-                }
+        var wpContainer = document.getElementById('wordpress-page-maker-social');
+        if (wpContainer) {
+            if (!wpContainer.hasAttribute('data-wp-initialized')) {
+                // Create a simplified WordPress interface for the social tab
+                wpContainer.innerHTML = `
+                    <div class="wp-social-tab-content" style="padding:20px;background:rgba(255,255,255,0.05);border-radius:8px;">
+                        <p style="color:#aaa;margin-bottom:15px;">
+                            🌐 <strong>WordPress Page Maker</strong> is integrated with SocialBot for creating SEO-optimized content.
+                        </p>
+                        <div style="display:flex;gap:15px;flex-wrap:wrap;margin-top:20px;">
+                            <button class="btn-primary" onclick="showView('wordpress-view')" style="padding:10px 20px;">
+                                📝 Open Full WordPress Editor
+                            </button>
+                            <button class="btn-secondary" onclick="alert('Quick post feature coming soon!')" style="padding:10px 20px;">
+                                ⚡ Quick Post from Social
+                            </button>
+                        </div>
+                        <div style="margin-top:25px;padding:15px;background:rgba(0,0,0,0.2);border-radius:6px;border-left:3px solid #4CAF50;">
+                            <strong style="color:#4CAF50;">💡 Integration Features:</strong>
+                            <ul style="margin-top:10px;color:#ccc;line-height:1.8;">
+                                <li>✅ Create WordPress pages directly from social content</li>
+                                <li>✅ Auto-generate SEO metadata using Research Bot</li>
+                                <li>✅ Cross-post to social media platforms</li>
+                                <li>✅ Track engagement across WordPress and social</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                wpContainer.setAttribute('data-wp-initialized', 'true');
             }
         }
     }
