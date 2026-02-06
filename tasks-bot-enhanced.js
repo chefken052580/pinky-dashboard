@@ -41,6 +41,15 @@ class TasksBotEnhanced {
     // Auto-refresh every 3 seconds
     setInterval(() => this.loadTasks(), this.updateInterval);
     
+    // Register timer update listener (HB#115 - Task Timer Integration)
+    if (typeof taskTimer !== 'undefined' && taskTimer && taskTimer.onChange) {
+      taskTimer.onChange(() => {
+        // Update running tasks display when timer changes
+        this.render();
+      });
+      console.log('[TasksBot] Timer listener registered for live updates');
+    }
+    
     console.log('[TasksBot] Initialization complete - ' + this.allTasks.length + ' tasks loaded');
   }
 
@@ -532,6 +541,28 @@ class TasksBotEnhanced {
         html += '<div class="task-meta">';
         html += '<span>Updated: ' + this.formatTime(task.updated) + '</span>';
         html += '</div>';
+        
+        // Timer UI for running task (HB#115)
+        if (taskTimer && typeof taskTimer === 'object') {
+          const timerState = taskTimer.getState(task.id);
+          const elapsedDisplay = taskTimer.formatElapsed(timerState.elapsed);
+          const isRunning = timerState.running;
+          html += '<div class="task-timer-display ' + (isRunning ? 'running' : 'paused') + '" data-task-timer="' + task.id + '">';
+          html += '  <span class="timer-icon">⏱️</span>';
+          html += '  <span class="timer-time">' + elapsedDisplay + '</span>';
+          html += '  <div class="timer-buttons">';
+          if (isRunning) {
+            html += '    <button class="timer-btn timer-btn-pause" onclick="event.stopPropagation();if(taskTimer) taskTimer.pause(\'' + task.id + '\');" title="Pause timer">⏸</button>';
+            html += '    <button class="timer-btn timer-btn-stop" onclick="event.stopPropagation();if(taskTimer) taskTimer.stop(\'' + task.id + '\');" title="Stop timer">⏹</button>';
+          } else {
+            html += '    <button class="timer-btn timer-btn-start" onclick="event.stopPropagation();if(taskTimer) taskTimer.start(\'' + task.id + '\');" title="Start timer">▶</button>';
+            html += '    <button class="timer-btn timer-btn-stop" onclick="event.stopPropagation();if(taskTimer) taskTimer.stop(\'' + task.id + '\');" title="Stop timer">⏹</button>';
+          }
+          html += '    <button class="timer-btn timer-btn-reset" onclick="event.stopPropagation();if(taskTimer) taskTimer.reset(\'' + task.id + '\');" title="Reset timer">🔄</button>';
+          html += '  </div>';
+          html += '</div>';
+        }
+        
         html += '</div>';
       });
     }

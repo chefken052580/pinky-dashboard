@@ -2,6 +2,83 @@
   "pending": [],
   "resolved": [
     {
+      "id": "1770341261473",
+      "title": "THIS SHOULD WORK",
+      "description": "Final test of approval system",
+      "file": "test.js",
+      "action": "test",
+      "status": "approved",
+      "createdAt": "2026-02-06T01:27:41.473Z",
+      "instructions": "just a test, delete.",
+      "resolvedAt": "2026-02-06T01:28:29.339Z"
+    },
+    {
+      "id": "1770340871184",
+      "title": "Final final test",
+      "description": "This should work now",
+      "file": "test.js",
+      "action": "test",
+      "status": "approved",
+      "createdAt": "2026-02-06T01:21:11.184Z",
+      "instructions": "just a test, delete.",
+      "resolvedAt": "2026-02-06T01:21:25.350Z"
+    },
+    {
+      "id": "1770340625369",
+      "title": "Real fix for delete bug",
+      "description": "Fix the delete button - use name fallback",
+      "file": "bot-backend/tasks-api.js",
+      "action": "edit",
+      "status": "approved",
+      "createdAt": "2026-02-06T01:17:05.369Z",
+      "instructions": "",
+      "resolvedAt": "2026-02-06T01:17:23.874Z"
+    },
+    {
+      "id": "1770340178050",
+      "title": "Final test",
+      "description": "Testing fixed approval flow",
+      "file": "test.js",
+      "action": "test",
+      "status": "approved",
+      "createdAt": "2026-02-06T01:09:38.050Z",
+      "instructions": "just a test, do not execute. delete this",
+      "resolvedAt": "2026-02-06T01:10:21.848Z"
+    },
+    {
+      "id": "1770339966531",
+      "title": "Test with logging",
+      "description": "Testing task creation with logging",
+      "file": "test3.js",
+      "action": "test",
+      "status": "approved",
+      "createdAt": "2026-02-06T01:06:06.531Z",
+      "instructions": "this is just a test, do not execute, just delete. ",
+      "resolvedAt": "2026-02-06T01:07:04.504Z"
+    },
+    {
+      "id": "1770339655237",
+      "title": "Fix tasks-api.js delete by ID bug",
+      "description": "BUG: Delete by ID fails when IDs regenerate on file reload. Fix: Add name-based fallback to DELETE endpoint. Steps: 1) Backup first 2) Find DELETE endpoint 3) Add fallback to match by name if ID not found 4) Test with node -c 5) pm2 restart bot-backend",
+      "file": "bot-backend/tasks-api.js",
+      "action": "edit",
+      "status": "approved",
+      "createdAt": "2026-02-06T01:00:55.237Z",
+      "instructions": "APPROVED: Fix the delete bug. 1) Backup: cp bot-backend/tasks-api.js _backups/tasks-api.js.$(date +%Y%m%d-%H%M%S) 2) Add name-based fallback when ID match fails 3) node -c before commit 4) pm2 restart bot-backend after 5) Test delete in TasksBot UI",
+      "resolvedAt": "2026-02-06T01:02:01.599Z"
+    },
+    {
+      "id": "1770339475468",
+      "title": "Test internal task creation",
+      "description": "Testing that approvals auto-create tasks",
+      "file": "test2.js",
+      "action": "test",
+      "status": "approved",
+      "createdAt": "2026-02-06T00:57:55.468Z",
+      "instructions": "Test approval - do not execute, just delete. ",
+      "resolvedAt": "2026-02-06T00:58:49.188Z"
+    },
+    {
       "id": "1770339100524",
       "title": "Test task creation",
       "description": "Testing that approved tasks show in pending",

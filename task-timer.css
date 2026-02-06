@@ -1,0 +1,243 @@
+/**
+ * TASK TIMER STYLES
+ * Styling for task time tracking UI
+ */
+
+/* Timer display container */
+.task-timer-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(255, 193, 7, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #ffc107;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffc107;
+  min-width: 120px;
+}
+
+.task-timer-display.running {
+  background: rgba(76, 175, 80, 0.1);
+  border-left-color: #4caf50;
+  color: #4caf50;
+  animation: pulse-green 1.5s infinite;
+}
+
+.task-timer-display.paused {
+  background: rgba(244, 67, 54, 0.1);
+  border-left-color: #f44336;
+  color: #f44336;
+}
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Timer icon */
+.timer-icon {
+  font-size: 16px;
+}
+
+/* Timer time display */
+.timer-time {
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 80px;
+  text-align: center;
+}
+
+/* Timer button group */
+.timer-buttons {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+/* Timer button */
+.timer-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.15);
+  color: inherit;
+  text-decoration: none;
+}
+
+.timer-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+.timer-btn:active {
+  transform: scale(0.95);
+}
+
+/* Start timer button */
+.timer-btn-start {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.timer-btn-start:hover {
+  background: rgba(76, 175, 80, 0.3);
+}
+
+/* Pause timer button */
+.timer-btn-pause {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+}
+
+.timer-btn-pause:hover {
+  background: rgba(255, 152, 0, 0.3);
+}
+
+/* Stop timer button */
+.timer-btn-stop {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+.timer-btn-stop:hover {
+  background: rgba(244, 67, 54, 0.3);
+}
+
+/* Reset timer button */
+.timer-btn-reset {
+  background: rgba(158, 158, 158, 0.2);
+  color: #9e9e9e;
+  font-size: 11px;
+}
+
+.timer-btn-reset:hover {
+  background: rgba(158, 158, 158, 0.3);
+}
+
+/* History tooltip */
+.timer-history {
+  font-size: 11px;
+  opacity: 0.8;
+  margin-top: 4px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+/* Timer summary in running tasks header */
+.timer-summary {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.timer-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.timer-summary-item strong {
+  color: #ffc107;
+}
+
+/* Running task container with timer */
+.running-task-with-timer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  margin-bottom: 6px;
+  background: rgba(76, 175, 80, 0.05);
+  border-left: 3px solid #4caf50;
+  border-radius: 4px;
+}
+
+.running-task-info {
+  flex: 1;
+}
+
+.running-task-timer {
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .task-timer-display {
+    background: rgba(255, 193, 7, 0.15);
+  }
+
+  .task-timer-display.running {
+    background: rgba(76, 175, 80, 0.15);
+  }
+
+  .task-timer-display.paused {
+    background: rgba(244, 67, 54, 0.15);
+  }
+
+  .timer-buttons {
+    gap: 6px;
+  }
+
+  .timer-btn {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .timer-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .timer-summary {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .task-timer-display {
+    flex-wrap: wrap;
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+
+  .timer-buttons {
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .timer-btn {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+
+  .running-task-with-timer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .running-task-timer {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+  }
+
+  .timer-summary {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
