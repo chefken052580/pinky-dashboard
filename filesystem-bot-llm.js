@@ -1,5 +1,5 @@
 /**
- * FILESYSTEMBOT PRO - Pinky's Slave LLM Assistant
+ * FILESYSTEMBOT PRO - AI File Assistant
  * Helps with tasks, file management, code cleanup, automation
  */
 
@@ -90,12 +90,12 @@ class FileSystemBotLLM {
     const container = document.getElementById('filesystembot-llm-container');
     if (!container) return;
 
-    let html = '<div class="filesystembot-llm">';
-    html += '<h3>🔧 FileSystemBot - Your Assistant</h3>';
+    let html = '<div class="filesystembot-llm" style="color:#fff;">';
+    html += '<h3 style="color:#00d4ff;margin-bottom:20px;">🔧 FileSystemBot - Your AI Assistant</h3>';
     
-    html += '<div class="fsbot-capabilities">';
-    html += '<h4>What can I help with?</h4>';
-    html += '<div class="capability-grid">';
+    html += '<div class="fsbot-capabilities" style="margin-bottom:30px;">';
+    html += '<h4 style="color:#fff;margin-bottom:15px;">What can I help with?</h4>';
+    html += '<div class="capability-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:15px;">';
     
     const caps = [
       { id: 'file_operations', emoji: '📁', name: 'File Management', desc: 'Organize, move, archive files' },
@@ -107,20 +107,20 @@ class FileSystemBotLLM {
     ];
 
     caps.forEach(cap => {
-      html += '<div class="capability-card" onclick="window.fileSystemBotLLM.showCapability(\'' + cap.id + '\')">';
-      html += '<span class="cap-emoji">' + cap.emoji + '</span>';
+      html += '<div class="capability-card" onclick="window.fileSystemBotLLM.showCapability(\'' + cap.id + '\')" style="background:#1a1a2e;border:1px solid #00d4ff;border-radius:8px;padding:15px;margin:10px;cursor:pointer;transition:all 0.3s;">';
+      html += '<span class="cap-emoji" style="font-size:2em;margin-right:10px;">' + cap.emoji + '</span>';
       html += '<div class="cap-info">';
-      html += '<h5>' + cap.name + '</h5>';
-      html += '<p>' + cap.desc + '</p>';
+      html += '<h5 style="color:#00d4ff;margin:5px 0;">' + cap.name + '</h5>';
+      html += '<p style="color:#aaa;font-size:0.9em;margin:0;">' + cap.desc + '</p>';
       html += '</div>';
       html += '</div>';
     });
     
     html += '</div></div>';
 
-    html += '<div class="fsbot-interface">';
-    html += '<h4>Ask FileSystemBot</h4>';
-    html += '<div class="fsbot-input-group">';
+    html += '<div class="fsbot-interface" style="margin-top:30px;">';
+    html += '<h4 style="color:#00d4ff;margin-bottom:15px;">Ask FileSystemBot</h4>';
+    html += '<div class="fsbot-input-group" style="display:flex;gap:10px;align-items:center;">';
     html += '<input type="text" id="fsbot-prompt" placeholder="What would you like me to do?" style="flex:1;padding:10px;border:1px solid #00d4ff;border-radius:6px;background:#1a1a2e;color:#fff;">';
     html += '<select id="fsbot-capability" style="padding:10px;border:1px solid #00d4ff;border-radius:6px;background:#1a1a2e;color:#fff;">';
     caps.forEach(cap => {
