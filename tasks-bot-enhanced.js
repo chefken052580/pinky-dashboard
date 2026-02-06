@@ -155,6 +155,20 @@ class TasksBotEnhanced {
     
     this.completedTasks = tasks.filter(t => t.status === 'completed');
 
+    // Auto-start timers for running tasks, auto-stop for completed
+    if (typeof taskTimer !== 'undefined' && taskTimer) {
+      this.runningTasks.forEach(t => {
+        if (!taskTimer.isRunning(t.id)) {
+          taskTimer.start(t.id);
+        }
+      });
+      this.completedTasks.forEach(t => {
+        if (taskTimer.isRunning(t.id)) {
+          taskTimer.stop(t.id);
+        }
+      });
+    }
+
     this.render();
     this.saveToLocalStorage();
   }
@@ -632,6 +646,13 @@ class TasksBotEnhanced {
         
         html += '<div class="task-meta">';
         html += '<span>Completed: ' + this.formatTime(task.updated) + '</span>';
+        // Show elapsed time from timer
+        if (typeof taskTimer !== 'undefined' && taskTimer) {
+          var elapsed = taskTimer.getElapsed(task.id);
+          if (elapsed > 0) {
+            html += '<span style="margin-left:12px;color:#4496ff;">⏱️ ' + taskTimer.formatElapsed(elapsed) + '</span>';
+          }
+        }
         html += '</div>';
         html += '</div>';
       });
