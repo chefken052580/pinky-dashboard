@@ -593,7 +593,8 @@ function renderHeaderStats() {
 }
 document.addEventListener('DOMContentLoaded', function() {
     
-    setInterval(renderHeaderStats, 30000); // Refresh every 30s
+    renderHeaderStats(); // Run immediately
+    setInterval(renderHeaderStats, 30000); // Then refresh every 30s
 });
 
 // ===== APPROVAL NOTIFICATION SYSTEM =====
