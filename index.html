@@ -411,54 +411,15 @@
                 </div>
 
                 <!-- Interactive Bot Interface -->
-                <div class="bot-interface">
-                    <h3>💬 Ask DocsBot</h3>
-                    
-                    <div class="input-panel">
-                        <textarea 
-                            id="docs-input" 
-                            class="bot-input"
-                            placeholder="What documentation do you need? (e.g., 'Generate daily log for today', 'Document the CrackerBot project', 'Create README for my workspace')"
-                            rows="4"
-                        ></textarea>
-                        
-                        <div class="input-controls">
-                            <select id="docs-template" class="template-select" onchange="window.dashboard.loadTemplate('docs', this.value)">
-                                <option value="">Quick Templates</option>
-                                <option value="daily-log">📅 Daily Log</option>
-                                <option value="memory-update">🧠 Memory Update</option>
-                                <option value="project-docs">📚 Project Documentation</option>
-                                <option value="readme">📖 Generate README</option>
-                                <option value="api-docs">🔌 API Documentation</option>
-                                <option value="changelog">📝 Changelog</option>
-                            </select>
-                            
-                            <button class="submit-btn" onclick="window.dashboard.submitBotTask('docs')">
-                                🚀 Generate
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="output-panel">
-                        <h4>📤 Output</h4>
-                        <div id="docs-output" class="bot-output">
-                            <div class="output-placeholder">
-                                Your generated documentation will appear here...
-                            </div>
-                        </div>
-                        
-                        <div class="output-actions">
-                            <button class="btn-small" onclick="window.dashboard.copyOutput('docs')">
-                                📋 Copy
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.downloadOutput('docs')">
-                                💾 Download
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.clearOutput('docs')">
-                                🗑️ Clear
-                            </button>
-                        </div>
-                    </div>
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
                 </div>
 
                 <div class="recent-activity" style="margin-top:25px;">
@@ -505,52 +466,15 @@
                 </div>
 
                 <!-- Interactive Bot Interface -->
-                <div class="bot-interface">
-                    <h3>💬 Ask ResearchBot</h3>
-                    
-                    <div class="input-panel">
-                        <textarea 
-                            id="research-input" 
-                            class="bot-input"
-                            placeholder="What research do you need? (e.g., 'Analyze AI market trends', 'Research crypto competitors', 'Find trending topics in web3')"
-                            rows="4"
-                        ></textarea>
-                        
-                        <div class="input-controls">
-                            <select id="research-template" class="template-select" onchange="window.dashboard.loadTemplate('research', this.value)">
-                                <option value="">Quick Templates</option>
-                                <option value="market-analysis">📈 Market Analysis</option>
-                                <option value="competitor-research">🎯 Competitor Research</option>
-                                <option value="trend-report">🔥 Trend Report</option>
-                                <option value="web-search">🔍 Web Search</option>
-                            </select>
-                            
-                            <button class="submit-btn" onclick="window.dashboard.submitBotTask('research')">
-                                🚀 Research
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="output-panel">
-                        <h4>📤 Research Results</h4>
-                        <div id="research-output" class="bot-output">
-                            <div class="output-placeholder">
-                                Your research results will appear here...
-                            </div>
-                        </div>
-                        
-                        <div class="output-actions">
-                            <button class="btn-small" onclick="window.dashboard.copyOutput('research')">
-                                📋 Copy
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.downloadOutput('research')">
-                                💾 Download
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.clearOutput('research')">
-                                🗑️ Clear
-                            </button>
-                        </div>
-                    </div>
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
                 </div>
 
                 <div class="recent-activity" style="margin-top:25px;">
@@ -597,52 +521,15 @@
                 </div>
 
                 <!-- Interactive Bot Interface -->
-                <div class="bot-interface">
-                    <h3>💬 Ask CodeBot</h3>
-                    
-                    <div class="input-panel">
-                        <textarea 
-                            id="code-input" 
-                            class="bot-input"
-                            placeholder="Describe the code you need, or paste code to debug/refactor..."
-                            rows="6"
-                        ></textarea>
-                        
-                        <div class="input-controls">
-                            <select id="code-template" class="template-select" onchange="window.dashboard.loadTemplate('code', this.value)">
-                                <option value="">Quick Templates</option>
-                                <option value="generate-function">🚀 Generate Function</option>
-                                <option value="refactor-code">🔄 Refactor Code</option>
-                                <option value="debug-issue">🐛 Debug Issue</option>
-                                <option value="write-tests">✅ Write Tests</option>
-                            </select>
-                            
-                            <button class="submit-btn" onclick="window.dashboard.submitBotTask('code')">
-                                🚀 Generate
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="output-panel">
-                        <h4>📤 Code Output</h4>
-                        <div id="code-output" class="bot-output">
-                            <div class="output-placeholder">
-                                Your generated code will appear here...
-                            </div>
-                        </div>
-                        
-                        <div class="output-actions">
-                            <button class="btn-small" onclick="window.dashboard.copyOutput('code')">
-                                📋 Copy
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.downloadOutput('code')">
-                                💾 Download
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.clearOutput('code')">
-                                🗑️ Clear
-                            </button>
-                        </div>
-                    </div>
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
                 </div>
 
                 <div class="recent-activity" style="margin-top:25px;">
@@ -689,138 +576,15 @@
                 </div>
 
                 <!-- Interactive Bot Interface -->
-                <div class="bot-interface">
-                    <h3>💬 Ask SocialBot</h3>
-                    
-                    <div class="input-panel">
-                        <textarea 
-                            id="social-input" 
-                            class="bot-input"
-                            placeholder="What content do you need? (e.g., 'Create Twitter thread about AI', 'LinkedIn post on startup growth', 'Instagram caption for product launch')"
-                            rows="4"
-                        ></textarea>
-                        
-                        <div class="input-controls">
-                            <select id="social-template" class="template-select" onchange="window.dashboard.loadTemplate('social', this.value)">
-                                <option value="">Quick Templates</option>
-                                <option value="twitter-thread">🐦 Twitter Thread</option>
-                                <option value="linkedin-post">💼 LinkedIn Post</option>
-                                <option value="instagram-caption">📸 Instagram Caption</option>
-                                <option value="content-calendar">📅 Content Calendar</option>
-                            </select>
-                            
-                            <button class="submit-btn" onclick="window.dashboard.submitBotTask('social')">
-                                🚀 Create
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="output-panel">
-                        <h4>📤 Content Output</h4>
-                        <div id="social-output" class="bot-output">
-                            <div class="output-placeholder">
-                                Your social media content will appear here...
-                            </div>
-                        </div>
-                        
-                        <div class="output-actions">
-                            <button class="btn-small" onclick="window.dashboard.copyOutput('social')">
-                                📋 Copy
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.downloadOutput('social')">
-                                💾 Download
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.clearOutput('social')">
-                                🗑️ Clear
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="margin-top:25px;">
-                    <div id="social-api-container"></div>
-                    <div id="social-content"></div>
-                </div>
-            </div>
-
-            <!-- BusinessBot View -->
-            <div id="business-view" class="view">
-                <h2>💼 BusinessBot - Opportunity Analyzer</h2>
-                <p style="color:white;margin-bottom:25px;">
-                    Analyzes business opportunities, creates strategies, and tracks growth.
-                </p>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">💡</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="business-opportunities">0</div>
-                            <div class="stat-label">Opportunities Found</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📈</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="business-strategies">0</div>
-                            <div class="stat-label">Strategies Created</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="business-revenue">$0</div>
-                            <div class="stat-label">Potential Revenue</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Interactive Bot Interface -->
-                <div class="bot-interface">
-                    <h3>💬 Ask BusinessBot</h3>
-                    
-                    <div class="input-panel">
-                        <textarea 
-                            id="business-input" 
-                            class="bot-input"
-                            placeholder="Describe the business opportunity or strategy you need analyzed..."
-                            rows="4"
-                        ></textarea>
-                        
-                        <div class="input-controls">
-                            <select id="business-template" class="template-select" onchange="window.dashboard.loadTemplate('business', this.value)">
-                                <option value="">Quick Templates</option>
-                                <option value="opportunity-analysis">🔍 Opportunity Analysis</option>
-                                <option value="swot-analysis">📊 SWOT Analysis</option>
-                                <option value="business-plan">📋 Business Plan</option>
-                                <option value="pitch-deck">🎯 Pitch Deck Outline</option>
-                            </select>
-                            
-                            <button class="submit-btn" onclick="window.dashboard.submitBotTask('business')">
-                                🚀 Analyze
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="output-panel">
-                        <h4>📤 Analysis Results</h4>
-                        <div id="business-output" class="bot-output">
-                            <div class="output-placeholder">
-                                Your business analysis will appear here...
-                            </div>
-                        </div>
-                        
-                        <div class="output-actions">
-                            <button class="btn-small" onclick="window.dashboard.copyOutput('business')">
-                                📋 Copy
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.downloadOutput('business')">
-                                💾 Download
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.clearOutput('business')">
-                                🗑️ Clear
-                            </button>
-                        </div>
-                    </div>
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
                 </div>
 
                 <div class="recent-activity" style="margin-top:25px;">
@@ -843,52 +607,15 @@
                 </p>
                 
                 <!-- Interactive Bot Interface -->
-                <div class="bot-interface">
-                    <h3>💬 Ask FileSystemBot</h3>
-                    
-                    <div class="input-panel">
-                        <textarea 
-                            id="filesystem-input" 
-                            class="bot-input"
-                            placeholder="What file operation do you need? (e.g., 'Organize workspace by date', 'Find all TODO files', 'Backup memory folder')"
-                            rows="4"
-                        ></textarea>
-                        
-                        <div class="input-controls">
-                            <select id="filesystem-template" class="template-select" onchange="window.dashboard.loadTemplate('filesystem', this.value)">
-                                <option value="">Quick Templates</option>
-                                <option value="organize">🗂️ Organize Files</option>
-                                <option value="cleanup">🧹 Cleanup & Remove Duplicates</option>
-                                <option value="backup">💾 Create Backup</option>
-                                <option value="search">🔍 Search Files</option>
-                            </select>
-                            
-                            <button class="submit-btn" onclick="window.dashboard.submitBotTask('filesystem')">
-                                🚀 Execute
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="output-panel">
-                        <h4>📤 Operation Results</h4>
-                        <div id="filesystem-output" class="bot-output">
-                            <div class="output-placeholder">
-                                File operation results will appear here...
-                            </div>
-                        </div>
-                        
-                        <div class="output-actions">
-                            <button class="btn-small" onclick="window.dashboard.copyOutput('filesystem')">
-                                📋 Copy
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.downloadOutput('filesystem')">
-                                💾 Download
-                            </button>
-                            <button class="btn-small" onclick="window.dashboard.clearOutput('filesystem')">
-                                🗑️ Clear
-                            </button>
-                        </div>
-                    </div>
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
                 </div>
 
                 <div class="recent-activity" style="margin-top:25px;">
