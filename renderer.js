@@ -96,6 +96,12 @@ function switchView(viewId) {
         if (viewId === "tasks-view" && window.tasksBotEnhanced && !window.tasksBotEnhanced.isInitialized) {
             window.tasksBotEnhanced.init();
         }
+        
+        // Initialize Settings page when switching to its view
+        if (viewId === "settings-view" && window.initSettingsPage) {
+            window.initSettingsPage();
+        }
+        
         targetView.classList.add('active');
         currentView = viewId;
     }
