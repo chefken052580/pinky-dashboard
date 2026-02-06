@@ -176,11 +176,10 @@ class WordPressPageMaker {
       </div>
     `;
 
-    const contentView = document.getElementById('content-view');
-    if (contentView) {
-      contentView.appendChild(container);
-    } else {
-      document.body.appendChild(container);
+    const target = document.getElementById('wordpress-page-maker');
+    if (target) {
+      target.innerHTML = '';
+      target.appendChild(container);
     }
   }
 
