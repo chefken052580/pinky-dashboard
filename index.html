@@ -937,42 +937,56 @@
 
             <!-- Social Media View -->
             <div id="social-media-view" class="view">
-                <h2>🌐 Social Media Dashboard</h2>
+                <h2>🌐 SocialBot - Social Media Manager</h2>
                 <p style="color:white;margin-bottom:25px;">
-                    Connect and manage all your social media accounts in one place.
+                    Manage all your social media companies and content in one place.
                 </p>
                 
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">📱</div>
-                        <div class="stat-content">
-                            <div class="stat-value">0</div>
-                            <div class="stat-label">Connected Accounts</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">✍️</div>
-                        <div class="stat-content">
-                            <div class="stat-value">0</div>
-                            <div class="stat-label">Posts Today</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">❤️</div>
-                        <div class="stat-content">
-                            <div class="stat-value">0</div>
-                            <div class="stat-label">Total Engagement</div>
-                        </div>
+                <!-- Company Selector -->
+                <div class="social-company-selector-section">
+                    <h3>Select Company</h3>
+                    <div id="social-company-selector" class="company-selector-container">
+                        <!-- Companies loaded by JS -->
                     </div>
                 </div>
-
-                <div class="recent-activity" style="margin-top:25px;">
-                    <h3>📊 Social Media Integration (Coming Soon)</h3>
-                    <div class="activity-feed">
-                        <div class="activity-item">
-                            <span class="activity-message">Connect Facebook, Instagram, Twitter, LinkedIn and more! 🌐</span>
-                        </div>
+                
+                <!-- Tab Navigation -->
+                <div class="social-tab-nav" style="margin-top:25px;margin-bottom:25px;border-bottom:2px solid #ddd;">
+                    <button class="social-tab-button active" data-social-tab="companies" onclick="switchSocialTab('companies')">
+                        🏢 Companies
+                    </button>
+                    <button class="social-tab-button" data-social-tab="create" onclick="switchSocialTab('create')">
+                        ✍️ Create Post
+                    </button>
+                    <button class="social-tab-button" data-social-tab="scheduled" onclick="switchSocialTab('scheduled')">
+                        📅 Scheduled
+                    </button>
+                    <button class="social-tab-button" data-social-tab="history" onclick="switchSocialTab('history')">
+                        📊 History
+                    </button>
+                </div>
+                
+                <!-- Tab Content -->
+                <div id="social-tab-companies" class="social-tab-content" style="display:block;">
+                    <h3>📱 Your Companies</h3>
+                    <div id="social-tab-companies-content">
+                        <!-- Companies grid loaded by JS -->
                     </div>
+                </div>
+                
+                <div id="social-tab-create" class="social-tab-content" style="display:none;">
+                    <h3>✍️ Create New Post</h3>
+                    <!-- Form loaded by JS -->
+                </div>
+                
+                <div id="social-tab-scheduled" class="social-tab-content" style="display:none;">
+                    <h3>📅 Scheduled Posts</h3>
+                    <!-- Posts loaded by JS -->
+                </div>
+                
+                <div id="social-tab-history" class="social-tab-content" style="display:none;">
+                    <h3>📊 Post History</h3>
+                    <!-- Posts loaded by JS -->
                 </div>
             </div>
 
@@ -1109,6 +1123,8 @@
     <script src="analytics-advanced.js"></script>
     <!-- System Monitor UI - Real-time resource monitoring -->
     <script src="system-monitor-ui.js"></script>
+    <!-- SocialBot UI - Company management and post creation -->
+    <script src="social-bot-ui.js"></script>
     
     <!-- Metrics Persistence Layer - API health tracking (HB#111) -->
     <script src="metrics-persistence.js"></script>
