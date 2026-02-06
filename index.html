@@ -147,9 +147,6 @@
 
             <nav class="view-nav">
                 <h3>📱 Views</h3>
-                <button class="view-button" id="analytics-view" data-view="analytics">
-                    <span>📈 Analytics</span>
-                </button>
                 <button class="view-button" data-view="social-media">
                     <span>🌐 Social Media</span>
                 </button>
@@ -216,6 +213,15 @@
                 <!-- Task History Chart - Last 30 Days -->
                 <div id="task-history-chart-container" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
                 </div>
+
+                <!-- Analytics Dashboard Section -->
+                <div id="analytics-dashboard-section" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
+                    <h3 style="color: #4496ff; margin-bottom: 15px;">📈 Analytics Dashboard</h3>
+                    <div id="health-dashboard-container-main" style="margin-bottom: 20px;"></div>
+                    <div id="changelog-widget-main" style="margin-bottom: 20px;"></div>
+                    <div id="system-monitor-container-main" style="margin-bottom: 20px;"></div>
+                </div>
+
 
                 <!-- Quick Actions -->
                 <div class="quick-actions">
@@ -925,56 +931,6 @@
                 <div id="tasksbot-container"></div>
                 <!-- Old TaskQueue kept hidden for compatibility -->
                 <div id="task-queue-container" style="display: none;"></div>
-            </div>
-
-            <!-- Analytics View -->
-            <div id="analytics-view" class="view">
-                <h2>📈 Analytics Dashboard</h2>
-                <p style="color:white;margin-bottom:25px;">
-                    Performance metrics and insights across all bots and operations.
-                </p>
-                
-                <!-- Health Dashboard Widget (NEW) -->
-                <div id="health-dashboard-container" style="margin-bottom: 30px;"></div>
-                
-                <!-- Changelog Widget - Recent Updates -->
-                <div id="changelog-widget" style="margin-bottom: 30px;"></div>
-                
-                <!-- System Resource Monitor Widget -->
-                <div id="system-monitor-container" style="margin-bottom: 30px;"></div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">📊</div>
-                        <div class="stat-content">
-                            <div class="stat-value">0</div>
-                            <div class="stat-label">Total Operations</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⚡</div>
-                        <div class="stat-content">
-                            <div class="stat-value">0ms</div>
-                            <div class="stat-label">Avg Response Time</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-content">
-                            <div class="stat-value">100%</div>
-                            <div class="stat-label">Success Rate</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recent-activity" style="margin-top:25px;">
-                    <h3>📊 Analytics (Coming Soon)</h3>
-                    <div class="activity-feed">
-                        <div class="activity-item">
-                            <span class="activity-message">Detailed analytics and charts coming soon! 📈</span>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Social Media View -->
