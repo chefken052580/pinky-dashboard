@@ -159,7 +159,7 @@ class AnalyticsEngine {
     } else {
       responses.forEach((time, idx) => {
         const color = time < 100 ? '#00d464' : time < 200 ? '#ffa500' : '#ff6464';
-        html += '<div class="timeline-item" style="background:' + color + ';opacity:0.3;height:' + (time/3) + 'px;" title="' + time + 'ms"></div>';
+        html += '<div class="timeline-item" style="background:' + color + ';opacity:0.7;border:1px solid ' + color + ';height:' + (time/3) + 'px;" title="' + time + 'ms"></div>';
       });
     }
     html += '</div>';
