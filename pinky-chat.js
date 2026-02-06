@@ -58,15 +58,43 @@
         }
     }
 
+    // ─── Helper: Safe JSON Response Handler ───
+    function safeJsonResponse(response, context) {
+        context = context || 'API';
+        
+        // Check if response is OK
+        if (!response.ok) {
+            var contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('text/html')) {
+                return Promise.reject(new Error(context + ' returned HTML error (HTTP ' + response.status + '). Server may be down.'));
+            }
+            return Promise.reject(new Error(context + ' error: HTTP ' + response.status + ' ' + response.statusText));
+        }
+        
+        // Check content-type before parsing
+        var contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            return Promise.reject(new Error(context + ' returned non-JSON response (Content-Type: ' + contentType + '). Expected JSON.'));
+        }
+        
+        return response.json();
+    }
+
     // ─── Sessions ───
     function loadSessions() {
         fetch('/api/chat/sessions')
-            .then(function(r) { return r.json(); })
+            .then(function(r) { return safeJsonResponse(r, 'Chat/Sessions'); })
             .then(function(sessions) {
                 renderSessionList(sessions);
             })
             .catch(function(err) {
                 console.error('[PinkyChat] Failed to load sessions:', err);
+                var list = document.getElementById('chat-session-list');
+                if (list) {
+                    list.innerHTML = '<div style="padding:20px;text-align:center;color:#e74c3c;font-size:0.8em;">' +
+                        '⚠️ Failed to load sessions<br>' +
+                        '<small>' + (err.message || 'Unknown error') + '</small></div>';
+                }
             });
     }
 
@@ -109,13 +137,17 @@
         });
 
         fetch('/api/chat/session/' + sessionId)
-            .then(function(r) { return r.json(); })
+            .then(function(r) { return safeJsonResponse(r, 'Chat/Session'); })
             .then(function(session) {
                 renderMessages(session.messages);
                 updateHeader(session);
             })
             .catch(function(err) {
                 console.error('[PinkyChat] Failed to load session:', err);
+                var msgs = document.getElementById('chat-messages');
+                if (msgs) {
+                    msgs.innerHTML = '<div class="chat-empty-state" style="color:#e74c3c;">⚠️ Failed to load conversation: ' + (err.message || 'Unknown error') + '</div>';
+                }
             });
     }
 
@@ -141,6 +173,7 @@
         if (!confirm('Delete this conversation?')) return;
         
         fetch('/api/chat/session/' + sessionId, { method: 'DELETE' })
+            .then(function(r) { return safeJsonResponse(r, 'Chat/Delete'); })
             .then(function() {
                 if (currentSessionId === sessionId) {
                     newSession();
@@ -149,18 +182,24 @@
             })
             .catch(function(err) {
                 console.error('[PinkyChat] Delete failed:', err);
+                alert('Failed to delete conversation: ' + (err.message || 'Unknown error'));
             });
     }
 
     // ─── Search ───
     function searchSessions(query) {
         fetch('/api/chat/search?q=' + encodeURIComponent(query))
-            .then(function(r) { return r.json(); })
+            .then(function(r) { return safeJsonResponse(r, 'Chat/Search'); })
             .then(function(results) {
                 renderSearchResults(results);
             })
             .catch(function(err) {
                 console.error('[PinkyChat] Search failed:', err);
+                var list = document.getElementById('chat-session-list');
+                if (list) {
+                    list.innerHTML = '<div style="padding:20px;text-align:center;color:#e74c3c;font-size:0.8em;">' +
+                        '⚠️ Search failed: ' + (err.message || 'Unknown error') + '</div>';
+                }
             });
     }
 
@@ -220,7 +259,26 @@
                 message: message
             })
         })
-        .then(function(r) { return r.json(); })
+        .then(function(r) {
+            // Check if response is OK
+            if (!r.ok) {
+                // If response is HTML (error page), provide better error message
+                var contentType = r.headers.get('content-type');
+                if (contentType && contentType.includes('text/html')) {
+                    return Promise.reject(new Error('Server returned HTML error (HTTP ' + r.status + '). Chat API may be down.'));
+                }
+                // For other errors, include status code
+                return Promise.reject(new Error('HTTP ' + r.status + ': ' + r.statusText));
+            }
+            
+            // Check if response is JSON before parsing
+            var contentType = r.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                return Promise.reject(new Error('Server returned non-JSON response (Content-Type: ' + contentType + '). Expected JSON.'));
+            }
+            
+            return r.json();
+        })
         .then(function(data) {
             hideTyping();
             setWaiting(false);
@@ -251,7 +309,12 @@
         .catch(function(err) {
             hideTyping();
             setWaiting(false);
-            appendMessage('assistant', '⚠️ Connection error: ' + err.message);
+            // Provide clear error message (avoid exposing raw JSON parse errors)
+            var errorMsg = err.message || 'Connection error';
+            if (errorMsg.includes('Unexpected token')) {
+                errorMsg = 'Invalid response from server. Chat API may be misconfigured.';
+            }
+            appendMessage('assistant', '⚠️ ' + errorMsg);
         });
     }
 
