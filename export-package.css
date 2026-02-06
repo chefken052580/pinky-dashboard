@@ -1,0 +1,306 @@
+/* Export Package UI Styles */
+
+.export-package-container {
+    background: var(--bg-secondary, #1e1e1e);
+    border: 1px solid var(--border-color, #333);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    color: var(--text-primary, #fff);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.export-package-header {
+    border-bottom: 2px solid var(--border-color, #333);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.export-package-header h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary, #fff);
+}
+
+.export-package-header p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-secondary, #aaa);
+}
+
+.export-package-section {
+    margin-bottom: 20px;
+}
+
+.export-package-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary, #fff);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Export Buttons */
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-export-json,
+.btn-export-config,
+.btn-export-summary,
+.btn-import-package {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-export-json {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+}
+
+.btn-export-json:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-export-config {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: #fff;
+}
+
+.btn-export-config:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+}
+
+.btn-export-summary {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: #fff;
+}
+
+.btn-export-summary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+}
+
+.btn-import-package {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: #fff;
+}
+
+.btn-import-package:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(67, 233, 123, 0.4);
+}
+
+.btn-export-json:active,
+.btn-export-config:active,
+.btn-export-summary:active,
+.btn-import-package:active {
+    transform: translateY(0);
+    opacity: 0.9;
+}
+
+/* Import Area */
+.import-area {
+    background: var(--bg-tertiary, #161616);
+    border: 2px dashed var(--border-color, #444);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+}
+
+.import-file-input {
+    display: none;
+}
+
+.import-note {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-secondary, #999);
+    margin-bottom: 0;
+}
+
+/* Package Info */
+.package-info {
+    background: var(--bg-tertiary, #161616);
+    border: 1px solid var(--border-color, #333);
+    border-radius: 6px;
+    padding: 15px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.summary-details p {
+    margin: 8px 0;
+    color: var(--text-primary, #fff);
+}
+
+.summary-details strong {
+    color: #667eea;
+}
+
+.summary-details ul {
+    margin: 8px 0;
+    padding-left: 20px;
+    list-style: none;
+}
+
+.summary-details li {
+    margin: 4px 0;
+    color: var(--text-secondary, #aaa);
+    position: relative;
+    padding-left: 20px;
+}
+
+.summary-details li:before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #43e97b;
+    font-weight: bold;
+}
+
+.import-success {
+    background: rgba(67, 233, 123, 0.1);
+    border: 1px solid #43e97b;
+    border-radius: 6px;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+.import-success p {
+    margin: 6px 0;
+    color: #43e97b;
+}
+
+/* Notifications */
+.export-notifications {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    max-width: 400px;
+}
+
+.export-notification {
+    background: #333;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border-left: 4px solid #667eea;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: slideInRight 0.3s ease;
+    font-size: 13px;
+}
+
+.notification-info {
+    border-left-color: #4facfe;
+}
+
+.notification-success {
+    border-left-color: #43e97b;
+    background: rgba(67, 233, 123, 0.1);
+    color: #43e97b;
+}
+
+.notification-error {
+    border-left-color: #f5576c;
+    background: rgba(245, 87, 108, 0.1);
+    color: #f5576c;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .export-package-container {
+        padding: 15px;
+        margin: 15px 0;
+    }
+
+    .export-buttons {
+        flex-direction: column;
+    }
+
+    .btn-export-json,
+    .btn-export-config,
+    .btn-export-summary,
+    .btn-import-package {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .export-notifications {
+        left: 10px;
+        right: 10px;
+        max-width: none;
+    }
+}
+
+/* Dark Mode (already applied by default) */
+@media (prefers-color-scheme: light) {
+    .export-package-container {
+        background: #f5f5f5;
+        color: #333;
+    }
+
+    .export-package-header {
+        border-bottom-color: #ddd;
+    }
+
+    .export-package-header h3 {
+        color: #333;
+    }
+
+    .export-package-header p {
+        color: #666;
+    }
+
+    .import-area {
+        background: #fafafa;
+        border-color: #ddd;
+    }
+
+    .package-info {
+        background: #fafafa;
+        border-color: #ddd;
+    }
+
+    .summary-details p,
+    .import-success p {
+        color: #333;
+    }
+
+    .export-notification {
+        background: #fff;
+        color: #333;
+        border-left-color: #667eea;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+}
