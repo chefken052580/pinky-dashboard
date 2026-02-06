@@ -1,20 +1,20 @@
 /**
- * Token Allocation Widget Styles
+ * Token Allocation Widget Styles - Purple/Blue Dashboard Theme
  */
 
 .token-allocation-widget {
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  border: 1px solid #e0e0e0;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #00d4ff;
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.15);
 }
 
 html.dark-mode .token-allocation-widget {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border-color: #333;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #0f0e1a 0%, #1a1a2e 100%);
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 .token-widget-header {
@@ -28,34 +28,41 @@ html.dark-mode .token-allocation-widget {
   margin: 0;
   font-size: 1.4em;
   font-weight: 600;
-  color: #333;
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
 }
 
 html.dark-mode .token-widget-header h3 {
-  color: #e0e0e0;
+  color: #667eea;
+  text-shadow: 0 0 10px rgba(102, 126, 234, 0.4);
 }
 
 .refresh-btn {
-  background: none;
-  border: 1px solid #ddd;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 2px solid #00d4ff;
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1.2em;
   transition: all 0.2s;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
 }
 
 .refresh-btn:hover {
-  background: #f0f0f0;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
   transform: rotate(180deg);
+  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
 }
 
 html.dark-mode .refresh-btn {
-  border-color: #444;
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 html.dark-mode .refresh-btn:hover {
-  background: #333;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 /* Metric Cards */
@@ -67,16 +74,18 @@ html.dark-mode .refresh-btn:hover {
 }
 
 .metric-card {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+  border: 2px solid #00d4ff;
   border-radius: 8px;
   padding: 16px;
   text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.1);
 }
 
 html.dark-mode .metric-card {
-  background: #0f3460;
-  border-color: #333;
+  background: linear-gradient(135deg, #0f0e1a 0%, #16213e 100%);
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
 }
 
 .metric-card.total {
@@ -99,51 +108,54 @@ html.dark-mode .metric-card {
 
 .metric-label {
   font-size: 0.9em;
-  opacity: 0.9;
+  color: #00d4ff;
   margin-bottom: 8px;
 }
 
 html.dark-mode .metric-card:not(.total):not(.avg):not(.efficiency) .metric-label {
-  color: #999;
+  color: #667eea;
 }
 
 .metric-value {
   font-size: 1.8em;
   font-weight: 700;
   margin-bottom: 4px;
+  color: #ffffff;
 }
 
 .metric-detail {
   font-size: 0.85em;
-  opacity: 0.8;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 html.dark-mode .metric-card:not(.total):not(.avg):not(.efficiency) .metric-detail {
-  color: #aaa;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Token Breakdown Section */
 .token-breakdown {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+  border: 2px solid #00d4ff;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.1);
 }
 
 html.dark-mode .token-breakdown {
-  background: #0f3460;
-  border-color: #333;
+  background: linear-gradient(135deg, #0f0e1a 0%, #16213e 100%);
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
 }
 
 .token-breakdown h4 {
   margin: 0 0 16px 0;
   font-size: 1.1em;
-  color: #333;
+  color: #00d4ff;
 }
 
 html.dark-mode .token-breakdown h4 {
-  color: #e0e0e0;
+  color: #667eea;
 }
 
 .allocation-bars {
@@ -167,33 +179,35 @@ html.dark-mode .token-breakdown h4 {
 
 .category-name {
   font-weight: 500;
-  color: #555;
+  color: #00d4ff;
 }
 
 html.dark-mode .category-name {
-  color: #bbb;
+  color: #667eea;
 }
 
 .percentage {
   font-size: 0.9em;
   font-weight: 600;
-  color: #666;
+  color: #00d4ff;
 }
 
 html.dark-mode .percentage {
-  color: #999;
+  color: #667eea;
 }
 
 .allocation-bar {
-  background: #f0f0f0;
+  background: rgba(0, 212, 255, 0.1);
   border-radius: 6px;
   height: 28px;
   overflow: hidden;
   position: relative;
+  border: 1px solid rgba(0, 212, 255, 0.2);
 }
 
 html.dark-mode .allocation-bar {
-  background: #1a1a2e;
+  background: rgba(102, 126, 234, 0.1);
+  border-color: rgba(102, 126, 234, 0.2);
 }
 
 .allocation-fill {
@@ -237,25 +251,27 @@ html.dark-mode .allocation-bar {
 
 /* Heartbeat Metrics */
 .heartbeat-metrics {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+  border: 2px solid #00d4ff;
   border-radius: 8px;
   padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.1);
 }
 
 html.dark-mode .heartbeat-metrics {
-  background: #0f3460;
-  border-color: #333;
+  background: linear-gradient(135deg, #0f0e1a 0%, #16213e 100%);
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
 }
 
 .heartbeat-metrics h4 {
   margin: 0 0 12px 0;
   font-size: 1.1em;
-  color: #333;
+  color: #00d4ff;
 }
 
 html.dark-mode .heartbeat-metrics h4 {
-  color: #e0e0e0;
+  color: #667eea;
 }
 
 .metrics-grid {
@@ -268,12 +284,12 @@ html.dark-mode .heartbeat-metrics h4 {
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
   font-size: 0.95em;
 }
 
 html.dark-mode .metric-row {
-  border-color: #1a1a2e;
+  border-color: rgba(102, 126, 234, 0.2);
 }
 
 .metric-row:last-child {
@@ -281,21 +297,21 @@ html.dark-mode .metric-row {
 }
 
 .metric-name {
-  color: #666;
+  color: #00d4ff;
   font-weight: 500;
 }
 
 html.dark-mode .metric-name {
-  color: #999;
+  color: #667eea;
 }
 
 .metric-val {
-  color: #333;
+  color: #ffffff;
   font-weight: 600;
 }
 
 html.dark-mode .metric-val {
-  color: #e0e0e0;
+  color: #ffffff;
 }
 
 /* Widget Footer */
@@ -303,16 +319,20 @@ html.dark-mode .metric-val {
   text-align: right;
   margin-top: 16px;
   padding-top: 12px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 2px solid rgba(0, 212, 255, 0.3);
 }
 
 html.dark-mode .widget-footer {
-  border-color: #333;
+  border-color: rgba(102, 126, 234, 0.3);
 }
 
 .widget-footer small {
-  color: #999;
+  color: #00d4ff;
   font-size: 0.85em;
+}
+
+html.dark-mode .widget-footer small {
+  color: #667eea;
 }
 
 /* Responsive */
