@@ -248,15 +248,16 @@ function loadActivityData() {
     fetch('/api/activity')
         .then(r => r.json())
         .then(data => {
-            // Convert API response to expected format
+            // Extract heartbeats from API response {heartbeats: [...]}
+            const heartbeatsArray = data.heartbeats || [];
             activityData = {
-                heartbeats: data || [],
-                heartbeatCount: (data || []).length
+                heartbeats: heartbeatsArray,
+                heartbeatCount: heartbeatsArray.length
             };
             updateMonitorStats();
             renderMonitorChart(currentMonitorView);
             renderHeaderStats();
-            console.log('[Monitor] Loaded activity data from /api/activity');
+            console.log('[Monitor] Loaded activity data from /api/activity: ' + heartbeatsArray.length + ' heartbeats');
         })
         .catch(err => {
             console.error('[Monitor] Failed to load activity data:', err);
