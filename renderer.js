@@ -505,14 +505,13 @@ function renderHeaderStats() {
     const container = document.getElementById('heartbeat-status-container');
     if (!container) return;
     
-    const heartbeats = activityData.heartbeatCount || activityData.heartbeats?.length || 0;
-    
     // Fetch APIs in parallel, then render
     Promise.all([
         fetch('/api/usage').then(r => r.json()).catch(() => ({})),
         fetch('/api/tasks/stats').then(r => r.json()).catch(() => ({})),
-        fetch('/api/tasks').then(r => r.json()).catch(() => [])
-    ]).then(([usage, statsResponse, tasks]) => {
+        fetch('/api/tasks').then(r => r.json()).catch(() => []),
+        fetch('/api/activity').then(r => r.json()).catch(() => ({}))
+    ]).then(([usage, statsResponse, tasks, activity]) => {
         const tokensUsed = usage.totalTokens || 0;
         const apiCost = usage.totalCost || 0;
         const messages = usage.messages || 0;
@@ -522,6 +521,10 @@ function renderHeaderStats() {
         const allCompleted = stats.completed || 0;
         const completionRate = stats.completionRate || '0%';
         const pending = stats.pending || 0;
+        
+        // Get heartbeat count from /api/activity
+        const heartbeatsArray = activity.heartbeats || [];
+        const heartbeatCount = heartbeatsArray.length;
         
         // Calculate tasks completed today (for header only)
         const now = new Date();
@@ -537,7 +540,7 @@ function renderHeaderStats() {
         let html = '<div class="heartbeat-status">';
         html += '<h3>💓 Heartbeat Status</h3>';
         html += '<div class="heartbeat-grid">';
-        html += '<div class="heartbeat-stat"><span class="stat-label">Heartbeats</span><span class="stat-value">' + heartbeats + '</span></div>';
+        html += '<div class="heartbeat-stat"><span class="stat-label">Heartbeats</span><span class="stat-value">' + heartbeatCount + '</span></div>';
         html += '<div class="heartbeat-stat"><span class="stat-label">Tasks Today</span><span class="stat-value">' + tasksToday + '</span></div>';
         html += '<div class="heartbeat-stat"><span class="stat-label">Pending</span><span class="stat-value">' + pending + '</span></div>';
         html += '<div class="heartbeat-stat"><span class="stat-label">Tokens Used</span><span class="stat-value">' + (tokensUsed / 1000000).toFixed(1) + 'M</span></div>';
@@ -554,7 +557,11 @@ function renderHeaderStats() {
         const successRateEl = document.getElementById("success-rate");
         if (successRateEl) successRateEl.textContent = completionRate;
         
-        console.log('[HeaderStats] Updated: ' + allCompleted + ' tasks, $' + apiCost.toFixed(2) + ' cost, ' + messages + ' messages, ' + completionRate + ' success rate');
+        // Update heartbeat wakeups display
+        const wakeupEl = document.getElementById("total-wakeups");
+        if (wakeupEl) wakeupEl.textContent = heartbeatCount;
+        
+        console.log('[HeaderStats] Updated: ' + heartbeatCount + ' heartbeats, ' + allCompleted + ' tasks, $' + apiCost.toFixed(2) + ' cost, ' + messages + ' messages, ' + completionRate + ' success rate');
     });
 }
 document.addEventListener('DOMContentLoaded', function() {
