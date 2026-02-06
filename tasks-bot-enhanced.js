@@ -732,8 +732,11 @@ class TasksBotEnhanced {
   async deleteTask(taskName, taskId) {
     if (!confirm('Delete task: "' + taskName + '"?')) return;
     try {
+      // WORKAROUND (HB#113): Delete by name only, NOT by ID
+      // Reason: Backend ID persistence bug — IDs regenerate on reload, causing delete-by-ID to fail
+      // Brain is reviewing the protected code fix (tasks-api.js line 135)
+      // Sending name-only deletes until backend fix is approved
       const body = { action: 'delete', name: taskName };
-      if (taskId) body.id = parseFloat(taskId);
       const response = await this.fetchWithRetry(this.apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -773,8 +776,8 @@ class TasksBotEnhanced {
       // Delete each completed task
       for (const task of this.completedTasks) {
         try {
+          // WORKAROUND (HB#113): Delete by name only, NOT by ID
           const body = { action: 'delete', name: task.name };
-          if (task.id) body.id = parseFloat(task.id);
           const response = await this.fetchWithRetry(this.apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
