@@ -15,6 +15,7 @@ class TasksBotEnhanced {
     this.apiUrl = '/api/tasks';
     this.isInitialized = false; // Prevent double initialization
     this.container = null; // TIER 3: Store container reference for scoped selectors
+    this.priorityFilter = null; // HB#115: Priority filter (null = show all, 'P1'/'P2'/'P3' = filter by priority)
   }
 
   /**
@@ -449,13 +450,25 @@ class TasksBotEnhanced {
 
     // Pending tasks (tree structure with priority drag)
     html += '<div class="task-section">';
-    html += '<h4>📋 Pending Tasks (' + this.pendingTasks.length + ')</h4>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+    html += '<h4 style="margin:0;">📋 Pending Tasks (' + this.pendingTasks.length + ')</h4>';
+    html += '<div style="display:flex;gap:6px;">';
+    html += '<button onclick="window.tasksBotEnhanced.setPriorityFilter(\'P1\')" style="background:' + (this.priorityFilter === 'P1' ? '#ff4444' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">P1</button>';
+    html += '<button onclick="window.tasksBotEnhanced.setPriorityFilter(\'P2\')" style="background:' + (this.priorityFilter === 'P2' ? '#ff9500' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">P2</button>';
+    html += '<button onclick="window.tasksBotEnhanced.setPriorityFilter(\'P3\')" style="background:' + (this.priorityFilter === 'P3' ? '#4caf50' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">P3</button>';
+    html += '<button onclick="window.tasksBotEnhanced.setPriorityFilter(null)" style="background:' + (this.priorityFilter === null ? '#2196f3' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">All</button>';
+    html += '</div>';
+    html += '</div>';
     html += '<div class="task-list" data-drop-zone="pending">';
     
-    if (this.pendingTasks.length === 0) {
-      html += '<p class="empty">No pending tasks</p>';
+    // HB#115: Filter pending tasks based on priorityFilter
+    const filteredPendingTasks = this.priorityFilter ? this.pendingTasks.filter(t => t.priority === this.priorityFilter) : this.pendingTasks;
+    const displayCount = this.priorityFilter ? filteredPendingTasks.length + '/' + this.pendingTasks.length : this.pendingTasks.length;
+    
+    if (filteredPendingTasks.length === 0) {
+      html += '<p class="empty">No ' + (this.priorityFilter ? this.priorityFilter + ' ' : '') + 'pending tasks</p>';
     } else {
-      this.pendingTasks.forEach((task, idx) => {
+      filteredPendingTasks.forEach((task, idx) => {
         const priorityColor = task.priority === 'P1' ? 'priority-p1' : 
                             task.priority === 'P2' ? 'priority-p2' : 'priority-p3';
         const taskId = 'task-' + task.id;
@@ -931,6 +944,16 @@ class TasksBotEnhanced {
     } catch (e) {
       // Ignore localStorage errors
     }
+  }
+
+  /**
+   * HB#115: Set priority filter for pending tasks
+   * @param {string|null} priority - 'P1', 'P2', 'P3', or null to show all
+   */
+  setPriorityFilter(priority) {
+    this.priorityFilter = priority;
+    this.render(); // Re-render with new filter
+    console.log('[TasksBot] Priority filter set to:', priority || 'All');
   }
 }
 
