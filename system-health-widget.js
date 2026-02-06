@@ -137,7 +137,7 @@ class SystemHealthWidget {
                 throw new Error(`API error: ${response.status}`);
             }
 
-            this.metrics = await response.json();
+            const data = await response.json(); this.metrics = data.metrics || data;
             this.renderMetrics();
             this.setStatus('online');
         } catch (error) {
