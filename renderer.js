@@ -20,6 +20,10 @@ window.switchToView = function(viewName) {
     // Show target view
     const targetView = document.getElementById(viewName + '-view');
     if (targetView) {
+        // Initialize TasksBot when switching to its view
+        if (viewId === "tasks-view" && window.tasksBotEnhanced && !window.tasksBotEnhanced.isInitialized) {
+            window.tasksBotEnhanced.init();
+        }
         targetView.classList.add('active');
         currentView = viewName + '-view';
     }
@@ -88,6 +92,10 @@ function switchView(viewId) {
     // Show selected view
     const targetView = document.getElementById(viewId);
     if (targetView) {
+        // Initialize TasksBot when switching to its view
+        if (viewId === "tasks-view" && window.tasksBotEnhanced && !window.tasksBotEnhanced.isInitialized) {
+            window.tasksBotEnhanced.init();
+        }
         targetView.classList.add('active');
         currentView = viewId;
     }
@@ -215,6 +223,7 @@ function loadActivityData() {
                 activityData = data;
                 updateMonitorStats();
                 renderMonitorChart(currentMonitorView);
+                renderHeaderStats();
                 console.log('[Monitor] Loaded activity data from:', paths[index]);
             })
             .catch(err => {
@@ -241,13 +250,13 @@ function updateMonitorStats() {
     }
     
     // Update usage stats
-    document.getElementById('tokens-used')?.textContent = activityData.usage.tokens.toLocaleString();
-    document.getElementById('exec-calls')?.textContent = activityData.usage.exec;
-    document.getElementById('file-ops')?.textContent = activityData.usage.files;
+    const tokensEl = document.getElementById('tokens-used'); if (tokensEl) tokensEl.textContent = activityData.usage.tokens.toLocaleString();
+    const execEl = document.getElementById('exec-calls'); if (execEl) execEl.textContent = activityData.usage.exec;
+    const fileEl = document.getElementById('file-ops'); if (fileEl) fileEl.textContent = activityData.usage.files;
     
     if (activityData.usage.responses.length > 0) {
         const avg = activityData.usage.responses.reduce((a,b) => a+b, 0) / activityData.usage.responses.length;
-        document.getElementById('avg-response')?.textContent = Math.round(avg) + 'ms';
+        const avgEl = document.getElementById('avg-response'); if (avgEl) avgEl.textContent = Math.round(avg) + 'ms';
     }
 }
 
@@ -309,12 +318,12 @@ function renderThinkingLog() {
     });
     
     // Update stats
-    document.getElementById('think-sessions')?.textContent = activityData.thinking.length;
+    const thinkEl = document.getElementById('think-sessions'); if (thinkEl) thinkEl.textContent = activityData.thinking.length;
     
     // Find peak hour
     const peakHour = Object.keys(hourCounts).reduce((a, b) => 
         hourCounts[a] > hourCounts[b] ? a : b, '0');
-    document.getElementById('peak-hour')?.textContent = peakHour + ':00';
+    const peakEl = document.getElementById('peak-hour'); if (peakEl) peakEl.textContent = peakHour + ':00';
 }
 
 function renderPeakLog() {
@@ -444,6 +453,10 @@ function incrementStat(statId, amount = 1) {
 
 // Export for console access
 window.dashboard = {
+    toggleApprovals,
+    showApprovals: loadApprovals,
+    respondApproval,
+    clearCacheAndReload: function() { localStorage.clear(); location.reload(true); },
     quickAction,
     addActivity,
     FileSystemBot,
@@ -455,3 +468,126 @@ window.dashboard = {
 };
 
 console.log('[Dashboard] Ready! Use window.dashboard to access functions.');
+
+// ===== CONSOLIDATED STATS (One System) =====
+function renderHeaderStats() {
+    const container = document.getElementById('heartbeat-status-container');
+    if (!container) return;
+    
+    const heartbeats = activityData.heartbeatCount || activityData.heartbeats?.length || 0;
+    
+    // Fetch both APIs in parallel, then render
+    Promise.all([
+        fetch('/api/usage').then(r => r.json()).catch(() => ({})),
+        fetch('/api/tasks').then(r => r.json()).catch(() => [])
+    ]).then(([usage, tasks]) => {
+        const tokensUsed = usage.totalTokens || 0;
+        const apiCost = usage.totalCost || 0;
+        const completed = tasks.filter(t => t.status === 'completed').length;
+        const inProgress = tasks.filter(t => t.status === 'in-progress').length;
+        
+        // Render header stats
+        let html = '<div class="heartbeat-status">';
+        html += '<h3>💓 Heartbeat Status</h3>';
+        html += '<div class="heartbeat-grid">';
+        html += '<div class="heartbeat-stat"><span class="stat-label">Heartbeats</span><span class="stat-value">' + heartbeats + '</span></div>';
+        html += '<div class="heartbeat-stat"><span class="stat-label">Tasks Today</span><span class="stat-value">' + completed + '</span></div>';
+        html += '<div class="heartbeat-stat"><span class="stat-label">In Progress</span><span class="stat-value">' + inProgress + '</span></div>';
+        html += '<div class="heartbeat-stat"><span class="stat-label">Tokens Used</span><span class="stat-value">' + (tokensUsed / 1000000).toFixed(1) + 'M</span></div>';
+        html += '</div></div>';
+        container.innerHTML = html;
+        
+        // Update bottom stat cards
+        const tasksCompletedEl = document.getElementById("tasks-completed");
+        if (tasksCompletedEl) tasksCompletedEl.textContent = completed;
+        const apiCostEl = document.getElementById("api-cost");
+        if (apiCostEl) apiCostEl.textContent = "$" + apiCost.toFixed(2);
+        const messagesEl = document.getElementById("total-messages");
+        if (messagesEl) messagesEl.textContent = (usage.messages || 0).toLocaleString();
+    });
+}
+document.addEventListener('DOMContentLoaded', function() {
+    
+    setInterval(renderHeaderStats, 30000); // Refresh every 30s
+});
+
+// ===== APPROVAL NOTIFICATION SYSTEM =====
+let approvalsOpen = false;
+
+function toggleApprovals() {
+    const dropdown = document.getElementById('approval-dropdown');
+    approvalsOpen = !approvalsOpen;
+    dropdown.classList.toggle('hidden', !approvalsOpen);
+    if (approvalsOpen) loadApprovals();
+}
+
+function loadApprovals() {
+    fetch('/api/approvals')
+        .then(r => r.json())
+        .then(data => {
+            const badge = document.getElementById('approval-badge');
+            const list = document.getElementById('approval-list');
+            const count = data.pending.length;
+            
+            // Update badge
+            badge.textContent = count;
+            badge.classList.toggle('hidden', count === 0);
+            
+            // Update list
+            if (count === 0) {
+                list.innerHTML = '<p class="no-approvals">No pending approvals</p>';
+                return;
+            }
+            
+            list.innerHTML = data.pending.map(req => `
+                <div class="approval-item" data-id="${req.id}">
+                    <h4>📋 ${req.title}</h4>
+                    <div class="file">📁 ${req.file || 'N/A'}</div>
+                    <div class="description">${req.description || ''}</div>
+                    <textarea placeholder="Add instructions for Pinky (optional)..." id="instructions-${req.id}"></textarea>
+                    <div class="approval-buttons">
+                        <button class="btn-approve" onclick="respondApproval('${req.id}', true)">✅ Approve</button>
+                        <button class="btn-deny" onclick="respondApproval('${req.id}', false)">❌ Deny</button>
+                    </div>
+                    <div class="approval-time">Requested: ${new Date(req.createdAt).toLocaleString()}</div>
+                </div>
+            `).join('');
+        })
+        .catch(e => console.error('[Approvals] Load failed:', e));
+}
+
+function respondApproval(id, approved) {
+    const instructions = document.getElementById('instructions-' + id)?.value || '';
+    fetch('/api/approvals/' + id + '/respond', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ approved, instructions })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            loadApprovals();
+            alert(approved ? '✅ Approved! Pinky can proceed.' : '❌ Denied.');
+        }
+    })
+    .catch(e => console.error('[Approvals] Respond failed:', e));
+}
+
+// Check for approvals every 30 seconds
+setInterval(() => {
+    fetch('/api/approvals')
+        .then(r => r.json())
+        .then(data => {
+            const badge = document.getElementById('approval-badge');
+            if (badge) {
+                badge.textContent = data.pending.length;
+                badge.classList.toggle('hidden', data.pending.length === 0);
+            }
+        })
+        .catch(() => {});
+}, 30000);
+
+// Initial check on load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(loadApprovals, 1000);
+});

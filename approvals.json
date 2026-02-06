@@ -1,0 +1,27 @@
+{
+  "pending": [],
+  "resolved": [
+    {
+      "id": "1770339100524",
+      "title": "Test task creation",
+      "description": "Testing that approved tasks show in pending",
+      "file": "test.js",
+      "action": "test",
+      "status": "approved",
+      "createdAt": "2026-02-06T00:51:40.524Z",
+      "instructions": "This is a test - ignore this task",
+      "resolvedAt": "2026-02-06T00:53:21.687Z"
+    },
+    {
+      "id": "1770338549043",
+      "title": "Fix tasks-api.js delete by ID bug",
+      "description": "APPROVED BY BRAIN: Fix the delete button bug. IDs regenerate on reload causing delete to fail. Use name-based fallback. Remember: 1) Backup first 2) Test with node -c 3) Restart backend after",
+      "file": "bot-backend/tasks-api.js",
+      "action": "edit",
+      "status": "approved",
+      "createdAt": "2026-02-06T00:42:29.043Z",
+      "instructions": "APPROVED: Fix the delete bug. Steps: 1) Backup: cp bot-backend/tasks-api.js _backups/tasks-api.js.$(date +%Y%m%d-%H%M%S) 2) Use name-based delete fallback when ID match fails 3) Test: node -c bot-backend/tasks-api.js 4) Restart: pm2 restart bot-backend 5) Verify delete works in TasksBot UI",
+      "resolvedAt": "2026-02-06T00:43:22.011Z"
+    }
+  ]
+}

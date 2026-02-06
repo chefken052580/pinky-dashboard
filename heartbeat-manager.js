@@ -32,7 +32,7 @@ class HeartbeatManager {
   }
 
   /**
-   * Load metrics from efficient storage
+   * Load metrics from efficient storage AND sync with activity file
    */
   loadMetrics() {
     try {
@@ -41,6 +41,25 @@ class HeartbeatManager {
         const data = JSON.parse(stored);
         this.metrics = Object.assign(this.metrics, data);
       }
+      // Also sync with activity JSON for accurate counts
+      fetch('pinky-activity.json?t=' + Date.now())
+        .then(r => r.json())
+        .then(data => {
+          if (data.heartbeatCount) this.metrics.heartbeatsCompleted = data.heartbeatCount;
+          // Fetch task counts from API
+          fetch('http://192.168.254.4:3030/api/tasks')
+            .then(r => r.json())
+            .then(tasks => {
+              const completed = tasks.filter(t => t.status === 'completed').length;
+              const inProgress = tasks.filter(t => t.status === 'in-progress').length;
+              this.taskCounts = { completed, inProgress, total: tasks.length }; console.log('[Heartbeat] Task counts:', this.taskCounts);
+              this.renderUI();
+            }).catch(e => {});
+          if (data.usage?.tokens) this.metrics.totalTokensUsed = data.usage.tokens;
+          this.saveMetrics();
+          this.renderUI();
+        })
+        .catch(e => console.log('[Heartbeat] Could not sync with activity file'));
     } catch (e) {
       console.log('[Heartbeat] Using default metrics');
     }
@@ -151,12 +170,12 @@ class HeartbeatManager {
     
     html += '<div class="heartbeat-stat">';
     html += '<span class="stat-label">Tasks Today</span>';
-    html += '<span class="stat-value">' + (taskStatus?.completedCount || 0) + '</span>';
+    html += '<span class="stat-value">' + (this.taskCounts?.completed || 0) + '</span>';
     html += '</div>';
     
     html += '<div class="heartbeat-stat">';
     html += '<span class="stat-label">In Progress</span>';
-    html += '<span class="stat-value">' + (taskStatus?.runningCount || 0) + '</span>';
+    html += '<span class="stat-value">' + (this.taskCounts?.inProgress || 0) + '</span>';
     html += '</div>';
     
     html += '<div class="heartbeat-stat">';

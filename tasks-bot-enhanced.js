@@ -16,6 +16,7 @@ class TasksBotEnhanced {
     this.isInitialized = false; // Prevent double initialization
     this.container = null; // TIER 3: Store container reference for scoped selectors
     this.priorityFilter = null; // HB#115: Priority filter (null = show all, 'P1'/'P2'/'P3' = filter by priority)
+    this.searchFilter = ''; // HB#116: Search filter for task names (empty string = show all)
   }
 
   /**
@@ -452,7 +453,10 @@ class TasksBotEnhanced {
     html += '<div class="task-section">';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
     html += '<h4 style="margin:0;">📋 Pending Tasks (' + this.pendingTasks.length + ')</h4>';
-    html += '<div style="display:flex;gap:6px;">';
+    html += '<div style="display:flex;gap:6px;align-items:center;">';
+    // HB#116: Search input
+    html += '<input type="text" id="task-search-filter" placeholder="🔍 Search..." value="' + this.escapeAttr(this.searchFilter) + '" oninput="window.tasksBotEnhanced.setSearchFilter(this.value)" style="padding:6px 10px;border:1px solid #ccc;border-radius:4px;font-size:0.9em;width:140px;box-sizing:border-box;">';
+    // Priority filter buttons
     html += '<button onclick="window.tasksBotEnhanced.setPriorityFilter(\'P1\')" style="background:' + (this.priorityFilter === 'P1' ? '#ff4444' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">P1</button>';
     html += '<button onclick="window.tasksBotEnhanced.setPriorityFilter(\'P2\')" style="background:' + (this.priorityFilter === 'P2' ? '#ff9500' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">P2</button>';
     html += '<button onclick="window.tasksBotEnhanced.setPriorityFilter(\'P3\')" style="background:' + (this.priorityFilter === 'P3' ? '#4caf50' : '#ccc') + ';color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">P3</button>';
@@ -462,8 +466,15 @@ class TasksBotEnhanced {
     html += '<div class="task-list" data-drop-zone="pending">';
     
     // HB#115: Filter pending tasks based on priorityFilter
-    const filteredPendingTasks = this.priorityFilter ? this.pendingTasks.filter(t => t.priority === this.priorityFilter) : this.pendingTasks;
-    const displayCount = this.priorityFilter ? filteredPendingTasks.length + '/' + this.pendingTasks.length : this.pendingTasks.length;
+    // HB#116: Also filter by search term
+    let filteredPendingTasks = this.pendingTasks;
+    if (this.priorityFilter) {
+      filteredPendingTasks = filteredPendingTasks.filter(t => t.priority === this.priorityFilter);
+    }
+    if (this.searchFilter) {
+      filteredPendingTasks = filteredPendingTasks.filter(t => t.name.toLowerCase().includes(this.searchFilter));
+    }
+    const displayCount = (this.priorityFilter || this.searchFilter) ? filteredPendingTasks.length + '/' + this.pendingTasks.length : this.pendingTasks.length;
     
     if (filteredPendingTasks.length === 0) {
       html += '<p class="empty">No ' + (this.priorityFilter ? this.priorityFilter + ' ' : '') + 'pending tasks</p>';
@@ -954,6 +965,12 @@ class TasksBotEnhanced {
     this.priorityFilter = priority;
     this.render(); // Re-render with new filter
     console.log('[TasksBot] Priority filter set to:', priority || 'All');
+  }
+
+  setSearchFilter(searchTerm) {
+    this.searchFilter = searchTerm.toLowerCase();
+    this.render(); // Re-render with new search
+    console.log('[TasksBot] Search filter set to:', searchTerm || '(cleared)');
   }
 }
 
