@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="system-monitor.css">
     <link rel="stylesheet" href="pinky-chat.css">
     <link rel="stylesheet" href="task-statistics.css">
+    <link rel="stylesheet" href="task-history-chart.css">
     <link rel="stylesheet" href="task-timer.css">
     <link rel="stylesheet" href="settings.css">
     <link rel="stylesheet" href="export-package.css">
@@ -205,6 +206,10 @@
 
                 <!-- Task Statistics Widget -->
                 <div id="task-statistics-container" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
+                </div>
+
+                <!-- Task History Chart - Last 30 Days -->
+                <div id="task-history-chart-container" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
                 </div>
 
                 <!-- Quick Actions -->
@@ -1175,6 +1180,9 @@
     
     <!-- Task Statistics - Task Completion Metrics -->
     <script src="task-statistics.js"></script>
+    
+    <!-- Task History Chart - Completed Tasks Over Last 30 Days -->
+    <script src="task-history-chart.js"></script>
 
     <!-- Task Timer - Time Tracking for Running Tasks -->
     <script src="task-timer.js"></script>
@@ -1335,6 +1343,15 @@
                 wpButton.addEventListener('click', () => {
                     switchToView('wordpress');
                 });
+            }
+            
+            // Initialize Task History Chart
+            if (typeof TaskHistoryChart !== 'undefined') {
+                window.taskHistoryChart = new TaskHistoryChart();
+                window.taskHistoryChart.init().catch(err => {
+                    console.log('[Dashboard] Task History Chart initialization error:', err.message);
+                });
+                console.log('[Dashboard] Task History Chart initialized');
             }
         });
     </script>
