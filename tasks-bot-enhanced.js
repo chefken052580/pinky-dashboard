@@ -47,10 +47,24 @@ class TasksBotEnhanced {
     // Register timer update listener (HB#115 - Task Timer Integration)
     if (typeof taskTimer !== 'undefined' && taskTimer && taskTimer.onChange) {
       taskTimer.onChange(() => {
-        // Update running tasks display when timer changes
-        this.render();
+        // Only update timer displays, NOT full re-render (prevents blinking + drag-drop break)
+        document.querySelectorAll('[data-task-timer]').forEach(el => {
+          var tid = el.getAttribute('data-task-timer');
+          var timeEl = el.querySelector('.timer-time');
+          if (timeEl && taskTimer) {
+            timeEl.textContent = taskTimer.formatElapsed(taskTimer.getElapsed(tid));
+          }
+        });
+        // Also update the timer value display
+        document.querySelectorAll('.task-timer-display').forEach(el => {
+          var tid = el.getAttribute('data-task-timer');
+          if (tid && taskTimer) {
+            var timeEl = el.querySelector('.timer-time');
+            if (timeEl) timeEl.textContent = taskTimer.formatElapsed(taskTimer.getElapsed(tid));
+          }
+        });
       });
-      console.log('[TasksBot] Timer listener registered for live updates');
+      console.log('[TasksBot] Timer listener registered for targeted updates');
     }
     
     console.log('[TasksBot] Initialization complete - ' + this.allTasks.length + ' tasks loaded');
