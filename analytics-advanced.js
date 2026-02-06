@@ -69,7 +69,7 @@ class AnalyticsEngine {
    * Render full analytics dashboard
    */
   async renderUI() {
-    const container = document.getElementById('analytics-view');
+    const container = document.getElementById('analytics-dashboard-section');
     if (!container) return;
 
     const metrics = await this.getMetrics();
