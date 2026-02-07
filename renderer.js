@@ -84,7 +84,7 @@ window.switchToView = function(viewName) {
     const targetView = document.getElementById(viewName + '-view');
     if (targetView) {
         // Initialize TasksBot when switching to its view
-        if (viewId === "tasks-view" && window.tasksBotEnhanced && !window.tasksBotEnhanced.isInitialized) {
+        if (viewName === "tasks" && window.tasksBotEnhanced && !window.tasksBotEnhanced.isInitialized) {
             window.tasksBotEnhanced.init();
         }
         targetView.classList.add('active');
