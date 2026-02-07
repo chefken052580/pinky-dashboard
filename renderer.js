@@ -110,7 +110,7 @@ window.switchToView = function(viewName) {
 };
 
 // Initialize
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
     console.log('[Dashboard] DOM loaded');
     initBotButtons();
     initViewButtons();
@@ -119,28 +119,37 @@ window.addEventListener('DOMContentLoaded', () => {
     setInterval(loadActivityData, 5000); // Refresh every 5s
     setInterval(updateStats, 10000); // Update stats every 10s
     
-    // Initialize dashboard widgets after a short delay to ensure scripts are loaded
-    setTimeout(() => {
-        if (typeof initTaskStatistics === 'function') {
-            initTaskStatistics();
-            console.log('[Dashboard] TaskStatistics widget initialized');
+    // Load dashboard scripts immediately on page load
+    if (window.lazyLoader) {
+        try {
+            console.log('[Dashboard] Loading dashboard widgets...');
+            await window.lazyLoader.loadBotScripts('dashboard');
+            console.log('[Dashboard] Dashboard scripts loaded, initializing widgets...');
+            
+            // Initialize widgets after scripts are loaded
+            if (typeof initTaskStatistics === 'function') {
+                initTaskStatistics();
+                console.log('[Dashboard] TaskStatistics widget initialized');
+            }
+            if (typeof TaskHistoryChart !== 'undefined') {
+                window.taskHistoryChart = new TaskHistoryChart();
+                window.taskHistoryChart.init();
+                console.log('[Dashboard] TaskHistoryChart widget initialized');
+            }
+            if (typeof SystemHealthWidget !== 'undefined') {
+                window.systemHealthWidget = new SystemHealthWidget();
+                window.systemHealthWidget.init();
+                console.log('[Dashboard] SystemHealthWidget initialized');
+            }
+            if (typeof ChangelogWidget !== 'undefined') {
+                window.changelogWidget = new ChangelogWidget();
+                window.changelogWidget.init();
+                console.log('[Dashboard] ChangelogWidget initialized');
+            }
+        } catch (error) {
+            console.error('[Dashboard] Failed to load widgets:', error);
         }
-        if (typeof TaskHistoryChart !== 'undefined') {
-            window.taskHistoryChart = new TaskHistoryChart();
-            window.taskHistoryChart.init();
-            console.log('[Dashboard] TaskHistoryChart widget initialized');
-        }
-        if (typeof SystemHealthWidget !== 'undefined') {
-            window.systemHealthWidget = new SystemHealthWidget();
-            window.systemHealthWidget.init();
-            console.log('[Dashboard] SystemHealthWidget initialized');
-        }
-        if (typeof ChangelogWidget !== 'undefined') {
-            window.changelogWidget = new ChangelogWidget();
-            window.changelogWidget.init();
-            console.log('[Dashboard] ChangelogWidget initialized');
-        }
-    }, 1000);
+    }
 });
 
 // Bot Navigation
