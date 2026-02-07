@@ -8,6 +8,15 @@
       "action": "edit",
       "status": "pending",
       "createdAt": "2026-02-06T23:03:31.619Z"
+    },
+    {
+      "id": "1770493407594",
+      "title": "Phase 3.1: Multi-workspace support - requires protected file changes",
+      "description": "Need to add multi-workspace API endpoints to server.js and modify tasks-api.js schema. Features needed: workspace CRUD endpoints, workspace switching, isolated bot teams per workspace, per-workspace API keys. Frontend UI changes (dropdown switcher) are safe to implement, but backend requires Brain approval.",
+      "file": "bot-backend/server.js, bot-backend/tasks-api.js",
+      "action": "edit",
+      "status": "pending",
+      "createdAt": "2026-02-07T19:43:27.594Z"
     }
   ],
   "resolved": [
