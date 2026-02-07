@@ -1,10 +1,12 @@
 /* Brain's Approval Queue */
 .approval-dropdown {
   position: fixed;
-  top: 60px;
-  right: 20px;
-  width: 420px;
-  max-height: 70vh;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 520px;
+  max-height: 85vh;
   background: rgba(15, 25, 55, 0.97);
   border: 1px solid rgba(102, 126, 234, 0.3);
   border-radius: 15px;
@@ -28,11 +30,34 @@
   top: 0;
   background: rgba(15, 25, 55, 0.98);
   border-radius: 15px 15px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .approval-header h3 {
   margin: 0;
   color: #4496ff;
   font-size: 1.1em;
+  flex: 1;
+}
+.approval-close-btn {
+  background: rgba(255, 68, 68, 0.2);
+  border: 1px solid rgba(255, 68, 68, 0.4);
+  color: #ff4444;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+.approval-close-btn:hover {
+  background: rgba(255, 68, 68, 0.4);
+  border-color: #ff4444;
+  color: #fff;
+  transform: scale(1.05);
 }
 .approval-list {
   padding: 12px;
@@ -168,4 +193,92 @@
 }
 .notification-badge.hidden {
   display: none;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 768px) {
+  .approval-dropdown {
+    width: 95%;
+    max-width: 95%;
+    max-height: 90vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .approval-header {
+    padding: 15px;
+    flex-wrap: wrap;
+  }
+
+  .approval-header h3 {
+    font-size: 1em;
+  }
+
+  .approval-close-btn {
+    padding: 6px 10px;
+    font-size: 0.85em;
+  }
+
+  .approval-item {
+    padding: 14px;
+  }
+
+  .approval-item h4 {
+    font-size: 0.95em;
+  }
+
+  .approval-item .description {
+    font-size: 0.85em;
+  }
+
+  .approval-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-approve,
+  .btn-deny {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .approval-dropdown {
+    width: 98%;
+    max-height: 92vh;
+    border-radius: 10px;
+  }
+
+  .approval-header {
+    padding: 12px;
+  }
+
+  .approval-header h3 {
+    font-size: 0.95em;
+  }
+
+  .approval-close-btn {
+    padding: 5px 8px;
+    font-size: 0.8em;
+  }
+
+  .approval-list {
+    padding: 8px;
+  }
+
+  .approval-item {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .approval-item h4 {
+    font-size: 0.9em;
+  }
+
+  .approval-item textarea {
+    font-size: 0.8em;
+    min-height: 45px;
+  }
 }
