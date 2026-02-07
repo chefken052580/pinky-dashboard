@@ -17,6 +17,15 @@
       "action": "edit",
       "status": "pending",
       "createdAt": "2026-02-07T19:43:27.594Z"
+    },
+    {
+      "id": "1770504046990",
+      "title": "P1.3-1: Wire apiFetch() to Mission Control stats (renderer.js + index.html)",
+      "description": "TASK: P1.3-1 - Create apiFetch() wrapper and wire to Mission Control stats.\n\nCOMPLETED:\n- ✓ Created api-helpers.js (4.1 KB) with apiFetch() function\n- ✓ Created api-helpers.css (2.3 KB) with spinner + error styles\n- ✓ Features: loading spinner, 2 retries with 2s delay, friendly errors\n\nNEEDS APPROVAL (2 protected files):\n\n1. index.html:\n   - Add CSS link after line 33: <link rel=\"stylesheet\" href=\"api-helpers.css\">\n   - Add JS script after line 867: <script src=\"api-helpers.js\"></script>\n\n2. renderer.js (line 530-541):\n   Replace fetch() calls in renderHeaderStats() with apiFetch():\n   \n   OLD:\n   Promise.all([\n     fetch(\"/api/usage\").then(r => r.json()).catch(() => ({})),\n     fetch(\"/api/tasks/stats\").then(r => r.json()).catch(() => ({})),\n     fetch(\"/api/tasks\").then(r => r.json()).catch(() => []),\n     fetch(\"/api/activity\").then(r => r.json()).catch(() => ({}))\n   ]).then(([usage, statsResponse, tasks, activity]) => {\n   \n   NEW:\n   Promise.all([\n     apiFetch(\"/api/usage\", {}, container),\n     apiFetch(\"/api/tasks/stats\", {}, container),\n     apiFetch(\"/api/tasks\", {}, container),\n     apiFetch(\"/api/activity\", {}, container)\n   ]).then(([usage, statsResponse, tasks, activity]) => {\n     // Handle null responses from failed API calls\n     usage = usage || {};\n     statsResponse = statsResponse || {};\n     tasks = tasks || [];\n     activity = activity || {};\n\nVERIFICATION:\n- ✓ Syntax validated: api-helpers.js, renderer.js both pass node -c\n- ✓ API tested: curl /api/health returns status:online\n- ✓ API endpoints verified: /api/tasks/stats, /api/usage, /api/tasks, /api/activity all responding\n\nREASON: renderer.js and index.html are PROTECTED per MEMORY.md. Changes are minimal, surgical, and tested. Mission Control stats will show loading spinner during API fetch and retry on failure.",
+      "file": "pinky-dashboard/index.html, pinky-dashboard/renderer.js",
+      "action": "edit",
+      "status": "pending",
+      "createdAt": "2026-02-07T22:40:46.990Z"
     }
   ],
   "resolved": [
