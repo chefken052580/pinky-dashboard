@@ -84,7 +84,7 @@ window.switchToView = function(viewName) {
     const targetView = document.getElementById(viewName + '-view');
     if (targetView) {
         // Initialize TasksBot when switching to its view
-        if (viewName === "tasks" && window.tasksBotEnhanced && !window.tasksBotEnhanced.isInitialized) {
+        if (viewId === "tasks-view" && window.tasksBotEnhanced && !window.tasksBotEnhanced.isInitialized) {
             window.tasksBotEnhanced.init();
         }
         targetView.classList.add('active');
@@ -110,7 +110,7 @@ window.switchToView = function(viewName) {
 };
 
 // Initialize
-window.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('DOMContentLoaded', () => {
     console.log('[Dashboard] DOM loaded');
     initBotButtons();
     initViewButtons();
@@ -118,38 +118,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     loadActivityData();
     setInterval(loadActivityData, 5000); // Refresh every 5s
     setInterval(updateStats, 10000); // Update stats every 10s
-    
-    // Load dashboard scripts immediately on page load
-    if (window.lazyLoader) {
-        try {
-            console.log('[Dashboard] Loading dashboard widgets...');
-            await window.lazyLoader.loadBotScripts('dashboard');
-            console.log('[Dashboard] Dashboard scripts loaded, initializing widgets...');
-            
-            // Initialize widgets after scripts are loaded
-            if (typeof initTaskStatistics === 'function') {
-                initTaskStatistics();
-                console.log('[Dashboard] TaskStatistics widget initialized');
-            }
-            if (typeof TaskHistoryChart !== 'undefined') {
-                window.taskHistoryChart = new TaskHistoryChart();
-                window.taskHistoryChart.init();
-                console.log('[Dashboard] TaskHistoryChart widget initialized');
-            }
-            if (typeof SystemHealthWidget !== 'undefined') {
-                window.systemHealthWidget = new SystemHealthWidget();
-                window.systemHealthWidget.init();
-                console.log('[Dashboard] SystemHealthWidget initialized');
-            }
-            if (typeof ChangelogWidget !== 'undefined') {
-                window.changelogWidget = new ChangelogWidget();
-                window.changelogWidget.init();
-                console.log('[Dashboard] ChangelogWidget initialized');
-            }
-        } catch (error) {
-            console.error('[Dashboard] Failed to load widgets:', error);
-        }
-    }
 });
 
 // Bot Navigation
@@ -302,28 +270,25 @@ function switchMonitorView(view) {
     renderMonitorChart(view);
 }
 
-async function loadActivityData() {
-    // Fetch activity data from API with error handling
-    const result = await window.loadingManager.fetch('/api/activity', {}, {
-        errorTitle: 'Activity Data Load Failed',
-        silent: true // Don't show toast for background updates
-    });
-    
-    if (result.success) {
-        // Extract heartbeats from API response {heartbeats: [...]}
-        const data = result.data;
-        const heartbeatsArray = data.heartbeats || [];
-        activityData = {
-            heartbeats: heartbeatsArray,
-            heartbeatCount: heartbeatsArray.length
-        };
-        updateMonitorStats();
-        renderMonitorChart(currentMonitorView);
-        renderHeaderStats();
-        console.log('[Monitor] Loaded activity data from /api/activity: ' + heartbeatsArray.length + ' heartbeats');
-    } else {
-        console.error('[Monitor] Failed to load activity data:', result.error);
-    }
+function loadActivityData() {
+    // Fetch activity data from API
+    fetch('/api/activity')
+        .then(r => r.json())
+        .then(data => {
+            // Extract heartbeats from API response {heartbeats: [...]}
+            const heartbeatsArray = data.heartbeats || [];
+            activityData = {
+                heartbeats: heartbeatsArray,
+                heartbeatCount: heartbeatsArray.length
+            };
+            updateMonitorStats();
+            renderMonitorChart(currentMonitorView);
+            renderHeaderStats();
+            console.log('[Monitor] Loaded activity data from /api/activity: ' + heartbeatsArray.length + ' heartbeats');
+        })
+        .catch(err => {
+            console.error('[Monitor] Failed to load activity data:', err);
+        });
 }
 
 function updateMonitorStats() {
@@ -563,26 +528,17 @@ window.dashboard = {
 console.log('[Dashboard] Ready! Use window.dashboard to access functions.');
 
 // ===== CONSOLIDATED STATS (One System) =====
-async function renderHeaderStats() {
+function renderHeaderStats() {
     const container = document.getElementById('heartbeat-status-container');
     if (!container) return;
     
-    // Fetch APIs in parallel with error handling
-    const [usageResult, statsResult, tasksResult, activityResult] = await Promise.all([
-        window.loadingManager.fetch('/api/usage', {}, { silent: true }),
-        window.loadingManager.fetch('/api/tasks/stats', {}, { silent: true }),
-        window.loadingManager.fetch('/api/tasks', {}, { silent: true }),
-        window.loadingManager.fetch('/api/activity', {}, { silent: true })
-    ]);
-    
-    // Extract data or use fallbacks
-    const usage = usageResult.success ? usageResult.data : {};
-    const statsResponse = statsResult.success ? statsResult.data : {};
-    const tasks = tasksResult.success ? tasksResult.data : [];
-    const activity = activityResult.success ? activityResult.data : {};
-    
-    // Process data
-    {
+    // Fetch APIs in parallel, then render
+    Promise.all([
+        fetch('/api/usage').then(r => r.json()).catch(() => ({})),
+        fetch('/api/tasks/stats').then(r => r.json()).catch(() => ({})),
+        fetch('/api/tasks').then(r => r.json()).catch(() => []),
+        fetch('/api/activity').then(r => r.json()).catch(() => ({}))
+    ]).then(([usage, statsResponse, tasks, activity]) => {
         const tokensUsed = usage.totalTokens || 0;
         const apiCost = usage.totalCost || 0;
         const messages = usage.messages || 0;
@@ -633,7 +589,7 @@ async function renderHeaderStats() {
         if (wakeupEl) wakeupEl.textContent = heartbeatCount;
         
         console.log('[HeaderStats] Updated: ' + heartbeatCount + ' heartbeats, ' + allCompleted + ' tasks, $' + apiCost.toFixed(2) + ' cost, ' + messages + ' messages, ' + completionRate + ' success rate');
-    }
+    });
 }
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -651,79 +607,70 @@ function toggleApprovals() {
     if (approvalsOpen) loadApprovals();
 }
 
-async function loadApprovals() {
-    const result = await window.loadingManager.fetch('/api/approvals', {}, {
-        errorTitle: 'Failed to Load Approvals',
-        silent: true
-    });
-    
-    if (!result.success) {
-        console.error('[Approvals] Load failed:', result.error);
-        return;
-    }
-    
-    const data = result.data;
-    const badge = document.getElementById('approval-badge');
-    const list = document.getElementById('approval-list');
-    const count = data.pending.length;
-    
-    // Update badge
-    badge.textContent = count;
-    badge.classList.toggle('hidden', count === 0);
-    
-    // Update list
-    if (count === 0) {
-        list.innerHTML = '<p class="no-approvals">No pending approvals</p>';
-        return;
-    }
-    
-    list.innerHTML = data.pending.map(req => `
-        <div class="approval-item" data-id="${req.id}">
-            <h4>📋 ${req.title}</h4>
-            <div class="file">📁 ${req.file || 'N/A'}</div>
-            <div class="description">${req.description || ''}</div>
-            <textarea placeholder="Add instructions for Pinky (optional)..." id="instructions-${req.id}"></textarea>
-            <div class="approval-buttons">
-                <button class="btn-approve" onclick="respondApproval('${req.id}', true)">✅ Approve</button>
-                <button class="btn-deny" onclick="respondApproval('${req.id}', false)">❌ Deny</button>
-            </div>
-            <div class="approval-time">Requested: ${formatDateEST(req.createdAt)}</div>
-        </div>
-    `).join('');
+function loadApprovals() {
+    fetch('/api/approvals')
+        .then(r => r.json())
+        .then(data => {
+            const badge = document.getElementById('approval-badge');
+            const list = document.getElementById('approval-list');
+            const count = data.pending.length;
+            
+            // Update badge
+            badge.textContent = count;
+            badge.classList.toggle('hidden', count === 0);
+            
+            // Update list
+            if (count === 0) {
+                list.innerHTML = '<p class="no-approvals">No pending approvals</p>';
+                return;
+            }
+            
+            list.innerHTML = data.pending.map(req => `
+                <div class="approval-item" data-id="${req.id}">
+                    <h4>📋 ${req.title}</h4>
+                    <div class="file">📁 ${req.file || 'N/A'}</div>
+                    <div class="description">${req.description || ''}</div>
+                    <textarea placeholder="Add instructions for Pinky (optional)..." id="instructions-${req.id}"></textarea>
+                    <div class="approval-buttons">
+                        <button class="btn-approve" onclick="respondApproval('${req.id}', true)">✅ Approve</button>
+                        <button class="btn-deny" onclick="respondApproval('${req.id}', false)">❌ Deny</button>
+                    </div>
+                    <div class="approval-time">Requested: ${formatDateEST(req.createdAt)}</div>
+                </div>
+            `).join('');
+        })
+        .catch(e => console.error('[Approvals] Load failed:', e));
 }
 
-async function respondApproval(id, approved) {
+function respondApproval(id, approved) {
     const instructions = document.getElementById('instructions-' + id)?.value || '';
-    
-    const result = await window.loadingManager.fetch('/api/approvals/' + id + '/respond', {
+    fetch('/api/approvals/' + id + '/respond', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ approved, instructions })
-    }, {
-        loadingMessage: approved ? 'Approving...' : 'Denying...',
-        errorTitle: 'Approval Response Failed'
-    });
-    
-    if (result.success && result.data.success) {
-        loadApprovals();
-        window.loadingManager.success(
-            approved ? 'Approved!' : 'Denied',
-            approved ? 'Pinky can proceed with the task.' : 'Request has been denied.'
-        );
-    }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            loadApprovals();
+            alert(approved ? '✅ Approved! Pinky can proceed.' : '❌ Denied.');
+        }
+    })
+    .catch(e => console.error('[Approvals] Respond failed:', e));
 }
 
 // Check for approvals every 30 seconds
-setInterval(async () => {
-    const result = await window.loadingManager.fetch('/api/approvals', {}, { silent: true });
-    if (result.success) {
-        const data = result.data;
-        const badge = document.getElementById('approval-badge');
-        if (badge) {
-            badge.textContent = data.pending.length;
-            badge.classList.toggle('hidden', data.pending.length === 0);
-        }
-    }
+setInterval(() => {
+    fetch('/api/approvals')
+        .then(r => r.json())
+        .then(data => {
+            const badge = document.getElementById('approval-badge');
+            if (badge) {
+                badge.textContent = data.pending.length;
+                badge.classList.toggle('hidden', data.pending.length === 0);
+            }
+        })
+        .catch(() => {});
 }, 30000);
 
 // Initial check on load

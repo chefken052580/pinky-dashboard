@@ -9,52 +9,28 @@
     <meta http-equiv="Expires" content="0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Pinky Bot Dashboard - World Domination Control Center</title>
-    <!-- CRITICAL CSS (loaded immediately) -->
     <link rel="stylesheet" href="styles.css?v=2">
     <link rel="stylesheet" href="mobile-responsive.css">
-    <link rel="stylesheet" href="sidebar-styling.css">
+    <link rel="stylesheet" href="system-monitor.css">
+    <link rel="stylesheet" href="pinky-chat.css">
+    <link rel="stylesheet" href="task-statistics.css">
+    <link rel="stylesheet" href="task-history-chart.css">
+    <link rel="stylesheet" href="task-timer.css">
+    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="export-package.css">
+    <link rel="stylesheet" href="system-health-widget.css">
+    <link rel="stylesheet" href="changelog-widget.css">
+    <link rel="stylesheet" href="error-page-pinky.css">
+    <link rel="stylesheet" href="notification-sounds.css">
+    <link rel="stylesheet" href="task-analytics.css">
     <link rel="stylesheet" href="tooltip-system.css">
-    
-    <!-- NON-CRITICAL CSS (lazy-loaded, non-blocking) -->
-    <link rel="preload" href="system-monitor.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="pinky-chat.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="task-statistics.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="task-history-chart.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="task-timer.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="settings.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="export-package.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="system-health-widget.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="changelog-widget.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="error-page-pinky.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="notification-sounds.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="task-analytics.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="about-page.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="wordpress-page-maker.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="approval-queue.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="token-allocation-widget.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="task-search-filter.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="keyboard-shortcuts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript>
-        <!-- Fallback for browsers without JS -->
-        <link rel="stylesheet" href="system-monitor.css">
-        <link rel="stylesheet" href="pinky-chat.css">
-        <link rel="stylesheet" href="task-statistics.css">
-        <link rel="stylesheet" href="task-history-chart.css">
-        <link rel="stylesheet" href="task-timer.css">
-        <link rel="stylesheet" href="settings.css">
-        <link rel="stylesheet" href="export-package.css">
-        <link rel="stylesheet" href="system-health-widget.css">
-        <link rel="stylesheet" href="changelog-widget.css">
-        <link rel="stylesheet" href="error-page-pinky.css">
-        <link rel="stylesheet" href="notification-sounds.css">
-        <link rel="stylesheet" href="task-analytics.css">
-        <link rel="stylesheet" href="about-page.css">
-        <link rel="stylesheet" href="wordpress-page-maker.css">
-        <link rel="stylesheet" href="approval-queue.css">
-        <link rel="stylesheet" href="token-allocation-widget.css">
-        <link rel="stylesheet" href="task-search-filter.css">
-        <link rel="stylesheet" href="keyboard-shortcuts.css">
-    </noscript>
+    <link rel="stylesheet" href="sidebar-styling.css">
+    <link rel="stylesheet" href="about-page.css">
+    <link rel="stylesheet" href="wordpress-page-maker.css">
+    <link rel="stylesheet" href="approval-queue.css">
+    <link rel="stylesheet" href="token-allocation-widget.css">
+    <link rel="stylesheet" href="task-search-filter.css">
+    <link rel="stylesheet" href="keyboard-shortcuts.css">
 </head>
 <body>
     <!-- Onboarding Screen -->
@@ -887,21 +863,55 @@
         }
     </script>
     <!-- Loading Manager - MUST load FIRST for global error handling -->
-    <!-- CRITICAL SCRIPTS ONLY (loaded immediately) -->
     <script src="loading-manager.js"></script>
-    <script src="lazy-loader.js"></script>
+    <!-- File Attachment Manager MUST load FIRST (before TasksBot uses it) -->
+    <script src="file-attachment-manager.js"></script>
+    <link rel="stylesheet" href="file-attachment.css">
+    <!-- File Attachment Module for TasksBot -->
+    <script src="file-attachment-module.js"></script>
+    <!-- Load TasksBot (now FileAttachmentManager is available) -->
+    <script src="tasks-bot-enhanced.js"></script>
+    <link rel="stylesheet" href="tasks-bot.css">
+    <link rel="stylesheet" href="tasks-bot-enhanced.css">
+    <!-- Then load renderer which depends on TasksBot -->
+    <script src="renderer.js"></script>
+    
+    <!-- Bot Upgrades & New Features -->
+    <link rel="stylesheet" href="bot-upgrades.css">
+    <link rel="stylesheet" href="new-features.css">
+    <link rel="stylesheet" href="analytics-heartbeat.css">
+    <script src="bot-upgrades.js"></script>
+    <script src="bot-modules.js"></script>
+    <script src="settings-fixed.js"></script>
     <script src="theme-manager.js"></script>
-    <script src="loading-animation.js"></script>
-    <script src="tooltip-system.js"></script>
-    <script src="notification-badge-manager.js"></script>
+    <script src="task-queue-integration.js"></script>
+    <script src="filesystem-bot-llm.js"></script>
+    <script src="social-api-connectors.js"></script>
+    <!-- DISABLED: Using renderer.js instead -->
+    <!-- <script src="heartbeat-manager.js"></script> -->
+    <script src="analytics-advanced.js"></script>
+    <!-- System Monitor UI - Real-time resource monitoring -->
+    <script src="system-monitor-ui.js"></script>
+    <!-- SocialBot UI - Company management and post creation -->
+    <script src="social-bot-ui.js"></script>
     
-    <!-- CORE FUNCTIONALITY (deferred but early) -->
-    <script src="renderer.js" defer></script>
-    <script src="header-live-data.js" defer></script>
-    <script src="log-activity.js" defer></script>
+    <!-- Metrics Persistence Layer - API health tracking (HB#111) -->
+    <script src="metrics-persistence.js"></script>
     
-    <!-- BOT-SPECIFIC SCRIPTS (lazy-loaded on demand via lazy-loader.js) -->
-    <!-- These will be loaded dynamically when user navigates to each bot -->
+    <!-- Health Dashboard - Bot-Backend Status Monitor -->
+    <script src="health-dashboard.js"></script>
+    
+    <!-- Task Statistics - Task Completion Metrics -->
+    <script src="task-statistics.js"></script>
+    
+    <!-- Task History Chart - Completed Tasks Over Last 30 Days -->
+    <script src="task-history-chart.js"></script>
+
+    <!-- Task Timer - Time Tracking for Running Tasks -->
+    <script src="task-timer.js"></script>
+    
+    <!-- Export Package Manager - Distributable packages -->
+    <script src="export-package.js"></script>
     
     <script>
         // Auto-set onboarded for existing installs
@@ -910,7 +920,6 @@
           localStorage.setItem('pinky_user_name', 'Ken');
           localStorage.setItem('pinky_api_key', 'local');
         }
-        
         // Load Onboarding Screen First
         (async function() {
           if (localStorage.getItem('pinky_onboarded') === 'true') return;
@@ -920,93 +929,180 @@
           console.log('[Dashboard] Onboarding screen loaded');
         })();
         
-        // Initialize dashboard when DOM is ready
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('[Dashboard] DOM ready, initializing critical modules...');
+        // Initialize all dashboard components
+        window.addEventListener('load', () => {
+            console.log('[Dashboard] Initializing all modules...');
+            setTimeout(() => {
+                // Inject container divs for bot modules
+                const containers = {
+                    'docs-view': '<div id="docsbot-container"></div>',
+                    'research-view': '<div id="researchbot-container"></div>',
+                    'code-view': '<div id="codebot-container"></div>',
+                    'business-view': '<div id="businessbot-container"></div>',
+                    'filesystem-view': '<div id="filesystembot-container"></div>',
+                    'tasks-view': '<div id="tasksbot-pro-container"></div>'
+                };
+                
+                for (const [viewId, container] of Object.entries(containers)) {
+                    const view = document.getElementById(viewId);
+                    if (view && !view.querySelector('[id*="bot-container"]')) {
+                        view.insertAdjacentHTML('beforeend', container);
+                    }
+                }
+                
+                // Initialize Fixed Settings (replaces old broken version)
+                if (window.settingsManagerFixed) {
+                    window.settingsManagerFixed.renderUI();
+                    console.log('[Dashboard] Settings UI rendered (FIXED version)');
+                }
+                
+                // Initialize Social Media Bot Pro
+                if (window.socialBot) {
+                    window.socialBot.renderSocialUI();
+                    console.log('[Dashboard] SocialBot Pro rendered');
+                }
+                
+                // Initialize Social API Connectors
+                if (window.socialMediaConnectors) {
+                    window.socialMediaConnectors.renderUI();
+                    console.log('[Dashboard] Social API Connectors ready');
+                }
+                
+                // Initialize Task Queue
+                if (window.taskQueueManager) {
+                    window.taskQueueManager.renderUI();
+                    console.log('[Dashboard] Task Queue rendered');
+                }
+                
+                // Initialize FileSystemBot LLM
+                if (window.fileSystemBotLLM) {
+                    window.fileSystemBotLLM.renderUI();
+                    console.log('[Dashboard] FileSystemBot LLM ready');
+                }
+                
+                // Initialize Heartbeat Manager
+                if (window.heartbeatManager) {
+                    window.heartbeatManager.renderUI();
+                    console.log('[Dashboard] Heartbeat status rendered');
+                }
+                
+                // Initialize Analytics Engine (async)
+                if (window.analyticsEngine) {
+                    window.analyticsEngine.renderUI().then(() => {
+                        console.log('[Dashboard] Analytics dashboard rendered');
+                        // Update live counters after metrics load
+                        window.analyticsEngine.getMetrics().then(metrics => {
+                            const botsCount = document.getElementById('bots-active-count');
+                            const tasksCount = document.getElementById('tasks-today-count');
+                            if (botsCount) botsCount.textContent = metrics.botsActive;
+                            if (tasksCount) tasksCount.textContent = metrics.tasksCompleted + ' ✅';
+                        });
+                    }).catch(err => console.log('[Dashboard] Analytics error:', err.message));
+                }
+                
+                // Initialize other bot modules
+                if (window.docsBotPro) window.docsBotPro.renderUI();
+                if (window.researchBotPro) window.researchBotPro.renderUI();
+                if (window.codeBotPro) window.codeBotPro.renderUI();
+                if (window.businessBotPro) window.businessBotPro.renderUI();
+                if (window.filesystemBotPro) window.filesystemBotPro.renderUI();
+                if (window.tasksBotPro) window.tasksBotPro.renderUI();
+                
+                // Load activity data
+                if (typeof loadActivityData === 'function') {
+                    loadActivityData();
+                    console.log('[Dashboard] Activity data loaded');
+                }
+                
+                console.log('[Dashboard] ✓ All systems initialized!');
+            }, 500);
+        });
+    </script>
+    
+    <!-- Toggle function for Tasks Analytics accordion -->
+    <script>
+        function toggleTasksAnalytics() {
+            const content = document.getElementById('tasks-analytics-content');
+            const icon = document.getElementById('tasks-analytics-toggle-icon');
             
-            // Initialize tooltip system
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                icon.textContent = '▲';
+                
+                // Initialize analytics if not already loaded
+                if (typeof window.renderTasksViewAnalytics === 'function') {
+                    window.renderTasksViewAnalytics();
+                    console.log('[Tasks View] Analytics accordion opened');
+                }
+            } else {
+                content.style.display = 'none';
+                icon.textContent = '▼';
+            }
+        }
+    </script>
+    
+    <script src="pinky-chat.js"></script>
+    <script src="settings-page.js"></script>
+    
+    <script src="export-package-ui.js"></script>
+    <script src="system-health-widget.js"></script>
+    <script src="changelog-widget.js"></script>
+    
+    <!-- Loading Animation with Pinky character -->
+    <script src="loading-animation.js"></script>
+    
+    <!-- Error Page with Pinky personality -->
+    <script src="error-page-pinky.js"></script>
+
+    <!-- Notification Sounds with customizable themes -->
+    <script src="notification-sounds.js"></script>
+
+    <!-- Task Analytics Dashboard with completion trends and metrics -->
+    <script src="task-analytics.js"></script>
+
+    <!-- Tooltip System for first-time users -->
+    <script src="tooltip-system.js"></script>
+
+    <!-- About Page with system info and credits -->
+    <script src="about-page.js"></script>
+
+    <!-- WordPress Page Maker -->
+    <script src="wordpress-page-maker.js"></script>
+    <script>
+        // Initialize tooltip system on page load
+        document.addEventListener('DOMContentLoaded', () => {
             if (typeof TooltipSystem !== 'undefined') {
                 window.tooltipSystem = new TooltipSystem();
                 window.tooltipSystem.init();
-                console.log('[Dashboard] Tooltip system initialized');
+                console.log('[Dashboard] Tooltip system initialized for first-time visitors');
             }
             
-            // Wait for renderer to be available
-            const waitForRenderer = setInterval(() => {
-                if (window.dashboard && window.dashboard.init) {
-                    clearInterval(waitForRenderer);
-                    window.dashboard.init();
-                    console.log('[Dashboard] Core initialized');
-                    
-                    // Preload dashboard scripts (low priority)
-                    window.lazyLoader.preloadScripts([
-                        'task-statistics.js',
-                        'task-history-chart.js',
-                        'system-health-widget.js',
-                        'changelog-widget.js'
-                    ]);
-                }
-            }, 100);
+            // Initialize WordPress Page Maker
+            if (typeof WordPressPageMaker !== 'undefined') {
+                window.wordPressMaker = new WordPressPageMaker();
+                window.wordPressMaker.initialize().catch(err => {
+                    console.log('[Dashboard] WordPress maker initialization error:', err.message);
+                });
+                console.log('[Dashboard] WordPress Page Maker initialized');
+            }
             
-            // Timeout after 5 seconds
-            setTimeout(() => clearInterval(waitForRenderer), 5000);
+            // Add WordPress view button listener
+            const wpButton = document.querySelector('[data-view="wordpress"]');
+            if (wpButton) {
+                wpButton.addEventListener('click', () => {
+                    switchToView('wordpress');
+                });
+            }
+            
+            // Initialize Task History Chart
+            if (typeof TaskHistoryChart !== 'undefined') {
+                window.taskHistoryChart = new TaskHistoryChart();
+                window.taskHistoryChart.init().catch(err => {
+                    console.log('[Dashboard] Task History Chart initialization error:', err.message);
+                });
+                console.log('[Dashboard] Task History Chart initialized');
+            }
         });
-        
-        // Intercept bot navigation to lazy-load scripts
-        const originalSwitchToBot = window.switchToBot || function() {};
-        window.switchToBot = async function(botName) {
-            console.log(`[Dashboard] Switching to bot: ${botName}`);
-            
-            // Show loading state
-            if (window.loadingManager) {
-                window.loadingManager.show(`Loading ${botName}...`);
-            }
-            
-            try {
-                // Lazy load bot-specific scripts
-                await window.lazyLoader.loadBotScripts(botName);
-                
-                // Call original switchToBot function
-                originalSwitchToBot.call(this, botName);
-            } catch (error) {
-                console.error('[Dashboard] Failed to load bot scripts:', error);
-                if (window.loadingManager) {
-                    window.loadingManager.showError('Failed to load bot', error.message);
-                }
-            } finally {
-                if (window.loadingManager) {
-                    window.loadingManager.hide();
-                }
-            }
-        };
-        
-        // Intercept view navigation to lazy-load scripts
-        const originalSwitchToView = window.switchToView || function() {};
-        window.switchToView = async function(viewName) {
-            console.log(`[Dashboard] Switching to view: ${viewName}`);
-            
-            // Show loading state
-            if (window.loadingManager) {
-                window.loadingManager.show(`Loading ${viewName}...`);
-            }
-            
-            try {
-                // Lazy load view-specific scripts
-                await window.lazyLoader.loadBotScripts(viewName);
-                
-                // Call original switchToView function
-                originalSwitchToView.call(this, viewName);
-            } catch (error) {
-                console.error('[Dashboard] Failed to load view scripts:', error);
-                if (window.loadingManager) {
-                    window.loadingManager.showError('Failed to load view', error.message);
-                }
-            } finally {
-                if (window.loadingManager) {
-                    window.loadingManager.hide();
-                }
-            }
-        };
     </script>
 </body>
 </html>
