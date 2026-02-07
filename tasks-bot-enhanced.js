@@ -680,10 +680,24 @@ class TasksBotEnhanced {
     } else {
       // Show most recent first
       this.completedTasks.slice().reverse().forEach(task => {
+        // Extract commit hash from notes (looks for "— abc123" or "Commit: abc123")
+        let commitHash = '';
+        if (task.notes) {
+          const commitMatch = task.notes.match(/(?:—|Commit:)\s*([a-f0-9]{6,})/i);
+          if (commitMatch) {
+            commitHash = commitMatch[1];
+          }
+        }
+        
         html += '<div class="task-item completed">';
         html += '<div class="task-header">';
         html += '<span class="status-badge completed">✓ DONE</span>';
         html += '<span class="task-name">' + this.escapeAttr(task.name) + '</span>';
+        
+        // Add revert button if commit hash found
+        if (commitHash) {
+          html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.revertTask(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + commitHash + '\');" title="Revert this commit" style="background:linear-gradient(135deg,#ff9500,#ff6b6b);color:#fff;border:none;border-radius:4px;padding:3px 10px;cursor:pointer;margin-left:auto;font-size:0.8em;font-weight:500;box-shadow:0 2px 4px rgba(0,0,0,0.2);">↩️ Revert</button>';
+        }
         html += '</div>';
         
         if (task.notes) {
@@ -698,6 +712,9 @@ class TasksBotEnhanced {
           if (elapsed > 0) {
             html += '<span style="margin-left:12px;color:#4496ff;">⏱️ ' + taskTimer.formatElapsed(elapsed) + '</span>';
           }
+        }
+        if (commitHash) {
+          html += '<span style="margin-left:12px;color:#888;font-family:monospace;font-size:0.85em;">commit: ' + commitHash + '</span>';
         }
         html += '</div>';
         html += '</div>';
@@ -973,6 +990,43 @@ class TasksBotEnhanced {
     } catch (error) {
       console.error('[TasksBot] Start Now error:', error);
       alert('❌ Failed to send wake-up call. Check console for details.');
+    }
+  }
+
+  /**
+   * Revert a completed task by reverting its git commit
+   */
+  async revertTask(taskName, commitHash) {
+    const confirmMsg = `⚠️ REVERT TASK: "${taskName}"\n\n` +
+      `This will revert commit: ${commitHash}\n\n` +
+      `WARNING: This creates a new commit that undoes the changes.\n` +
+      `The original commit remains in git history.\n\n` +
+      `Continue?`;
+    
+    if (!confirm(confirmMsg)) return;
+    
+    try {
+      // Send revert request to Pinky via chat API
+      const revertMessage = `🔄 REVERT TASK: ${taskName}\nCommit: ${commitHash}\n\nPlease revert this commit using: git revert ${commitHash}`;
+      
+      const response = await fetch('/api/chat/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: revertMessage,
+          priority: 'high'
+        })
+      });
+
+      if (response.ok) {
+        alert('✅ Revert request sent to Pinky!\n\nPinky will:\n1. Run git revert ' + commitHash + '\n2. Create a new commit\n3. Update task status');
+        console.log('[TasksBot] Revert requested for:', taskName, commitHash);
+      } else {
+        throw new Error('API returned status ' + response.status);
+      }
+    } catch (error) {
+      console.error('[TasksBot] Revert error:', error);
+      alert('❌ Failed to send revert request. Check console for details.');
     }
   }
 
