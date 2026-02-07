@@ -118,6 +118,29 @@ window.addEventListener('DOMContentLoaded', () => {
     loadActivityData();
     setInterval(loadActivityData, 5000); // Refresh every 5s
     setInterval(updateStats, 10000); // Update stats every 10s
+    
+    // Initialize dashboard widgets after a short delay to ensure scripts are loaded
+    setTimeout(() => {
+        if (typeof initTaskStatistics === 'function') {
+            initTaskStatistics();
+            console.log('[Dashboard] TaskStatistics widget initialized');
+        }
+        if (typeof TaskHistoryChart !== 'undefined') {
+            window.taskHistoryChart = new TaskHistoryChart();
+            window.taskHistoryChart.init();
+            console.log('[Dashboard] TaskHistoryChart widget initialized');
+        }
+        if (typeof SystemHealthWidget !== 'undefined') {
+            window.systemHealthWidget = new SystemHealthWidget();
+            window.systemHealthWidget.init();
+            console.log('[Dashboard] SystemHealthWidget initialized');
+        }
+        if (typeof ChangelogWidget !== 'undefined') {
+            window.changelogWidget = new ChangelogWidget();
+            window.changelogWidget.init();
+            console.log('[Dashboard] ChangelogWidget initialized');
+        }
+    }, 1000);
 });
 
 // Bot Navigation
