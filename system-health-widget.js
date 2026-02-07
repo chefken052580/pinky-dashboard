@@ -146,26 +146,38 @@ class SystemHealthWidget {
      */
     async updateMetrics() {
         try {
-            const response = await fetch('/api/system/metrics');
-            if (!response.ok) throw new Error('Metrics API error');
-            const data = await response.json();
-            this.metrics = data.metrics || data;
-            // Fetch host stats (PowerShell is slow ~2s, so non-blocking)
-            if (!this.hostInfo) {
-                fetch('/api/system/host').then(r => r.json()).then(hd => {
-                    if (hd.success) { this.hostInfo = hd.host; this.renderMetrics(); }
-                }).catch(() => {});
-            } else {
-                // Refresh host stats every 30s
-                if (!this._lastHostFetch || Date.now() - this._lastHostFetch > 30000) {
-                    this._lastHostFetch = Date.now();
-                    fetch('/api/system/host').then(r => r.json()).then(hd => {
-                        if (hd.success) { this.hostInfo = hd.host; this.renderMetrics(); }
-                    }).catch(() => {});
+            // Get widget container for loading spinner
+            const widgetContainer = document.getElementById(this.containerId);
+            
+            // Use apiFetch() wrapper with loading spinner
+            const data = await apiFetch('/api/system/metrics', {}, widgetContainer);
+            
+            if (data) {
+                this.metrics = data.metrics || data;
+                
+                // Fetch host stats (PowerShell is slow ~2s, so non-blocking)
+                if (!this.hostInfo) {
+                    const hostData = await apiFetch('/api/system/host');
+                    if (hostData && hostData.success) {
+                        this.hostInfo = hostData.host;
+                        this.renderMetrics();
+                    }
+                } else {
+                    // Refresh host stats every 30s
+                    if (!this._lastHostFetch || Date.now() - this._lastHostFetch > 30000) {
+                        this._lastHostFetch = Date.now();
+                        const hostData = await apiFetch('/api/system/host');
+                        if (hostData && hostData.success) {
+                            this.hostInfo = hostData.host;
+                            this.renderMetrics();
+                        }
+                    }
                 }
+                this.renderMetrics();
+                this.setStatus('online');
+            } else {
+                throw new Error('Failed to load system metrics');
             }
-            this.renderMetrics();
-            this.setStatus('online');
         } catch (error) {
             console.error('System health update error:', error);
             this.setStatus('error', error.message);

@@ -40,23 +40,13 @@ class TaskStatistics {
    */
   async fetchTasks() {
     try {
-      const res = await fetch(this.apiBase + '/api/tasks/stats', { timeout: 5000 });
-      console.log('[TaskStatistics] Fetch response status:', res.status, 'OK:', res.ok);
+      // Get widget container for loading spinner
+      const container = document.getElementById('task-statistics-container');
       
-      if (!res.ok) {
-        console.error('[TaskStatistics] API error:', res.status, res.statusText);
-        return false;
-      }
-
-      // Check content type before parsing JSON
-      const contentType = res.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        console.error('[TaskStatistics] Invalid content type:', contentType);
-        return false;
-      }
-
-      const data = await res.json();
-      if (data.success && data.stats) {
+      // Use apiFetch() wrapper with loading spinner
+      const data = await apiFetch(this.apiBase + '/api/tasks/stats', {}, container);
+      
+      if (data && data.success && data.stats) {
         // Map API stats format to internal format
         this.tasks = [
           { status: 'completed', count: data.stats.completed },
