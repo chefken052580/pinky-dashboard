@@ -1,5 +1,15 @@
 {
-  "pending": [],
+  "pending": [
+    {
+      "id": "1770419011619",
+      "title": "Add update_sort_order action to tasks-api.js for drag-drop reordering",
+      "description": "Drag-drop task reordering requires new API action. Frontend is complete (tasks-bot-enhanced.js has updateTaskOrder method) but backend missing handler. NEED: Add update_sort_order action to tasks-api.js that: 1) Accepts {action: update_sort_order, taskName: string, newSortOrder: number}, 2) Updates task.sort_order field, 3) Saves to pinky-dashboard/tasks.json, 4) Returns success/error. Frontend already sends correct payload format.",
+      "file": "bot-backend/tasks-api.js",
+      "action": "edit",
+      "status": "pending",
+      "createdAt": "2026-02-06T23:03:31.619Z"
+    }
+  ],
   "resolved": [
     {
       "id": "1770341261473",
