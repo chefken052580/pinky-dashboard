@@ -111,6 +111,7 @@ class TaskQueueManager {
     if (!container) return;
 
     let html = '<div class="task-queue-section">';
+    html += '<button class="task-queue-close-btn" onclick="document.getElementById(\'task-queue-container\').style.display=\'none\';">✕ Close</button>';
     html += '<h3>📋 Task Queue & History</h3>';
     
     // Active task

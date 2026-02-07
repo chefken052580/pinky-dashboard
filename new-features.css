@@ -10,7 +10,32 @@
   border: 1px solid rgba(0, 212, 255, 0.2);
   border-radius: 12px;
   padding: 20px;
-  margin: 20px 0;
+  margin: 20px auto;
+  max-width: 900px;
+  position: relative;
+}
+
+.task-queue-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 68, 68, 0.2);
+  border: 1px solid rgba(255, 68, 68, 0.4);
+  color: #ff4444;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.task-queue-close-btn:hover {
+  background: rgba(255, 68, 68, 0.4);
+  border-color: #ff4444;
+  color: #fff;
+  transform: scale(1.05);
 }
 
 .task-queue-section h3 {
@@ -462,4 +487,66 @@
   .connector-actions {
     flex-direction: column;
   }
+}
+
+/* Mobile responsive for task queue */
+@media screen and (max-width: 768px) {
+    .task-queue-section {
+        margin: 10px;
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .task-queue-section h3 {
+        font-size: 1.1em;
+        padding-right: 80px; /* Space for close button */
+    }
+
+    .task-queue-close-btn {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 0.85em;
+    }
+
+    .task-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .task-complete-btn {
+        align-self: flex-end;
+        width: auto;
+        padding: 6px 12px;
+        font-size: 0.85em;
+    }
+
+    .completed-item {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .task-queue-section {
+        margin: 5px;
+        padding: 10px;
+    }
+
+    .task-queue-section h3 {
+        font-size: 1em;
+    }
+
+    .task-queue-section h4 {
+        font-size: 0.9em;
+    }
+
+    .task-type {
+        font-size: 0.75em;
+    }
+
+    .task-name {
+        font-size: 0.9em;
+    }
 }
