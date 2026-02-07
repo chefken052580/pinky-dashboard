@@ -270,25 +270,28 @@ function switchMonitorView(view) {
     renderMonitorChart(view);
 }
 
-function loadActivityData() {
-    // Fetch activity data from API
-    fetch('/api/activity')
-        .then(r => r.json())
-        .then(data => {
-            // Extract heartbeats from API response {heartbeats: [...]}
-            const heartbeatsArray = data.heartbeats || [];
-            activityData = {
-                heartbeats: heartbeatsArray,
-                heartbeatCount: heartbeatsArray.length
-            };
-            updateMonitorStats();
-            renderMonitorChart(currentMonitorView);
-            renderHeaderStats();
-            console.log('[Monitor] Loaded activity data from /api/activity: ' + heartbeatsArray.length + ' heartbeats');
-        })
-        .catch(err => {
-            console.error('[Monitor] Failed to load activity data:', err);
-        });
+async function loadActivityData() {
+    // Fetch activity data from API with error handling
+    const result = await window.loadingManager.fetch('/api/activity', {}, {
+        errorTitle: 'Activity Data Load Failed',
+        silent: true // Don't show toast for background updates
+    });
+    
+    if (result.success) {
+        // Extract heartbeats from API response {heartbeats: [...]}
+        const data = result.data;
+        const heartbeatsArray = data.heartbeats || [];
+        activityData = {
+            heartbeats: heartbeatsArray,
+            heartbeatCount: heartbeatsArray.length
+        };
+        updateMonitorStats();
+        renderMonitorChart(currentMonitorView);
+        renderHeaderStats();
+        console.log('[Monitor] Loaded activity data from /api/activity: ' + heartbeatsArray.length + ' heartbeats');
+    } else {
+        console.error('[Monitor] Failed to load activity data:', result.error);
+    }
 }
 
 function updateMonitorStats() {
@@ -528,17 +531,26 @@ window.dashboard = {
 console.log('[Dashboard] Ready! Use window.dashboard to access functions.');
 
 // ===== CONSOLIDATED STATS (One System) =====
-function renderHeaderStats() {
+async function renderHeaderStats() {
     const container = document.getElementById('heartbeat-status-container');
     if (!container) return;
     
-    // Fetch APIs in parallel, then render
-    Promise.all([
-        fetch('/api/usage').then(r => r.json()).catch(() => ({})),
-        fetch('/api/tasks/stats').then(r => r.json()).catch(() => ({})),
-        fetch('/api/tasks').then(r => r.json()).catch(() => []),
-        fetch('/api/activity').then(r => r.json()).catch(() => ({}))
-    ]).then(([usage, statsResponse, tasks, activity]) => {
+    // Fetch APIs in parallel with error handling
+    const [usageResult, statsResult, tasksResult, activityResult] = await Promise.all([
+        window.loadingManager.fetch('/api/usage', {}, { silent: true }),
+        window.loadingManager.fetch('/api/tasks/stats', {}, { silent: true }),
+        window.loadingManager.fetch('/api/tasks', {}, { silent: true }),
+        window.loadingManager.fetch('/api/activity', {}, { silent: true })
+    ]);
+    
+    // Extract data or use fallbacks
+    const usage = usageResult.success ? usageResult.data : {};
+    const statsResponse = statsResult.success ? statsResult.data : {};
+    const tasks = tasksResult.success ? tasksResult.data : [];
+    const activity = activityResult.success ? activityResult.data : {};
+    
+    // Process data
+    {
         const tokensUsed = usage.totalTokens || 0;
         const apiCost = usage.totalCost || 0;
         const messages = usage.messages || 0;
@@ -589,7 +601,7 @@ function renderHeaderStats() {
         if (wakeupEl) wakeupEl.textContent = heartbeatCount;
         
         console.log('[HeaderStats] Updated: ' + heartbeatCount + ' heartbeats, ' + allCompleted + ' tasks, $' + apiCost.toFixed(2) + ' cost, ' + messages + ' messages, ' + completionRate + ' success rate');
-    });
+    }
 }
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -607,70 +619,79 @@ function toggleApprovals() {
     if (approvalsOpen) loadApprovals();
 }
 
-function loadApprovals() {
-    fetch('/api/approvals')
-        .then(r => r.json())
-        .then(data => {
-            const badge = document.getElementById('approval-badge');
-            const list = document.getElementById('approval-list');
-            const count = data.pending.length;
-            
-            // Update badge
-            badge.textContent = count;
-            badge.classList.toggle('hidden', count === 0);
-            
-            // Update list
-            if (count === 0) {
-                list.innerHTML = '<p class="no-approvals">No pending approvals</p>';
-                return;
-            }
-            
-            list.innerHTML = data.pending.map(req => `
-                <div class="approval-item" data-id="${req.id}">
-                    <h4>📋 ${req.title}</h4>
-                    <div class="file">📁 ${req.file || 'N/A'}</div>
-                    <div class="description">${req.description || ''}</div>
-                    <textarea placeholder="Add instructions for Pinky (optional)..." id="instructions-${req.id}"></textarea>
-                    <div class="approval-buttons">
-                        <button class="btn-approve" onclick="respondApproval('${req.id}', true)">✅ Approve</button>
-                        <button class="btn-deny" onclick="respondApproval('${req.id}', false)">❌ Deny</button>
-                    </div>
-                    <div class="approval-time">Requested: ${formatDateEST(req.createdAt)}</div>
-                </div>
-            `).join('');
-        })
-        .catch(e => console.error('[Approvals] Load failed:', e));
+async function loadApprovals() {
+    const result = await window.loadingManager.fetch('/api/approvals', {}, {
+        errorTitle: 'Failed to Load Approvals',
+        silent: true
+    });
+    
+    if (!result.success) {
+        console.error('[Approvals] Load failed:', result.error);
+        return;
+    }
+    
+    const data = result.data;
+    const badge = document.getElementById('approval-badge');
+    const list = document.getElementById('approval-list');
+    const count = data.pending.length;
+    
+    // Update badge
+    badge.textContent = count;
+    badge.classList.toggle('hidden', count === 0);
+    
+    // Update list
+    if (count === 0) {
+        list.innerHTML = '<p class="no-approvals">No pending approvals</p>';
+        return;
+    }
+    
+    list.innerHTML = data.pending.map(req => `
+        <div class="approval-item" data-id="${req.id}">
+            <h4>📋 ${req.title}</h4>
+            <div class="file">📁 ${req.file || 'N/A'}</div>
+            <div class="description">${req.description || ''}</div>
+            <textarea placeholder="Add instructions for Pinky (optional)..." id="instructions-${req.id}"></textarea>
+            <div class="approval-buttons">
+                <button class="btn-approve" onclick="respondApproval('${req.id}', true)">✅ Approve</button>
+                <button class="btn-deny" onclick="respondApproval('${req.id}', false)">❌ Deny</button>
+            </div>
+            <div class="approval-time">Requested: ${formatDateEST(req.createdAt)}</div>
+        </div>
+    `).join('');
 }
 
-function respondApproval(id, approved) {
+async function respondApproval(id, approved) {
     const instructions = document.getElementById('instructions-' + id)?.value || '';
-    fetch('/api/approvals/' + id + '/respond', {
+    
+    const result = await window.loadingManager.fetch('/api/approvals/' + id + '/respond', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ approved, instructions })
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success) {
-            loadApprovals();
-            alert(approved ? '✅ Approved! Pinky can proceed.' : '❌ Denied.');
-        }
-    })
-    .catch(e => console.error('[Approvals] Respond failed:', e));
+    }, {
+        loadingMessage: approved ? 'Approving...' : 'Denying...',
+        errorTitle: 'Approval Response Failed'
+    });
+    
+    if (result.success && result.data.success) {
+        loadApprovals();
+        window.loadingManager.success(
+            approved ? 'Approved!' : 'Denied',
+            approved ? 'Pinky can proceed with the task.' : 'Request has been denied.'
+        );
+    }
 }
 
 // Check for approvals every 30 seconds
-setInterval(() => {
-    fetch('/api/approvals')
-        .then(r => r.json())
-        .then(data => {
-            const badge = document.getElementById('approval-badge');
-            if (badge) {
-                badge.textContent = data.pending.length;
-                badge.classList.toggle('hidden', data.pending.length === 0);
-            }
-        })
-        .catch(() => {});
+setInterval(async () => {
+    const result = await window.loadingManager.fetch('/api/approvals', {}, { silent: true });
+    if (result.success) {
+        const data = result.data;
+        const badge = document.getElementById('approval-badge');
+        if (badge) {
+            badge.textContent = data.pending.length;
+            badge.classList.toggle('hidden', data.pending.length === 0);
+        }
+    }
 }, 30000);
 
 // Initial check on load
