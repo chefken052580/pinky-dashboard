@@ -91,30 +91,45 @@ class TaskHistoryChart {
   }
 
   processTaskData(completedTasks) {
-    // Group completed tasks by day (last 30 days, including today)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set to start of today
+    // Group completed tasks by day (last 30 days, including today) in EST timezone
+    const now = new Date();
+    const todayEST = now.toLocaleDateString('en-US', { 
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    // Convert MM/DD/YYYY to YYYY-MM-DD
+    const [month, day, year] = todayEST.split('/');
+    const todayStr = `${year}-${month}-${day}`;
     
     // Create a map of dates to task counts
     const dailyCounts = {};
     
     // Initialize all dates with 0 (31 days to ensure today is included)
+    const todayDate = new Date(year, month - 1, day);
     for (let i = 30; i >= 0; i--) {
-      const date = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
+      const date = new Date(todayDate.getTime() - i * 24 * 60 * 60 * 1000);
       const dateStr = date.toISOString().split('T')[0];
       dailyCounts[dateStr] = 0;
     }
 
-    console.log('[TaskHistoryChart] Date range: ' + Object.keys(dailyCounts).sort()[0] + ' to ' + Object.keys(dailyCounts).sort().reverse()[0]);
+    console.log('[TaskHistoryChart] Date range (EST): ' + Object.keys(dailyCounts).sort()[0] + ' to ' + Object.keys(dailyCounts).sort().reverse()[0]);
 
-    // Count completed tasks by date
+    // Count completed tasks by date (convert UTC to EST)
     let processedCount = 0;
     completedTasks.forEach(task => {
-      // Normalize date to YYYY-MM-DD format
-      let taskDate = task.updated;
-      if (taskDate.includes('T')) {
-        taskDate = taskDate.split('T')[0];
-      }
+      // Convert UTC timestamp to EST date
+      const taskDateUTC = new Date(task.updated);
+      const taskDateEST = taskDateUTC.toLocaleDateString('en-US', { 
+        timeZone: 'America/New_York',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      const [m, d, y] = taskDateEST.split('/');
+      const taskDate = `${y}-${m}-${d}`;
+      
       // Check if this date is in our range
       if (dailyCounts.hasOwnProperty(taskDate)) {
         dailyCounts[taskDate]++;
@@ -146,9 +161,16 @@ class TaskHistoryChart {
   }
 
   processTodayHourlyData(completedTasks) {
-    // Process today's tasks by hour
-    const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
+    // Process today's tasks by hour (in EST timezone)
+    const now = new Date();
+    const todayEST = now.toLocaleDateString('en-US', { 
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    const [month, day, year] = todayEST.split('/');
+    const todayStr = `${year}-${month}-${day}`;
     
     // Initialize 24 hours
     const hourlyCounts = Array(24).fill(0);
@@ -156,12 +178,27 @@ class TaskHistoryChart {
     completedTasks.forEach(task => {
       if (!task.updated || !task.updated.includes('T')) return;
       
-      const taskDate = task.updated.split('T')[0];
-      if (taskDate === todayStr) {
-        const timeStr = task.updated.split('T')[1];
-        const hour = parseInt(timeStr.split(':')[0]);
-        if (hour >= 0 && hour < 24) {
-          hourlyCounts[hour]++;
+      // Convert UTC timestamp to EST date and hour
+      const taskDateUTC = new Date(task.updated);
+      const taskDateEST = taskDateUTC.toLocaleDateString('en-US', { 
+        timeZone: 'America/New_York',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      const [m, d, y] = taskDateEST.split('/');
+      const taskDateStr = `${y}-${m}-${d}`;
+      
+      // Only count tasks from today (EST)
+      if (taskDateStr === todayStr) {
+        // Get the hour in EST
+        const hourEST = parseInt(taskDateUTC.toLocaleTimeString('en-US', { 
+          timeZone: 'America/New_York',
+          hour12: false,
+          hour: '2-digit'
+        }));
+        if (hourEST >= 0 && hourEST < 24) {
+          hourlyCounts[hourEST]++;
         }
       }
     });
