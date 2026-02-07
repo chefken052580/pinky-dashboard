@@ -41,11 +41,16 @@ class PinkyErrorHandler {
 
     document.body.appendChild(overlay);
 
-    // Event listeners
-    document.querySelector('.pinky-error-close').addEventListener('click', () => this.hide());
-    document.querySelector('.pinky-error-dismiss').addEventListener('click', () => this.hide());
-    document.querySelector('.pinky-error-retry').addEventListener('click', () => this.retry());
-    document.querySelector('.pinky-error-report').addEventListener('click', () => this.report());
+    // Event listeners with null checks
+    const closeBtn = document.querySelector('.pinky-error-close');
+    const dismissBtn = document.querySelector('.pinky-error-dismiss');
+    const retryBtn = document.querySelector('.pinky-error-retry');
+    const reportBtn = document.querySelector('.pinky-error-report');
+    
+    if (closeBtn) closeBtn.addEventListener('click', () => this.hide());
+    if (dismissBtn) dismissBtn.addEventListener('click', () => this.hide());
+    if (retryBtn) retryBtn.addEventListener('click', () => this.retry());
+    if (reportBtn) reportBtn.addEventListener('click', () => this.report());
   }
 
   show(errorData) {
