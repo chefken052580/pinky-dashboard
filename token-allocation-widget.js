@@ -146,65 +146,119 @@ class TokenAllocationWidget {
 
   async loadData() {
     try {
+      // Show loading state
+      this.renderLoading();
+
       const [allocationRes, metricsRes] = await Promise.all([
         fetch('http://192.168.254.4:3030/api/analytics/token-allocation'),
         fetch('http://192.168.254.4:3030/api/analytics/heartbeat-metrics')
       ]);
 
       if (!allocationRes.ok || !metricsRes.ok) {
-        throw new Error('API error');
+        const status = !allocationRes.ok ? allocationRes.status : metricsRes.status;
+        throw new Error(`API returned status ${status}`);
       }
 
       this.data = await allocationRes.json();
       this.metrics = await metricsRes.json();
+
+      // Validate response data
+      if (!this.data || !this.metrics) {
+        throw new Error('Invalid or empty response data');
+      }
+
       this.renderData();
     } catch (err) {
       console.error('[TokenAllocation] Error:', err.message);
+      this.renderError(err.message);
     }
   }
 
+  renderLoading() {
+    const container = document.getElementById(this.containerId);
+    if (!container) return;
+    
+    const headerHTML = container.querySelector('.token-widget-header')?.outerHTML || '';
+    container.innerHTML = headerHTML + `
+      <div style="padding: 40px; text-align: center; color: #999;">
+        <div class="loading-spinner" style="margin: 0 auto 15px;"></div>
+        <div>Loading token allocation data...</div>
+      </div>
+    `;
+  }
+
+  renderError(message) {
+    const container = document.getElementById(this.containerId);
+    if (!container) return;
+
+    const headerHTML = container.querySelector('.token-widget-header')?.outerHTML || '';
+    container.innerHTML = headerHTML + `
+      <div style="padding: 40px; text-align: center; color: #ff6b6b;">
+        <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 10px;">
+          Unable to Load Token Data
+        </div>
+        <div style="font-size: 13px; color: #999; margin-bottom: 20px;">
+          ${message || 'An error occurred while fetching data'}
+        </div>
+        <button onclick="window.tokenAllocationWidget.loadData()" 
+                style="padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;">
+          Try Again
+        </button>
+      </div>
+    `;
+  }
+
   renderData() {
-    if (!this.data || !this.metrics) return;
-
-    // Total tokens
-    const totalTokens = this.data.totalTokens || 0;
-    document.getElementById('total-tokens').textContent = this.formatNumber(totalTokens);
-    document.getElementById('total-tokens-detail').textContent = `${this.data.heartbeats} heartbeats`;
-
-    // Average
-    const avgTokens = this.metrics.averageTokensPerHeartbeat || 0;
-    document.getElementById('avg-tokens').textContent = this.formatNumber(avgTokens);
-    document.getElementById('avg-tokens-detail').textContent = `per heartbeat`;
-
-    // Efficiency
-    const efficiency = this.metrics.efficiency || 'unknown';
-    const efficiencyEmoji = {
-      'excellent': '⭐',
-      'good': '✅',
-      'fair': '⚠️',
-      'poor': '❌'
-    }[efficiency] || '❓';
-    document.getElementById('efficiency-rating').textContent = `${efficiencyEmoji} ${efficiency}`;
-    document.getElementById('efficiency-detail').textContent = `${this.metrics.averageTokensPerHeartbeat}/HB`;
-
-    // Token allocation breakdown
-    const categories = ['code', 'docs', 'research', 'taskMgmt', 'other'];
-    for (const cat of categories) {
-      const tokens = this.data[cat]?.tokens || 0;
-      const pct = this.data[cat]?.percentage || 0;
-
-      document.getElementById(`${cat}-pct`).textContent = `${pct}%`;
-      document.getElementById(`${cat}-bar`).style.width = `${Math.min(pct, 100)}%`;
-      document.getElementById(`${cat}-tokens`).textContent = this.formatNumber(tokens);
+    if (!this.data || !this.metrics) {
+      this.renderError('No data available to display');
+      return;
     }
 
-    // Heartbeat metrics
-    document.getElementById('hb-count').textContent = this.data.heartbeats || 0;
-    document.getElementById('hb-exec').textContent = `${this.metrics.averageExecTimePerHeartbeat || 0}s`;
-    document.getElementById('hb-exec-total').textContent = `${Math.round((this.metrics.totalExecTime || 0) / 60)}m`;
+    try {
+      // Total tokens
+      const totalTokens = this.data.totalTokens || 0;
+      document.getElementById('total-tokens').textContent = this.formatNumber(totalTokens);
+      document.getElementById('total-tokens-detail').textContent = `${this.data.heartbeats || 0} heartbeats`;
 
-    // Last updated
-    document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+      // Average
+      const avgTokens = this.metrics.averageTokensPerHeartbeat || 0;
+      document.getElementById('avg-tokens').textContent = this.formatNumber(avgTokens);
+      document.getElementById('avg-tokens-detail').textContent = `per heartbeat`;
+
+      // Efficiency
+      const efficiency = this.metrics.efficiency || 'unknown';
+      const efficiencyEmoji = {
+        'excellent': '⭐',
+        'good': '✅',
+        'fair': '⚠️',
+        'poor': '❌'
+      }[efficiency] || '❓';
+      document.getElementById('efficiency-rating').textContent = `${efficiencyEmoji} ${efficiency}`;
+      document.getElementById('efficiency-detail').textContent = `${this.metrics.averageTokensPerHeartbeat || 0}/HB`;
+
+      // Token allocation breakdown
+      const categories = ['code', 'docs', 'research', 'taskMgmt', 'other'];
+      for (const cat of categories) {
+        const tokens = this.data[cat]?.tokens || 0;
+        const pct = this.data[cat]?.percentage || 0;
+
+        document.getElementById(`${cat}-pct`).textContent = `${pct}%`;
+        document.getElementById(`${cat}-bar`).style.width = `${Math.min(pct, 100)}%`;
+        document.getElementById(`${cat}-tokens`).textContent = this.formatNumber(tokens);
+      }
+
+      // Heartbeat metrics
+      document.getElementById('hb-count').textContent = this.data.heartbeats || 0;
+      document.getElementById('hb-exec').textContent = `${this.metrics.averageExecTimePerHeartbeat || 0}s`;
+      document.getElementById('hb-exec-total').textContent = `${Math.round((this.metrics.totalExecTime || 0) / 60)}m`;
+
+      // Last updated
+      document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+    } catch (err) {
+      console.error('[TokenAllocation] Render error:', err.message);
+      this.renderError(`Failed to render data: ${err.message}`);
+    }
   }
 
   formatNumber(n) {
