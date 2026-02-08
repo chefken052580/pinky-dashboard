@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Update Progress Modal */
+        .update-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            backdrop-filter: blur(4px);
+        }
+        
+        .update-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid #00d4ff;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3);
+            z-index: 10001;
+        }
+        
+        .update-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .update-icon {
+            font-size: 36px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .update-modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00d4ff;
+            margin: 0;
+        }
+        
+        .update-modal-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .update-progress-container {
+            margin: 20px 0;
+        }
+        
+        .update-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .update-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .update-progress-text {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+        }
+        
+        .update-status {
+            color: #00d4ff;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .update-details {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 3px solid #00d4ff;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .update-details-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .update-modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .update-btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .update-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .update-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .update-btn-secondary {
+            background: transparent;
+            border: 1px solid #667eea;
+            color: #667eea;
+        }
+        
+        .update-btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .update-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Update Toast Notification */
+        .update-toast {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #16213e 0%, #0f0e1a 100%);
+            border: 1px solid #00d4ff;
+            border-radius: 12px;
+            padding: 16px 20px;
+            max-width: 400px;
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .update-toast-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .update-toast-icon {
+            font-size: 24px;
+        }
+        
+        .update-toast-title {
+            font-weight: bold;
+            color: #00d4ff;
+            font-size: 16px;
+        }
+        
+        .update-toast-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .update-toast-close:hover {
+            color: white;
+        }
+        
+        .update-toast-message {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .update-toast-action {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .update-toast-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Update Progress Modal -->
+    <div class="update-modal-overlay" id="update-modal-overlay">
+        <div class="update-modal">
+            <div class="update-modal-header">
+                <div class="update-icon" id="update-icon">⚡</div>
+                <div>
+                    <h2 class="update-modal-title" id="update-modal-title">Checking for Updates</h2>
+                    <div class="update-modal-subtitle" id="update-modal-subtitle">Please wait...</div>
+                </div>
+            </div>
+            
+            <div class="update-progress-container" id="update-progress-container" style="display: none;">
+                <div class="update-progress-bar">
+                    <div class="update-progress-fill" id="update-progress-fill"></div>
+                </div>
+                <div class="update-progress-text">
+                    <span id="update-progress-percent">0%</span>
+                    <span id="update-progress-speed">0 KB/s</span>
+                </div>
+            </div>
+            
+            <div class="update-status" id="update-status"></div>
+            
+            <div class="update-details" id="update-details" style="display: none;">
+                <div class="update-details-row">
+                    <span>Current Version:</span>
+                    <span id="update-current-version">1.0.0</span>
+                </div>
+                <div class="update-details-row">
+                    <span>New Version:</span>
+                    <span id="update-new-version">1.0.1</span>
+                </div>
+                <div class="update-details-row">
+                    <span>Download Size:</span>
+                    <span id="update-size">120 MB</span>
+                </div>
+            </div>
+            
+            <div class="update-modal-buttons" id="update-modal-buttons">
+                <button class="update-btn update-btn-secondary" id="update-btn-cancel">Cancel</button>
+                <button class="update-btn update-btn-primary" id="update-btn-action">Download</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Update Toast Notification -->
+    <div class="update-toast" id="update-toast">
+        <div class="update-toast-header">
+            <span class="update-toast-icon">🔔</span>
+            <span class="update-toast-title" id="update-toast-title">Update Available</span>
+            <button class="update-toast-close" id="update-toast-close">×</button>
+        </div>
+        <div class="update-toast-message" id="update-toast-message">
+            A new version of PinkyBot is available.
+        </div>
+        <button class="update-toast-action" id="update-toast-action">View Update</button>
+    </div>
+
+    <script src="/update-progress.js"></script>
+</body>
+</html>
