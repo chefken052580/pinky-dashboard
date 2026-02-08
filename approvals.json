@@ -1,31 +1,35 @@
 {
   "pending": [
     {
-      "id": "1770419011619",
-      "title": "Add update_sort_order action to tasks-api.js for drag-drop reordering",
-      "description": "Drag-drop task reordering requires new API action. Frontend is complete (tasks-bot-enhanced.js has updateTaskOrder method) but backend missing handler. NEED: Add update_sort_order action to tasks-api.js that: 1) Accepts {action: update_sort_order, taskName: string, newSortOrder: number}, 2) Updates task.sort_order field, 3) Saves to pinky-dashboard/tasks.json, 4) Returns success/error. Frontend already sends correct payload format.",
-      "file": "bot-backend/tasks-api.js",
+      "id": "1770511093597",
+      "title": "Add missing business-view div to index.html",
+      "description": "BusinessBot button exists in sidebar but no business-view div exists. Clicking BusinessBot breaks navigation. Need to add:\n\n<div id=\"business-view\" class=\"view\">\n    <h2>💼 BusinessBot - Business Intelligence</h2>\n    <p style=\"color:white;margin-bottom:25px;\">\n        Business analytics, market research, and financial planning.\n    </p>\n    <div id=\"business-content\"></div>\n</div>\n\nInsert after social-view (line ~603), before filesystem-view.\n\nBonus fix: Change \"BusinessBot Activity\" to \"SocialBot Activity\" in social-view activity heading (line ~599).",
+      "file": "pinky-dashboard/index.html",
       "action": "edit",
       "status": "pending",
-      "createdAt": "2026-02-06T23:03:31.619Z"
+      "createdAt": "2026-02-08T00:38:13.597Z"
     },
     {
-      "id": "1770493407594",
-      "title": "Phase 3.1: Multi-workspace support - requires protected file changes",
-      "description": "Need to add multi-workspace API endpoints to server.js and modify tasks-api.js schema. Features needed: workspace CRUD endpoints, workspace switching, isolated bot teams per workspace, per-workspace API keys. Frontend UI changes (dropdown switcher) are safe to implement, but backend requires Brain approval.",
-      "file": "bot-backend/server.js, bot-backend/tasks-api.js",
+      "id": "1770513218796",
+      "title": "P1.4-4: Add visual-polish.css + load-visual-polish.js to index.html",
+      "description": "Add two lines to index.html:\n\n1. In <head> section after line 32 (after keyboard-shortcuts.css):\n<link rel=\"stylesheet\" href=\"visual-polish.css\">\n\n2. In <body> section after line 883 (after api-helpers.css):\n<script src=\"load-visual-polish.js\"></script>\n\nThese files fix:\n- Social Media view inline color styles\n- WordPress/Export view heading colors\n- Analytics dashboard section styling\n- Quick Actions hover effects\n- Task analytics accordion styling\n- Mobile responsive improvements\n- Z-index fixes for modals\n\nFiles created: pinky-dashboard/visual-polish.css (8.2 KB), pinky-dashboard/load-visual-polish.js (3.1 KB)",
+      "file": "pinky-dashboard/index.html",
       "action": "edit",
       "status": "pending",
-      "createdAt": "2026-02-07T19:43:27.594Z"
-    },
+      "createdAt": "2026-02-08T01:13:38.796Z"
+    }
+  ],
+  "resolved": [
     {
-      "id": "1770504046990",
-      "title": "P1.3-1: Wire apiFetch() to Mission Control stats (renderer.js + index.html)",
-      "description": "TASK: P1.3-1 - Create apiFetch() wrapper and wire to Mission Control stats.\n\nCOMPLETED:\n- ✓ Created api-helpers.js (4.1 KB) with apiFetch() function\n- ✓ Created api-helpers.css (2.3 KB) with spinner + error styles\n- ✓ Features: loading spinner, 2 retries with 2s delay, friendly errors\n\nNEEDS APPROVAL (2 protected files):\n\n1. index.html:\n   - Add CSS link after line 33: <link rel=\"stylesheet\" href=\"api-helpers.css\">\n   - Add JS script after line 867: <script src=\"api-helpers.js\"></script>\n\n2. renderer.js (line 530-541):\n   Replace fetch() calls in renderHeaderStats() with apiFetch():\n   \n   OLD:\n   Promise.all([\n     fetch(\"/api/usage\").then(r => r.json()).catch(() => ({})),\n     fetch(\"/api/tasks/stats\").then(r => r.json()).catch(() => ({})),\n     fetch(\"/api/tasks\").then(r => r.json()).catch(() => []),\n     fetch(\"/api/activity\").then(r => r.json()).catch(() => ({}))\n   ]).then(([usage, statsResponse, tasks, activity]) => {\n   \n   NEW:\n   Promise.all([\n     apiFetch(\"/api/usage\", {}, container),\n     apiFetch(\"/api/tasks/stats\", {}, container),\n     apiFetch(\"/api/tasks\", {}, container),\n     apiFetch(\"/api/activity\", {}, container)\n   ]).then(([usage, statsResponse, tasks, activity]) => {\n     // Handle null responses from failed API calls\n     usage = usage || {};\n     statsResponse = statsResponse || {};\n     tasks = tasks || [];\n     activity = activity || {};\n\nVERIFICATION:\n- ✓ Syntax validated: api-helpers.js, renderer.js both pass node -c\n- ✓ API tested: curl /api/health returns status:online\n- ✓ API endpoints verified: /api/tasks/stats, /api/usage, /api/tasks, /api/activity all responding\n\nREASON: renderer.js and index.html are PROTECTED per MEMORY.md. Changes are minimal, surgical, and tested. Mission Control stats will show loading spinner during API fetch and retry on failure.",
-      "file": "pinky-dashboard/index.html, pinky-dashboard/renderer.js",
+      "id": "1770505062351",
+      "title": "P1.3-4: Add connection-monitor.js script to index.html",
+      "description": "Add script tag for connection-monitor.js to enable offline detection banner.\n\nAdd this line to index.html in the scripts section (after api-helpers.js, around line 1073):\n\n<script src=\"connection-monitor.js\"></script>\n\nThe file pinky-dashboard/connection-monitor.js is already created (5.7 KB) with:\n- Polls /api/health every 30s\n- Shows orange banner when offline (⚠️ Connection lost... retrying)\n- Shows green banner when reconnected (✅ Reconnected! - 3s auto-hide)\n- Faster retry (5s) when offline\n- Browser online/offline event listeners\n- Zero dependencies, self-initializing\n\nVerified: node -c passed, API health endpoint responding.",
+      "file": "pinky-dashboard/index.html",
       "action": "edit",
-      "status": "pending",
-      "createdAt": "2026-02-07T22:40:46.990Z"
+      "status": "denied",
+      "createdAt": "2026-02-07T22:57:42.351Z",
+      "instructions": "Already completed by Brain",
+      "resolvedAt": "2026-02-08T00:23:23.772Z"
     },
     {
       "id": "1770504455769",
@@ -33,20 +37,44 @@
       "description": "Update loadActivityData() function in renderer.js to use apiFetch() wrapper with loading spinner. Changes: (1) Make function async, (2) Get monitor container element, (3) Call apiFetch() with container for loading spinner, (4) Handle response with null check. File: pinky-dashboard/renderer.js lines 273-291. This completes P1.3-2 task requirements.",
       "file": "pinky-dashboard/renderer.js",
       "action": "edit",
-      "status": "pending",
-      "createdAt": "2026-02-07T22:47:35.769Z"
+      "status": "denied",
+      "createdAt": "2026-02-07T22:47:35.769Z",
+      "instructions": "Already completed by Brain",
+      "resolvedAt": "2026-02-08T00:23:23.765Z"
     },
     {
-      "id": "1770505062351",
-      "title": "P1.3-4: Add connection-monitor.js script to index.html",
-      "description": "Add script tag for connection-monitor.js to enable offline detection banner.\n\nAdd this line to index.html in the scripts section (after api-helpers.js, around line 1073):\n\n<script src=\"connection-monitor.js\"></script>\n\nThe file pinky-dashboard/connection-monitor.js is already created (5.7 KB) with:\n- Polls /api/health every 30s\n- Shows orange banner when offline (⚠️ Connection lost... retrying)\n- Shows green banner when reconnected (✅ Reconnected! - 3s auto-hide)\n- Faster retry (5s) when offline\n- Browser online/offline event listeners\n- Zero dependencies, self-initializing\n\nVerified: node -c passed, API health endpoint responding.",
-      "file": "pinky-dashboard/index.html",
+      "id": "1770493407594",
+      "title": "Phase 3.1: Multi-workspace support - requires protected file changes",
+      "description": "Need to add multi-workspace API endpoints to server.js and modify tasks-api.js schema. Features needed: workspace CRUD endpoints, workspace switching, isolated bot teams per workspace, per-workspace API keys. Frontend UI changes (dropdown switcher) are safe to implement, but backend requires Brain approval.",
+      "file": "bot-backend/server.js, bot-backend/tasks-api.js",
       "action": "edit",
-      "status": "pending",
-      "createdAt": "2026-02-07T22:57:42.351Z"
-    }
-  ],
-  "resolved": [
+      "status": "denied",
+      "createdAt": "2026-02-07T19:43:27.594Z",
+      "instructions": "DENIED: Wrong phase. You are in Phase 1. Phase 3 is locked.",
+      "resolvedAt": "2026-02-08T00:23:23.758Z"
+    },
+    {
+      "id": "1770419011619",
+      "title": "Add update_sort_order action to tasks-api.js for drag-drop reordering",
+      "description": "Drag-drop task reordering requires new API action. Frontend is complete (tasks-bot-enhanced.js has updateTaskOrder method) but backend missing handler. NEED: Add update_sort_order action to tasks-api.js that: 1) Accepts {action: update_sort_order, taskName: string, newSortOrder: number}, 2) Updates task.sort_order field, 3) Saves to pinky-dashboard/tasks.json, 4) Returns success/error. Frontend already sends correct payload format.",
+      "file": "bot-backend/tasks-api.js",
+      "action": "edit",
+      "status": "denied",
+      "createdAt": "2026-02-06T23:03:31.619Z",
+      "instructions": "Already implemented by Brain — update_sort_order handler added",
+      "resolvedAt": "2026-02-08T00:23:23.751Z"
+    },
+    {
+      "id": "1770504046990",
+      "title": "P1.3-1: Wire apiFetch() to Mission Control stats (renderer.js + index.html)",
+      "description": "TASK: P1.3-1 - Create apiFetch() wrapper and wire to Mission Control stats.\n\nCOMPLETED:\n- ✓ Created api-helpers.js (4.1 KB) with apiFetch() function\n- ✓ Created api-helpers.css (2.3 KB) with spinner + error styles\n- ✓ Features: loading spinner, 2 retries with 2s delay, friendly errors\n\nNEEDS APPROVAL (2 protected files):\n\n1. index.html:\n   - Add CSS link after line 33: <link rel=\"stylesheet\" href=\"api-helpers.css\">\n   - Add JS script after line 867: <script src=\"api-helpers.js\"></script>\n\n2. renderer.js (line 530-541):\n   Replace fetch() calls in renderHeaderStats() with apiFetch():\n   \n   OLD:\n   Promise.all([\n     fetch(\"/api/usage\").then(r => r.json()).catch(() => ({})),\n     fetch(\"/api/tasks/stats\").then(r => r.json()).catch(() => ({})),\n     fetch(\"/api/tasks\").then(r => r.json()).catch(() => []),\n     fetch(\"/api/activity\").then(r => r.json()).catch(() => ({}))\n   ]).then(([usage, statsResponse, tasks, activity]) => {\n   \n   NEW:\n   Promise.all([\n     apiFetch(\"/api/usage\", {}, container),\n     apiFetch(\"/api/tasks/stats\", {}, container),\n     apiFetch(\"/api/tasks\", {}, container),\n     apiFetch(\"/api/activity\", {}, container)\n   ]).then(([usage, statsResponse, tasks, activity]) => {\n     // Handle null responses from failed API calls\n     usage = usage || {};\n     statsResponse = statsResponse || {};\n     tasks = tasks || [];\n     activity = activity || {};\n\nVERIFICATION:\n- ✓ Syntax validated: api-helpers.js, renderer.js both pass node -c\n- ✓ API tested: curl /api/health returns status:online\n- ✓ API endpoints verified: /api/tasks/stats, /api/usage, /api/tasks, /api/activity all responding\n\nREASON: renderer.js and index.html are PROTECTED per MEMORY.md. Changes are minimal, surgical, and tested. Mission Control stats will show loading spinner during API fetch and retry on failure.",
+      "file": "pinky-dashboard/index.html, pinky-dashboard/renderer.js",
+      "action": "edit",
+      "status": "denied",
+      "createdAt": "2026-02-07T22:40:46.990Z",
+      "instructions": "Already completed by Brain",
+      "resolvedAt": "2026-02-08T00:23:23.743Z"
+    },
     {
       "id": "1770341261473",
       "title": "THIS SHOULD WORK",
