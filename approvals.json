@@ -1,13 +1,27 @@
 {
-  "pending": [
+  "pending": [],
+  "resolved": [
     {
-      "id": "1770511093597",
-      "title": "Add missing business-view div to index.html",
-      "description": "BusinessBot button exists in sidebar but no business-view div exists. Clicking BusinessBot breaks navigation. Need to add:\n\n<div id=\"business-view\" class=\"view\">\n    <h2>💼 BusinessBot - Business Intelligence</h2>\n    <p style=\"color:white;margin-bottom:25px;\">\n        Business analytics, market research, and financial planning.\n    </p>\n    <div id=\"business-content\"></div>\n</div>\n\nInsert after social-view (line ~603), before filesystem-view.\n\nBonus fix: Change \"BusinessBot Activity\" to \"SocialBot Activity\" in social-view activity heading (line ~599).",
-      "file": "pinky-dashboard/index.html",
-      "action": "edit",
-      "status": "pending",
-      "createdAt": "2026-02-08T00:38:13.597Z"
+      "id": "1770521513495",
+      "title": "Commit docs/ARCHITECTURE.md with --no-verify",
+      "description": "Pre-commit hook hangs when committing ARCHITECTURE.md (markdown file, no JS). File is staged and ready to commit. Brain can either: (1) Run: cd /home/lordcracker/.openclaw/workspace && git commit --no-verify -m \"P2.2-3: Add ARCHITECTURE.md\", OR (2) Approve Pinky to use --no-verify for this one commit. File contains: System overview, component diagrams, data flow, tech stack, security architecture, design decisions. 526 lines, professional customer-facing documentation.",
+      "file": "docs/ARCHITECTURE.md",
+      "action": "commit",
+      "status": "denied",
+      "createdAt": "2026-02-08T03:31:53.495Z",
+      "instructions": "Already committed by Brain — 685a323",
+      "resolvedAt": "2026-02-08T03:40:47.630Z"
+    },
+    {
+      "id": "1770521270828",
+      "title": "Allow git commit --no-verify for node_modules removal",
+      "description": "Pre-commit hook is blocking removal of 9,229 node_modules files because it tries to lint DELETED files. Hook detects syntax error in bot-backend/node_modules/socket.io/client-dist/socket.io.esm.min.js (minified file). Need to either: (1) Allow git commit --no-verify for this specific commit, OR (2) Fix pre-commit hook to skip linting deleted files. Blocker for Task #123 (P2.2-4).",
+      "file": ".git/hooks/pre-commit or package.json husky config",
+      "action": "bypass",
+      "status": "denied",
+      "createdAt": "2026-02-08T03:27:50.828Z",
+      "instructions": "Already fixed — pre-commit hook updated to v3",
+      "resolvedAt": "2026-02-08T03:40:47.619Z"
     },
     {
       "id": "1770513218796",
@@ -15,11 +29,22 @@
       "description": "Add two lines to index.html:\n\n1. In <head> section after line 32 (after keyboard-shortcuts.css):\n<link rel=\"stylesheet\" href=\"visual-polish.css\">\n\n2. In <body> section after line 883 (after api-helpers.css):\n<script src=\"load-visual-polish.js\"></script>\n\nThese files fix:\n- Social Media view inline color styles\n- WordPress/Export view heading colors\n- Analytics dashboard section styling\n- Quick Actions hover effects\n- Task analytics accordion styling\n- Mobile responsive improvements\n- Z-index fixes for modals\n\nFiles created: pinky-dashboard/visual-polish.css (8.2 KB), pinky-dashboard/load-visual-polish.js (3.1 KB)",
       "file": "pinky-dashboard/index.html",
       "action": "edit",
-      "status": "pending",
-      "createdAt": "2026-02-08T01:13:38.796Z"
-    }
-  ],
-  "resolved": [
+      "status": "denied",
+      "createdAt": "2026-02-08T01:13:38.796Z",
+      "instructions": "Already done by Brain — commit 6132101",
+      "resolvedAt": "2026-02-08T02:30:27.042Z"
+    },
+    {
+      "id": "1770511093597",
+      "title": "Add missing business-view div to index.html",
+      "description": "BusinessBot button exists in sidebar but no business-view div exists. Clicking BusinessBot breaks navigation. Need to add:\n\n<div id=\"business-view\" class=\"view\">\n    <h2>💼 BusinessBot - Business Intelligence</h2>\n    <p style=\"color:white;margin-bottom:25px;\">\n        Business analytics, market research, and financial planning.\n    </p>\n    <div id=\"business-content\"></div>\n</div>\n\nInsert after social-view (line ~603), before filesystem-view.\n\nBonus fix: Change \"BusinessBot Activity\" to \"SocialBot Activity\" in social-view activity heading (line ~599).",
+      "file": "pinky-dashboard/index.html",
+      "action": "edit",
+      "status": "denied",
+      "createdAt": "2026-02-08T00:38:13.597Z",
+      "instructions": "Already done by Brain — commit 6132101",
+      "resolvedAt": "2026-02-08T02:30:27.031Z"
+    },
     {
       "id": "1770505062351",
       "title": "P1.3-4: Add connection-monitor.js script to index.html",
