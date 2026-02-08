@@ -417,13 +417,38 @@ class TaskHistoryChart {
   }
 }
 
-// Auto-initialize when DOM is ready
+// Lazy initialization with Intersection Observer (performance optimization)
+// Only render when chart becomes visible in viewport
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    window.taskHistoryChart = new TaskHistoryChart();
-    window.taskHistoryChart.init();
+    initTaskHistoryChartLazy();
   });
 } else {
-  window.taskHistoryChart = new TaskHistoryChart();
-  window.taskHistoryChart.init();
+  initTaskHistoryChartLazy();
+}
+
+function initTaskHistoryChartLazy() {
+  const chartContainer = document.getElementById('task-history-chart-container');
+  if (!chartContainer) {
+    console.log('[TaskHistoryChart] Container not found, waiting...');
+    setTimeout(initTaskHistoryChartLazy, 500);
+    return;
+  }
+  
+  // Use Intersection Observer for lazy rendering (only when visible)
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !window.taskHistoryChart) {
+        console.log('[TaskHistoryChart] 🚀 Chart visible, initializing now...');
+        window.taskHistoryChart = new TaskHistoryChart();
+        window.taskHistoryChart.init();
+        observer.disconnect(); // Stop observing once initialized
+      }
+    });
+  }, {
+    rootMargin: '50px' // Start loading 50px before it enters viewport
+  });
+  
+  observer.observe(chartContainer);
+  console.log('[TaskHistoryChart] ⏸️ Deferred initialization (will load when visible)');
 }

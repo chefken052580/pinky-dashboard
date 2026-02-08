@@ -272,13 +272,38 @@ class TokenAllocationWidget {
   }
 }
 
-// Initialize when DOM is ready
+// Lazy initialization with Intersection Observer (performance optimization)
+// Only render when widget becomes visible in viewport
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    window.tokenAllocationWidget = new TokenAllocationWidget();
-    window.tokenAllocationWidget.initialize();
+    initTokenAllocationWidgetLazy();
   });
 } else {
-  window.tokenAllocationWidget = new TokenAllocationWidget();
-  window.tokenAllocationWidget.initialize();
+  initTokenAllocationWidgetLazy();
+}
+
+function initTokenAllocationWidgetLazy() {
+  const widgetContainer = document.getElementById('token-allocation-widget');
+  if (!widgetContainer) {
+    console.log('[TokenAllocationWidget] Container not found, waiting...');
+    setTimeout(initTokenAllocationWidgetLazy, 500);
+    return;
+  }
+  
+  // Use Intersection Observer for lazy rendering (only when visible)
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !window.tokenAllocationWidget) {
+        console.log('[TokenAllocationWidget] 🚀 Widget visible, initializing now...');
+        window.tokenAllocationWidget = new TokenAllocationWidget();
+        window.tokenAllocationWidget.initialize();
+        observer.disconnect(); // Stop observing once initialized
+      }
+    });
+  }, {
+    rootMargin: '50px' // Start loading 50px before it enters viewport
+  });
+  
+  observer.observe(widgetContainer);
+  console.log('[TokenAllocationWidget] ⏸️ Deferred initialization (will load when visible)');
 }
