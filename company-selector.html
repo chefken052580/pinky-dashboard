@@ -1,0 +1,163 @@
+<!-- Company Selector Component -->
+<div class="company-selector-wrapper">
+    <div class="company-selector-header">
+        <h3 class="company-selector-title">
+            <span class="company-icon">🏢</span>
+            Active Company
+        </h3>
+        <button class="create-company-btn" onclick="showCreateCompanyModal()">
+            <span class="plus-icon">+</span> New Company
+        </button>
+    </div>
+    
+    <div class="company-selector-dropdown">
+        <select id="company-selector" class="company-select" onchange="switchCompany(this.value)">
+            <option value="">Select a company...</option>
+            <!-- Companies loaded dynamically -->
+        </select>
+        <div class="dropdown-icon">▼</div>
+    </div>
+    
+    <div class="company-info-card" id="company-info" style="display:none;">
+        <div class="company-logo-wrapper">
+            <img id="company-logo" class="company-logo" src="" alt="Company Logo" onerror="this.style.display='none'">
+            <div id="company-logo-placeholder" class="company-logo-placeholder">🏢</div>
+        </div>
+        <div class="company-details">
+            <div class="company-name" id="company-name-display"></div>
+            <div class="company-platforms" id="company-platforms-display"></div>
+        </div>
+        <button class="edit-company-btn" onclick="editCurrentCompany()">
+            <span>⚙️</span> Edit
+        </button>
+    </div>
+</div>
+
+<!-- Create/Edit Company Modal -->
+<div id="company-modal" class="modal company-modal" style="display:none;">
+    <div class="modal-content company-modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title">Create New Company</h2>
+            <button class="modal-close" onclick="closeCompanyModal()">✕</button>
+        </div>
+        
+        <div class="modal-body">
+            <form id="company-form" onsubmit="return false;">
+                <input type="hidden" id="company-id" value="">
+                
+                <div class="form-group">
+                    <label for="company-name-input">
+                        Company Name <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="company-name-input" 
+                        placeholder="e.g., Acme Corp" 
+                        required
+                        minlength="2"
+                    >
+                    <small class="form-help">At least 2 characters</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        Platforms <span class="optional">(optional)</span>
+                    </label>
+                    <div class="platforms-checkboxes">
+                        <label class="platform-checkbox">
+                            <input type="checkbox" name="platforms" value="twitter">
+                            <span class="platform-label">
+                                <span class="platform-icon">𝕏</span> Twitter
+                            </span>
+                        </label>
+                        <label class="platform-checkbox">
+                            <input type="checkbox" name="platforms" value="facebook">
+                            <span class="platform-label">
+                                <span class="platform-icon">📘</span> Facebook
+                            </span>
+                        </label>
+                        <label class="platform-checkbox">
+                            <input type="checkbox" name="platforms" value="instagram">
+                            <span class="platform-label">
+                                <span class="platform-icon">📷</span> Instagram
+                            </span>
+                        </label>
+                        <label class="platform-checkbox">
+                            <input type="checkbox" name="platforms" value="linkedin">
+                            <span class="platform-label">
+                                <span class="platform-icon">💼</span> LinkedIn
+                            </span>
+                        </label>
+                        <label class="platform-checkbox">
+                            <input type="checkbox" name="platforms" value="tiktok">
+                            <span class="platform-label">
+                                <span class="platform-icon">🎵</span> TikTok
+                            </span>
+                        </label>
+                        <label class="platform-checkbox">
+                            <input type="checkbox" name="platforms" value="youtube">
+                            <span class="platform-label">
+                                <span class="platform-icon">📺</span> YouTube
+                            </span>
+                        </label>
+                        <label class="platform-checkbox">
+                            <input type="checkbox" name="platforms" value="pinterest">
+                            <span class="platform-label">
+                                <span class="platform-icon">📌</span> Pinterest
+                            </span>
+                        </label>
+                        <label class="platform-checkbox">
+                            <input type="checkbox" name="platforms" value="reddit">
+                            <span class="platform-label">
+                                <span class="platform-icon">🔶</span> Reddit
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="company-logo-url">
+                        Logo URL <span class="optional">(optional)</span>
+                    </label>
+                    <input 
+                        type="url" 
+                        id="company-logo-url" 
+                        placeholder="https://example.com/logo.png"
+                    >
+                    <small class="form-help">Direct link to company logo image</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        Brand Colors <span class="optional">(optional)</span>
+                    </label>
+                    <div class="color-inputs">
+                        <div class="color-input-group">
+                            <label for="brand-color-primary">Primary</label>
+                            <input 
+                                type="color" 
+                                id="brand-color-primary" 
+                                value="#667eea"
+                            >
+                        </div>
+                        <div class="color-input-group">
+                            <label for="brand-color-secondary">Secondary</label>
+                            <input 
+                                type="color" 
+                                id="brand-color-secondary" 
+                                value="#764ba2"
+                            >
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeCompanyModal()">Cancel</button>
+            <button class="btn-save" onclick="saveCompany()">
+                <span id="save-btn-text">Create Company</span>
+            </button>
+        </div>
+    </div>
+</div>
