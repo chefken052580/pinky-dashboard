@@ -1,0 +1,70 @@
+<!-- Update Check Section for Settings Page -->
+<div class="settings-section" id="update-check-section">
+    <h3>Software Updates</h3>
+    <div class="settings-field">
+        <label>Current Version</label>
+        <div id="current-version-display" style="color: #00d4ff; font-weight: bold;">1.0.0</div>
+    </div>
+    <div class="settings-field">
+        <label>Last Checked</label>
+        <div id="last-check-time" style="color: rgba(255,255,255,0.7);">Never</div>
+    </div>
+    <div class="settings-field">
+        <button class="btn btn-primary" id="manual-update-check-btn" onclick="checkForUpdatesManually()">
+            <span id="check-btn-text">Check for Updates</span>
+            <span id="check-btn-spinner" style="display:none;">⏳ Checking...</span>
+        </button>
+    </div>
+    <div id="update-status-message" style="margin-top: 15px; padding: 12px; border-radius: 6px; display: none;"></div>
+</div>
+<script>
+async function checkForUpdatesManually() {
+    const btn = document.getElementById('manual-update-check-btn');
+    const btnText = document.getElementById('check-btn-text');
+    const btnSpinner = document.getElementById('check-btn-spinner');
+    const statusMsg = document.getElementById('update-status-message');
+    btnText.style.display = 'none';
+    btnSpinner.style.display = 'inline';
+    btn.disabled = true;
+    statusMsg.style.display = 'none';
+    try {
+        let result;
+        if (window.electronAPI && window.electronAPI.checkForUpdates) {
+            result = await window.electronAPI.checkForUpdates();
+        } else {
+            const response = await fetch(`/api/updates/check?version=${versionTracker.getVersion()}&platform=${navigator.platform}`);
+            result = await response.json();
+        }
+        document.getElementById('last-check-time').textContent = new Date().toLocaleString();
+        if (result.updateAvailable) {
+            statusMsg.textContent = `✅ Update available: ${result.latestVersion}`;
+            statusMsg.style.background = 'rgba(0, 212, 255, 0.1)';
+            statusMsg.style.border = '1px solid #00d4ff';
+            statusMsg.style.display = 'block';
+            if (window.updateUI) {
+                window.updateUI.handleUpdateAvailable(result);
+            }
+        } else {
+            statusMsg.textContent = '✅ You are running the latest version';
+            statusMsg.style.background = 'rgba(0, 255, 127, 0.1)';
+            statusMsg.style.border = '1px solid #00ff7f';
+            statusMsg.style.display = 'block';
+        }
+        versionTracker.logEvent('checked', { manual: true });
+    } catch (error) {
+        statusMsg.textContent = `❌ Error: ${error.message}`;
+        statusMsg.style.background = 'rgba(245, 87, 108, 0.1)';
+        statusMsg.style.border = '1px solid #f5576c';
+        statusMsg.style.display = 'block';
+    } finally {
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+        btn.disabled = false;
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.versionTracker) {
+        document.getElementById('current-version-display').textContent = versionTracker.getVersion();
+    }
+});
+</script>
