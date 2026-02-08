@@ -8,355 +8,331 @@ let socialBotState = {
     posts: [],
     selectedCompany: null,
     selectedTab: 'companies',
-    loading: false
+    loading: false,
+    editingCompany: null
 };
 
-// Initialize SocialBot UI
+const AVAILABLE_PLATFORMS = [
+    { id: 'twitter', name: 'Twitter / X', icon: '\ud835\udd4f', color: '#000' },
+    { id: 'instagram', name: 'Instagram', icon: '\ud83d\udcf8', color: '#E4405F' },
+    { id: 'facebook', name: 'Facebook', icon: '\ud83d\udcd8', color: '#1877F2' },
+    { id: 'linkedin', name: 'LinkedIn', icon: '\ud83d\udcbc', color: '#0A66C2' },
+    { id: 'tiktok', name: 'TikTok', icon: '\ud83c\udfb5', color: '#000' },
+    { id: 'bluesky', name: 'Bluesky', icon: '\ud83e\udd8b', color: '#0085FF' },
+    { id: 'mastodon', name: 'Mastodon', icon: '\ud83d\udc18', color: '#6364FF' },
+    { id: 'discord', name: 'Discord', icon: '\ud83d\udcac', color: '#5865F2' },
+    { id: 'telegram', name: 'Telegram', icon: '\u2708\ufe0f', color: '#26A5E4' },
+    { id: 'wordpress', name: 'WordPress', icon: '\ud83d\udcdd', color: '#21759B' }
+];
+
 window.initSocialBotUI = function() {
     console.log('[SocialBot] Initializing UI...');
     loadCompanies();
-    switchSocialTab('companies');
+    injectSocialStyles();
 };
 
-// Fetch companies from API
 function loadCompanies() {
-    console.log('[SocialBot] Fetching companies...');
     socialBotState.loading = true;
-    
     fetch(SOCIALBOT_API + '/api/companies')
-        .then(function(response) {
-            if (!response.ok) throw new Error('HTTP ' + response.status);
-            return response.json();
-        })
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
         .then(function(data) {
-            console.log('[SocialBot] Companies loaded:', data);
             socialBotState.companies = data.companies || [];
             renderCompanySelector();
             renderCompaniesTab();
             socialBotState.loading = false;
         })
-        .catch(function(error) {
-            console.error('[SocialBot] Failed to load companies:', error);
-            showSocialError('Failed to load companies: ' + error.message);
+        .catch(function(e) {
+            console.error('[SocialBot] Load failed:', e);
             socialBotState.loading = false;
         });
 }
 
-// Fetch posts from API
 function loadPosts() {
-    console.log('[SocialBot] Fetching posts...');
-    socialBotState.loading = true;
-    
     fetch(SOCIALBOT_API + '/api/posts')
-        .then(function(response) {
-            if (!response.ok) throw new Error('HTTP ' + response.status);
-            return response.json();
-        })
-        .then(function(data) {
-            console.log('[SocialBot] Posts loaded:', data);
-            socialBotState.posts = data.posts || [];
-            renderHistoryTab();
-            socialBotState.loading = false;
-        })
-        .catch(function(error) {
-            console.error('[SocialBot] Failed to load posts:', error);
-            showSocialError('Failed to load posts: ' + error.message);
-            socialBotState.loading = false;
-        });
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function(data) { socialBotState.posts = data.posts || []; renderHistoryTab(); })
+        .catch(function(e) { console.error('[SocialBot] Posts failed:', e); });
 }
 
-// Switch between tabs
+function apiCreateCompany(d) {
+    return fetch(SOCIALBOT_API + '/api/companies', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) })
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+}
+function apiUpdateCompany(id, d) {
+    return fetch(SOCIALBOT_API + '/api/companies/' + id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) })
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+}
+function apiDeleteCompany(id) {
+    return fetch(SOCIALBOT_API + '/api/companies/' + id, { method: 'DELETE' })
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+}
+
 window.switchSocialTab = function(tabName) {
-    console.log('[SocialBot] Switching to tab:', tabName);
     socialBotState.selectedTab = tabName;
-    
-    // Update tab buttons
-    document.querySelectorAll('.social-tab-button').forEach(function(btn) {
-        btn.classList.remove('active');
-    });
-    var activeBtn = document.querySelector('[data-social-tab="' + tabName + '"]');
-    if (activeBtn) activeBtn.classList.add('active');
-    
-    // Update tab content
-    document.querySelectorAll('.social-tab-content').forEach(function(content) {
-        content.style.display = 'none';
-    });
-    var activeContent = document.getElementById('social-tab-' + tabName);
-    if (activeContent) activeContent.style.display = 'block';
-    
-    // Load data for specific tabs
-    if (tabName === 'history') {
-        loadPosts();
-    } else if (tabName === 'scheduled') {
-        loadPosts(); // Same endpoint, different filter
-    } else if (tabName === 'create') {
-        renderCreatePostTab();
-    } else if (tabName === 'companies') {
-        renderCompaniesTab();
-    } else if (tabName === 'wordpress') {
-        // Initialize WordPress Page Maker in the social tab
-        var wpContainer = document.getElementById('wordpress-page-maker-social');
-        if (wpContainer) {
-            if (!wpContainer.hasAttribute('data-wp-initialized')) {
-                // Create a simplified WordPress interface for the social tab
-                wpContainer.innerHTML = `
-                    <div class="wp-social-tab-content" style="padding:20px;background:rgba(255,255,255,0.05);border-radius:8px;">
-                        <p style="color:#aaa;margin-bottom:15px;">
-                            🌐 <strong>WordPress Page Maker</strong> is integrated with SocialBot for creating SEO-optimized content.
-                        </p>
-                        <div style="display:flex;gap:15px;flex-wrap:wrap;margin-top:20px;">
-                            <button class="btn-primary" onclick="showView('wordpress-view')" style="padding:10px 20px;">
-                                📝 Open Full WordPress Editor
-                            </button>
-                            <button class="btn-secondary" onclick="alert('Quick post feature coming soon!')" style="padding:10px 20px;">
-                                ⚡ Quick Post from Social
-                            </button>
-                        </div>
-                        <div style="margin-top:25px;padding:15px;background:rgba(0,0,0,0.2);border-radius:6px;border-left:3px solid #4CAF50;">
-                            <strong style="color:#4CAF50;">💡 Integration Features:</strong>
-                            <ul style="margin-top:10px;color:#ccc;line-height:1.8;">
-                                <li>✅ Create WordPress pages directly from social content</li>
-                                <li>✅ Auto-generate SEO metadata using Research Bot</li>
-                                <li>✅ Cross-post to social media platforms</li>
-                                <li>✅ Track engagement across WordPress and social</li>
-                            </ul>
-                        </div>
-                    </div>
-                `;
-                wpContainer.setAttribute('data-wp-initialized', 'true');
-            }
-        }
-    }
+    document.querySelectorAll('.social-tab-button').forEach(function(btn) { btn.classList.remove('active'); });
+    var ab = document.querySelector('[data-social-tab="' + tabName + '"]');
+    if (ab) ab.classList.add('active');
+    document.querySelectorAll('.social-tab-content').forEach(function(c) { c.style.display = 'none'; });
+    var ac = document.getElementById('social-tab-' + tabName);
+    if (ac) ac.style.display = 'block';
+    if (tabName === 'companies') renderCompaniesTab();
+    else if (tabName === 'create') renderCreatePostTab();
+    else if (tabName === 'history' || tabName === 'scheduled') loadPosts();
+    else if (tabName === 'wordpress') renderWordPressTab();
 };
 
-// Select a company
 window.selectSocialCompany = function(companyId) {
-    console.log('[SocialBot] Selected company:', companyId);
     socialBotState.selectedCompany = companyId;
-    
-    // Highlight selected button
-    document.querySelectorAll('.company-selector-btn').forEach(function(btn) {
-        btn.classList.remove('selected');
-    });
-    var selectedBtn = document.querySelector('[data-company-id="' + companyId + '"]');
-    if (selectedBtn) selectedBtn.classList.add('selected');
+    document.querySelectorAll('.company-selector-btn').forEach(function(btn) { btn.classList.remove('selected'); });
+    var sb = document.querySelector('[data-company-id="' + companyId + '"]');
+    if (sb) sb.classList.add('selected');
 };
 
-// Render company selector buttons
 function renderCompanySelector() {
-    var container = document.getElementById('social-company-selector');
-    if (!container) return;
-    
-    if (socialBotState.companies.length === 0) {
-        container.innerHTML = '<p style="color:#999;">No companies available</p>';
-        return;
-    }
-    
-    var html = '';
-    socialBotState.companies.forEach(function(company) {
-        html += '<button class="company-selector-btn" data-company-id="' + company.id + '" onclick="selectSocialCompany(\'' + company.id + '\')">';
-        html += '<span class="company-icon">' + company.icon + '</span>';
-        html += '<span class="company-name">' + company.name + '</span>';
-        html += '</button>';
+    var c = document.getElementById('social-company-selector');
+    if (!c) return;
+    if (socialBotState.companies.length === 0) { c.innerHTML = '<p style="color:#888;">No companies yet</p>'; return; }
+    var h = '';
+    socialBotState.companies.forEach(function(co) {
+        var sel = socialBotState.selectedCompany === co.id ? ' selected' : '';
+        h += '<button class="company-selector-btn' + sel + '" data-company-id="' + co.id + '" onclick="selectSocialCompany(\'' + co.id + '\')">';
+        h += '<span class="company-name">' + co.name + '</span>';
+        h += '<span style="font-size:11px;color:#888;">' + (co.platforms||[]).length + ' platforms</span>';
+        h += '</button>';
     });
-    
-    container.innerHTML = html;
+    c.innerHTML = h;
 }
 
-// Render companies tab
 function renderCompaniesTab() {
-    var container = document.getElementById('social-tab-companies');
-    if (!container) return;
-    
+    var c = document.getElementById('social-tab-companies');
+    if (!c) return;
+    var h = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">';
+    h += '<h3 style="margin:0;color:#fff;">Your Companies</h3>';
+    h += '<button class="btn-add-company" onclick="showAddCompanyModal()">+ Add Company</button></div>';
     if (socialBotState.companies.length === 0) {
-        container.innerHTML = '<p style="color:#999;padding:20px;">No companies available</p>';
-        return;
+        h += '<div class="empty-state"><div style="font-size:48px;margin-bottom:15px;">🏢</div>';
+        h += '<h3 style="color:#ccc;">No Companies Yet</h3><p>Add your first company to start managing social media.</p>';
+        h += '<button class="btn-add-company" onclick="showAddCompanyModal()" style="margin-top:15px;padding:15px 30px;font-size:16px;">+ Create Your First Company</button></div>';
+    } else {
+        h += '<div class="companies-grid">';
+        socialBotState.companies.forEach(function(co) {
+            var platforms = co.platforms || [];
+            var icons = platforms.map(function(p) { var pl = AVAILABLE_PLATFORMS.find(function(a){return a.id===p;}); return pl ? pl.icon : ''; }).join(' ');
+            var pc = (co.branding && co.branding.colors && co.branding.colors.primary) || '#667eea';
+            h += '<div class="company-card" style="border-top:3px solid '+pc+';">';
+            h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+            h += '<div style="font-size:18px;font-weight:bold;color:#fff;">'+co.name+'</div>';
+            h += '<div style="display:flex;gap:5px;">';
+            h += '<button class="btn-icon" onclick="showEditCompanyModal(\''+co.id+'\')" title="Edit">✏️</button>';
+            h += '<button class="btn-icon" onclick="confirmDeleteCompany(\''+co.id+'\',\''+co.name.replace(/'/g,"\\'")+'\')" title="Delete" style="color:#f44336;">🗑️</button>';
+            h += '</div></div>';
+            h += '<div style="font-size:20px;letter-spacing:4px;margin:10px 0;">'+(icons||'<span style="color:#666;">No platforms</span>')+'</div>';
+            h += '<div style="font-size:12px;color:#888;margin:8px 0;">Created: '+formatDate(co.createdAt)+'</div>';
+            h += '<div style="display:flex;gap:8px;margin-top:15px;">';
+            h += '<button class="btn-small-primary" onclick="selectSocialCompany(\''+co.id+'\');switchSocialTab(\'create\');">Create Post</button>';
+            h += '<button class="btn-small-secondary" onclick="showEditCompanyModal(\''+co.id+'\')">Settings</button>';
+            h += '</div></div>';
+        });
+        h += '</div>';
     }
-    
-    var html = '<div class="company-grid">';
-    socialBotState.companies.forEach(function(company) {
-        var platformCount = (company.platforms || []).length;
-        html += '<div class="company-card">';
-        html += '<div class="card-icon">' + company.icon + '</div>';
-        html += '<div class="card-name">' + company.name + '</div>';
-        html += '<div class="card-desc">' + company.description + '</div>';
-        html += '<div class="card-platforms">📱 ' + platformCount + ' platform' + (platformCount !== 1 ? 's' : '') + '</div>';
-        html += '</div>';
-    });
-    html += '</div>';
-    
-    container.innerHTML = html;
+    c.innerHTML = h;
 }
 
-// Render create post tab
+window.showAddCompanyModal = function() {
+    socialBotState.editingCompany = null;
+    showCompanyModal('Add New Company', { name:'', platforms:[], apiKeys:{}, branding:{colors:{primary:'#667eea',secondary:'#764ba2'}} });
+};
+window.showEditCompanyModal = function(id) {
+    var co = socialBotState.companies.find(function(c){return c.id===id;});
+    if (!co) return;
+    socialBotState.editingCompany = id;
+    showCompanyModal('Edit: ' + co.name, co);
+};
+
+function showCompanyModal(title, co) {
+    var ex = document.getElementById('company-modal-overlay');
+    if (ex) ex.remove();
+    var pcb = AVAILABLE_PLATFORMS.map(function(p) {
+        var ch = (co.platforms||[]).includes(p.id) ? ' checked' : '';
+        return '<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(255,255,255,0.05);border-radius:6px;cursor:pointer;"><input type="checkbox" value="'+p.id+'"'+ch+'><span style="color:#ccc;font-size:13px;">'+p.icon+' '+p.name+'</span></label>';
+    }).join('');
+    var akf = '';
+    if (co.platforms && co.platforms.length > 0) {
+        akf = '<div id="modal-api-keys-section"><h4 style="color:#fff;margin:15px 0 10px;">API Keys</h4>';
+        co.platforms.forEach(function(pId) {
+            var pl = AVAILABLE_PLATFORMS.find(function(a){return a.id===pId;});
+            var keys = (co.apiKeys && co.apiKeys[pId]) || {};
+            akf += '<div style="margin:10px 0;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;">';
+            akf += '<label style="color:#aaa;font-size:12px;font-weight:bold;display:block;margin-bottom:6px;">'+(pl?pl.icon+' '+pl.name:pId)+'</label>';
+            akf += '<input type="text" class="form-input api-key-input" data-platform="'+pId+'" data-field="key" placeholder="API Key / Token" value="'+(keys.key||keys.token||'')+'" style="margin-top:4px;">';
+            if (pId==='twitter') akf += '<input type="text" class="form-input api-key-input" data-platform="twitter" data-field="secret" placeholder="API Secret" value="'+(keys.secret||'')+'" style="margin-top:4px;">';
+            if (pId==='mastodon') akf += '<input type="text" class="form-input api-key-input" data-platform="mastodon" data-field="instance" placeholder="Instance URL" value="'+(keys.instance||'')+'" style="margin-top:4px;">';
+            if (pId==='telegram') akf += '<input type="text" class="form-input api-key-input" data-platform="telegram" data-field="chatId" placeholder="Chat ID" value="'+(keys.chatId||'')+'" style="margin-top:4px;">';
+            if (pId==='discord') akf += '<input type="text" class="form-input api-key-input" data-platform="discord" data-field="webhook" placeholder="Webhook URL" value="'+(keys.webhook||'')+'" style="margin-top:4px;">';
+            if (pId==='bluesky') akf += '<input type="text" class="form-input api-key-input" data-platform="bluesky" data-field="handle" placeholder="Handle" value="'+(keys.handle||'')+'" style="margin-top:4px;">';
+            if (pId==='wordpress') {
+                akf += '<input type="text" class="form-input api-key-input" data-platform="wordpress" data-field="url" placeholder="Site URL" value="'+(keys.url||'')+'" style="margin-top:4px;">';
+                akf += '<input type="text" class="form-input api-key-input" data-platform="wordpress" data-field="username" placeholder="Username" value="'+(keys.username||'')+'" style="margin-top:4px;">';
+                akf += '<input type="password" class="form-input api-key-input" data-platform="wordpress" data-field="password" placeholder="App Password" value="'+(keys.password||'')+'" style="margin-top:4px;">';
+            }
+            akf += '</div>';
+        });
+        akf += '</div>';
+    }
+    var pc = (co.branding&&co.branding.colors&&co.branding.colors.primary)||'#667eea';
+    var sc = (co.branding&&co.branding.colors&&co.branding.colors.secondary)||'#764ba2';
+    var ov = document.createElement('div');
+    ov.id = 'company-modal-overlay';
+    ov.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:99998;display:flex;align-items:center;justify-content:center;';
+    ov.innerHTML = '<div style="background:#1a2847;border-radius:16px;width:90%;max-width:600px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5);">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;padding:20px 25px;border-bottom:1px solid rgba(255,255,255,0.1);"><h3 style="margin:0;color:#fff;">'+title+'</h3><button onclick="closeCompanyModal()" style="background:none;border:none;color:#888;font-size:20px;cursor:pointer;">X</button></div>' +
+        '<div style="padding:25px;">' +
+            '<div style="margin-bottom:18px;"><label style="display:block;color:#aaa;margin-bottom:6px;font-size:13px;font-weight:bold;">Company Name *</label><input type="text" id="modal-company-name" class="form-input" placeholder="e.g. Acme Corp" value="'+(co.name||'')+'"></div>' +
+            '<div style="margin-bottom:18px;"><label style="display:block;color:#aaa;margin-bottom:6px;font-size:13px;font-weight:bold;">Platforms</label><div id="modal-platforms-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;">'+pcb+'</div></div>' +
+            '<div id="modal-api-keys-container">'+akf+'</div>' +
+            '<div style="margin-bottom:18px;"><label style="display:block;color:#aaa;margin-bottom:6px;font-size:13px;font-weight:bold;">Brand Colors</label><div style="display:flex;gap:20px;"><label style="color:#aaa;display:flex;align-items:center;gap:8px;">Primary: <input type="color" id="modal-color-primary" value="'+pc+'"></label><label style="color:#aaa;display:flex;align-items:center;gap:8px;">Secondary: <input type="color" id="modal-color-secondary" value="'+sc+'"></label></div></div>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:flex-end;gap:10px;padding:15px 25px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="closeCompanyModal()" style="background:rgba(255,255,255,0.1);color:#ccc;border:1px solid rgba(255,255,255,0.2);padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;">Cancel</button><button onclick="saveCompany()" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;">Save Company</button></div>' +
+    '</div>';
+    document.body.appendChild(ov);
+    document.querySelectorAll('#modal-platforms-grid input[type=checkbox]').forEach(function(cb) { cb.addEventListener('change', updateApiKeyFields); });
+}
+
+function updateApiKeyFields() {
+    var sel = [];
+    document.querySelectorAll('#modal-platforms-grid input:checked').forEach(function(cb) { sel.push(cb.value); });
+    var c = document.getElementById('modal-api-keys-container');
+    if (!c) return;
+    if (sel.length === 0) { c.innerHTML = ''; return; }
+    var h = '<div><h4 style="color:#fff;margin:15px 0 10px;">API Keys</h4>';
+    sel.forEach(function(pId) {
+        var pl = AVAILABLE_PLATFORMS.find(function(a){return a.id===pId;});
+        h += '<div style="margin:10px 0;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;">';
+        h += '<label style="color:#aaa;font-size:12px;font-weight:bold;display:block;margin-bottom:6px;">'+(pl?pl.icon+' '+pl.name:pId)+'</label>';
+        h += '<input type="text" class="form-input api-key-input" data-platform="'+pId+'" data-field="key" placeholder="API Key / Token" style="margin-top:4px;">';
+        if (pId==='twitter') h += '<input type="text" class="form-input api-key-input" data-platform="twitter" data-field="secret" placeholder="API Secret" style="margin-top:4px;">';
+        if (pId==='mastodon') h += '<input type="text" class="form-input api-key-input" data-platform="mastodon" data-field="instance" placeholder="Instance URL" style="margin-top:4px;">';
+        if (pId==='telegram') h += '<input type="text" class="form-input api-key-input" data-platform="telegram" data-field="chatId" placeholder="Chat ID" style="margin-top:4px;">';
+        if (pId==='discord') h += '<input type="text" class="form-input api-key-input" data-platform="discord" data-field="webhook" placeholder="Webhook URL" style="margin-top:4px;">';
+        if (pId==='bluesky') h += '<input type="text" class="form-input api-key-input" data-platform="bluesky" data-field="handle" placeholder="Handle" style="margin-top:4px;">';
+        if (pId==='wordpress') {
+            h += '<input type="text" class="form-input api-key-input" data-platform="wordpress" data-field="url" placeholder="Site URL" style="margin-top:4px;">';
+            h += '<input type="text" class="form-input api-key-input" data-platform="wordpress" data-field="username" placeholder="Username" style="margin-top:4px;">';
+            h += '<input type="password" class="form-input api-key-input" data-platform="wordpress" data-field="password" placeholder="App Password" style="margin-top:4px;">';
+        }
+        h += '</div>';
+    });
+    h += '</div>';
+    c.innerHTML = h;
+}
+
+window.closeCompanyModal = function() {
+    var o = document.getElementById('company-modal-overlay');
+    if (o) o.remove();
+    socialBotState.editingCompany = null;
+};
+
+window.saveCompany = function() {
+    var name = document.getElementById('modal-company-name').value.trim();
+    if (!name) { alert('Company name is required'); return; }
+    var platforms = [];
+    document.querySelectorAll('#modal-platforms-grid input:checked').forEach(function(cb) { platforms.push(cb.value); });
+    var apiKeys = {};
+    document.querySelectorAll('.api-key-input').forEach(function(inp) {
+        var p = inp.getAttribute('data-platform'), f = inp.getAttribute('data-field');
+        if (inp.value.trim()) { if (!apiKeys[p]) apiKeys[p] = {}; apiKeys[p][f] = inp.value.trim(); }
+    });
+    var data = { name: name, platforms: platforms, apiKeys: apiKeys, branding: { colors: { primary: document.getElementById('modal-color-primary').value, secondary: document.getElementById('modal-color-secondary').value } } };
+    var promise = socialBotState.editingCompany ? apiUpdateCompany(socialBotState.editingCompany, data) : apiCreateCompany(data);
+    promise.then(function() { closeCompanyModal(); loadCompanies(); showSocialSuccess(socialBotState.editingCompany ? 'Company updated!' : 'Company created!'); })
+        .catch(function(e) { alert('Save failed: ' + e.message); });
+};
+
+window.confirmDeleteCompany = function(id, name) {
+    if (!confirm('Delete "' + name + '"? This cannot be undone.')) return;
+    apiDeleteCompany(id).then(function() { if (socialBotState.selectedCompany===id) socialBotState.selectedCompany=null; loadCompanies(); showSocialSuccess('Company deleted'); })
+        .catch(function(e) { alert('Delete failed: ' + e.message); });
+};
+
 function renderCreatePostTab() {
-    var container = document.getElementById('social-tab-create');
-    if (!container) return;
-    
-    var html = '<div class="create-post-form">';
-    html += '<div class="form-group">';
-    html += '<label>Select Company</label>';
-    html += '<select id="create-post-company" class="form-select">';
-    html += '<option value="">-- Choose a company --</option>';
-    
-    socialBotState.companies.forEach(function(company) {
-        html += '<option value="' + company.id + '">' + company.name + '</option>';
-    });
-    
-    html += '</select>';
-    html += '</div>';
-    
-    html += '<div class="form-group">';
-    html += '<label>Select Platform</label>';
-    html += '<select id="create-post-platform" class="form-select">';
-    html += '<option value="">-- Choose a platform --</option>';
-    html += '<option value="facebook">Facebook</option>';
-    html += '<option value="instagram">Instagram</option>';
-    html += '<option value="x">X (Twitter)</option>';
-    html += '<option value="linkedin">LinkedIn</option>';
-    html += '</select>';
-    html += '</div>';
-    
-    html += '<div class="form-group">';
-    html += '<label>Post Content</label>';
-    html += '<textarea id="create-post-content" class="form-textarea" placeholder="Write your post here..." rows="6"></textarea>';
-    html += '</div>';
-    
-    html += '<div class="form-group">';
-    html += '<label>Schedule Time</label>';
-    html += '<input type="datetime-local" id="create-post-schedule" class="form-input">';
-    html += '</div>';
-    
-    html += '<div class="form-actions">';
-    html += '<button class="btn-primary" onclick="submitSocialPost()">Post Now</button>';
-    html += '<button class="btn-secondary" onclick="submitSocialPost(true)">Schedule Post</button>';
-    html += '</div>';
-    html += '</div>';
-    
-    container.innerHTML = html;
+    var c = document.getElementById('social-tab-create');
+    if (!c) return;
+    var selCo = socialBotState.companies.find(function(co){return co.id===socialBotState.selectedCompany;});
+    var plats = selCo ? (selCo.platforms||[]) : [];
+    var h = '<div class="create-post-form">';
+    h += '<div style="margin-bottom:18px;"><label style="display:block;color:#aaa;margin-bottom:6px;font-weight:bold;">Select Company</label><select id="create-post-company" class="form-select" onchange="onPostCompanyChange()"><option value="">-- Choose --</option>';
+    socialBotState.companies.forEach(function(co) { h += '<option value="'+co.id+'"'+(co.id===socialBotState.selectedCompany?' selected':'')+'>'+co.name+'</option>'; });
+    h += '</select></div>';
+    h += '<div style="margin-bottom:18px;"><label style="display:block;color:#aaa;margin-bottom:6px;font-weight:bold;">Platforms</label><div id="post-platform-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;">';
+    if (plats.length > 0) { plats.forEach(function(pId) { var pl = AVAILABLE_PLATFORMS.find(function(a){return a.id===pId;}); if(pl) h += '<label style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(255,255,255,0.05);border-radius:6px;cursor:pointer;color:#ccc;"><input type="checkbox" name="post-platform" value="'+pId+'">'+pl.icon+' '+pl.name+'</label>'; }); }
+    else h += '<p style="color:#888;">Select a company first</p>';
+    h += '</div></div>';
+    h += '<div style="margin-bottom:18px;"><label style="display:block;color:#aaa;margin-bottom:6px;font-weight:bold;">Content</label><textarea id="create-post-content" class="form-textarea" placeholder="Write your post..." rows="6" style="width:100%;padding:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;resize:vertical;"></textarea></div>';
+    h += '<div style="margin-bottom:18px;"><label style="display:block;color:#aaa;margin-bottom:6px;font-weight:bold;">Schedule (optional)</label><input type="datetime-local" id="create-post-schedule" class="form-input"></div>';
+    h += '<div style="display:flex;gap:10px;"><button onclick="submitSocialPost(false)" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;">Post Now</button><button onclick="submitSocialPost(true)" style="background:rgba(255,255,255,0.1);color:#ccc;border:1px solid rgba(255,255,255,0.2);padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;">Schedule</button></div>';
+    h += '</div>';
+    c.innerHTML = h;
 }
 
-// Render history tab
-function renderHistoryTab() {
-    var container = document.getElementById('social-tab-history');
-    if (!container) return;
-    
-    if (socialBotState.posts.length === 0) {
-        container.innerHTML = '<p style="color:#999;padding:20px;">No posts yet</p>';
-        return;
-    }
-    
-    var html = '<div class="posts-list">';
-    socialBotState.posts.forEach(function(post) {
-        html += '<div class="post-item">';
-        html += '<div class="post-header">';
-        html += '<span class="post-company">' + (post.company || 'Unknown') + '</span>';
-        html += '<span class="post-platform">' + (post.platform || 'N/A') + '</span>';
-        html += '<span class="post-date">' + formatDate(post.createdAt) + '</span>';
-        html += '</div>';
-        html += '<div class="post-content">' + post.content + '</div>';
-        html += '</div>';
-    });
-    html += '</div>';
-    
-    container.innerHTML = html;
-}
+window.onPostCompanyChange = function() {
+    var cid = document.getElementById('create-post-company').value;
+    socialBotState.selectedCompany = cid;
+    var co = socialBotState.companies.find(function(c){return c.id===cid;});
+    var plats = co ? (co.platforms||[]) : [];
+    var c = document.getElementById('post-platform-checkboxes');
+    if (!c) return;
+    if (plats.length===0) { c.innerHTML='<p style="color:#888;">No platforms for this company</p>'; return; }
+    var h = '';
+    plats.forEach(function(pId) { var pl=AVAILABLE_PLATFORMS.find(function(a){return a.id===pId;}); if(pl) h+='<label style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(255,255,255,0.05);border-radius:6px;cursor:pointer;color:#ccc;"><input type="checkbox" name="post-platform" value="'+pId+'">'+pl.icon+' '+pl.name+'</label>'; });
+    c.innerHTML = h;
+    renderCompanySelector();
+};
 
-// Render scheduled posts tab
-function renderScheduledTab() {
-    var container = document.getElementById('social-tab-scheduled');
-    if (!container) return;
-    
-    var scheduled = (socialBotState.posts || []).filter(function(p) { return p.scheduled; });
-    
-    if (scheduled.length === 0) {
-        container.innerHTML = '<p style="color:#999;padding:20px;">No scheduled posts</p>';
-        return;
-    }
-    
-    var html = '<div class="posts-list">';
-    scheduled.forEach(function(post) {
-        html += '<div class="post-item scheduled">';
-        html += '<div class="post-header">';
-        html += '<span class="post-company">' + post.company + '</span>';
-        html += '<span class="post-platform">' + post.platform + '</span>';
-        html += '<span class="post-date">📅 ' + formatDate(post.scheduledFor) + '</span>';
-        html += '</div>';
-        html += '<div class="post-content">' + post.content + '</div>';
-        html += '</div>';
-    });
-    html += '</div>';
-    
-    container.innerHTML = html;
-}
-
-// Submit a post
 window.submitSocialPost = function(isScheduled) {
     var company = document.getElementById('create-post-company').value;
-    var platform = document.getElementById('create-post-platform').value;
     var content = document.getElementById('create-post-content').value;
     var schedule = document.getElementById('create-post-schedule').value;
-    
-    if (!company || !platform || !content.trim()) {
-        alert('Please fill in all required fields');
-        return;
-    }
-    
-    var payload = {
-        company: company,
-        platform: platform,
-        content: content,
-        scheduled: isScheduled || false,
-        scheduledFor: schedule || null
-    };
-    
-    console.log('[SocialBot] Submitting post:', payload);
-    
-    fetch(SOCIALBOT_API + '/api/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-    .then(function(response) {
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        return response.json();
-    })
-    .then(function(data) {
-        console.log('[SocialBot] Post submitted:', data);
-        alert('Post ' + (isScheduled ? 'scheduled' : 'posted') + ' successfully!');
-        document.getElementById('create-post-content').value = '';
-        document.getElementById('create-post-company').value = '';
-        document.getElementById('create-post-platform').value = '';
-        document.getElementById('create-post-schedule').value = '';
-        loadPosts();
-    })
-    .catch(function(error) {
-        console.error('[SocialBot] Failed to submit post:', error);
-        showSocialError('Failed to submit post: ' + error.message);
-    });
+    var platforms = [];
+    document.querySelectorAll('input[name="post-platform"]:checked').forEach(function(cb) { platforms.push(cb.value); });
+    if (!company || platforms.length===0 || !content.trim()) { alert('Select company, platform(s), and write content'); return; }
+    fetch(SOCIALBOT_API + '/api/posts', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({company:company,platforms:platforms,content:content,scheduled:isScheduled||false,scheduledFor:schedule||null}) })
+        .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+        .then(function(){showSocialSuccess('Post '+(isScheduled?'scheduled':'published')+'!');document.getElementById('create-post-content').value='';})
+        .catch(function(e){alert('Failed: '+e.message);});
 };
 
-// Helper functions
-function formatDate(dateStr) {
-    if (!dateStr) return 'N/A';
-    var date = new Date(dateStr);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+function renderHistoryTab() {
+    var c = document.getElementById('social-tab-history');
+    if (!c) return;
+    var posts = socialBotState.posts.filter(function(p){return !p.scheduled;});
+    if (posts.length===0) { c.innerHTML='<div class="empty-state" style="text-align:center;padding:40px;color:#888;"><div style="font-size:48px;">📊</div><h3 style="color:#ccc;">No Post History</h3></div>'; return; }
+    var h = '<div style="display:flex;flex-direction:column;gap:12px;">';
+    posts.forEach(function(p) {
+        var cn = socialBotState.companies.find(function(co){return co.id===p.company;});
+        h += '<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:15px;">';
+        h += '<div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;">';
+        h += '<span style="background:#667eea;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;">'+(cn?cn.name:'Unknown')+'</span>';
+        h += '<span style="color:#666;font-size:12px;margin-left:auto;">'+formatDate(p.createdAt)+'</span></div>';
+        h += '<div style="color:#ccc;font-size:14px;">'+(p.content||'').substring(0,200)+'</div></div>';
+    });
+    h += '</div>';
+    c.innerHTML = h;
 }
 
-function showSocialError(message) {
-    var notif = document.getElementById('notifications');
-    if (notif) {
-        var div = document.createElement('div');
-        div.className = 'notification error';
-        div.textContent = message;
-        notif.appendChild(div);
-        setTimeout(function() { div.remove(); }, 5000);
-    }
+function renderWordPressTab() {
+    var c = document.getElementById('social-tab-wordpress');
+    if (!c) return;
+    c.innerHTML = '<div style="padding:20px;background:rgba(255,255,255,0.05);border-radius:8px;"><p style="color:#aaa;">WordPress Page Maker is integrated with SocialBot.</p><button onclick="switchView(\'wordpress-view\')" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;margin-top:10px;">Open WordPress Editor</button></div>';
 }
 
-// Auto-initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSocialBotUI);
-} else {
-    initSocialBotUI();
+function formatDate(d) { if(!d)return'N/A'; var dt=new Date(d); return dt.toLocaleDateString()+' '+dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+function showSocialSuccess(m) { var t=document.createElement('div'); t.style.cssText='position:fixed;top:20px;right:20px;background:#4CAF50;color:#fff;padding:12px 24px;border-radius:8px;z-index:99999;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,0.3);'; t.textContent=m; document.body.appendChild(t); setTimeout(function(){t.remove();},3000); }
+function showSocialError(m) { var t=document.createElement('div'); t.style.cssText='position:fixed;top:20px;right:20px;background:#f44336;color:#fff;padding:12px 24px;border-radius:8px;z-index:99999;font-weight:bold;'; t.textContent=m; document.body.appendChild(t); setTimeout(function(){t.remove();},5000); }
+
+function injectSocialStyles() {
+    if (document.getElementById('socialbot-crud-styles')) return;
+    var s = document.createElement('style');
+    s.id = 'socialbot-crud-styles';
+    s.textContent = '.btn-add-company{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:14px;transition:transform 0.2s;}.btn-add-company:hover{transform:scale(1.05);}.companies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}.company-card{background:rgba(255,255,255,0.06);border-radius:12px;padding:20px;transition:transform 0.2s,box-shadow 0.2s;}.company-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,0.3);}.btn-icon{background:none;border:none;cursor:pointer;font-size:16px;padding:4px 8px;border-radius:4px;}.btn-icon:hover{background:rgba(255,255,255,0.1);}.btn-small-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:bold;}.btn-small-secondary{background:rgba(255,255,255,0.08);color:#aaa;border:1px solid rgba(255,255,255,0.15);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;}.empty-state{text-align:center;padding:60px 20px;color:#888;}.form-input,.form-select{width:100%;padding:10px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;}.form-input:focus,.form-select:focus{outline:none;border-color:#667eea;}.company-selector-btn{display:inline-flex;flex-direction:column;align-items:center;gap:4px;padding:8px 16px;background:rgba(255,255,255,0.06);border:2px solid transparent;border-radius:8px;color:#ccc;cursor:pointer;transition:all 0.2s;margin:4px;}.company-selector-btn:hover{background:rgba(255,255,255,0.1);}.company-selector-btn.selected{border-color:#667eea;background:rgba(102,126,234,0.15);color:#fff;}';
+    document.head.appendChild(s);
 }

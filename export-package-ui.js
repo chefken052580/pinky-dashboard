@@ -75,9 +75,9 @@ class ExportPackageUI {
         `;
 
         // Try to add to settings panel if it exists, otherwise add to main container
-        const settingsPanel = document.querySelector('.settings-container');
-        if (settingsPanel) {
-            settingsPanel.appendChild(container);
+        const exportView = document.getElementById('export-package-container') || document.querySelector('.settings-container');
+        if (exportView) {
+            exportView.appendChild(container);
         } else {
             const mainContainer = document.querySelector('.dashboard-main') || 
                                 document.querySelector('body');

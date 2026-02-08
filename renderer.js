@@ -166,6 +166,9 @@ function switchView(viewId) {
         }
         
         // Initialize Settings page when switching to its view
+        if (viewId === "social-media-view" && window.initSocialBotUI) {
+            window.initSocialBotUI();
+        }
         if (viewId === "settings-view" && window.initSettingsPage) {
             window.initSettingsPage();
         }
