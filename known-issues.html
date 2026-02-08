@@ -1,0 +1,35 @@
+<!-- Known Issues Page -->
+<div class="known-issues-container">
+  <div class="known-header">
+    <h2>📌 Known Issues</h2>
+    <p class="subtitle">Most voted bugs and commonly reported issues</p>
+  </div>
+
+  <div class="issues-filters">
+    <select id="issues-category">
+      <option value="all">All Categories</option>
+      <option value="dashboard">Dashboard</option>
+      <option value="backend">Backend</option>
+      <option value="bot">Bot</option>
+      <option value="ui">UI/UX</option>
+      <option value="other">Other</option>
+    </select>
+    
+    <select id="issues-severity">
+      <option value="all">All Severity</option>
+      <option value="critical">Critical</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+    
+    <button class="btn-secondary" onclick="KnownIssues.applyFilters()">Apply Filters</button>
+  </div>
+
+  <div class="issues-list" id="issues-list">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading known issues...</p>
+    </div>
+  </div>
+</div>
