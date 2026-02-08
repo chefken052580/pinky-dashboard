@@ -259,7 +259,7 @@ class FeatureGating {
     return this.getCurrentTier() === 'free';
   }
   
-  isFeatureAllowed(featureId) {
+  isFeatureAllowed(featureId) { return true; // FORCED PRO
     const tier = this.getCurrentTier();
     const allowedFeatures = [
       ...this.tiers[tier].bots,

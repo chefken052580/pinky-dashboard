@@ -28,3 +28,14 @@ var _st = window.setInterval(function() {
   if (o) { o.style.display = 'none'; clearInterval(_st); }
   if (_sc > 20) clearInterval(_st);
 }, 500);
+
+// Nuclear: remove any locked overlays that snuck in
+setInterval(function() {
+  document.querySelectorAll('.locked-overlay').forEach(function(el) { el.remove(); });
+}, 2000);
+// Also kill on load
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    document.querySelectorAll('.locked-overlay').forEach(function(el) { el.remove(); });
+  }, 1000);
+});
