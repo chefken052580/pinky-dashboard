@@ -1,0 +1,106 @@
+<!-- Public Bug Tracker View -->
+<div class="bug-tracker-container">
+  <div class="tracker-header">
+    <h2>🐛 PinkyBot Bug Tracker</h2>
+    <p class="subtitle">Public bug reports and known issues</p>
+    
+    <div class="tracker-stats">
+      <div class="stat-item">
+        <span class="stat-number" id="total-bugs">0</span>
+        <span class="stat-label">Total Bugs</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="open-bugs">0</span>
+        <span class="stat-label">Open</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="confirmed-bugs">0</span>
+        <span class="stat-label">Confirmed</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="fixed-bugs">0</span>
+        <span class="stat-label">Fixed</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-filters">
+    <div class="search-bar">
+      <input type="text" id="bug-search" placeholder="🔍 Search bugs by title or description..." />
+      <button class="search-btn" onclick="BugTracker.search()">Search</button>
+    </div>
+    
+    <div class="filter-row">
+      <select id="filter-status">
+        <option value="all">All Status</option>
+        <option value="new">New</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="in-progress">In Progress</option>
+        <option value="fixed">Fixed</option>
+        <option value="closed">Closed</option>
+      </select>
+      
+      <select id="filter-severity">
+        <option value="all">All Severity</option>
+        <option value="critical">Critical</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+      
+      <select id="filter-category">
+        <option value="all">All Categories</option>
+        <option value="dashboard">Dashboard</option>
+        <option value="backend">Backend</option>
+        <option value="bot">Bot</option>
+        <option value="ui">UI/UX</option>
+        <option value="other">Other</option>
+      </select>
+      
+      <select id="filter-sort">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="most-voted">Most Voted</option>
+        <option value="severity">By Severity</option>
+      </select>
+      
+      <button class="btn-secondary" onclick="BugTracker.applyFilters()">Apply Filters</button>
+      <button class="btn-secondary" onclick="BugTracker.resetFilters()">Reset</button>
+    </div>
+  </div>
+
+  <div class="bugs-grid" id="bugs-grid">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading bug reports...</p>
+    </div>
+  </div>
+
+  <div class="pagination" id="pagination">
+    <!-- Dynamically generated -->
+  </div>
+</div>
+
+<!-- Bug Detail Modal -->
+<div id="bug-detail-modal" class="bug-detail-modal" style="display: none;">
+  <div class="modal-overlay" onclick="BugTracker.closeModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modal-bug-title">Bug Title</h3>
+      <button class="close-btn" onclick="BugTracker.closeModal()">&times;</button>
+    </div>
+    
+    <div class="modal-body" id="modal-bug-body">
+      <!-- Dynamically populated -->
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn-primary" id="vote-btn" onclick="BugTracker.voteBug()">
+        👍 Upvote (<span id="vote-count">0</span>)
+      </button>
+      <button class="btn-secondary" onclick="BugTracker.copyBugLink()">
+        🔗 Copy Link
+      </button>
+    </div>
+  </div>
+</div>
