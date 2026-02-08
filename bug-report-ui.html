@@ -1,0 +1,150 @@
+<!-- Bug Report Modal UI Component -->
+<div id="bug-report-modal" class="bug-modal" style="display: none;">
+    <div class="bug-modal-overlay" onclick="BugReporter.close()"></div>
+    <div class="bug-modal-content">
+        <!-- Header -->
+        <div class="bug-modal-header">
+            <h2>🐛 Report a Bug</h2>
+            <button class="bug-close-btn" onclick="BugReporter.close()">✕</button>
+        </div>
+        
+        <!-- Form -->
+        <form id="bug-report-form" class="bug-form">
+            <!-- Title -->
+            <div class="bug-form-group">
+                <label for="bug-title">Bug Title *</label>
+                <input 
+                    type="text" 
+                    id="bug-title" 
+                    name="title" 
+                    placeholder="Brief description of the issue"
+                    required
+                    maxlength="100"
+                />
+            </div>
+            
+            <!-- Error Message -->
+            <div class="bug-form-group">
+                <label for="bug-error">Error Message *</label>
+                <textarea 
+                    id="bug-error" 
+                    name="errorMessage" 
+                    placeholder="Copy and paste any error messages here"
+                    required
+                    rows="3"
+                ></textarea>
+            </div>
+            
+            <!-- Stack Trace -->
+            <div class="bug-form-group">
+                <label for="bug-stack">Stack Trace (optional)</label>
+                <textarea 
+                    id="bug-stack" 
+                    name="stackTrace" 
+                    placeholder="Paste stack trace if available"
+                    rows="4"
+                ></textarea>
+            </div>
+            
+            <!-- Description -->
+            <div class="bug-form-group">
+                <label for="bug-description">Description (optional)</label>
+                <textarea 
+                    id="bug-description" 
+                    name="description" 
+                    placeholder="What were you doing when this happened?"
+                    rows="3"
+                ></textarea>
+            </div>
+            
+            <!-- Steps to Reproduce -->
+            <div class="bug-form-group">
+                <label for="bug-steps">Steps to Reproduce (optional)</label>
+                <textarea 
+                    id="bug-steps" 
+                    name="steps" 
+                    placeholder="1. Go to...\n2. Click on...\n3. See error..."
+                    rows="4"
+                ></textarea>
+            </div>
+            
+            <!-- Screenshot Upload -->
+            <div class="bug-form-group">
+                <label>Screenshot (optional)</label>
+                <div class="bug-file-upload">
+                    <input 
+                        type="file" 
+                        id="bug-screenshot" 
+                        accept="image/png,image/jpeg,image/jpg"
+                        style="display: none;"
+                        onchange="BugReporter.handleScreenshot(event)"
+                    />
+                    <button 
+                        type="button" 
+                        class="bug-upload-btn"
+                        onclick="document.getElementById('bug-screenshot').click()"
+                    >
+                        📷 Upload Screenshot
+                    </button>
+                    <div id="screenshot-preview" class="bug-preview"></div>
+                </div>
+            </div>
+            
+            <!-- Logs Upload -->
+            <div class="bug-form-group">
+                <label>Console Logs (optional)</label>
+                <div class="bug-file-upload">
+                    <input 
+                        type="file" 
+                        id="bug-logs" 
+                        accept=".txt,.log"
+                        style="display: none;"
+                        onchange="BugReporter.handleLogs(event)"
+                    />
+                    <button 
+                        type="button" 
+                        class="bug-upload-btn"
+                        onclick="document.getElementById('bug-logs').click()"
+                    >
+                        📄 Upload Logs
+                    </button>
+                    <div id="logs-preview" class="bug-preview"></div>
+                </div>
+            </div>
+            
+            <!-- Auto-captured Info -->
+            <div class="bug-info-section">
+                <p class="bug-info-text">
+                    ℹ️ We'll automatically include: Current page URL, Browser info, Timestamp
+                </p>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="bug-form-actions">
+                <button type="button" class="bug-cancel-btn" onclick="BugReporter.close()">
+                    Cancel
+                </button>
+                <button type="submit" class="bug-submit-btn" id="bug-submit-btn">
+                    🚀 Submit Bug Report
+                </button>
+            </div>
+        </form>
+        
+        <!-- Success Message -->
+        <div id="bug-success" class="bug-success" style="display: none;">
+            <div class="bug-success-icon">✅</div>
+            <h3>Bug Report Submitted!</h3>
+            <p id="bug-success-message">Thank you for helping improve PinkyBot!</p>
+            <p id="bug-duplicate-notice" style="display: none; color: #ffa500;">
+                This bug has already been reported. We've updated the occurrence count.
+            </p>
+            <p class="bug-id">Bug ID: <span id="bug-id-display"></span></p>
+            <button class="bug-done-btn" onclick="BugReporter.close()">Done</button>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="bug-error-msg" class="bug-error-msg" style="display: none;">
+            <span id="bug-error-text"></span>
+        </div>
+    </div>
+</div>

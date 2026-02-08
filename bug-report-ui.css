@@ -1,0 +1,358 @@
+/* Bug Report Modal UI Styles - Purple/Blue gradient theme */
+
+.bug-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.bug-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+}
+
+.bug-modal-content {
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0e1a 100%);
+    border: 2px solid #00d4ff;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 50px rgba(0, 212, 255, 0.3);
+    z-index: 10001;
+}
+
+.bug-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+}
+
+.bug-modal-header h2 {
+    color: #00d4ff;
+    font-size: 24px;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.bug-close-btn {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    font-size: 20px;
+    padding: 5px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.bug-close-btn:hover {
+    background: rgba(255, 0, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.bug-form {
+    padding: 20px;
+}
+
+.bug-form-group {
+    margin-bottom: 20px;
+}
+
+.bug-form-group label {
+    display: block;
+    color: #00d4ff;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bug-form-group input,
+.bug-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.bug-form-group input:focus,
+.bug-form-group textarea:focus {
+    outline: none;
+    border-color: #00d4ff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.bug-form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.bug-file-upload {
+    margin-top: 8px;
+}
+
+.bug-upload-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 1px solid rgba(102, 126, 234, 0.5);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.bug-upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.bug-preview {
+    margin-top: 12px;
+}
+
+.bug-file-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    margin-top: 8px;
+}
+
+.bug-file-item span {
+    flex: 1;
+    color: #ffffff;
+    font-size: 13px;
+}
+
+.bug-file-item button {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.bug-file-item button:hover {
+    background: rgba(255, 0, 0, 0.2);
+}
+
+.bug-info-section {
+    margin: 20px 0;
+    padding: 12px;
+    background: rgba(0, 212, 255, 0.1);
+    border-left: 3px solid #00d4ff;
+    border-radius: 4px;
+}
+
+.bug-info-text {
+    color: #00d4ff;
+    font-size: 13px;
+    margin: 0;
+}
+
+.bug-form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.bug-cancel-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.bug-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.bug-submit-btn {
+    flex: 2;
+    background: linear-gradient(135deg, #00d4ff 0%, #00a1cc 100%);
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.bug-submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+}
+
+.bug-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.bug-success {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.bug-success-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: bounce 1s ease;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+.bug-success h3 {
+    color: #00d4ff;
+    font-size: 24px;
+    margin: 0 0 12px 0;
+}
+
+.bug-success p {
+    color: #ffffff;
+    font-size: 14px;
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.bug-id {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    color: #00d4ff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.bug-done-btn {
+    margin-top: 24px;
+    background: linear-gradient(135deg, #00d4ff 0%, #00a1cc 100%);
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    color: #ffffff;
+    padding: 12px 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.bug-done-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+}
+
+.bug-error-msg {
+    display: none;
+    margin: 16px 0;
+    padding: 12px;
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff4444;
+    border-radius: 6px;
+    color: #ff4444;
+    font-size: 14px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .bug-modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .bug-modal-header {
+        padding: 16px;
+    }
+    
+    .bug-modal-header h2 {
+        font-size: 20px;
+    }
+    
+    .bug-form {
+        padding: 16px;
+    }
+    
+    .bug-form-actions {
+        flex-direction: column;
+    }
+    
+    .bug-cancel-btn,
+    .bug-submit-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .bug-modal-content {
+        width: 98%;
+        max-height: 98vh;
+        border-radius: 8px;
+    }
+    
+    .bug-modal-header {
+        padding: 12px;
+    }
+    
+    .bug-form {
+        padding: 12px;
+    }
+    
+    .bug-file-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .bug-file-item img {
+        max-width: 100% !important;
+    }
+}
