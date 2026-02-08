@@ -125,14 +125,17 @@ class TierResolver {
           source: 'stripe',
           active: true,
           subscriptionId: data.subscriptionId,
-          currentPeriodEnd: data.currentPeriodEnd
+          currentPeriodEnd: data.currentPeriodEnd,
+          status: data.status,
+          cancelAtPeriodEnd: data.cancelAtPeriodEnd
         };
       }
 
       return {
         tier: 'free',
         source: 'stripe',
-        active: false
+        active: false,
+        status: data.status || 'inactive'
       };
 
     } catch (error) {
@@ -230,6 +233,146 @@ class TierResolver {
     }));
 
     console.log(`[Tier Resolver] Effective tier set to: ${tier} (source: ${source})`);
+    
+    // Show warnings if needed
+    this.checkAndShowWarnings(tierData);
+  }
+  
+  /**
+   * Check tier data and show warnings/notices
+   */
+  checkAndShowWarnings(tierData) {
+    // Payment failure warning (Stripe past_due status)
+    if (tierData.source === 'stripe' && tierData.status === 'past_due') {
+      this.showWarningBanner(
+        '❌ Payment Failed: Your payment method was declined. Update your billing info to continue Pro access.',
+        'error',
+        'Update Payment'
+      );
+    }
+    
+    // Subscription cancelled warning
+    if (tierData.source === 'stripe' && tierData.cancelAtPeriodEnd && tierData.currentPeriodEnd) {
+      const endDate = new Date(tierData.currentPeriodEnd * 1000).toLocaleDateString();
+      this.showWarningBanner(
+        `⚠️ Subscription Cancelled: Your Pro access will end on ${endDate}. Reactivate to continue.`,
+        'warning',
+        'Reactivate'
+      );
+    }
+    
+    // Expiring soon warning (< 7 days)
+    if (tierData.source === 'stripe' && tierData.currentPeriodEnd) {
+      const daysRemaining = Math.ceil((tierData.currentPeriodEnd * 1000 - Date.now()) / (24 * 60 * 60 * 1000));
+      if (daysRemaining > 0 && daysRemaining <= 7 && !tierData.cancelAtPeriodEnd) {
+        this.showWarningBanner(
+          `⏰ Subscription Renewing: Your Pro subscription renews in ${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}`,
+          'info'
+        );
+      }
+    }
+    
+    // License expiring soon (< 30 days)
+    if (tierData.source === 'license' && tierData.expiresAt) {
+      const daysRemaining = Math.ceil((tierData.expiresAt - Date.now()) / (24 * 60 * 60 * 1000));
+      if (daysRemaining > 0 && daysRemaining <= 30) {
+        this.showWarningBanner(
+          `⚠️ License Expiring: Your license expires in ${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}. Contact support to renew.`,
+          'warning'
+        );
+      }
+    }
+  }
+  
+  /**
+   * Show warning banner at top of dashboard
+   */
+  showWarningBanner(message, type = 'warning', actionText = null) {
+    // Check if banner already exists
+    const existingBanner = document.getElementById('tier-warning-banner');
+    if (existingBanner) return; // Don't duplicate banners
+    
+    const banner = document.createElement('div');
+    banner.id = 'tier-warning-banner';
+    
+    const bgColors = {
+      error: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      warning: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
+      info: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    };
+    
+    banner.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10000;
+      padding: 12px 20px;
+      background: ${bgColors[type] || bgColors.warning};
+      color: white;
+      font-weight: 600;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      font-size: 14px;
+    `;
+    
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = message;
+    banner.appendChild(messageSpan);
+    
+    if (actionText) {
+      const actionBtn = document.createElement('button');
+      actionBtn.textContent = actionText;
+      actionBtn.style.cssText = `
+        background: rgba(255,255,255,0.95);
+        color: #333;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 13px;
+        transition: transform 0.2s;
+      `;
+      actionBtn.onmouseover = () => actionBtn.style.transform = 'scale(1.05)';
+      actionBtn.onmouseout = () => actionBtn.style.transform = 'scale(1)';
+      actionBtn.onclick = () => {
+        // Open Stripe billing portal
+        const customerId = localStorage.getItem('stripe_customer_id');
+        if (customerId) {
+          window.location.href = `${this.apiBase}/api/stripe/create-portal-session?customerId=${customerId}`;
+        }
+      };
+      banner.appendChild(actionBtn);
+    }
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = `
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0 8px;
+      margin-left: 10px;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    `;
+    closeBtn.onmouseover = () => closeBtn.style.opacity = '1';
+    closeBtn.onmouseout = () => closeBtn.style.opacity = '0.8';
+    closeBtn.onclick = () => {
+      banner.remove();
+      document.body.style.paddingTop = '0';
+    };
+    banner.appendChild(closeBtn);
+    
+    document.body.insertBefore(banner, document.body.firstChild);
+    document.body.style.paddingTop = '50px';
   }
 
   /**
