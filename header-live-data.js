@@ -17,7 +17,7 @@ class HeaderLiveDataManager {
         await this.updateTasksToday();
         
         // Set up periodic updates
-        this.updateInterval = setInterval(() => {
+        // DISABLED this.updateInterval = setInterval(() => {
             this.updateTasksToday();
         }, this.refreshRate);
         

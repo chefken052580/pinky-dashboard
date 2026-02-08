@@ -340,7 +340,7 @@ class StripeCheckout {
 
   pollSubscriptionStatus() {
     // Check subscription status every 5 minutes
-    setInterval(() => {
+    // DISABLED setInterval(() => {
       this.verifySubscription();
     }, 5 * 60 * 1000);
   }

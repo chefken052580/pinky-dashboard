@@ -27,7 +27,7 @@ class NotificationBadgeManager {
         await this.updateAllBadges();
         
         // Set up periodic updates (every 30 seconds)
-        this.updateInterval = setInterval(() => {
+        // DISABLED this.updateInterval = setInterval(() => {
             this.updateAllBadges();
         }, 30000);
         

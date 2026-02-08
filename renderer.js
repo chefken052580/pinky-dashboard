@@ -116,8 +116,8 @@ window.addEventListener('DOMContentLoaded', () => {
     initViewButtons();
     initMonitorButtons();
     loadActivityData();
-    setInterval(loadActivityData, 5000); // Refresh every 5s
-    setInterval(updateStats, 10000); // Update stats every 10s
+    // DISABLED - use GlobalRefresh // // DISABLED - use GlobalRefresh // setInterval(loadActivityData, 30000); // Refresh every 5s
+    // DISABLED - use GlobalRefresh // // DISABLED - use GlobalRefresh // setInterval(updateStats, 60000); // Update stats every 10s
 });
 
 // Bot Navigation
@@ -599,7 +599,7 @@ function renderHeaderStats() {
 document.addEventListener('DOMContentLoaded', function() {
     
     renderHeaderStats(); // Run immediately
-    setInterval(renderHeaderStats, 30000); // Then refresh every 30s
+    // DISABLED - use GlobalRefresh // // DISABLED - use GlobalRefresh // setInterval(renderHeaderStats, 30000); // Then refresh every 30s
 });
 
 // ===== APPROVAL NOTIFICATION SYSTEM =====
@@ -665,18 +665,18 @@ function respondApproval(id, approved) {
 }
 
 // Check for approvals every 30 seconds
-setInterval(() => {
-    fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/approvals')
-        .then(r => r.json())
-        .then(data => {
-            const badge = document.getElementById('approval-badge');
-            if (badge) {
-                badge.textContent = data.pending.length;
-                badge.classList.toggle('hidden', data.pending.length === 0);
-            }
-        })
-        .catch(() => {});
-}, 30000);
+// DISABLED setInterval(() => {
+//     fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/approvals')
+//         .then(r => r.json())
+//         .then(data => {
+//             const badge = document.getElementById('approval-badge');
+//             if (badge) {
+//                 badge.textContent = data.pending.length;
+//                 badge.classList.toggle('hidden', data.pending.length === 0);
+//             }
+//         })
+//         .catch(() => {});
+// }, 30000);
 
 // Initial check on load
 document.addEventListener('DOMContentLoaded', () => {

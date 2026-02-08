@@ -238,9 +238,9 @@ class AnalyticsBot {
     this.updateDashboardChart();
     
     // Refresh periodically
-    this.refreshTimer = setInterval(() => {
-      this.updateDashboardChart();
-    }, this.refreshInterval);
+    //     // DISABLED this.refreshTimer = setInterval(() => {
+    //       this.updateDashboardChart();
+    //     }, this.refreshInterval);
   }
 
   /**

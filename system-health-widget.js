@@ -281,7 +281,7 @@ class SystemHealthWidget {
     startAutoRefresh() {
         if (this.refreshInterval) clearInterval(this.refreshInterval);
         
-        this.refreshInterval = setInterval(() => {
+        // DISABLED this.refreshInterval = setInterval(() => {
             this.updateMetrics();
         }, this.updateInterval);
     }

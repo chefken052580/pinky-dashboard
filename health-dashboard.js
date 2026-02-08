@@ -6,7 +6,7 @@
 class HealthDashboard {
   constructor() {
     this.apiBase = (typeof API_BASE !== 'undefined' ? API_BASE : '');
-    this.updateInterval = 5000; // 5 seconds
+    this.updateInterval = 60000; // 5 seconds
     this.lastCheck = null;
     this.isOnline = false;
     this.history = [];
@@ -28,7 +28,7 @@ class HealthDashboard {
     await this.update();
 
     // Auto-update every 5 seconds
-    setInterval(() => this.update(), this.updateInterval);
+    // DISABLED - use GlobalRefresh
   }
 
   /**

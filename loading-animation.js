@@ -98,5 +98,17 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('load', () => {
     // Give 500ms for dashboard to render
     setTimeout(() => window.loadingAnimation.hide(), 500);
+    // Safety: force hide after 3s
+    setTimeout(() => window.loadingAnimation.hide(), 3000);
   });
 });
+
+// Start the single global refresh cycle
+if (window.GlobalRefresh) {
+  window.GlobalRefresh.start(30000);
+}
+
+// Start the single global refresh cycle
+if (window.GlobalRefresh) {
+  window.GlobalRefresh.start(30000);
+}

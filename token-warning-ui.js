@@ -19,7 +19,7 @@
     function init() {
         console.log('[TokenWarning UI] Initializing...');
         fetchWarnings();
-        pollInterval = setInterval(fetchWarnings, 30000);
+        // DISABLED pollInterval = setInterval(fetchWarnings, 30000);
         hookTaskRender();
         console.log('[TokenWarning UI] Ready');
     }

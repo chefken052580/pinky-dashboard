@@ -343,7 +343,7 @@ class TaskAnalyticsDashboard {
      */
     startAutoRefresh() {
         if (this.refreshInterval) {
-            setInterval(() => this.loadAnalytics(), this.refreshInterval);
+            // DISABLED setInterval(() => this.loadAnalytics(), this.refreshInterval);
         }
     }
 }

@@ -268,7 +268,7 @@ class TokenAllocationWidget {
   }
 
   startAutoRefresh() {
-    setInterval(() => this.loadData(), 30000); // Refresh every 30 seconds
+    // DISABLED - use GlobalRefresh // Refresh every 30 seconds
   }
 }
 

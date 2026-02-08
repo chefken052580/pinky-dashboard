@@ -11,7 +11,7 @@ class TasksBotEnhanced {
     this.runningTasks = [];
     this.completedTasks = [];
     // PROTECTED — DO NOT CHANGE BELOW 10000 WITHOUT BRAIN APPROVAL (was 3s, caused input focus theft)
-    this.updateInterval = 10000;
+    this.updateInterval = 30000;
     this.apiUrl = '/api/tasks';
     this.isInitialized = false; // Prevent double initialization
     this.container = null; // TIER 3: Store container reference for scoped selectors
@@ -42,7 +42,7 @@ class TasksBotEnhanced {
     this.setupDragDrop();
     
     // Auto-refresh every 3 seconds
-    setInterval(() => this.loadTasks(), this.updateInterval);
+    // DISABLED - use GlobalRefresh
     
     // Register timer update listener (HB#115 - Task Timer Integration)
     if (typeof taskTimer !== 'undefined' && taskTimer && taskTimer.onChange) {

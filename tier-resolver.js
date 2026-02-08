@@ -17,7 +17,7 @@ class TierResolver {
     await this.resolveTier();
     
     // Periodic tier checks
-    setInterval(() => this.resolveTier(), this.checkInterval);
+    // DISABLED setInterval(() => this.resolveTier(), this.checkInterval);
   }
 
   /**

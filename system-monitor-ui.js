@@ -22,7 +22,7 @@ class SystemMonitorUI {
     await this.loadMetrics();
     
     // Auto-update every 10 seconds
-    setInterval(() => {
+    // DISABLED setInterval(() => {
       if (this.isEnabled) {
         this.loadMetrics();
       }

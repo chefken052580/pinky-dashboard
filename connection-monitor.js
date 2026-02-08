@@ -71,9 +71,9 @@ class ConnectionMonitor {
     this.checkConnection();
     
     // Poll every 30 seconds
-    this.intervalId = setInterval(() => {
-      this.checkConnection();
-    }, this.checkInterval);
+    //     // DISABLED this.intervalId = setInterval(() => {
+    //       this.checkConnection();
+    //     }, this.checkInterval);
   }
 
   async checkConnection() {

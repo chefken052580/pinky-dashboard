@@ -265,7 +265,7 @@ class ChangelogWidget {
 
     setupAutoRefresh() {
         // Refresh every 5 minutes
-        setInterval(() => {
+        // DISABLED setInterval(() => {
             this.refresh();
         }, 5 * 60 * 1000);
     }

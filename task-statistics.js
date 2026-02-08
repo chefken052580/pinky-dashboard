@@ -6,7 +6,7 @@
 class TaskStatistics {
   constructor() {
     this.apiBase = ''; // Use relative paths for cross-origin compatibility
-    this.updateInterval = 10000; // 10 seconds
+    this.updateInterval = 60000; // 10 seconds
     this.tasks = [];
     this.history = [];
     this.rawStats = null; // Store raw API stats for accurate calculations
@@ -31,7 +31,7 @@ class TaskStatistics {
     await this.update(); // Fetch real data
 
     // Auto-update every 10 seconds
-    setInterval(() => this.update(), this.updateInterval);
+    // DISABLED - use GlobalRefresh
     console.log('[TaskStatistics] Initialization complete');
   }
 

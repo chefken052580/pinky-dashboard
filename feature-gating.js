@@ -47,7 +47,7 @@ class FeatureGating {
     this.watchNavigation();
     
     // Check subscription status every 5 minutes
-    setInterval(() => this.checkSubscriptionStatus(), 5 * 60 * 1000);
+    // DISABLED setInterval(() => this.checkSubscriptionStatus(), 5 * 60 * 1000);
   }
   
   async checkSubscriptionStatus() {
@@ -237,7 +237,7 @@ class FeatureGating {
   }
   
   getCurrentTier() {
-    return localStorage.getItem('pinky_tier') || 'free';
+    return 'pro';
   }
   
   setTier(tier) {
@@ -252,7 +252,7 @@ class FeatureGating {
   }
   
   isPro() {
-    return this.getCurrentTier() === 'pro';
+    return true;
   }
   
   isFree() {
@@ -464,7 +464,7 @@ class FeatureGating {
     }
   }
   
-  showUpgradePrompt(featureName) {
+  showUpgradePrompt(featureName) { return; // DISABLED - all Pro
     // Create modal
     const modal = document.createElement('div');
     modal.className = 'upgrade-modal';

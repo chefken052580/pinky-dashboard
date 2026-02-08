@@ -31,7 +31,7 @@ class TaskHistoryChart {
     await this.fetchTaskHistory();
     
     // Set up auto-refresh
-    setInterval(() => this.fetchTaskHistory(), this.updateInterval);
+    // DISABLED - use GlobalRefresh
     
     this.initialized = true;
     console.log('[TaskHistoryChart] Enhanced version initialized');
