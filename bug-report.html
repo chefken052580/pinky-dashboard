@@ -1,0 +1,171 @@
+<!-- Bug Report Modal -->
+<div id="bug-report-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-content bug-report-modal">
+    <div class="modal-header">
+      <h2>🐛 Report a Bug</h2>
+      <button class="close-btn" onclick="BugReporter.close()">✕</button>
+    </div>
+    
+    <div class="modal-body">
+      <form id="bug-report-form">
+        <!-- Bug Title -->
+        <div class="form-group">
+          <label for="bug-title">Bug Title *</label>
+          <input 
+            type="text" 
+            id="bug-title" 
+            name="title" 
+            placeholder="Brief description of the issue"
+            required
+            maxlength="100"
+          />
+        </div>
+
+        <!-- Component Selection -->
+        <div class="form-group">
+          <label for="bug-component">Component *</label>
+          <select id="bug-component" name="component" required>
+            <option value="">Select component...</option>
+            <option value="dashboard">Dashboard</option>
+            <option value="tasksbot">TasksBot</option>
+            <option value="chat">Chat</option>
+            <option value="filesystembot">FileSystemBot</option>
+            <option value="socialbot">SocialBot</option>
+            <option value="researchbot">ResearchBot</option>
+            <option value="codebot">CodeBot</option>
+            <option value="docsbot">DocsBot</option>
+            <option value="businessbot">BusinessBot</option>
+            <option value="analytics">Analytics</option>
+            <option value="settings">Settings</option>
+            <option value="api">Backend API</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Severity -->
+        <div class="form-group">
+          <label for="bug-severity">Severity *</label>
+          <select id="bug-severity" name="severity" required>
+            <option value="">Select severity...</option>
+            <option value="critical">🔴 Critical - System unusable</option>
+            <option value="major">🟠 Major - Feature broken</option>
+            <option value="minor">🟡 Minor - Cosmetic issue</option>
+            <option value="enhancement">🔵 Enhancement - Feature request</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label for="bug-description">Description *</label>
+          <textarea 
+            id="bug-description" 
+            name="description" 
+            rows="4"
+            placeholder="Describe what went wrong..."
+            required
+            minlength="20"
+          ></textarea>
+        </div>
+
+        <!-- Steps to Reproduce -->
+        <div class="form-group">
+          <label for="bug-steps">Steps to Reproduce *</label>
+          <textarea 
+            id="bug-steps" 
+            name="steps" 
+            rows="4"
+            placeholder="1. Click on TasksBot&#10;2. Add a new task&#10;3. See error..."
+            required
+            minlength="20"
+          ></textarea>
+        </div>
+
+        <!-- Expected Behavior -->
+        <div class="form-group">
+          <label for="bug-expected">Expected Behavior</label>
+          <textarea 
+            id="bug-expected" 
+            name="expected" 
+            rows="2"
+            placeholder="What should have happened?"
+          ></textarea>
+        </div>
+
+        <!-- Actual Behavior -->
+        <div class="form-group">
+          <label for="bug-actual">Actual Behavior</label>
+          <textarea 
+            id="bug-actual" 
+            name="actual" 
+            rows="2"
+            placeholder="What actually happened?"
+          ></textarea>
+        </div>
+
+        <!-- Screenshot Upload -->
+        <div class="form-group">
+          <label for="bug-screenshot">Screenshot (optional)</label>
+          <input 
+            type="file" 
+            id="bug-screenshot" 
+            name="screenshot" 
+            accept="image/png,image/jpeg,image/jpg,image/gif"
+          />
+          <small>Max 5 MB - PNG, JPEG, or GIF</small>
+          <div id="screenshot-preview" style="margin-top: 10px;"></div>
+        </div>
+
+        <!-- Browser/Environment Info (auto-captured) -->
+        <div class="form-group">
+          <label>Environment Info (auto-detected)</label>
+          <div id="bug-env-info" class="env-info-box">
+            <div id="env-browser">Browser: Detecting...</div>
+            <div id="env-os">OS: Detecting...</div>
+            <div id="env-screen">Screen: Detecting...</div>
+            <div id="env-version">PinkyBot: v1.0.0</div>
+          </div>
+        </div>
+
+        <!-- Contact Email (optional) -->
+        <div class="form-group">
+          <label for="bug-email">Email (optional - for updates)</label>
+          <input 
+            type="email" 
+            id="bug-email" 
+            name="email" 
+            placeholder="your@email.com"
+          />
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="BugReporter.close()">
+            Cancel
+          </button>
+          <button type="submit" class="btn-primary">
+            <span class="btn-icon">🐛</span>
+            Submit Bug Report
+          </button>
+        </div>
+      </form>
+
+      <!-- Success Message (hidden by default) -->
+      <div id="bug-report-success" class="success-message" style="display: none;">
+        <div class="success-icon">✅</div>
+        <h3>Bug Report Submitted!</h3>
+        <p>Thank you for helping improve PinkyBot.</p>
+        <p class="bug-id">Bug ID: <span id="submitted-bug-id">BUG-001</span></p>
+        <p class="bug-status">Status: <span class="badge badge-pending">Under Review</span></p>
+        <button class="btn-primary" onclick="BugReporter.reset()">Report Another Bug</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bug Report Trigger Button (for FileSystemBot sidebar) -->
+<div id="bug-report-trigger" class="sidebar-action-btn">
+  <button onclick="BugReporter.open()" class="btn-report-bug">
+    <span class="icon">🐛</span>
+    Report Bug
+  </button>
+</div>
