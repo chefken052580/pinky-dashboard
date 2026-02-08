@@ -1,0 +1,231 @@
+/* ═══════════════════════════════════════════════
+   TOKEN WARNING SYSTEM v2 — Inline Buttons
+   Button sits directly on the pending task card
+   ═══════════════════════════════════════════════ */
+
+/* ─── Action Row (sits between header and description) ─── */
+.tw-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    background: linear-gradient(135deg, #fefce8, #fef3c7);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    animation: twSlideIn 0.25s ease;
+}
+
+/* ─── Warning info (left side) ─── */
+.tw-warning-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.tw-warning-icon {
+    font-size: 1.1em;
+    flex-shrink: 0;
+}
+
+.tw-warning-text {
+    font-size: 0.82em;
+    font-weight: 600;
+    color: #92400e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tw-count {
+    font-weight: 700;
+    color: #b45309;
+}
+
+/* ─── Button group (right side) ─── */
+.tw-buttons {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.tw-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    line-height: 1.3;
+}
+
+/* ─── Token Approval Button ─── */
+.tw-btn-approve {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.35);
+}
+
+.tw-btn-approve:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(102, 126, 234, 0.5);
+}
+
+.tw-btn-approve:active {
+    transform: translateY(0);
+}
+
+/* Confirmation state (first click) */
+.tw-btn-approve.tw-confirming {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4);
+    animation: twPulseBtn 1s ease-in-out infinite;
+}
+
+.tw-btn-approve:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+    box-shadow: none;
+    animation: none;
+}
+
+.tw-cost-note {
+    font-weight: 400;
+    font-size: 0.85em;
+    opacity: 0.9;
+    margin-left: 4px;
+}
+
+/* ─── Split Button ─── */
+.tw-btn-split {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: 1px solid #d1d5db;
+}
+
+.tw-btn-split:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+/* ─── Approved State ─── */
+.tw-approved-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border: 1px solid #34d399;
+    border-radius: 8px;
+    animation: twSlideIn 0.25s ease;
+}
+
+.tw-approved-badge.tw-just-approved {
+    animation: twApproveFlash 0.5s ease;
+}
+
+.tw-approved-icon {
+    font-size: 1.1em;
+    flex-shrink: 0;
+}
+
+.tw-approved-text {
+    font-size: 0.82em;
+    font-weight: 600;
+    color: #065f46;
+}
+
+/* ─── Task card border effects ─── */
+.token-warned-task {
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4), 0 4px 16px rgba(245, 158, 11, 0.12) !important;
+    border-left: 3px solid #f59e0b !important;
+}
+
+.token-override-task {
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3), 0 4px 16px rgba(16, 185, 129, 0.08) !important;
+    border-left: 3px solid #10b981 !important;
+}
+
+/* ─── Toast Notification ─── */
+.tw-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #1f2937;
+    color: #f9fafb;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    font-size: 0.88em;
+    font-weight: 500;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    max-width: 90vw;
+}
+
+.tw-toast-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.tw-toast-error {
+    background: #991b1b;
+}
+
+.tw-toast-icon {
+    font-size: 1.2em;
+    flex-shrink: 0;
+}
+
+.tw-toast-text {
+    line-height: 1.3;
+}
+
+/* ─── Animations ─── */
+@keyframes twSlideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes twPulseBtn {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes twApproveFlash {
+    0% { background: #fff; }
+    50% { background: linear-gradient(135deg, #a7f3d0, #6ee7b7); }
+    100% { background: linear-gradient(135deg, #ecfdf5, #d1fae5); }
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 600px) {
+    .tw-action-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .tw-buttons {
+        justify-content: stretch;
+    }
+    
+    .tw-btn {
+        flex: 1;
+        text-align: center;
+        padding: 8px 12px;
+    }
+}

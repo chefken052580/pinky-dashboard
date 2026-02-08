@@ -1,5 +1,23 @@
 {
-  "pending": [],
+  "pending": [
+    {
+      "id": "1770530523888",
+      "title": "Integrate feature-gating into index.html",
+      "description": "Add feature-gating.css (line 34) and feature-gating.js (line 1089) to index.html. Feature gating system is complete and tested. Files created: feature-gating.js (13.3 KB), feature-gating.css (8.3 KB). Commit: 4be82df",
+      "file": "pinky-dashboard/index.html",
+      "status": "pending",
+      "createdAt": "2026-02-08T06:02:03.888Z"
+    },
+    {
+      "id": "1770531036341",
+      "title": "CRITICAL: tasks-api.js persistence bug blocking task completion tracking",
+      "description": "tasks-api.js update_status and update_notes actions return {success:true} but changes do not persist to tasks.json. Affects all Phase 3.1 tasks (P3.1-3, P3.1-4, P3.1-5). All work is committed with git proof but API shows tasks as pending. Need Brain to investigate tasks-api.js write logic - likely fs.writeFileSync not executing or catching errors silently. Evidence: P3.1-3 has commits 92cac50 and a27c267, files exist on disk, but API status remains pending after multiple successful update calls.",
+      "file": "bot-backend/tasks-api.js",
+      "action": "investigate",
+      "status": "pending",
+      "createdAt": "2026-02-08T06:10:36.341Z"
+    }
+  ],
   "resolved": [
     {
       "id": "1770521513495",

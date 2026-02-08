@@ -31,6 +31,8 @@
     <link rel="stylesheet" href="token-allocation-widget.css">
     <link rel="stylesheet" href="task-search-filter.css">
     <link rel="stylesheet" href="keyboard-shortcuts.css">
+    <link rel="stylesheet" href="feature-gating.css">
+    <link rel="stylesheet" href="token-warning-ui.css">
 </head>
 <body>
     <!-- Onboarding Screen -->
@@ -1085,6 +1087,8 @@
     <script src="api-helpers.js"></script>
     <script src="connection-monitor.js"></script>
     <script src="load-visual-polish.js"></script>
+    <script src="feature-gating.js"></script>
+    <script src="tier-management.js"></script>
     <script>
         // Initialize tooltip system on page load
         document.addEventListener('DOMContentLoaded', () => {
@@ -1120,6 +1124,7 @@
                 console.log('[Dashboard] Task History Chart initialized');
             }
         });
-    </script>
+    <script src="token-warning-ui.js"></script>
+    <div id="token-warning-modal"></div>
 </body>
 </html>
