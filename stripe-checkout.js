@@ -90,6 +90,13 @@ class StripeCheckout {
   }
 
   async showCheckoutModal() {
+    // Check for PINKY token discount (20% off for 10,000+ tokens)
+    const hasPinkyDiscount = await this.checkPinkyTokenBalance();
+    const basePrice = 29;
+    const discountedPrice = 23.20; // 20% off
+    const finalPrice = hasPinkyDiscount ? discountedPrice : basePrice;
+    const savings = hasPinkyDiscount ? (basePrice - discountedPrice).toFixed(2) : 0;
+
     // Show modal with checkout options
     const modal = document.createElement('div');
     modal.className = 'stripe-checkout-modal';
@@ -100,14 +107,17 @@ class StripeCheckout {
         <div class="stripe-modal-header">
           <h2>🚀 Upgrade to Pro</h2>
           <p>Unlock all features and bots</p>
+          ${hasPinkyDiscount ? '<div class="pinky-discount-badge">🎉 PINKY Token Holder Discount Active!</div>' : ''}
         </div>
         <div class="stripe-modal-body">
           <div class="stripe-pricing-card">
+            ${hasPinkyDiscount ? '<div class="original-price">$29</div>' : ''}
             <div class="stripe-price">
               <span class="stripe-currency">$</span>
-              <span class="stripe-amount">29</span>
+              <span class="stripe-amount">${finalPrice}</span>
               <span class="stripe-period">/month</span>
             </div>
+            ${hasPinkyDiscount ? `<div class="discount-note">💰 You save $${savings}/month with PINKY tokens!</div>` : ''}
             <ul class="stripe-features">
               <li>✅ 9 AI-powered bots (vs 3 in Free)</li>
               <li>✅ Advanced Analytics Dashboard</li>
@@ -189,6 +199,10 @@ class StripeCheckout {
     btn.querySelector('.btn-loader').style.display = 'inline';
 
     try {
+      // Check PINKY token discount
+      const hasPinkyDiscount = await this.checkPinkyTokenBalance();
+      const solanaAddress = localStorage.getItem('solana_wallet_address') || null;
+
       // Create checkout session via backend API
       const response = await fetch(`${this.apiBase}/api/stripe/create-checkout-session`, {
         method: 'POST',
@@ -200,9 +214,12 @@ class StripeCheckout {
           successUrl: `${window.location.origin}/dashboard?checkout=success`,
           cancelUrl: `${window.location.origin}/dashboard?checkout=cancel`,
           customerEmail: localStorage.getItem('pinky_user_email') || undefined,
+          hasPinkyDiscount: hasPinkyDiscount,
           metadata: {
             userId: localStorage.getItem('pinky_user_id') || 'unknown',
             userName: localStorage.getItem('pinky_user_name') || 'Unknown',
+            solanaAddress: solanaAddress,
+            pinkyTokenHolder: hasPinkyDiscount ? 'yes' : 'no'
           }
         })
       });
@@ -323,6 +340,25 @@ class StripeCheckout {
     setInterval(() => {
       this.verifySubscription();
     }, 5 * 60 * 1000);
+  }
+
+  async checkPinkyTokenBalance() {
+    // Check if user has 10,000+ PINKY tokens for discount
+    try {
+      const solanaAddress = localStorage.getItem('solana_wallet_address');
+      const pinkyBalance = localStorage.getItem('pinky_token_balance');
+
+      if (!solanaAddress || !pinkyBalance) {
+        return false; // No wallet connected
+      }
+
+      const balance = parseFloat(pinkyBalance);
+      return balance >= 10000; // 10K tokens = 20% discount
+
+    } catch (error) {
+      console.error('[Stripe] Error checking PINKY token balance:', error);
+      return false;
+    }
   }
 
   showError(message) {
