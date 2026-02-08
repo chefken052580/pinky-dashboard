@@ -1,0 +1,48 @@
+<!-- Update Preferences Section -->
+<div class="settings-section">
+    <h3>Update Preferences</h3>
+    <div class="settings-field">
+        <label><input type="checkbox" id="auto-update-enabled" checked> Enable automatic updates</label>
+    </div>
+    <div class="settings-field">
+        <label><input type="checkbox" id="auto-download-enabled"> Automatically download updates</label>
+        <small style="color: rgba(255,255,255,0.6)">If disabled, you'll be prompted before downloading</small>
+    </div>
+    <div class="settings-field">
+        <label>Check for updates</label>
+        <select id="update-frequency">
+            <option value="startup_and_4h">On startup and every 4 hours</option>
+            <option value="startup">On startup only</option>
+            <option value="daily">Once daily</option>
+            <option value="manual">Manual only</option>
+        </select>
+    </div>
+    <button class="btn btn-primary" onclick="saveUpdatePreferences()">Save Preferences</button>
+</div>
+<script>
+function loadUpdatePreferences() {
+    const prefs = {
+        autoUpdate: localStorage.getItem('autoUpdate') !== 'false',
+        autoDownload: localStorage.getItem('autoDownload') === 'true',
+        checkFrequency: localStorage.getItem('updateCheckFrequency') || 'startup_and_4h'
+    };
+    document.getElementById('auto-update-enabled').checked = prefs.autoUpdate;
+    document.getElementById('auto-download-enabled').checked = prefs.autoDownload;
+    document.getElementById('update-frequency').value = prefs.checkFrequency;
+}
+async function saveUpdatePreferences() {
+    const prefs = {
+        autoUpdate: document.getElementById('auto-update-enabled').checked,
+        autoDownload: document.getElementById('auto-download-enabled').checked,
+        checkFrequency: document.getElementById('update-frequency').value
+    };
+    localStorage.setItem('autoUpdate', prefs.autoUpdate);
+    localStorage.setItem('autoDownload', prefs.autoDownload);
+    localStorage.setItem('updateCheckFrequency', prefs.checkFrequency);
+    if (window.electronAPI && window.electronAPI.setUpdatePreferences) {
+        await window.electronAPI.setUpdatePreferences(prefs);
+    }
+    alert('Update preferences saved!');
+}
+document.addEventListener('DOMContentLoaded', loadUpdatePreferences);
+</script>
