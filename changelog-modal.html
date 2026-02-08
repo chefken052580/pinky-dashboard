@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .changelog-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            backdrop-filter: blur(4px);
+        }
+        .changelog-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid #00d4ff;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3);
+            z-index: 10001;
+        }
+        .changelog-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .changelog-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .changelog-title {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+        .changelog-version {
+            color: #00d4ff;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        .changelog-section {
+            margin: 20px 0;
+        }
+        .changelog-section-title {
+            color: #00d4ff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .changelog-list {
+            list-style: none;
+            padding: 0;
+        }
+        .changelog-list li {
+            padding: 8px 0 8px 25px;
+            position: relative;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+        .changelog-list li:before {
+            content: "•";
+            color: #667eea;
+            font-size: 20px;
+            position: absolute;
+            left: 0;
+            top: 6px;
+        }
+        .changelog-footer {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+        }
+        .changelog-btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .changelog-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .changelog-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .changelog-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="changelog-modal-overlay" id="changelog-modal-overlay">
+        <div class="changelog-modal">
+            <div class="changelog-header">
+                <div class="changelog-icon">🎉</div>
+                <h2 class="changelog-title">What's New</h2>
+                <div class="changelog-version" id="changelog-version">Version 1.0.1</div>
+            </div>
+            <div id="changelog-content"></div>
+            <label class="changelog-checkbox">
+                <input type="checkbox" id="changelog-dont-show">
+                <span>Don't show this again</span>
+            </label>
+            <div class="changelog-footer">
+                <button class="changelog-btn changelog-btn-primary" id="changelog-close">Got It</button>
+            </div>
+        </div>
+    </div>
+    <script src="/changelog-modal.js"></script>
+</body>
+</html>
