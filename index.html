@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="task-search-filter.css">
     <link rel="stylesheet" href="keyboard-shortcuts.css">
     <link rel="stylesheet" href="token-warning-ui.css">
+    <link rel="stylesheet" href="stripe-checkout.css">
 </head>
 <body>
     <!-- Onboarding Screen -->
@@ -934,13 +935,13 @@
           localStorage.setItem('pinky_user_name', 'Ken');
           localStorage.setItem('pinky_api_key', 'local');
         }
-        // Load Onboarding Screen First
+        // Load Enhanced Onboarding Tour First
         (async function() {
           if (localStorage.getItem('pinky_onboarded') === 'true') return;
-          const response = await fetch('onboarding.html');
+          const response = await fetch('onboarding-tour.html');
           const html = await response.text();
           document.getElementById('onboarding-container').innerHTML = html;
-          console.log('[Dashboard] Onboarding screen loaded');
+          console.log('[Dashboard] Enhanced onboarding tour loaded');
         })();
         
         // Initialize all dashboard components
@@ -1123,5 +1124,6 @@
         });
     </script>
     <script src="token-warning-ui.js"></script>
+    <script src="stripe-checkout.js"></script>
 </body>
 </html>
