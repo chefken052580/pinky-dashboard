@@ -51,7 +51,7 @@ class ExportPackageManager {
             
             // API Configuration (for reference)
             apiConfig: {
-                baseUrl: '',
+                baseUrl: (typeof API_BASE !== 'undefined' ? API_BASE : ''),
                 endpoints: [
                     '/api/health',
                     '/api/tasks',
@@ -95,7 +95,7 @@ class ExportPackageManager {
      */
     async fetchTaskData() {
         try {
-            const response = await fetch('/api/tasks');
+            const response = await fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/tasks');
             if (!response.ok) return [];
             const tasks = await response.json();
             return tasks || [];

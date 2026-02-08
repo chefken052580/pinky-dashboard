@@ -6,7 +6,7 @@
 
 class AnalyticsBot {
   constructor() {
-    this.apiBase = '';
+    this.apiBase = (typeof API_BASE !== 'undefined' ? API_BASE : '');
     this.refreshInterval = 30000; // 30 seconds
     this.tokenData = {
       codeAnalysis: 0,

@@ -16,7 +16,7 @@ class WordPressBotFramework {
     this.wordPressUrl = config.wordPressUrl || '';
     this.wordPressUsername = config.wordPressUsername || '';
     this.wordPressPassword = config.wordPressPassword || '';
-    this.apiBase = '';
+    this.apiBase = (typeof API_BASE !== 'undefined' ? API_BASE : '');
     this.pages = [];
     this.seoConfig = config.seoConfig || this.getDefaultSeoConfig();
   }

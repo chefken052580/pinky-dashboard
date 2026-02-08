@@ -272,7 +272,7 @@ function switchMonitorView(view) {
 
 function loadActivityData() {
     // Fetch activity data from API
-    fetch('/api/activity')
+    fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/activity')
         .then(r => r.json())
         .then(data => {
             // Extract heartbeats from API response {heartbeats: [...]}
@@ -613,7 +613,7 @@ function toggleApprovals() {
 }
 
 function loadApprovals() {
-    fetch('/api/approvals')
+    fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/approvals')
         .then(r => r.json())
         .then(data => {
             const badge = document.getElementById('approval-badge');
@@ -649,7 +649,7 @@ function loadApprovals() {
 
 function respondApproval(id, approved) {
     const instructions = document.getElementById('instructions-' + id)?.value || '';
-    fetch('/api/approvals/' + id + '/respond', {
+    fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/approvals/' + id + '/respond', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ approved, instructions })
@@ -666,7 +666,7 @@ function respondApproval(id, approved) {
 
 // Check for approvals every 30 seconds
 setInterval(() => {
-    fetch('/api/approvals')
+    fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/approvals')
         .then(r => r.json())
         .then(data => {
             const badge = document.getElementById('approval-badge');

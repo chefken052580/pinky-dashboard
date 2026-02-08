@@ -181,7 +181,7 @@ class TaskAnalyticsDashboard {
      */
     async loadAnalytics() {
         try {
-            const response = await fetch('/api/tasks');
+            const response = await fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/tasks');
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             
             const tasks = await response.json();

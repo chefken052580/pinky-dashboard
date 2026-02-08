@@ -9,7 +9,7 @@ class SettingsManager {
         this.defaultSettings = {
             // API Configuration
             api: {
-                baseUrl: '',
+                baseUrl: (typeof API_BASE !== 'undefined' ? API_BASE : ''),
                 timeout: 5000,
                 retryAttempts: 3
             },

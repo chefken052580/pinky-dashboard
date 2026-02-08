@@ -5,7 +5,7 @@
 
 class HealthDashboard {
   constructor() {
-    this.apiBase = '';
+    this.apiBase = (typeof API_BASE !== 'undefined' ? API_BASE : '');
     this.updateInterval = 5000; // 5 seconds
     this.lastCheck = null;
     this.isOnline = false;

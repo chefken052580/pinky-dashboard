@@ -27,7 +27,7 @@ class HeaderLiveDataManager {
 
     async updateTasksToday() {
         try {
-            const response = await fetch('/api/tasks');
+            const response = await fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/tasks');
             if (!response.ok) {
                 console.warn('[HeaderLiveData] API returned non-200 status:', response.status);
                 return;

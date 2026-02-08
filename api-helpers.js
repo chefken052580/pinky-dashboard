@@ -25,7 +25,8 @@ async function apiFetch(url, options = {}, widgetElement = null) {
     // Retry loop
     while (attempt <= maxRetries) {
         try {
-            const response = await fetch(url, options);
+            const fullUrl = (url.startsWith("http") ? url : (typeof API_BASE !== "undefined" ? API_BASE : "") + url);
+            const response = await fetch(fullUrl, options);
             
             // Remove loading spinner on success
             if (loadingOverlay) {

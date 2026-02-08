@@ -47,7 +47,7 @@ class HeartbeatManager {
         .then(data => {
           if (data.heartbeatCount) this.metrics.heartbeatsCompleted = data.heartbeatCount;
           // Fetch task counts from API
-          fetch('/api/tasks')
+          fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/tasks')
             .then(r => r.json())
             .then(tasks => {
               const completed = tasks.filter(t => t.status === 'completed').length;
@@ -136,7 +136,7 @@ class HeartbeatManager {
     this.saveMetrics();
     
     // Post to activity API
-    fetch('/api/activity/heartbeat', {
+    fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/activity/heartbeat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
