@@ -1,163 +1,148 @@
-<!-- Company Selector Component -->
-<div class="company-selector-wrapper">
-    <div class="company-selector-header">
-        <h3 class="company-selector-title">
-            <span class="company-icon">🏢</span>
-            Active Company
-        </h3>
-        <button class="create-company-btn" onclick="showCreateCompanyModal()">
-            <span class="plus-icon">+</span> New Company
-        </button>
-    </div>
-    
-    <div class="company-selector-dropdown">
-        <select id="company-selector" class="company-select" onchange="switchCompany(this.value)">
-            <option value="">Select a company...</option>
-            <!-- Companies loaded dynamically -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Selector - PinkyBot</title>
+  <link rel="stylesheet" href="company-selector.css">
+</head>
+<body>
+  <!-- Company Selector Dropdown (inject into SocialBot dashboard) -->
+  <div class="company-selector-container">
+    <div class="company-selector">
+      <label for="company-dropdown" class="selector-label">
+        <span class="icon">🏢</span>
+        <span class="label-text">Active Company:</span>
+      </label>
+      
+      <div class="dropdown-wrapper">
+        <select id="company-dropdown" class="company-dropdown">
+          <option value="">Loading companies...</option>
         </select>
-        <div class="dropdown-icon">▼</div>
-    </div>
-    
-    <div class="company-info-card" id="company-info" style="display:none;">
-        <div class="company-logo-wrapper">
-            <img id="company-logo" class="company-logo" src="" alt="Company Logo" onerror="this.style.display='none'">
-            <div id="company-logo-placeholder" class="company-logo-placeholder">🏢</div>
-        </div>
-        <div class="company-details">
-            <div class="company-name" id="company-name-display"></div>
-            <div class="company-platforms" id="company-platforms-display"></div>
-        </div>
-        <button class="edit-company-btn" onclick="editCurrentCompany()">
-            <span>⚙️</span> Edit
+        
+        <button class="manage-companies-btn" id="manage-companies-btn" title="Manage Companies">
+          ⚙️
         </button>
+        
+        <button class="add-company-btn" id="add-company-btn" title="Add New Company">
+          ➕
+        </button>
+      </div>
     </div>
-</div>
 
-<!-- Create/Edit Company Modal -->
-<div id="company-modal" class="modal company-modal" style="display:none;">
-    <div class="modal-content company-modal-content">
-        <div class="modal-header">
-            <h2 id="modal-title">Create New Company</h2>
-            <button class="modal-close" onclick="closeCompanyModal()">✕</button>
-        </div>
-        
-        <div class="modal-body">
-            <form id="company-form" onsubmit="return false;">
-                <input type="hidden" id="company-id" value="">
-                
-                <div class="form-group">
-                    <label for="company-name-input">
-                        Company Name <span class="required">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        id="company-name-input" 
-                        placeholder="e.g., Acme Corp" 
-                        required
-                        minlength="2"
-                    >
-                    <small class="form-help">At least 2 characters</small>
-                </div>
-                
-                <div class="form-group">
-                    <label>
-                        Platforms <span class="optional">(optional)</span>
-                    </label>
-                    <div class="platforms-checkboxes">
-                        <label class="platform-checkbox">
-                            <input type="checkbox" name="platforms" value="twitter">
-                            <span class="platform-label">
-                                <span class="platform-icon">𝕏</span> Twitter
-                            </span>
-                        </label>
-                        <label class="platform-checkbox">
-                            <input type="checkbox" name="platforms" value="facebook">
-                            <span class="platform-label">
-                                <span class="platform-icon">📘</span> Facebook
-                            </span>
-                        </label>
-                        <label class="platform-checkbox">
-                            <input type="checkbox" name="platforms" value="instagram">
-                            <span class="platform-label">
-                                <span class="platform-icon">📷</span> Instagram
-                            </span>
-                        </label>
-                        <label class="platform-checkbox">
-                            <input type="checkbox" name="platforms" value="linkedin">
-                            <span class="platform-label">
-                                <span class="platform-icon">💼</span> LinkedIn
-                            </span>
-                        </label>
-                        <label class="platform-checkbox">
-                            <input type="checkbox" name="platforms" value="tiktok">
-                            <span class="platform-label">
-                                <span class="platform-icon">🎵</span> TikTok
-                            </span>
-                        </label>
-                        <label class="platform-checkbox">
-                            <input type="checkbox" name="platforms" value="youtube">
-                            <span class="platform-label">
-                                <span class="platform-icon">📺</span> YouTube
-                            </span>
-                        </label>
-                        <label class="platform-checkbox">
-                            <input type="checkbox" name="platforms" value="pinterest">
-                            <span class="platform-label">
-                                <span class="platform-icon">📌</span> Pinterest
-                            </span>
-                        </label>
-                        <label class="platform-checkbox">
-                            <input type="checkbox" name="platforms" value="reddit">
-                            <span class="platform-label">
-                                <span class="platform-icon">🔶</span> Reddit
-                            </span>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="company-logo-url">
-                        Logo URL <span class="optional">(optional)</span>
-                    </label>
-                    <input 
-                        type="url" 
-                        id="company-logo-url" 
-                        placeholder="https://example.com/logo.png"
-                    >
-                    <small class="form-help">Direct link to company logo image</small>
-                </div>
-                
-                <div class="form-group">
-                    <label>
-                        Brand Colors <span class="optional">(optional)</span>
-                    </label>
-                    <div class="color-inputs">
-                        <div class="color-input-group">
-                            <label for="brand-color-primary">Primary</label>
-                            <input 
-                                type="color" 
-                                id="brand-color-primary" 
-                                value="#667eea"
-                            >
-                        </div>
-                        <div class="color-input-group">
-                            <label for="brand-color-secondary">Secondary</label>
-                            <input 
-                                type="color" 
-                                id="brand-color-secondary" 
-                                value="#764ba2"
-                            >
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        
-        <div class="modal-footer">
-            <button class="btn-cancel" onclick="closeCompanyModal()">Cancel</button>
-            <button class="btn-save" onclick="saveCompany()">
-                <span id="save-btn-text">Create Company</span>
-            </button>
-        </div>
+    <!-- Company Quick Stats -->
+    <div class="company-stats" id="company-stats" style="display: none;">
+      <div class="stat-item">
+        <span class="stat-icon">📊</span>
+        <span class="stat-value" id="stat-posts">0</span>
+        <span class="stat-label">Posts</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">🔗</span>
+        <span class="stat-value" id="stat-platforms">0</span>
+        <span class="stat-label">Platforms</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-icon">📅</span>
+        <span class="stat-value" id="stat-scheduled">0</span>
+        <span class="stat-label">Scheduled</span>
+      </div>
     </div>
-</div>
+  </div>
+
+  <!-- Add Company Modal -->
+  <div class="modal" id="add-company-modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeAddCompanyModal()"></div>
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2>Add New Company</h2>
+        <button class="close-btn" onclick="closeAddCompanyModal()">✕</button>
+      </header>
+      
+      <form class="modal-body" id="add-company-form">
+        <div class="form-group">
+          <label for="company-name">Company Name *</label>
+          <input 
+            type="text" 
+            id="company-name" 
+            placeholder="e.g., Acme Corp" 
+            required
+            autocomplete="organization"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="company-description">Description</label>
+          <textarea 
+            id="company-description" 
+            rows="3" 
+            placeholder="Brief description of the company"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="company-timezone">Timezone</label>
+          <select id="company-timezone">
+            <option value="America/New_York">Eastern (ET)</option>
+            <option value="America/Chicago">Central (CT)</option>
+            <option value="America/Denver">Mountain (MT)</option>
+            <option value="America/Los_Angeles">Pacific (PT)</option>
+            <option value="Europe/London">London (GMT)</option>
+            <option value="Europe/Paris">Paris (CET)</option>
+            <option value="Asia/Tokyo">Tokyo (JST)</option>
+            <option value="Australia/Sydney">Sydney (AEDT)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Branding</label>
+          <div class="color-picker-row">
+            <div class="color-picker">
+              <label for="primary-color">Primary Color</label>
+              <input type="color" id="primary-color" value="#667eea">
+            </div>
+            <div class="color-picker">
+              <label for="secondary-color">Secondary Color</label>
+              <input type="color" id="secondary-color" value="#764ba2">
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <footer class="modal-footer">
+        <button type="submit" form="add-company-form" class="btn btn-primary" id="submit-company-btn">
+          Add Company
+        </button>
+        <button class="btn btn-secondary" onclick="closeAddCompanyModal()">
+          Cancel
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Manage Companies Modal -->
+  <div class="modal" id="manage-companies-modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeManageCompaniesModal()"></div>
+    <div class="modal-content large">
+      <header class="modal-header">
+        <h2>Manage Companies</h2>
+        <button class="close-btn" onclick="closeManageCompaniesModal()">✕</button>
+      </header>
+      
+      <div class="modal-body">
+        <div class="companies-list" id="manage-companies-list">
+          <!-- Companies will be dynamically loaded here -->
+        </div>
+      </div>
+
+      <footer class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeManageCompaniesModal()">
+          Close
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="company-selector.js"></script>
+</body>
+</html>
