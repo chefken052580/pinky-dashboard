@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Settings - PinkyBot</title>
+  <link rel="stylesheet" href="team-settings.css">
+</head>
+<body>
+  <div class="team-settings-container">
+    <!-- Header -->
+    <header class="settings-header">
+      <h1>⚙️ Team Settings</h1>
+      <p class="subtitle">Manage workspace members, roles, and permissions</p>
+    </header>
+
+    <!-- Workspace Selector -->
+    <div class="workspace-selector-container">
+      <label>Active Workspace:</label>
+      <select id="workspace-selector" onchange="TeamSettings.switchWorkspace()">
+        <option value="">Loading workspaces...</option>
+      </select>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="members" onclick="TeamSettings.switchTab('members')">
+        👥 Members
+      </button>
+      <button class="tab" data-tab="invitations" onclick="TeamSettings.switchTab('invitations')">
+        📧 Invitations
+      </button>
+      <button class="tab" data-tab="settings" onclick="TeamSettings.switchTab('settings')">
+        ⚙️ Settings
+      </button>
+    </div>
+
+    <!-- Members Tab -->
+    <div id="tab-members" class="tab-content active">
+      <div class="section-header">
+        <h2>Team Members</h2>
+        <button class="btn-primary" onclick="TeamSettings.showInviteModal()">
+          ➕ Invite Member
+        </button>
+      </div>
+
+      <div id="members-list" class="members-list">
+        <div class="loading">Loading members...</div>
+      </div>
+    </div>
+
+    <!-- Invitations Tab -->
+    <div id="tab-invitations" class="tab-content">
+      <div class="section-header">
+        <h2>Pending Invitations</h2>
+      </div>
+
+      <div id="invitations-list" class="invitations-list">
+        <div class="loading">Loading invitations...</div>
+      </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="tab-settings" class="tab-content">
+      <div class="section-header">
+        <h2>Workspace Settings</h2>
+      </div>
+
+      <div class="settings-form">
+        <div class="form-group">
+          <label>Workspace Name</label>
+          <input type="text" id="workspace-name" placeholder="My Team Workspace" />
+        </div>
+
+        <div class="form-group">
+          <label>Default Model</label>
+          <select id="default-model">
+            <option value="claude-sonnet">Claude Sonnet (Code)</option>
+            <option value="claude-haiku">Claude Haiku (Chat)</option>
+            <option value="gpt-4">GPT-4</option>
+            <option value="gemini">Google Gemini</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Timezone</label>
+          <select id="timezone">
+            <option value="America/New_York">Eastern Time (ET)</option>
+            <option value="America/Chicago">Central Time (CT)</option>
+            <option value="America/Denver">Mountain Time (MT)</option>
+            <option value="America/Los_Angeles">Pacific Time (PT)</option>
+            <option value="UTC">UTC</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="enable-heartbeat" checked />
+            Enable Heartbeat Protocol
+          </label>
+          <p class="form-help">Pinky checks HEARTBEAT.md every 30 minutes</p>
+        </div>
+
+        <div class="form-group">
+          <label>Features</label>
+          <div class="checkbox-group">
+            <label>
+              <input type="checkbox" id="feature-social" checked />
+              SocialBot (Multi-platform posting)
+            </label>
+            <label>
+              <input type="checkbox" id="feature-tasks" checked />
+              TasksBot (Task management)
+            </label>
+            <label>
+              <input type="checkbox" id="feature-filesystem" checked />
+              FilesystemBot (File operations)
+            </label>
+            <label>
+              <input type="checkbox" id="feature-selfhealing" />
+              Self-Healing (Bug auto-fix pipeline)
+            </label>
+            <label>
+              <input type="checkbox" id="feature-multicompany" />
+              Multi-Company (Multiple brands)
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" onclick="TeamSettings.saveSettings()">
+            💾 Save Settings
+          </button>
+        </div>
+      </div>
+
+      <div class="danger-zone">
+        <h3>⚠️ Danger Zone</h3>
+        <p>Once you delete a workspace, there is no going back. Please be certain.</p>
+        <button class="btn-danger" onclick="TeamSettings.deleteWorkspace()">
+          🗑️ Delete Workspace
+        </button>
+      </div>
+    </div>
+
+    <!-- Invite Modal -->
+    <div id="invite-modal" class="modal" style="display: none;">
+      <div class="modal-overlay" onclick="TeamSettings.closeInviteModal()"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Invite Team Member</h2>
+          <button class="modal-close" onclick="TeamSettings.closeInviteModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="invite-email" placeholder="colleague@company.com" />
+          </div>
+
+          <div class="form-group">
+            <label>Role</label>
+            <select id="invite-role">
+              <option value="member">Member (Read + Write)</option>
+              <option value="admin">Admin (Full access except billing)</option>
+              <option value="viewer">Viewer (Read-only)</option>
+              <option value="guest">Guest (Limited read, temporary)</option>
+            </select>
+            <p class="form-help">
+              Admins can invite/remove members. Members can create tasks. Viewers can only observe.
+            </p>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-secondary" onclick="TeamSettings.closeInviteModal()">Cancel</button>
+            <button class="btn-primary" onclick="TeamSettings.sendInvite()">📧 Send Invitation</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="team-settings.js"></script>
+</body>
+</html>
