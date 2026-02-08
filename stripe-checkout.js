@@ -292,6 +292,9 @@ class StripeCheckout {
         this.showSuccess('🎉 Welcome to Pro! Your subscription is now active.');
       }, 500);
 
+      // Fire event for tier resolver
+      window.dispatchEvent(new Event('stripeCheckoutSuccess'));
+
       // Verify subscription status from backend
       await this.verifySubscription();
     } else if (checkoutStatus === 'cancel') {

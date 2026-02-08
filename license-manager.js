@@ -192,6 +192,9 @@ class LicenseManager {
       // Update tier
       this.setTierFromLicense(activateData.tier);
 
+      // Fire event for tier resolver
+      window.dispatchEvent(new Event('licenseActivated'));
+
       // Show success
       this.showSuccess(`License activated! You now have ${activateData.tier.toUpperCase()} access.`);
 
