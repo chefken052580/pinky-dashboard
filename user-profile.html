@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - PinkyBot</title>
+    <style>
+        .profile-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 30px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        
+        .profile-header .user-email {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .profile-tier-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        
+        .profile-section {
+            background: #1a1a2e;
+            border: 1px solid #00d4ff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .profile-section h2 {
+            margin: 0 0 20px 0;
+            color: #00d4ff;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .profile-field {
+            margin-bottom: 20px;
+        }
+        
+        .profile-field label {
+            display: block;
+            color: #00d4ff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .profile-field input {
+            width: 100%;
+            padding: 12px;
+            background: #16213e;
+            border: 1px solid #667eea;
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .profile-field input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #16213e 0%, #0f0e1a 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #16213e;
+            color: #00d4ff;
+            border: 1px solid #00d4ff;
+        }
+        
+        .btn-secondary:hover {
+            background: #00d4ff;
+            color: #16213e;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .subscription-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .subscription-status.pro {
+            background: rgba(102, 126, 234, 0.1);
+            border-left-color: #667eea;
+        }
+        
+        .subscription-status-icon {
+            font-size: 24px;
+        }
+        
+        .license-key-box {
+            background: #16213e;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            border: 1px dashed #667eea;
+            margin: 15px 0;
+        }
+        
+        .danger-zone {
+            border: 2px solid rgba(245, 87, 108, 0.5);
+            border-radius: 12px;
+            padding: 25px;
+            background: rgba(245, 87, 108, 0.05);
+        }
+        
+        .danger-zone h2 {
+            color: #f5576c;
+        }
+        
+        .success-message {
+            padding: 15px;
+            background: rgba(0, 255, 127, 0.1);
+            border-left: 4px solid #00ff7f;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .error-message {
+            padding: 15px;
+            background: rgba(245, 87, 108, 0.1);
+            border-left: 4px solid #f5576c;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <h1>My Profile</h1>
+            <div class="user-email" id="profile-email">Loading...</div>
+            <span class="profile-tier-badge" id="profile-tier">Loading...</span>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div class="success-message" id="success-message"></div>
+        <div class="error-message" id="error-message"></div>
+
+        <!-- Account Statistics -->
+        <div class="profile-section">
+            <h2>Workspace Statistics</h2>
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-tasks">0</div>
+                    <div class="stat-label">Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-companies">0</div>
+                    <div class="stat-label">Companies</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-posts">0</div>
+                    <div class="stat-label">Scheduled Posts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-connections">0</div>
+                    <div class="stat-label">Connections</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscription Status -->
+        <div class="profile-section">
+            <h2>Subscription</h2>
+            <div class="subscription-status" id="subscription-status">
+                <div class="subscription-status-icon">⚡</div>
+                <div>
+                    <strong id="subscription-tier-name">Free Tier</strong><br>
+                    <span id="subscription-details">Limited features</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="upgradeAccount()">Upgrade to Pro</button>
+            <button class="btn btn-secondary" onclick="downloadLicenseKey()" id="download-license-btn" style="display: none;">Download License Key</button>
+        </div>
+
+        <!-- Account Information -->
+        <div class="profile-section">
+            <h2>Account Information</h2>
+            <div class="profile-field">
+                <label for="profile-name">Display Name</label>
+                <input type="text" id="profile-name" placeholder="Enter your name">
+            </div>
+            <div class="profile-field">
+                <label for="profile-email-input">Email Address</label>
+                <input type="email" id="profile-email-input" placeholder="your@email.com" disabled>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="updateProfile()">Save Changes</button>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="profile-section">
+            <h2>Security</h2>
+            <div class="profile-field">
+                <label for="current-password">Current Password</label>
+                <input type="password" id="current-password" placeholder="Enter current password">
+            </div>
+            <div class="profile-field">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" placeholder="Enter new password (min 8 characters)">
+            </div>
+            <div class="profile-field">
+                <label for="confirm-password">Confirm New Password</label>
+                <input type="password" id="confirm-password" placeholder="Confirm new password">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="profile-section danger-zone">
+            <h2>⚠️ Danger Zone</h2>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 15px;">
+                Once you delete your account, there is no going back. All your data will be permanently deleted.
+            </p>
+            <button class="btn btn-danger" onclick="deleteAccount()">Delete My Account</button>
+        </div>
+    </div>
+
+    <script src="/user-profile.js"></script>
+</body>
+</html>
