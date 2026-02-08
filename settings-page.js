@@ -265,6 +265,37 @@ class SettingsPageUI {
         const layout = this.settings.getSetting('ui.layout');
         
         return `
+            <div class="settings-section-header">
+                <h3>✨ Subscription Tier</h3>
+            </div>
+            
+            <div class="settings-group tier-management">
+                <div class="current-tier-display">
+                    <span class="tier-badge" id="current-tier-badge">Free Tier</span>
+                    <p class="tier-description" id="tier-description">
+                        You're on the Free tier with Dashboard, Chat, and TasksBot.
+                    </p>
+                </div>
+                
+                <div class="tier-actions">
+                    <button class="btn btn-primary" id="toggle-tier-btn" onclick="window.featureGating.showUpgradePrompt('All Premium Features')">
+                        Upgrade to Pro
+                    </button>
+                    <button class="btn btn-secondary" id="demo-tier-toggle" style="margin-left: 10px;">
+                        🔄 Demo Tier Toggle
+                    </button>
+                </div>
+                
+                <div class="tier-info-box">
+                    <strong>💡 Demo Mode:</strong> Use "Demo Tier Toggle" to test Free vs Pro tier restrictions.
+                    In production, tier changes would go through payment processing.
+                </div>
+            </div>
+            
+            <div class="settings-section-header">
+                <h3>🎨 Appearance</h3>
+            </div>
+            
             <div class="settings-group">
                 <label class="setting-label">
                     <span>🎨 Theme</span>
