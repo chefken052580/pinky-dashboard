@@ -1,0 +1,264 @@
+<!-- WordPress Manager Component -->
+<div class="wordpress-manager">
+  <!-- Header -->
+  <div class="wp-header">
+    <div class="wp-header-left">
+      <h2><span class="wp-icon">📝</span> WordPress SEO Manager</h2>
+      <p class="wp-subtitle">Create SEO-optimized pages for your connected WordPress sites</p>
+    </div>
+    <div class="wp-header-right">
+      <button class="btn-wp-connect" onclick="showConnectModal()">
+        <span class="icon">🔗</span> Connect WordPress Site
+      </button>
+    </div>
+  </div>
+
+  <!-- WordPress Connections List -->
+  <div class="wp-connections-section">
+    <h3>Connected Sites</h3>
+    <div id="wp-connections-list" class="wp-connections-grid">
+      <!-- Populated by JavaScript -->
+    </div>
+    <div id="wp-no-connections" class="wp-no-connections" style="display: none;">
+      <span class="icon">🔌</span>
+      <p>No WordPress sites connected yet</p>
+      <button onclick="showConnectModal()" class="btn-secondary">Connect Your First Site</button>
+    </div>
+  </div>
+
+  <!-- SEO Page Builder -->
+  <div class="wp-builder-section" id="wp-builder-section" style="display: none;">
+    <h3><span class="icon">✍️</span> SEO Page Builder</h3>
+    
+    <div class="wp-builder-form">
+      <!-- Connection Selector -->
+      <div class="form-row">
+        <label>WordPress Site</label>
+        <select id="wp-builder-connection" class="form-control" required>
+          <option value="">Select a connected site...</option>
+        </select>
+      </div>
+
+      <!-- Post Type -->
+      <div class="form-row">
+        <label>Content Type</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="wp-content-type" value="post" checked>
+            <span>Blog Post</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="wp-content-type" value="page">
+            <span>Page</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div class="form-row">
+        <label>Title <span class="required">*</span></label>
+        <input 
+          type="text" 
+          id="wp-builder-title" 
+          class="form-control" 
+          placeholder="Enter SEO-optimized title..."
+          required
+        />
+        <small class="form-hint">Keep under 60 characters for optimal SEO</small>
+      </div>
+
+      <!-- Target Keywords -->
+      <div class="form-row">
+        <label>Target Keywords</label>
+        <input 
+          type="text" 
+          id="wp-builder-keywords" 
+          class="form-control" 
+          placeholder="keyword1, keyword2, keyword3..."
+        />
+        <small class="form-hint">Comma-separated list of keywords to target</small>
+      </div>
+
+      <!-- Content -->
+      <div class="form-row">
+        <label>Content <span class="required">*</span></label>
+        <textarea 
+          id="wp-builder-content" 
+          class="form-control wp-content-editor" 
+          rows="12"
+          placeholder="Write your SEO-optimized content here..."
+          required
+        ></textarea>
+        <small class="form-hint">Minimum 300 words recommended for SEO</small>
+      </div>
+
+      <!-- Excerpt -->
+      <div class="form-row">
+        <label>Excerpt / Meta Description</label>
+        <textarea 
+          id="wp-builder-excerpt" 
+          class="form-control" 
+          rows="3"
+          placeholder="Brief summary (150-160 characters for SEO)..."
+        ></textarea>
+      </div>
+
+      <!-- Categories -->
+      <div class="form-row">
+        <label>Categories</label>
+        <div id="wp-categories-container" class="checkbox-group">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div class="form-row">
+        <label>Tags</label>
+        <input 
+          type="text" 
+          id="wp-builder-tags" 
+          class="form-control" 
+          placeholder="tag1, tag2, tag3..."
+        />
+      </div>
+
+      <!-- Status -->
+      <div class="form-row">
+        <label>Publish Status</label>
+        <select id="wp-builder-status" class="form-control">
+          <option value="draft">Draft (Save without publishing)</option>
+          <option value="pending">Pending Review</option>
+          <option value="publish">Publish Immediately</option>
+        </select>
+      </div>
+
+      <!-- Actions -->
+      <div class="wp-builder-actions">
+        <button class="btn-primary" onclick="createWordPressContent()">
+          <span class="icon">✨</span> Create Content
+        </button>
+        <button class="btn-secondary" onclick="resetBuilderForm()">
+          <span class="icon">↺</span> Reset Form
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Published Content List -->
+  <div class="wp-content-section" id="wp-content-section" style="display: none;">
+    <h3><span class="icon">📄</span> Published Content</h3>
+    
+    <div class="wp-content-filter">
+      <select id="wp-content-filter-site" class="form-control">
+        <option value="">All Sites</option>
+      </select>
+      <select id="wp-content-filter-status" class="form-control">
+        <option value="">All Statuses</option>
+        <option value="draft">Draft</option>
+        <option value="pending">Pending Review</option>
+        <option value="publish">Published</option>
+      </select>
+      <button class="btn-secondary" onclick="loadWordPressContent()">
+        <span class="icon">🔄</span> Refresh
+      </button>
+    </div>
+
+    <div id="wp-content-list" class="wp-content-grid">
+      <!-- Populated by JavaScript -->
+    </div>
+  </div>
+</div>
+
+<!-- Connect WordPress Modal -->
+<div id="wp-connect-modal" class="modal" style="display: none;">
+  <div class="modal-content wp-modal">
+    <div class="modal-header">
+      <h3>Connect WordPress Site</h3>
+      <button class="modal-close" onclick="closeConnectModal()">×</button>
+    </div>
+    
+    <div class="modal-body">
+      <form id="wp-connect-form">
+        <!-- Company -->
+        <div class="form-row">
+          <label>Company <span class="required">*</span></label>
+          <select id="wp-connect-company" class="form-control" required>
+            <option value="">Select company...</option>
+          </select>
+        </div>
+
+        <!-- Connection Name -->
+        <div class="form-row">
+          <label>Connection Name <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="wp-connect-name" 
+            class="form-control" 
+            placeholder="e.g., Main Blog, Marketing Site..."
+            required
+          />
+        </div>
+
+        <!-- Site URL -->
+        <div class="form-row">
+          <label>WordPress Site URL <span class="required">*</span></label>
+          <input 
+            type="url" 
+            id="wp-connect-url" 
+            class="form-control" 
+            placeholder="https://yoursite.com"
+            required
+          />
+          <small class="form-hint">Full URL including https://</small>
+        </div>
+
+        <!-- Username -->
+        <div class="form-row">
+          <label>WordPress Username <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="wp-connect-username" 
+            class="form-control" 
+            placeholder="admin"
+            required
+          />
+        </div>
+
+        <!-- Application Password -->
+        <div class="form-row">
+          <label>Application Password <span class="required">*</span></label>
+          <input 
+            type="password" 
+            id="wp-connect-password" 
+            class="form-control" 
+            placeholder="xxxx xxxx xxxx xxxx xxxx xxxx"
+            required
+          />
+          <small class="form-hint">
+            Generate at: Dashboard → Users → Profile → Application Passwords
+          </small>
+        </div>
+
+        <!-- Help Text -->
+        <div class="form-help">
+          <p><strong>How to get an Application Password:</strong></p>
+          <ol>
+            <li>Log into your WordPress admin dashboard</li>
+            <li>Go to <strong>Users → Profile</strong></li>
+            <li>Scroll to <strong>Application Passwords</strong> section</li>
+            <li>Enter a name (e.g., "PinkyBot")</li>
+            <li>Click <strong>Add New Application Password</strong></li>
+            <li>Copy the generated password and paste it above</li>
+          </ol>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeConnectModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveWordPressConnection()">
+        <span class="icon">🔗</span> Connect Site
+      </button>
+    </div>
+  </div>
+</div>
