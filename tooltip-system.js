@@ -247,25 +247,56 @@ class TooltipSystem {
   positionTooltip(tooltipEl, targetEl, position) {
     const rect = targetEl.getBoundingClientRect();
     const offset = 10;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const tooltipRect = tooltipEl.getBoundingClientRect();
+    const safeMargin = 10; // Minimum distance from viewport edges
+
+    let left, top;
 
     switch (position) {
       case 'right':
-        tooltipEl.style.left = (rect.right + offset) + 'px';
-        tooltipEl.style.top = (rect.top + rect.height / 2 - 30) + 'px';
+        left = rect.right + offset;
+        top = rect.top + rect.height / 2 - tooltipRect.height / 2;
         break;
       case 'left':
-        tooltipEl.style.left = (rect.left - tooltipEl.offsetWidth - offset) + 'px';
-        tooltipEl.style.top = (rect.top + rect.height / 2 - 30) + 'px';
+        left = rect.left - tooltipRect.width - offset;
+        top = rect.top + rect.height / 2 - tooltipRect.height / 2;
         break;
       case 'bottom':
-        tooltipEl.style.left = (rect.left + rect.width / 2 - tooltipEl.offsetWidth / 2) + 'px';
-        tooltipEl.style.top = (rect.bottom + offset) + 'px';
+        left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+        top = rect.bottom + offset;
         break;
       case 'top':
-        tooltipEl.style.left = (rect.left + rect.width / 2 - tooltipEl.offsetWidth / 2) + 'px';
-        tooltipEl.style.top = (rect.top - tooltipEl.offsetHeight - offset) + 'px';
+        left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+        top = rect.top - tooltipRect.height - offset;
         break;
     }
+
+    // Viewport boundary checks - prevent off-screen rendering
+    // Check horizontal overflow
+    if (left + tooltipRect.width > viewportWidth - safeMargin) {
+      // Tooltip would go off right edge
+      left = viewportWidth - tooltipRect.width - safeMargin;
+    }
+    if (left < safeMargin) {
+      // Tooltip would go off left edge
+      left = safeMargin;
+    }
+
+    // Check vertical overflow
+    if (top + tooltipRect.height > viewportHeight - safeMargin) {
+      // Tooltip would go off bottom edge
+      top = viewportHeight - tooltipRect.height - safeMargin;
+    }
+    if (top < safeMargin) {
+      // Tooltip would go off top edge
+      top = safeMargin;
+    }
+
+    // Apply constrained positions
+    tooltipEl.style.left = left + 'px';
+    tooltipEl.style.top = top + 'px';
   }
 
   dismissTooltip(id) {

@@ -105,6 +105,8 @@
     max-width: 240px;
     padding: 12px 16px;
     font-size: 12px;
+    /* Ensure tooltip never extends beyond viewport */
+    max-width: calc(100vw - 20px) !important;
   }
 
   .tooltip-title {
@@ -113,6 +115,30 @@
 
   .tooltip-text {
     font-size: 12px;
+  }
+
+  /* Welcome modal responsive adjustments */
+  .welcome-content {
+    padding: 24px;
+    max-width: calc(100vw - 40px);
+    margin: 0 20px;
+  }
+
+  .welcome-content h2 {
+    font-size: 1.4em;
+  }
+
+  .welcome-features {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .welcome-actions {
+    flex-direction: column;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
   }
 }
 
