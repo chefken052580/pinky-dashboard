@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Release Notes - PinkyBot.io</title>
+  <style>
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+      --accent: #00d4ff;
+      --bg-dark: #0f0e1a;
+      --bg-card: #1a1a2e;
+      --text-light: #ffffff;
+      --text-muted: #a0a0c0;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #ef4444;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #16162e 100%);
+      color: var(--text-light);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+    
+    .header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #4b5563, #374151);
+    }
+    
+    input[type="text"] {
+      padding: 0.75rem 1rem;
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--text-light);
+      font-size: 1rem;
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .release-list {
+      display: grid;
+      gap: 2rem;
+    }
+    
+    .release-card {
+      background: var(--bg-card);
+      border: 2px solid rgba(102, 126, 234, 0.2);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+    
+    .release-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 212, 255, 0.15);
+    }
+    
+    .release-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .release-version {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    
+    .release-date {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    
+    .release-stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .stat-icon {
+      font-size: 1.2rem;
+    }
+    
+    .stat-value {
+      font-weight: 600;
+      color: var(--text-light);
+    }
+    
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    
+    .release-content {
+      line-height: 1.8;
+    }
+    
+    .release-content h3 {
+      color: var(--accent);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .release-content ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .release-content li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    
+    .release-content li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--success);
+      font-weight: bold;
+    }
+    
+    .toggle-content {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(102, 126, 234, 0.2);
+    }
+    
+    .toggle-btn {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    
+    .toggle-btn:hover {
+      background: var(--accent);
+      color: var(--bg-dark);
+    }
+    
+    .markdown-raw {
+      background: #0a0a0f;
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #a0a0c0;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+      display: none;
+    }
+    
+    .markdown-raw.visible {
+      display: block;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+    }
+    
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 2px solid var(--error);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      color: var(--error);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+    
+    .empty-state h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-light);
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+      }
+      
+      input[type="text"] {
+        width: 100%;
+      }
+      
+      .release-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📋 Release Notes</h1>
+      <p>Auto-generated from fixed bugs and improvements</p>
+    </div>
+    
+    <div class="controls">
+      <input type="text" id="versionInput" placeholder="Enter version (e.g., 1.0.0)">
+      <button class="btn" onclick="generateRelease()">Generate Release</button>
+      <button class="btn btn-secondary" onclick="loadReleases()">Refresh</button>
+    </div>
+    
+    <div id="error" class="error" style="display: none;"></div>
+    
+    <div id="loading" class="loading" style="display: none;">
+      Loading releases...
+    </div>
+    
+    <div id="releaseList" class="release-list"></div>
+    
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <h2>No Releases Yet</h2>
+      <p>Generate your first release by entering a version number above.</p>
+    </div>
+  </div>
+  
+  <script>
+    const API_BASE = 'http://192.168.254.4:3030/api/releases';
+    
+    // Load releases on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadReleases();
+    });
+    
+    async function loadReleases() {
+      const loading = document.getElementById('loading');
+      const releaseList = document.getElementById('releaseList');
+      const emptyState = document.getElementById('emptyState');
+      const errorDiv = document.getElementById('error');
+      
+      loading.style.display = 'block';
+      releaseList.innerHTML = '';
+      emptyState.style.display = 'none';
+      errorDiv.style.display = 'none';
+      
+      try {
+        const response = await fetch(`${API_BASE}/list`);
+        const data = await response.json();
+        
+        loading.style.display = 'none';
+        
+        if (!data.success || data.count === 0) {
+          emptyState.style.display = 'block';
+          return;
+        }
+        
+        renderReleases(data.releases);
+        
+      } catch (error) {
+        loading.style.display = 'none';
+        showError('Failed to load releases. Make sure the API is running.');
+        console.error('Load releases error:', error);
+      }
+    }
+    
+    function renderReleases(releases) {
+      const releaseList = document.getElementById('releaseList');
+      
+      releases.forEach(release => {
+        const card = createReleaseCard(release);
+        releaseList.appendChild(card);
+      });
+    }
+    
+    function createReleaseCard(release) {
+      const card = document.createElement('div');
+      card.className = 'release-card';
+      
+      const date = new Date(release.date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      card.innerHTML = `
+        <div class="release-header">
+          <div class="release-version">v${release.version}</div>
+          <div class="release-date">${date}</div>
+        </div>
+        
+        <div class="release-stats">
+          <div class="stat">
+            <span class="stat-icon">🐛</span>
+            <span class="stat-value">${release.bugCount}</span>
+            <span class="stat-label">bugs fixed</span>
+          </div>
+          <div class="stat">
+            <span class="stat-icon">⚡</span>
+            <span class="stat-value">${release.criticalCount || 0}</span>
+            <span class="stat-label">critical</span>
+          </div>
+        </div>
+        
+        <div class="release-content" id="content-${release.version}">
+          Loading...
+        </div>
+        
+        <div class="toggle-content">
+          <button class="toggle-btn" onclick="toggleMarkdown('${release.version}')">
+            View Raw Markdown
+          </button>
+          <div id="markdown-${release.version}" class="markdown-raw"></div>
+        </div>
+      `;
+      
+      // Load and render markdown content
+      loadReleaseContent(release.version);
+      
+      return card;
+    }
+    
+    async function loadReleaseContent(version) {
+      try {
+        const response = await fetch(`${API_BASE}/${version}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          const contentDiv = document.getElementById(`content-${version}`);
+          const markdownDiv = document.getElementById(`markdown-${version}`);
+          
+          // Render markdown as HTML (basic)
+          contentDiv.innerHTML = parseMarkdownBasic(data.release.markdown);
+          
+          // Store raw markdown
+          markdownDiv.textContent = data.release.markdown;
+        }
+      } catch (error) {
+        console.error(`Failed to load release ${version}:`, error);
+      }
+    }
+    
+    function parseMarkdownBasic(markdown) {
+      // Basic markdown parsing (for production, use marked.js or similar)
+      return markdown
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '<br><br>');
+    }
+    
+    function toggleMarkdown(version) {
+      const markdownDiv = document.getElementById(`markdown-${version}`);
+      markdownDiv.classList.toggle('visible');
+    }
+    
+    async function generateRelease() {
+      const versionInput = document.getElementById('versionInput');
+      const version = versionInput.value.trim();
+      const errorDiv = document.getElementById('error');
+      
+      errorDiv.style.display = 'none';
+      
+      if (!version) {
+        showError('Please enter a version number (e.g., 1.0.0)');
+        return;
+      }
+      
+      // Validate version format
+      if (!/^\d+\.\d+\.\d+$/.test(version)) {
+        showError('Invalid version format. Use X.Y.Z (e.g., 1.0.0)');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE}/generate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ version })
+        });
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+          showError(data.error || 'Failed to generate release');
+          return;
+        }
+        
+        // Clear input and reload
+        versionInput.value = '';
+        loadReleases();
+        
+      } catch (error) {
+        showError('Failed to generate release. Make sure the API is running.');
+        console.error('Generate release error:', error);
+      }
+    }
+    
+    function showError(message) {
+      const errorDiv = document.getElementById('error');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+      
+      setTimeout(() => {
+        errorDiv.style.display = 'none';
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
