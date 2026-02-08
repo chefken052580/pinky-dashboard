@@ -1,0 +1,75 @@
+<!-- Auto-Fix Approval Queue View -->
+<div class="approval-queue-container">
+  <div class="approval-header">
+    <h2>🔧 Auto-Fix Approval Queue</h2>
+    <p class="subtitle">Review AI-generated bug fixes before deployment</p>
+    
+    <div class="queue-stats">
+      <div class="stat-card">
+        <div class="stat-number" id="pending-fixes-count">0</div>
+        <div class="stat-label">Pending Review</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="approved-fixes-count">0</div>
+        <div class="stat-label">Approved</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="rejected-fixes-count">0</div>
+        <div class="stat-label">Rejected</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="test-pass-rate">0%</div>
+        <div class="stat-label">Test Pass Rate</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <select id="fix-status-filter">
+      <option value="all">All Fixes</option>
+      <option value="pending" selected>Pending Review</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Rejected</option>
+      <option value="generated">Just Generated</option>
+    </select>
+    
+    <select id="fix-complexity-filter">
+      <option value="all">All Complexity</option>
+      <option value="trivial">Trivial</option>
+      <option value="simple">Simple</option>
+      <option value="moderate">Moderate</option>
+      <option value="complex">Complex</option>
+      <option value="very-complex">Very Complex</option>
+    </select>
+    
+    <button class="btn-secondary" onclick="ApprovalQueue.refreshQueue()">🔄 Refresh</button>
+  </div>
+
+  <div class="fixes-list" id="fixes-list">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading auto-generated fixes...</p>
+    </div>
+  </div>
+</div>
+
+<!-- Fix Detail Modal -->
+<div id="fix-detail-modal" class="fix-modal" style="display: none;">
+  <div class="fix-modal-overlay" onclick="ApprovalQueue.closeDetailModal()"></div>
+  <div class="fix-modal-content">
+    <div class="fix-modal-header">
+      <h3>Fix Details</h3>
+      <button class="close-btn" onclick="ApprovalQueue.closeDetailModal()">&times;</button>
+    </div>
+    
+    <div class="fix-modal-body" id="fix-detail-body">
+      <!-- Dynamically populated -->
+    </div>
+    
+    <div class="fix-modal-actions">
+      <button class="btn-danger" onclick="ApprovalQueue.rejectFix()">❌ Reject</button>
+      <button class="btn-secondary" onclick="ApprovalQueue.retestFix()">🔄 Re-test</button>
+      <button class="btn-success" onclick="ApprovalQueue.approveFix()">✅ Approve & Deploy</button>
+    </div>
+  </div>
+</div>
