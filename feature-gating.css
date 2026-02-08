@@ -1,0 +1,352 @@
+/**
+ * Feature Gating System Styles
+ * Free vs Pro tier visual design
+ */
+
+/* Locked Feature Indicator */
+.locked-feature {
+    position: relative;
+    cursor: not-allowed !important;
+}
+
+.locked-feature .lock-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.locked-feature:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Upgrade Button in Sidebar */
+.upgrade-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    margin-top: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+    transition: all 0.3s ease;
+}
+
+.upgrade-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+}
+
+.upgrade-btn .btn-icon {
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+/* Upgrade Overlay */
+.upgrade-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.upgrade-modal {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0e1a 100%);
+    border: 2px solid #667eea;
+    border-radius: 16px;
+    max-width: 900px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(102, 126, 234, 0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.upgrade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+}
+
+.upgrade-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.upgrade-header .close-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.upgrade-header .close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.upgrade-content {
+    padding: 30px;
+    text-align: center;
+}
+
+.feature-locked-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.upgrade-message {
+    font-size: 18px;
+    color: #e0e0e0;
+    margin-bottom: 30px;
+}
+
+.upgrade-message strong {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+/* Tier Comparison */
+.tier-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.tier-card {
+    background: rgba(26, 26, 46, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: left;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.tier-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.tier-card.pro-tier {
+    border-color: #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+}
+
+.recommended-badge {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.tier-card h3 {
+    margin: 0 0 15px 0;
+    font-size: 22px;
+    color: #00d4ff;
+}
+
+.tier-price {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.tier-price .price {
+    display: block;
+    background: linear-gradient(135deg, #667eea, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tier-price .token-discount {
+    display: block;
+    font-size: 13px;
+    color: #2ed573;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.tier-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tier-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #b0b0b0;
+    font-size: 15px;
+}
+
+.tier-features li:last-child {
+    border-bottom: none;
+}
+
+.tier-features li:before {
+    margin-right: 10px;
+}
+
+/* Upgrade Actions */
+.upgrade-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.upgrade-actions .btn {
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.upgrade-actions .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.upgrade-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.upgrade-actions .btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.upgrade-actions .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.upgrade-note {
+    font-size: 13px;
+    color: #999;
+    background: rgba(0, 212, 255, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #00d4ff;
+    text-align: left;
+}
+
+.upgrade-note strong {
+    color: #00d4ff;
+}
+
+/* Success Toast */
+.upgrade-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+    z-index: 10000;
+    font-weight: 600;
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toast-icon {
+    font-size: 24px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .tier-comparison {
+        grid-template-columns: 1fr;
+    }
+    
+    .upgrade-modal {
+        width: 95%;
+    }
+    
+    .upgrade-header h2 {
+        font-size: 22px;
+    }
+    
+    .upgrade-actions {
+        flex-direction: column;
+    }
+    
+    .upgrade-actions .btn {
+        width: 100%;
+    }
+}
