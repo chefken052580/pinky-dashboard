@@ -185,14 +185,14 @@ function showCompanyModal(title, co) {
     ov.id = 'company-modal-overlay';
     ov.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:99998;display:flex;align-items:center;justify-content:center;';
     ov.innerHTML = '<div style="background:#1a2847;border-radius:16px;width:90%;max-width:600px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5);">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;padding:20px 25px;border-bottom:1px solid rgba(255,255,255,0.1);"><h3 style="margin:0;color:#fff;">'+title+'</h3><button onclick="closeCompanyModal()" style="background:none;border:none;color:#888;font-size:20px;cursor:pointer;">X</button></div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;padding:20px 25px;border-bottom:1px solid rgba(255,255,255,0.1);"><h3 style="margin:0;color:#fff;">'+title+'</h3><button onclick="closeSocialModal()" style="background:none;border:none;color:#888;font-size:20px;cursor:pointer;">X</button></div>' +
         '<div style="padding:25px;">' +
             '<div style="margin-bottom:18px;"><label style="display:block;color:#aaa;margin-bottom:6px;font-size:13px;font-weight:bold;">Company Name *</label><input type="text" id="modal-company-name" class="form-input" placeholder="e.g. Acme Corp" value="'+(co.name||'')+'"></div>' +
             '<div style="margin-bottom:18px;"><label style="display:block;color:#aaa;margin-bottom:6px;font-size:13px;font-weight:bold;">Platforms</label><div id="modal-platforms-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;">'+pcb+'</div></div>' +
             '<div id="modal-api-keys-container">'+akf+'</div>' +
             '<div style="margin-bottom:18px;"><label style="display:block;color:#aaa;margin-bottom:6px;font-size:13px;font-weight:bold;">Brand Colors</label><div style="display:flex;gap:20px;"><label style="color:#aaa;display:flex;align-items:center;gap:8px;">Primary: <input type="color" id="modal-color-primary" value="'+pc+'"></label><label style="color:#aaa;display:flex;align-items:center;gap:8px;">Secondary: <input type="color" id="modal-color-secondary" value="'+sc+'"></label></div></div>' +
         '</div>' +
-        '<div style="display:flex;justify-content:flex-end;gap:10px;padding:15px 25px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="closeCompanyModal()" style="background:rgba(255,255,255,0.1);color:#ccc;border:1px solid rgba(255,255,255,0.2);padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;">Cancel</button><button onclick="saveCompany()" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;">Save Company</button></div>' +
+        '<div style="display:flex;justify-content:flex-end;gap:10px;padding:15px 25px;border-top:1px solid rgba(255,255,255,0.1);"><button onclick="closeSocialModal()" style="background:rgba(255,255,255,0.1);color:#ccc;border:1px solid rgba(255,255,255,0.2);padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;">Cancel</button><button onclick="saveSocialCompany()" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;">Save Company</button></div>' +
     '</div>';
     document.body.appendChild(ov);
     document.querySelectorAll('#modal-platforms-grid input[type=checkbox]').forEach(function(cb) { cb.addEventListener('change', updateApiKeyFields); });
@@ -226,13 +226,13 @@ function updateApiKeyFields() {
     c.innerHTML = h;
 }
 
-window.closeCompanyModal = function() {
+window.closeSocialModal = function() {
     var o = document.getElementById('company-modal-overlay');
     if (o) o.remove();
     socialBotState.editingCompany = null;
 };
 
-window.saveCompany = function() {
+window.saveSocialCompany = function() {
     var name = document.getElementById('modal-company-name').value.trim();
     if (!name) { alert('Company name is required'); return; }
     var platforms = [];
@@ -244,7 +244,7 @@ window.saveCompany = function() {
     });
     var data = { name: name, platforms: platforms, apiKeys: apiKeys, branding: { colors: { primary: document.getElementById('modal-color-primary').value, secondary: document.getElementById('modal-color-secondary').value } } };
     var promise = socialBotState.editingCompany ? apiUpdateCompany(socialBotState.editingCompany, data) : apiCreateCompany(data);
-    promise.then(function() { closeCompanyModal(); loadCompanies(); showSocialSuccess(socialBotState.editingCompany ? 'Company updated!' : 'Company created!'); })
+    promise.then(function() { closeSocialModal(); loadCompanies(); showSocialSuccess(socialBotState.editingCompany ? 'Company updated!' : 'Company created!'); })
         .catch(function(e) { alert('Save failed: ' + e.message); });
 };
 

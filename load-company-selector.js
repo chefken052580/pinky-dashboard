@@ -21,6 +21,8 @@
         container.innerHTML = html;
         
         console.log('[Company Selector Loader] Component loaded successfully');
+        // Init after HTML is ready
+        if (window.CompanySelector) { CompanySelector.init(); }
     } catch (error) {
         console.error('[Company Selector Loader] Failed to load:', error);
         container.innerHTML = '<p style="color:#f87171;padding:20px;">Failed to load company selector. Please refresh the page.</p>';
