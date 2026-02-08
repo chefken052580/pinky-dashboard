@@ -1,291 +1,433 @@
 /**
- * PinkyBot Feature Gating System
- * Free vs Pro tier enforcement with upgrade prompts
+ * Feature Gating System - Free vs Pro Tier
+ * Free: Dashboard, Chat, TasksBot (3 bots)
+ * Pro: All 9 bots + Analytics + Settings
  */
 
 class FeatureGating {
-    constructor() {
-        this.tier = 'free'; // Default to free tier
-        this.init();
+  constructor() {
+    this.tiers = {
+      free: {
+        name: 'Free',
+        bots: ['dashboard-view', 'chat-view', 'tasks-view'],
+        features: []
+      },
+      pro: {
+        name: 'Pro',
+        price: 29,
+        bots: [
+          'dashboard-view',
+          'chat-view',
+          'tasks-view',
+          'filesystem-view',
+          'docs-view',
+          'research-view',
+          'code-view',
+          'social-view',
+          'business-view'
+        ],
+        features: ['analytics-dashboard-section', 'settings-view']
+      }
+    };
+    
+    this.init();
+  }
+  
+  init() {
+    // Check current tier from localStorage (default: free)
+    const currentTier = localStorage.getItem('pinky_tier') || 'free';
+    this.setTier(currentTier);
+    
+    // Add upgrade button to sidebar
+    this.addUpgradeButton();
+    
+    // Gate features on page load
+    this.applyFeatureGating();
+    
+    // Listen for view changes to reapply gating
+    this.watchNavigation();
+  }
+  
+  getCurrentTier() {
+    return localStorage.getItem('pinky_tier') || 'free';
+  }
+  
+  setTier(tier) {
+    if (!this.tiers[tier]) {
+      console.error(`[Feature Gating] Invalid tier: ${tier}`);
+      return;
     }
-
-    init() {
-        // Load tier from localStorage
-        this.tier = localStorage.getItem('pinkybot_tier') || 'free';
-        
-        // Apply gating on load
-        this.applyGating();
-        
-        // Add upgrade button to sidebar
-        this.addUpgradeButton();
-        
-        console.log(`[Feature Gating] Tier: ${this.tier}`);
-    }
-
-    getTier() {
-        return this.tier;
-    }
-
-    setTier(tier) {
-        if (tier !== 'free' && tier !== 'pro') {
-            console.error('[Feature Gating] Invalid tier:', tier);
-            return false;
+    
+    localStorage.setItem('pinky_tier', tier);
+    console.log(`[Feature Gating] Tier set to: ${tier}`);
+    this.applyFeatureGating();
+  }
+  
+  isPro() {
+    return this.getCurrentTier() === 'pro';
+  }
+  
+  isFree() {
+    return this.getCurrentTier() === 'free';
+  }
+  
+  isFeatureAllowed(featureId) {
+    const tier = this.getCurrentTier();
+    const allowedFeatures = [
+      ...this.tiers[tier].bots,
+      ...this.tiers[tier].features
+    ];
+    
+    return allowedFeatures.includes(featureId);
+  }
+  
+  applyFeatureGating() {
+    const tier = this.getCurrentTier();
+    console.log(`[Feature Gating] Applying ${tier} tier restrictions`);
+    
+    // Gate sidebar bot buttons
+    this.gateBotButtons();
+    
+    // Gate view content
+    this.gateViewContent();
+    
+    // Update upgrade button visibility
+    this.updateUpgradeButton();
+  }
+  
+  gateBotButtons() {
+    const allBots = [
+      { id: 'dashboard-view', name: 'Dashboard', button: 'nav-dashboard' },
+      { id: 'chat-view', name: 'Chat', button: 'nav-chat' },
+      { id: 'tasks-view', name: 'Tasks', button: 'tasks-nav' },
+      { id: 'filesystem-view', name: 'FileSystemBot', button: 'nav-filesystembot' },
+      { id: 'docs-view', name: 'DocsBot', button: 'nav-docsbot' },
+      { id: 'research-view', name: 'ResearchBot', button: 'nav-researchbot' },
+      { id: 'code-view', name: 'CodeBot', button: 'nav-codebot' },
+      { id: 'social-view', name: 'SocialBot', button: 'nav-socialbot' },
+      { id: 'business-view', name: 'BusinessBot', button: 'nav-businessbot' }
+    ];
+    
+    allBots.forEach(bot => {
+      const button = document.getElementById(bot.button);
+      if (!button) return;
+      
+      const isAllowed = this.isFeatureAllowed(bot.id);
+      
+      if (isAllowed) {
+        // Remove lock icon if exists
+        button.classList.remove('locked');
+        const lockIcon = button.querySelector('.lock-icon');
+        if (lockIcon) lockIcon.remove();
+      } else {
+        // Add lock icon
+        button.classList.add('locked');
+        if (!button.querySelector('.lock-icon')) {
+          const lockIcon = document.createElement('span');
+          lockIcon.className = 'lock-icon';
+          lockIcon.textContent = '🔒';
+          lockIcon.style.marginLeft = '8px';
+          lockIcon.style.fontSize = '14px';
+          button.appendChild(lockIcon);
         }
         
-        this.tier = tier;
-        localStorage.setItem('pinkybot_tier', tier);
-        this.applyGating();
-        
-        console.log(`[Feature Gating] Tier updated to: ${tier}`);
-        return true;
-    }
-
-    isFeatureAllowed(featureName) {
-        const freeFeatures = ['dashboard', 'chat', 'tasksbot'];
-        
-        if (this.tier === 'pro') {
-            return true; // Pro tier gets everything
-        }
-        
-        // Free tier - check against allowlist
-        return freeFeatures.includes(featureName.toLowerCase());
-    }
-
-    applyGating() {
-        // Hide/show sidebar buttons based on tier
-        const sidebar = document.querySelector('.sidebar');
-        if (!sidebar) return;
-
-        // Free tier: Dashboard, Chat, TasksBot (3 bots)
-        // Pro tier: All 9 bots + Analytics + Settings
-        
-        const lockedFeatures = {
-            'free': [
-                'filesystem-nav',  // FileSystemBot
-                'docs-nav',        // DocsBot
-                'research-nav',    // ResearchBot
-                'code-nav',        // CodeBot
-                'social-nav',      // SocialBot
-                'business-nav',    // BusinessBot
-                'analytics-view',  // Analytics section
-                'settings-nav'     // Settings page
-            ]
+        // Override click to show upgrade prompt
+        button.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.showUpgradePrompt(bot.name);
         };
-
-        const locked = this.tier === 'free' ? lockedFeatures.free : [];
-
-        locked.forEach(navId => {
-            const navButton = document.getElementById(navId);
-            if (navButton) {
-                // Add locked styling
-                navButton.classList.add('locked-feature');
-                navButton.style.opacity = '0.5';
-                navButton.style.position = 'relative';
-                
-                // Add lock icon
-                if (!navButton.querySelector('.lock-icon')) {
-                    const lockIcon = document.createElement('span');
-                    lockIcon.className = 'lock-icon';
-                    lockIcon.innerHTML = '🔒';
-                    lockIcon.style.cssText = 'position: absolute; top: 5px; right: 5px; font-size: 12px;';
-                    navButton.appendChild(lockIcon);
-                }
-                
-                // Override click handler to show upgrade prompt
-                navButton.onclick = (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.showUpgradePrompt(navButton.textContent.trim());
-                };
-            }
-        });
-
-        // Update upgrade button visibility
-        this.updateUpgradeButton();
+      }
+    });
+  }
+  
+  gateViewContent() {
+    const allViews = [
+      'dashboard-view',
+      'chat-view',
+      'tasks-view',
+      'filesystem-view',
+      'docs-view',
+      'research-view',
+      'code-view',
+      'social-view',
+      'business-view'
+    ];
+    
+    allViews.forEach(viewId => {
+      const view = document.getElementById(viewId);
+      if (!view) return;
+      
+      const isAllowed = this.isFeatureAllowed(viewId);
+      
+      if (!isAllowed) {
+        // Add locked overlay if not already present
+        if (!view.querySelector('.locked-overlay')) {
+          const overlay = this.createLockedOverlay(viewId);
+          view.style.position = 'relative';
+          view.insertBefore(overlay, view.firstChild);
+        }
+      } else {
+        // Remove locked overlay if present
+        const overlay = view.querySelector('.locked-overlay');
+        if (overlay) overlay.remove();
+      }
+    });
+    
+    // Gate analytics section
+    const analyticsSection = document.getElementById('analytics-dashboard-section');
+    if (analyticsSection) {
+      const isAllowed = this.isFeatureAllowed('analytics-dashboard-section');
+      
+      if (!isAllowed && !analyticsSection.querySelector('.locked-overlay')) {
+        const overlay = this.createLockedOverlay('Analytics');
+        analyticsSection.style.position = 'relative';
+        analyticsSection.insertBefore(overlay, analyticsSection.firstChild);
+      } else if (isAllowed) {
+        const overlay = analyticsSection.querySelector('.locked-overlay');
+        if (overlay) overlay.remove();
+      }
     }
-
-    addUpgradeButton() {
-        const sidebar = document.querySelector('.sidebar');
-        if (!sidebar) return;
-
-        // Check if button already exists
-        if (document.getElementById('upgrade-btn')) return;
-
-        // Create upgrade button
-        const upgradeBtn = document.createElement('button');
-        upgradeBtn.id = 'upgrade-btn';
-        upgradeBtn.className = 'nav-btn upgrade-btn';
-        upgradeBtn.innerHTML = `
-            <span class="btn-icon">✨</span>
-            <span class="btn-text">Upgrade to Pro</span>
-        `;
-        upgradeBtn.style.cssText = `
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-weight: 600;
-            margin-top: 10px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        `;
-        
-        upgradeBtn.onclick = () => this.showUpgradePrompt('Premium Features');
-        
-        // Add to sidebar at bottom
+    
+    // Gate settings view
+    const settingsView = document.getElementById('settings-view');
+    if (settingsView) {
+      const isAllowed = this.isFeatureAllowed('settings-view');
+      
+      if (!isAllowed && !settingsView.querySelector('.locked-overlay')) {
+        const overlay = this.createLockedOverlay('Settings');
+        settingsView.style.position = 'relative';
+        settingsView.insertBefore(overlay, settingsView.firstChild);
+      } else if (isAllowed) {
+        const overlay = settingsView.querySelector('.locked-overlay');
+        if (overlay) overlay.remove();
+      }
+    }
+  }
+  
+  createLockedOverlay(featureName) {
+    const overlay = document.createElement('div');
+    overlay.className = 'locked-overlay';
+    overlay.innerHTML = `
+      <div class="locked-content">
+        <div class="lock-icon-large">🔒</div>
+        <h3>Upgrade to Pro</h3>
+        <p>${featureName} is available in PinkyBot Pro</p>
+        <div class="pro-features">
+          <div class="feature-item">✅ All 9 Bots Unlocked</div>
+          <div class="feature-item">✅ Advanced Analytics</div>
+          <div class="feature-item">✅ Unlimited Tasks</div>
+          <div class="feature-item">✅ Priority Support</div>
+        </div>
+        <div class="pricing">
+          <span class="price">$29</span>/month
+        </div>
+        <button class="upgrade-now-btn" onclick="featureGating.showUpgradePrompt('${featureName}')">
+          Upgrade Now
+        </button>
+      </div>
+    `;
+    
+    return overlay;
+  }
+  
+  addUpgradeButton() {
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+    
+    // Remove existing upgrade button if present
+    const existing = document.getElementById('upgrade-to-pro-btn');
+    if (existing) existing.remove();
+    
+    // Add upgrade button (only show if free tier)
+    if (this.isFree()) {
+      const upgradeBtn = document.createElement('button');
+      upgradeBtn.id = 'upgrade-to-pro-btn';
+      upgradeBtn.className = 'upgrade-btn';
+      upgradeBtn.innerHTML = `
+        <span class="upgrade-icon">⭐</span>
+        <span>Upgrade to Pro</span>
+      `;
+      upgradeBtn.onclick = () => this.showUpgradePrompt('Dashboard');
+      
+      // Insert before "Views" header
+      const viewsHeader = Array.from(sidebar.querySelectorAll('.sidebar-section-header'))
+        .find(h => h.textContent.includes('Views'));
+      
+      if (viewsHeader) {
+        sidebar.insertBefore(upgradeBtn, viewsHeader);
+      } else {
         sidebar.appendChild(upgradeBtn);
+      }
     }
-
-    updateUpgradeButton() {
-        const upgradeBtn = document.getElementById('upgrade-btn');
-        if (!upgradeBtn) return;
-
-        if (this.tier === 'pro') {
-            upgradeBtn.style.display = 'none';
-        } else {
-            upgradeBtn.style.display = 'block';
-        }
+  }
+  
+  updateUpgradeButton() {
+    const upgradeBtn = document.getElementById('upgrade-to-pro-btn');
+    
+    if (this.isFree()) {
+      if (!upgradeBtn) {
+        this.addUpgradeButton();
+      }
+    } else {
+      if (upgradeBtn) {
+        upgradeBtn.remove();
+      }
     }
-
-    showUpgradePrompt(featureName) {
-        // Remove existing overlay if present
-        const existingOverlay = document.getElementById('upgrade-overlay');
-        if (existingOverlay) {
-            existingOverlay.remove();
-        }
-
-        // Create upgrade overlay
-        const overlay = document.createElement('div');
-        overlay.id = 'upgrade-overlay';
-        overlay.className = 'upgrade-overlay';
-        overlay.innerHTML = `
-            <div class="upgrade-modal">
-                <div class="upgrade-header">
-                    <h2>✨ Unlock ${featureName}</h2>
-                    <button class="close-btn" onclick="document.getElementById('upgrade-overlay').remove()">✕</button>
-                </div>
-                
-                <div class="upgrade-content">
-                    <div class="feature-locked-icon">🔒</div>
-                    <p class="upgrade-message">This feature is part of <strong>PinkyBot Pro</strong></p>
-                    
-                    <div class="tier-comparison">
-                        <div class="tier-card free-tier">
-                            <h3>Free Tier</h3>
-                            <div class="tier-price">$0/month</div>
-                            <ul class="tier-features">
-                                <li>✅ Dashboard (Mission Control)</li>
-                                <li>✅ Chat Interface</li>
-                                <li>✅ TasksBot</li>
-                                <li>❌ 6 Advanced Bots</li>
-                                <li>❌ Analytics Dashboard</li>
-                                <li>❌ Settings & Customization</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="tier-card pro-tier">
-                            <div class="recommended-badge">RECOMMENDED</div>
-                            <h3>Pro Tier</h3>
-                            <div class="tier-price">
-                                <span class="price">$29/month</span>
-                                <span class="token-discount">20% off with PINKY tokens</span>
-                            </div>
-                            <ul class="tier-features">
-                                <li>✅ Everything in Free</li>
-                                <li>✅ FileSystemBot (LLM-powered)</li>
-                                <li>✅ DocsBot + ResearchBot + CodeBot</li>
-                                <li>✅ SocialBot (8 platforms)</li>
-                                <li>✅ BusinessBot + WordPress Integration</li>
-                                <li>✅ Advanced Analytics</li>
-                                <li>✅ Full Settings Control</li>
-                                <li>✅ Priority Support</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="upgrade-actions">
-                        <button class="btn btn-secondary" onclick="document.getElementById('upgrade-overlay').remove()">
-                            Maybe Later
-                        </button>
-                        <button class="btn btn-primary" onclick="window.featureGating.mockUpgrade()">
-                            Upgrade to Pro - $29/mo
-                        </button>
-                    </div>
-                    
-                    <p class="upgrade-note">
-                        💡 <strong>Demo Mode:</strong> In production, this would connect to payment processing.
-                        For testing, use the "Unlock Pro" button in Settings.
-                    </p>
-                </div>
-            </div>
-        `;
+  }
+  
+  showUpgradePrompt(featureName) {
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'upgrade-modal';
+    modal.innerHTML = `
+      <div class="upgrade-modal-content">
+        <button class="close-modal" onclick="this.closest('.upgrade-modal').remove()">✕</button>
+        <div class="modal-header">
+          <div class="lock-icon-large">🔒</div>
+          <h2>Unlock ${featureName}</h2>
+          <p>Upgrade to PinkyBot Pro for full access</p>
+        </div>
         
-        document.body.appendChild(overlay);
+        <div class="tier-comparison">
+          <div class="tier-card free-tier">
+            <h3>Free</h3>
+            <div class="tier-price">$0<span>/month</span></div>
+            <ul class="tier-features">
+              <li>✅ Dashboard</li>
+              <li>✅ Chat</li>
+              <li>✅ TasksBot</li>
+              <li>❌ 6 Additional Bots</li>
+              <li>❌ Analytics</li>
+              <li>❌ Settings</li>
+            </ul>
+            <button class="tier-btn" disabled>Current Plan</button>
+          </div>
+          
+          <div class="tier-card pro-tier">
+            <div class="popular-badge">Most Popular</div>
+            <h3>Pro</h3>
+            <div class="tier-price">$29<span>/month</span></div>
+            <ul class="tier-features">
+              <li>✅ All 9 Bots</li>
+              <li>✅ FileSystemBot</li>
+              <li>✅ DocsBot</li>
+              <li>✅ ResearchBot</li>
+              <li>✅ CodeBot</li>
+              <li>✅ SocialBot</li>
+              <li>✅ BusinessBot</li>
+              <li>✅ Advanced Analytics</li>
+              <li>✅ Full Settings Access</li>
+              <li>✅ Unlimited Tasks</li>
+              <li>✅ Priority Support</li>
+            </ul>
+            <button class="tier-btn pro-btn" onclick="featureGating.upgradeToPro()">
+              Upgrade to Pro
+            </button>
+          </div>
+        </div>
         
-        // Animate in
-        setTimeout(() => {
-            overlay.style.opacity = '1';
-            overlay.querySelector('.upgrade-modal').style.transform = 'scale(1)';
-        }, 10);
+        <div class="modal-footer">
+          <p>🔗 Hold 10,000+ $PINKY tokens? <a href="#" onclick="featureGating.showTokenDiscount(); return false;">Get 20% off!</a></p>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+  }
+  
+  upgradeToPro() {
+    // For now, just unlock locally (payment integration Phase 3.2)
+    console.log('[Feature Gating] Upgrading to Pro (demo mode)');
+    
+    if (confirm('Demo Mode: This will unlock Pro features locally.\n\nIn production, this will redirect to payment checkout.\n\nContinue?')) {
+      this.setTier('pro');
+      
+      // Close modal
+      const modal = document.querySelector('.upgrade-modal');
+      if (modal) modal.remove();
+      
+      // Show success message
+      this.showSuccessMessage('Upgraded to Pro! 🎉');
+      
+      // Refresh page to apply changes
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     }
-
-    mockUpgrade() {
-        // Demo function - simulates upgrade
-        if (confirm('Demo: Upgrade to Pro tier?\n\n(In production, this would process payment)')) {
-            this.setTier('pro');
-            
-            // Remove overlay
-            const overlay = document.getElementById('upgrade-overlay');
-            if (overlay) overlay.remove();
-            
-            // Show success message
-            this.showSuccessMessage();
-            
-            // Reload to apply new tier
-            setTimeout(() => location.reload(), 1500);
-        }
-    }
-
-    showSuccessMessage() {
-        const toast = document.createElement('div');
-        toast.className = 'upgrade-toast';
-        toast.innerHTML = `
-            <div class="toast-content">
-                <span class="toast-icon">🎉</span>
-                <span class="toast-message">Welcome to Pro! Unlocking all features...</span>
-            </div>
-        `;
-        toast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
-            z-index: 10000;
-            font-weight: 600;
-            animation: slideIn 0.3s ease-out;
-        `;
-        
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.style.animation = 'slideOut 0.3s ease-in';
-            setTimeout(() => toast.remove(), 300);
-        }, 1200);
-    }
+  }
+  
+  showTokenDiscount() {
+    alert('🪙 Solana $PINKY Token Holders:\n\n' +
+          'Hold 10,000+ $PINKY tokens in your wallet to unlock 20% off Pro!\n\n' +
+          'Price: $29/mo → $23.20/mo\n\n' +
+          'Connect your Solana wallet on the pricing page to verify your balance.\n\n' +
+          '(Feature coming in Phase 3.1-4)');
+  }
+  
+  showSuccessMessage(message) {
+    const toast = document.createElement('div');
+    toast.className = 'success-toast';
+    toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #2ed573 0%, #1dd1a1 100%);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(46, 213, 115, 0.4);
+      z-index: 999999;
+      animation: slideInRight 0.4s ease;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'slideOutRight 0.4s ease';
+      setTimeout(() => toast.remove(), 400);
+    }, 2000);
+  }
+  
+  watchNavigation() {
+    // Re-apply gating when views change
+    const observer = new MutationObserver(() => {
+      this.applyFeatureGating();
+    });
+    
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+  
+  // Admin functions for testing
+  resetToFree() {
+    this.setTier('free');
+    window.location.reload();
+  }
+  
+  debugInfo() {
+    console.log('[Feature Gating Debug]');
+    console.log('Current Tier:', this.getCurrentTier());
+    console.log('Is Pro:', this.isPro());
+    console.log('Is Free:', this.isFree());
+    console.log('Allowed Features:', [
+      ...this.tiers[this.getCurrentTier()].bots,
+      ...this.tiers[this.getCurrentTier()].features
+    ]);
+  }
 }
 
-// Global instance
-window.featureGating = new FeatureGating();
-
-// Expose unlock function for Settings page
-window.unlockProTier = () => {
-    window.featureGating.setTier('pro');
-    location.reload();
-};
-
-window.lockToFreeTier = () => {
-    window.featureGating.setTier('free');
-    location.reload();
-};
+// Auto-initialize
+let featureGating;
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    featureGating = new FeatureGating();
+    window.featureGating = featureGating; // Expose globally
+  });
+} else {
+  featureGating = new FeatureGating();
+  window.featureGating = featureGating;
+}
