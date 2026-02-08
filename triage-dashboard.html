@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bug Triage - PinkyBot.io</title>
+  <style>
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+      --accent: #00d4ff;
+      --bg-dark: #0f0e1a;
+      --bg-card: #1a1a2e;
+      --text-light: #ffffff;
+      --text-muted: #a0a0c0;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #16162e 100%);
+      color: var(--text-light);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+    }
+
+    .filters {
+      background: var(--bg-card);
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .filter-group label {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    select, input[type="text"] {
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 6px;
+      color: var(--text-light);
+      font-size: 0.875rem;
+    }
+
+    .bug-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .bug-card {
+      background: var(--bg-card);
+      border: 2px solid rgba(102, 126, 234, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .bug-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .bug-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .bug-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .bug-id {
+      color: var(--accent);
+      font-size: 0.875rem;
+      font-family: monospace;
+    }
+
+    .bug-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-critical { background: rgba(239, 68, 68, 0.2); color: var(--error); }
+    .badge-major { background: rgba(251, 191, 36, 0.2); color: var(--warning); }
+    .badge-minor { background: rgba(74, 222, 128, 0.2); color: var(--success); }
+    .badge-new { background: rgba(0, 212, 255, 0.2); color: var(--accent); }
+
+    .bug-description {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .bug-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .bug-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-confirm {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-reject {
+      background: var(--error);
+      color: white;
+    }
+
+    .btn-duplicate {
+      background: var(--warning);
+      color: white;
+    }
+
+    .btn-invalid {
+      background: #6b7280;
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .bulk-actions {
+      background: var(--bg-card);
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .bulk-actions-label {
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(102, 126, 234, 0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filters, .bulk-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔍 Bug Triage Dashboard</h1>
+      <p style="color: var(--text-muted);">Review and classify incoming bug reports</p>
+    </div>
+
+    <div class="stats-grid" id="stats"></div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label>Status:</label>
+        <select id="filterStatus">
+          <option value="">All</option>
+          <option value="new">New</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="duplicate">Duplicate</option>
+          <option value="invalid">Invalid</option>
+          <option value="fixed">Fixed</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Severity:</label>
+        <select id="filterSeverity">
+          <option value="">All</option>
+          <option value="critical">Critical</option>
+          <option value="major">Major</option>
+          <option value="minor">Minor</option>
+          <option value="enhancement">Enhancement</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Component:</label>
+        <select id="filterComponent">
+          <option value="">All</option>
+          <option value="dashboard">Dashboard</option>
+          <option value="tasksbot">TasksBot</option>
+          <option value="chat">Chat</option>
+          <option value="api">API</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Search:</label>
+        <input type="text" id="filterSearch" placeholder="Search bugs..." />
+      </div>
+    </div>
+
+    <div class="bulk-actions">
+      <span class="bulk-actions-label"><input type="checkbox" id="selectAll" /> Select All</span>
+      <button class="btn btn-confirm" onclick="bulkAction('confirmed')">Confirm Selected</button>
+      <button class="btn btn-reject" onclick="bulkAction('invalid')">Mark Invalid</button>
+      <button class="btn btn-duplicate" onclick="bulkAction('duplicate')">Mark Duplicate</button>
+    </div>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading bugs...</p>
+    </div>
+
+    <div id="bugList" class="bug-list"></div>
+
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <h2>✨ All caught up!</h2>
+      <p>No bugs need triage right now.</p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://192.168.254.4:3030/api';
+    let bugs = [];
+    let selectedBugs = new Set();
+
+    // Load bugs on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadBugs();
+
+      // Filter listeners
+      document.getElementById('filterStatus').addEventListener('change', filterBugs);
+      document.getElementById('filterSeverity').addEventListener('change', filterBugs);
+      document.getElementById('filterComponent').addEventListener('change', filterBugs);
+      document.getElementById('filterSearch').addEventListener('input', filterBugs);
+      document.getElementById('selectAll').addEventListener('change', toggleSelectAll);
+    });
+
+    async function loadBugs() {
+      try {
+        const response = await fetch(`${API_BASE}/bugs`);
+        const data = await response.json();
+
+        if (data.success) {
+          bugs = data.bugs.filter(b => b.status === 'new' || !b.status);
+          renderStats();
+          renderBugs(bugs);
+        }
+      } catch (error) {
+        console.error('Load bugs error:', error);
+      } finally {
+        document.getElementById('loading').style.display = 'none';
+      }
+    }
+
+    function renderStats() {
+      const statsEl = document.getElementById('stats');
+      
+      const stats = {
+        new: bugs.filter(b => b.status === 'new' || !b.status).length,
+        critical: bugs.filter(b => b.severity === 'critical').length,
+        needsTriage: bugs.length
+      };
+
+      statsEl.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-value">${stats.needsTriage}</div>
+          <div class="stat-label">Needs Triage</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.new}</div>
+          <div class="stat-label">New Reports</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.critical}</div>
+          <div class="stat-label">Critical</div>
+        </div>
+      `;
+    }
+
+    function renderBugs(bugsToRender) {
+      const bugListEl = document.getElementById('bugList');
+      const emptyEl = document.getElementById('emptyState');
+
+      if (bugsToRender.length === 0) {
+        bugListEl.innerHTML = '';
+        emptyEl.style.display = 'block';
+        return;
+      }
+
+      emptyEl.style.display = 'none';
+      
+      bugListEl.innerHTML = bugsToRender.map(bug => `
+        <div class="bug-card" id="bug-${bug.id}">
+          <div class="bug-header">
+            <div>
+              <div class="bug-title">${bug.title}</div>
+              <div class="bug-id">${bug.id}</div>
+            </div>
+            <input type="checkbox" class="bug-checkbox" data-bug-id="${bug.id}" />
+          </div>
+
+          <div class="bug-badges">
+            <span class="badge badge-${bug.severity}">${bug.severity}</span>
+            <span class="badge">${bug.component}</span>
+            <span class="badge badge-new">NEW</span>
+          </div>
+
+          <div class="bug-description">
+            ${bug.description.substring(0, 200)}${bug.description.length > 200 ? '...' : ''}
+          </div>
+
+          <div class="bug-meta">
+            <span>📅 ${new Date(bug.timestamp).toLocaleDateString()}</span>
+            <span>👤 ${maskEmail(bug.email)}</span>
+            ${bug.screenshot ? '<span>📷 Has screenshot</span>' : ''}
+          </div>
+
+          <div class="bug-actions">
+            <button class="btn btn-confirm" onclick="classifyBug('${bug.id}', 'confirmed')">
+              ✅ Confirm
+            </button>
+            <button class="btn btn-reject" onclick="classifyBug('${bug.id}', 'invalid')">
+              ❌ Invalid
+            </button>
+            <button class="btn btn-duplicate" onclick="classifyBug('${bug.id}', 'duplicate')">
+              🔄 Duplicate
+            </button>
+            <button class="btn btn-invalid" onclick="viewDetails('${bug.id}')">
+              👁️ View Full
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterBugs() {
+      const status = document.getElementById('filterStatus').value;
+      const severity = document.getElementById('filterSeverity').value;
+      const component = document.getElementById('filterComponent').value;
+      const search = document.getElementById('filterSearch').value.toLowerCase();
+
+      let filtered = bugs;
+
+      if (status) filtered = filtered.filter(b => b.status === status);
+      if (severity) filtered = filtered.filter(b => b.severity === severity);
+      if (component) filtered = filtered.filter(b => b.component === component);
+      if (search) {
+        filtered = filtered.filter(b => 
+          b.title.toLowerCase().includes(search) ||
+          b.description.toLowerCase().includes(search) ||
+          b.id.toLowerCase().includes(search)
+        );
+      }
+
+      renderBugs(filtered);
+    }
+
+    async function classifyBug(bugId, newStatus) {
+      try {
+        const response = await fetch(`${API_BASE}/bugs/${bugId}/classify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Remove from list
+          document.getElementById(`bug-${bugId}`).remove();
+          bugs = bugs.filter(b => b.id !== bugId);
+          renderStats();
+        }
+      } catch (error) {
+        console.error('Classify bug error:', error);
+        alert('Failed to classify bug');
+      }
+    }
+
+    function toggleSelectAll(e) {
+      const checkboxes = document.querySelectorAll('.bug-checkbox');
+      checkboxes.forEach(cb => {
+        cb.checked = e.target.checked;
+        if (e.target.checked) {
+          selectedBugs.add(cb.dataset.bugId);
+        } else {
+          selectedBugs.delete(cb.dataset.bugId);
+        }
+      });
+    }
+
+    async function bulkAction(newStatus) {
+      const checkboxes = document.querySelectorAll('.bug-checkbox:checked');
+      const bugIds = Array.from(checkboxes).map(cb => cb.dataset.bugId);
+
+      if (bugIds.length === 0) {
+        alert('No bugs selected');
+        return;
+      }
+
+      if (!confirm(`Classify ${bugIds.length} bugs as "${newStatus}"?`)) return;
+
+      for (const bugId of bugIds) {
+        await classifyBug(bugId, newStatus);
+      }
+    }
+
+    function viewDetails(bugId) {
+      window.location.href = `/bug-tracker.html#bug-${bugId}`;
+    }
+
+    function maskEmail(email) {
+      if (!email) return 'Anonymous';
+      const [user, domain] = email.split('@');
+      return `${user.slice(0, 3)}***@${domain}`;
+    }
+  </script>
+</body>
+</html>
