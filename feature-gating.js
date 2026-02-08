@@ -33,10 +33,9 @@ class FeatureGating {
     this.init();
   }
   
-  init() {
-    // Check current tier from localStorage (default: free)
-    const currentTier = localStorage.getItem('pinky_tier') || 'free';
-    this.setTier(currentTier);
+  async init() {
+    // Check subscription status from backend (Stripe + License)
+    await this.checkSubscriptionStatus();
     
     // Add upgrade button to sidebar
     this.addUpgradeButton();
@@ -46,6 +45,195 @@ class FeatureGating {
     
     // Listen for view changes to reapply gating
     this.watchNavigation();
+    
+    // Check subscription status every 5 minutes
+    setInterval(() => this.checkSubscriptionStatus(), 5 * 60 * 1000);
+  }
+  
+  async checkSubscriptionStatus() {
+    try {
+      console.log('[Feature Gating] Checking subscription status...');
+      
+      // Priority 1: Check Stripe subscription status
+      const stripeStatus = await this.checkStripeSubscription();
+      if (stripeStatus && stripeStatus.active) {
+        console.log('[Feature Gating] Active Stripe subscription found');
+        this.setTier('pro');
+        this.showSubscriptionInfo(stripeStatus);
+        return;
+      }
+      
+      // Priority 2: Check license key validity (self-hosted)
+      const licenseStatus = await this.checkLicenseKey();
+      if (licenseStatus && licenseStatus.valid) {
+        console.log('[Feature Gating] Valid license key found');
+        this.setTier('pro');
+        this.showSubscriptionInfo(licenseStatus);
+        return;
+      }
+      
+      // Priority 3: Default to Free tier
+      console.log('[Feature Gating] No active subscription found - defaulting to Free tier');
+      this.setTier('free');
+      
+    } catch (error) {
+      console.error('[Feature Gating] Error checking subscription:', error);
+      // Fallback to localStorage tier if API fails
+      const savedTier = localStorage.getItem('pinky_tier') || 'free';
+      this.setTier(savedTier);
+    }
+  }
+  
+  async checkStripeSubscription() {
+    try {
+      const response = await fetch('http://192.168.254.4:3030/api/stripe/status');
+      if (!response.ok) {
+        console.log('[Feature Gating] Stripe API not available');
+        return null;
+      }
+      
+      const data = await response.json();
+      
+      // Check for subscription warnings
+      if (data.status === 'past_due') {
+        this.showPaymentFailureWarning(data);
+      } else if (data.status === 'canceled' && data.expiresAt) {
+        this.showExpiryWarning(data.expiresAt);
+      }
+      
+      return {
+        active: data.status === 'active',
+        type: 'stripe',
+        status: data.status,
+        expiresAt: data.expiresAt,
+        customerId: data.customerId
+      };
+    } catch (error) {
+      console.error('[Feature Gating] Stripe check failed:', error);
+      return null;
+    }
+  }
+  
+  async checkLicenseKey() {
+    try {
+      // Get license key from localStorage
+      const licenseKey = localStorage.getItem('pinky_license_key');
+      if (!licenseKey) {
+        return null;
+      }
+      
+      const response = await fetch('http://192.168.254.4:3030/api/license/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: licenseKey })
+      });
+      
+      if (!response.ok) {
+        console.log('[Feature Gating] License API not available');
+        return null;
+      }
+      
+      const data = await response.json();
+      
+      // Check for license expiry
+      if (data.valid && data.expiresAt) {
+        const daysUntilExpiry = Math.ceil((new Date(data.expiresAt) - new Date()) / (1000 * 60 * 60 * 24));
+        if (daysUntilExpiry <= 30) {
+          this.showExpiryWarning(data.expiresAt);
+        }
+      }
+      
+      return {
+        valid: data.valid,
+        type: 'license',
+        expiresAt: data.expiresAt,
+        key: licenseKey
+      };
+    } catch (error) {
+      console.error('[Feature Gating] License check failed:', error);
+      return null;
+    }
+  }
+  
+  showSubscriptionInfo(status) {
+    // Store subscription info for display
+    this.subscriptionInfo = status;
+    
+    // Update UI to show subscription status if needed
+    if (status.expiresAt) {
+      const expiryDate = new Date(status.expiresAt).toLocaleDateString();
+      console.log(`[Feature Gating] Subscription expires: ${expiryDate}`);
+    }
+  }
+  
+  showExpiryWarning(expiresAt) {
+    const expiryDate = new Date(expiresAt);
+    const daysUntilExpiry = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+    
+    if (daysUntilExpiry <= 0) {
+      return; // Already expired
+    }
+    
+    const warning = document.createElement('div');
+    warning.className = 'subscription-warning expiry-warning';
+    warning.innerHTML = `
+      <div class="warning-content">
+        <span class="warning-icon">⚠️</span>
+        <div class="warning-text">
+          <strong>Subscription Expiring Soon</strong>
+          <p>Your Pro subscription expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? 's' : ''} on ${expiryDate.toLocaleDateString()}</p>
+        </div>
+        <button class="renew-btn" onclick="featureGating.renewSubscription()">Renew Now</button>
+        <button class="dismiss-warning" onclick="this.closest('.subscription-warning').remove()">✕</button>
+      </div>
+    `;
+    
+    // Add to page (top of main content)
+    const mainContent = document.querySelector('.main-content') || document.body;
+    mainContent.insertBefore(warning, mainContent.firstChild);
+  }
+  
+  showPaymentFailureWarning(data) {
+    const warning = document.createElement('div');
+    warning.className = 'subscription-warning payment-failure-warning';
+    warning.innerHTML = `
+      <div class="warning-content">
+        <span class="warning-icon">❌</span>
+        <div class="warning-text">
+          <strong>Payment Failed</strong>
+          <p>Your last payment failed. Please update your payment method to continue using Pro features.</p>
+        </div>
+        <button class="update-payment-btn" onclick="featureGating.updatePaymentMethod()">Update Payment</button>
+        <button class="dismiss-warning" onclick="this.closest('.subscription-warning').remove()">✕</button>
+      </div>
+    `;
+    
+    // Add to page (top of main content)
+    const mainContent = document.querySelector('.main-content') || document.body;
+    mainContent.insertBefore(warning, mainContent.firstChild);
+  }
+  
+  renewSubscription() {
+    // Redirect to Stripe customer portal or checkout
+    fetch('http://192.168.254.4:3030/api/stripe/portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.url) {
+          window.location.href = data.url;
+        }
+      })
+      .catch(err => {
+        console.error('[Feature Gating] Failed to open customer portal:', err);
+        alert('Unable to open billing portal. Please contact support.');
+      });
+  }
+  
+  updatePaymentMethod() {
+    // Same as renewSubscription - opens Stripe customer portal
+    this.renewSubscription();
   }
   
   getCurrentTier() {
