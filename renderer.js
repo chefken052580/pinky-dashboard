@@ -534,11 +534,16 @@ function renderHeaderStats() {
     
     // Fetch APIs in parallel, then render
     Promise.all([
-        fetch('/api/usage').then(r => r.json()).catch(() => ({})),
-        fetch('/api/tasks/stats').then(r => r.json()).catch(() => ({})),
-        fetch('/api/tasks').then(r => r.json()).catch(() => []),
-        fetch('/api/activity').then(r => r.json()).catch(() => ({}))
+        apiFetch('/api/usage', {}, container),
+        apiFetch('/api/tasks/stats', {}, container),
+        apiFetch('/api/tasks'),
+        apiFetch('/api/activity')
     ]).then(([usage, statsResponse, tasks, activity]) => {
+        // Handle null responses from failed API calls
+        usage = usage || {};
+        statsResponse = statsResponse || {};
+        tasks = tasks || [];
+        activity = activity || {};
         const tokensUsed = usage.totalTokens || 0;
         const apiCost = usage.totalCost || 0;
         const messages = usage.messages || 0;

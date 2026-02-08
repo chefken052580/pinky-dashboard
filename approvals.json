@@ -26,6 +26,24 @@
       "action": "edit",
       "status": "pending",
       "createdAt": "2026-02-07T22:40:46.990Z"
+    },
+    {
+      "id": "1770504455769",
+      "title": "P1.3-2: Update Activity Monitor in renderer.js to use apiFetch()",
+      "description": "Update loadActivityData() function in renderer.js to use apiFetch() wrapper with loading spinner. Changes: (1) Make function async, (2) Get monitor container element, (3) Call apiFetch() with container for loading spinner, (4) Handle response with null check. File: pinky-dashboard/renderer.js lines 273-291. This completes P1.3-2 task requirements.",
+      "file": "pinky-dashboard/renderer.js",
+      "action": "edit",
+      "status": "pending",
+      "createdAt": "2026-02-07T22:47:35.769Z"
+    },
+    {
+      "id": "1770505062351",
+      "title": "P1.3-4: Add connection-monitor.js script to index.html",
+      "description": "Add script tag for connection-monitor.js to enable offline detection banner.\n\nAdd this line to index.html in the scripts section (after api-helpers.js, around line 1073):\n\n<script src=\"connection-monitor.js\"></script>\n\nThe file pinky-dashboard/connection-monitor.js is already created (5.7 KB) with:\n- Polls /api/health every 30s\n- Shows orange banner when offline (⚠️ Connection lost... retrying)\n- Shows green banner when reconnected (✅ Reconnected! - 3s auto-hide)\n- Faster retry (5s) when offline\n- Browser online/offline event listeners\n- Zero dependencies, self-initializing\n\nVerified: node -c passed, API health endpoint responding.",
+      "file": "pinky-dashboard/index.html",
+      "action": "edit",
+      "status": "pending",
+      "createdAt": "2026-02-07T22:57:42.351Z"
     }
   ],
   "resolved": [
