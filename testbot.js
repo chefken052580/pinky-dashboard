@@ -73,7 +73,7 @@ class TestBot {
   async testEndpoint(endpoint) {
     try {
       // Simulate API call
-      const response = await fetch(`http://192.168.254.4:3030${endpoint.url}`);
+      const response = await fetch(`${endpoint.url}`);
       const passed = response.status === endpoint.expectedStatus;
 
       return {

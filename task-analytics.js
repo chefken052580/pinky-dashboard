@@ -181,7 +181,7 @@ class TaskAnalyticsDashboard {
      */
     async loadAnalytics() {
         try {
-            const response = await fetch('http://192.168.254.4:3030/api/tasks');
+            const response = await fetch('/api/tasks');
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             
             const tasks = await response.json();

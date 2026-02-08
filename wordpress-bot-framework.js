@@ -16,7 +16,7 @@ class WordPressBotFramework {
     this.wordPressUrl = config.wordPressUrl || '';
     this.wordPressUsername = config.wordPressUsername || '';
     this.wordPressPassword = config.wordPressPassword || '';
-    this.apiBase = 'http://192.168.254.4:3030';
+    this.apiBase = '';
     this.pages = [];
     this.seoConfig = config.seoConfig || this.getDefaultSeoConfig();
   }

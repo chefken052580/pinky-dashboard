@@ -150,8 +150,8 @@ class TokenAllocationWidget {
       this.renderLoading();
 
       const [allocationRes, metricsRes] = await Promise.all([
-        fetch('http://192.168.254.4:3030/api/analytics/token-allocation'),
-        fetch('http://192.168.254.4:3030/api/analytics/heartbeat-metrics')
+        fetch('/api/analytics/token-allocation'),
+        fetch('/api/analytics/heartbeat-metrics')
       ]);
 
       if (!allocationRes.ok || !metricsRes.ok) {
