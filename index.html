@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="feature-gating.css">
     <link rel="stylesheet" href="company-selector.css">
     <link rel="stylesheet" href="wordpress-manager.css">
+    <link rel="stylesheet" href="bug-submission.css">
 </head>
 <body>
     <!-- Onboarding Screen -->
@@ -631,6 +632,14 @@
                     </p>
                 </div>
 
+                <!-- Report Bug Button -->
+                <div style="text-align:center;margin:25px 0;">
+                    <button onclick="openBugSubmission('filesystem')" style="background:linear-gradient(135deg,#ff6b6b,#ee5a6f);color:white;border:none;padding:15px 30px;border-radius:8px;font-size:16px;cursor:pointer;box-shadow:0 4px 15px rgba(255,107,107,0.3);transition:all 0.3s ease;">
+                        🐛 Report a Bug
+                    </button>
+                    <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:10px;">Found an issue? Help us improve FileSystemBot!</p>
+                </div>
+
                 <div class="recent-activity" style="margin-top:25px;">
                     <h3>📊 Recent FileSystem Activity</h3>
                     <div class="activity-feed">
@@ -835,6 +844,180 @@
     <!-- Modal Container -->
     <div id="modal-overlay" class="modal-overlay" style="display:none;"></div>
     <div id="modal" class="modal" style="display:none;"></div>
+
+    <!-- Bug Submission Form Component -->
+    <div id="bug-submission-modal" class="bug-modal" style="display: none;">
+      <div class="bug-modal-overlay"></div>
+      <div class="bug-modal-content">
+        <div class="bug-modal-header">
+          <h2>🐛 Report a Bug</h2>
+          <button class="bug-close-btn" onclick="BugSubmission.close()">&times;</button>
+        </div>
+        
+        <form id="bug-submission-form" class="bug-form">
+          <!-- Bug Title -->
+          <div class="bug-form-group">
+            <label for="bug-title">Bug Title <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="bug-title" 
+              name="title" 
+              placeholder="Brief description of the issue (10-200 characters)"
+              minlength="10"
+              maxlength="200"
+              required
+            />
+            <span class="char-count">0/200</span>
+          </div>
+
+          <!-- Bug Description -->
+          <div class="bug-form-group">
+            <label for="bug-description">Description</label>
+            <textarea 
+              id="bug-description" 
+              name="description" 
+              placeholder="Detailed description of what went wrong"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <!-- Category -->
+          <div class="bug-form-group">
+            <label for="bug-category">Category <span class="required">*</span></label>
+            <select id="bug-category" name="category" required>
+              <option value="">Select category...</option>
+              <option value="dashboard">Dashboard</option>
+              <option value="backend">Backend API</option>
+              <option value="bot">Bot Functionality</option>
+              <option value="ui">UI/UX</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <!-- Severity -->
+          <div class="bug-form-group">
+            <label for="bug-severity">Severity <span class="required">*</span></label>
+            <select id="bug-severity" name="severity" required>
+              <option value="">Select severity...</option>
+              <option value="critical">🔴 Critical - System unusable</option>
+              <option value="high">🟠 High - Major feature broken</option>
+              <option value="medium">🟡 Medium - Minor feature issue</option>
+              <option value="low">🟢 Low - Cosmetic or minor</option>
+            </select>
+          </div>
+
+          <!-- Steps to Reproduce -->
+          <div class="bug-form-group">
+            <label for="bug-steps">Steps to Reproduce</label>
+            <div id="bug-steps-list" class="steps-list">
+              <div class="step-item">
+                <input type="text" class="step-input" placeholder="Step 1" />
+                <button type="button" class="remove-step-btn" onclick="BugSubmission.removeStep(this)">×</button>
+              </div>
+            </div>
+            <button type="button" class="add-step-btn" onclick="BugSubmission.addStep()">+ Add Step</button>
+          </div>
+
+          <!-- Expected Behavior -->
+          <div class="bug-form-group">
+            <label for="bug-expected">Expected Behavior</label>
+            <input 
+              type="text" 
+              id="bug-expected" 
+              name="expectedBehavior" 
+              placeholder="What should have happened?"
+            />
+          </div>
+
+          <!-- Actual Behavior -->
+          <div class="bug-form-group">
+            <label for="bug-actual">Actual Behavior</label>
+            <input 
+              type="text" 
+              id="bug-actual" 
+              name="actualBehavior" 
+              placeholder="What actually happened?"
+            />
+          </div>
+
+          <!-- Environment Info (Auto-detected) -->
+          <div class="bug-form-group">
+            <label>Environment</label>
+            <div class="environment-info">
+              <div class="env-item">
+                <strong>Browser:</strong> <span id="env-browser">Detecting...</span>
+              </div>
+              <div class="env-item">
+                <strong>OS:</strong> <span id="env-os">Detecting...</span>
+              </div>
+              <div class="env-item">
+                <strong>Version:</strong> <span id="env-version">1.0.0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- File Attachments (Screenshots/Logs) -->
+          <div class="bug-form-group">
+            <label for="bug-attachments">Attachments (Screenshots, Logs)</label>
+            <div class="attachment-area">
+              <input 
+                type="file" 
+                id="bug-attachments" 
+                name="attachments" 
+                accept=".png,.jpg,.jpeg,.txt,.log"
+                multiple
+                style="display: none;"
+              />
+              <button type="button" class="attachment-btn" onclick="document.getElementById('bug-attachments').click()">
+                📎 Attach Files
+              </button>
+              <div class="attachment-hint">
+                PNG, JPG, TXT, LOG files (max 10MB each)
+              </div>
+              <div id="attachment-preview" class="attachment-preview"></div>
+            </div>
+          </div>
+
+          <!-- Reporter Info (Optional) -->
+          <div class="bug-form-group">
+            <label for="bug-email">Your Email (Optional)</label>
+            <input 
+              type="email" 
+              id="bug-email" 
+              name="userEmail" 
+              placeholder="email@example.com (for updates)"
+            />
+          </div>
+
+          <div class="bug-form-group">
+            <label for="bug-name">Your Name (Optional)</label>
+            <input 
+              type="text" 
+              id="bug-name" 
+              name="userName" 
+              placeholder="Anonymous"
+              value="Anonymous"
+            />
+          </div>
+
+          <!-- Duplicate Warning -->
+          <div id="duplicate-warning" class="duplicate-warning" style="display: none;">
+            <h4>⚠️ Potential Duplicates Found</h4>
+            <p>Similar bugs already exist. Consider upvoting instead:</p>
+            <div id="duplicate-list"></div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="bug-form-actions">
+            <button type="button" class="btn-secondary" onclick="BugSubmission.close()">Cancel</button>
+            <button type="submit" class="btn-primary">Submit Bug Report</button>
+          </div>
+
+          <!-- Submission Status -->
+          <div id="submission-status" class="submission-status" style="display: none;"></div>
+        </form>
+      </div>
+    </div>
 
     <!-- Scripts -->
     <script>
@@ -1095,6 +1278,10 @@
 
     <!-- WordPress Page Maker -->
     <script src="wordpress-page-maker.js"></script>
+    
+    <!-- Bug Submission System -->
+    <script src="bug-submission.js"></script>
+    
     <script src="api-config.js"></script>
     <script src="api-helpers.js"></script>
     <script src="connection-monitor.js"></script>
@@ -1145,5 +1332,33 @@
     <script src="company-selector.js"></script>
     <script src="load-wordpress-manager.js"></script>
     <script src="wordpress-manager.js"></script>
+    
+    <!-- Bug Submission Helper -->
+    <script>
+        function openBugSubmission(context) {
+            if (window.BugSubmission && typeof window.BugSubmission.open === 'function') {
+                window.BugSubmission.open();
+                // Pre-fill category if context provided
+                if (context) {
+                    const categoryMap = {
+                        'filesystem': 'bot',
+                        'tasks': 'dashboard',
+                        'social': 'bot',
+                        'chat': 'ui'
+                    };
+                    const category = categoryMap[context] || 'other';
+                    setTimeout(() => {
+                        const categorySelect = document.querySelector('#bug-submission-form select[name="category"]');
+                        if (categorySelect) {
+                            categorySelect.value = category;
+                        }
+                    }, 100);
+                }
+            } else {
+                console.error('BugSubmission not loaded');
+                alert('Bug submission form not available. Please refresh the page.');
+            }
+        }
+    </script>
 </body>
 </html>
