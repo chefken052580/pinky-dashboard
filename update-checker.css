@@ -1,0 +1,131 @@
+/* Update Checker - Notification Banner */
+
+.update-notification {
+  position: fixed;
+  top: -100px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: 3px solid #00d4ff;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+  z-index: 9999;
+  transition: all 0.4s ease;
+  opacity: 0;
+}
+
+.update-notification.show {
+  top: 0;
+  opacity: 1;
+}
+
+.update-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.update-icon {
+  font-size: 32px;
+  animation: updatePulse 2s ease-in-out infinite;
+}
+
+@keyframes updatePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.update-text {
+  flex: 1;
+}
+
+.update-title {
+  font-size: 16px;
+  color: #ffffff;
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.update-subtitle {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.update-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-update-view,
+.btn-update-dismiss {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-update-view {
+  background: rgba(255, 255, 255, 0.95);
+  color: #667eea;
+}
+
+.btn-update-view:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+.btn-update-dismiss {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-update-dismiss:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .update-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px 20px;
+  }
+
+  .update-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn-update-view,
+  .btn-update-dismiss {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .update-icon {
+    font-size: 24px;
+  }
+
+  .update-title {
+    font-size: 14px;
+  }
+
+  .update-subtitle {
+    font-size: 12px;
+  }
+
+  .btn-update-view,
+  .btn-update-dismiss {
+    padding: 8px 15px;
+    font-size: 13px;
+  }
+}
