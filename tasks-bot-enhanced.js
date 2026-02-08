@@ -683,7 +683,7 @@ class TasksBotEnhanced {
         // Extract commit hash from notes (looks for "— abc123" or "Commit: abc123")
         let commitHash = '';
         if (task.notes) {
-          const commitMatch = task.notes.match(/(?:—|Commit:)\s*([a-f0-9]{6,})/i);
+          const commitMatch = task.notes.match(/(?:—|Commit:|commit:|COMMIT:|\b)\s*([a-f0-9]{7,40})/i);
           if (commitMatch) {
             commitHash = commitMatch[1];
           }
