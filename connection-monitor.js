@@ -78,7 +78,7 @@ class ConnectionMonitor {
 
   async checkConnection() {
     try {
-      const response = await fetch('http://192.168.254.4:3030/api/health', {
+      const response = await fetch('/api/health', {
         method: 'GET',
         cache: 'no-cache',
         signal: AbortSignal.timeout(5000) // 5 second timeout
