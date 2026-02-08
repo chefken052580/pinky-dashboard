@@ -603,6 +603,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     renderHeaderStats(); // Run immediately
     // DISABLED - use GlobalRefresh // // DISABLED - use GlobalRefresh // setInterval(renderHeaderStats, 30000); // Then refresh every 30s
+    // Wire up GlobalRefresh subscriptions
+    if (window.GlobalRefresh) {
+        window.GlobalRefresh.on("tasks", function() { renderHeaderStats(); });
+        window.GlobalRefresh.on("stats", function() { renderHeaderStats(); });
+        window.GlobalRefresh.on("usage", function() { renderHeaderStats(); });
+        window.GlobalRefresh.on("activity", function() { loadActivityData(); });
+        console.log("[Renderer] Subscribed to GlobalRefresh");
+    }
 });
 
 // ===== APPROVAL NOTIFICATION SYSTEM =====
