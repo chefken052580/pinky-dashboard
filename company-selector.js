@@ -1,419 +1,382 @@
 /**
- * Company Selector Component
- * Multi-company management for SocialBot
+ * Company Selector Dropdown for SocialBot Dashboard
+ * Manages company context switching and company CRUD operations
+ * Part of Phase 3.4 - Multi-Company Social Management
  */
 
-const CompanySelector = {
-    apiBase: window.location.origin,
-    activeCompany: null,
-    companies: [],
-    
-    /**
-     * Initialize company selector
-     */
-    async init() {
-        console.log('[Company Selector] Initializing...');
-        
-        // Load active company from localStorage
-        const storedCompanyId = localStorage.getItem('pinky_active_company');
-        
-        // Load companies from API
-        await this.loadCompanies();
-        
-        // Restore active company if exists
-        if (storedCompanyId) {
-            this.setActiveCompany(storedCompanyId);
-        }
-        
-        console.log('[Company Selector] Initialized with', this.companies.length, 'companies');
-    },
-    
-    /**
-     * Load companies from API
-     */
-    async loadCompanies() {
-        try {
-            const response = await fetch(`${this.apiBase}/api/companies`);
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            if (!data.success) {
-                throw new Error(data.error || 'Failed to load companies');
-            }
-            
-            this.companies = data.companies || [];
-            this.renderCompanyDropdown();
-            
-            console.log('[Company Selector] Loaded', this.companies.length, 'companies');
-            return this.companies;
-            
-        } catch (error) {
-            console.error('[Company Selector] Load error:', error);
-            this.showError('Failed to load companies');
-            return [];
-        }
-    },
-    
-    /**
-     * Render company dropdown options
-     */
-    renderCompanyDropdown() {
-        const select = document.getElementById('company-selector');
-        if (!select) return;
-        
-        // Clear existing options (except first placeholder)
-        while (select.options.length > 1) {
-            select.remove(1);
-        }
-        
-        // Add company options
-        this.companies.forEach(company => {
-            const option = document.createElement('option');
-            option.value = company.id;
-            option.textContent = company.name;
-            
-            // Select if active
-            if (this.activeCompany && this.activeCompany.id === company.id) {
-                option.selected = true;
-            }
-            
-            select.appendChild(option);
-        });
-    },
-    
-    /**
-     * Set active company
-     */
-    setActiveCompany(companyId) {
-        const company = this.companies.find(c => c.id === companyId);
-        
-        if (!company) {
-            console.warn('[Company Selector] Company not found:', companyId);
-            return false;
-        }
-        
-        this.activeCompany = company;
-        localStorage.setItem('pinky_active_company', companyId);
-        
-        // Update UI
-        this.renderCompanyInfo();
-        
-        // Update dropdown selection
-        const select = document.getElementById('company-selector');
-        if (select) {
-            select.value = companyId;
-        }
-        
-        console.log('[Company Selector] Active company set:', company.name);
-        
-        // Dispatch event for other components
-        window.dispatchEvent(new CustomEvent('companyChanged', {
-            detail: { company }
-        }));
-        
-        return true;
-    },
-    
-    /**
-     * Render company info card
-     */
-    renderCompanyInfo() {
-        const infoCard = document.getElementById('company-info');
-        const nameDisplay = document.getElementById('company-name-display');
-        const platformsDisplay = document.getElementById('company-platforms-display');
-        const logo = document.getElementById('company-logo');
-        const logoPlaceholder = document.getElementById('company-logo-placeholder');
-        
-        if (!infoCard) return;
-        
-        if (this.activeCompany) {
-            infoCard.style.display = 'flex';
-            
-            // Company name
-            if (nameDisplay) {
-                nameDisplay.textContent = this.activeCompany.name;
-            }
-            
-            // Platforms
-            if (platformsDisplay) {
-                const platforms = this.activeCompany.platforms || [];
-                if (platforms.length > 0) {
-                    platformsDisplay.innerHTML = platforms
-                        .map(p => `<span>${p}</span>`)
-                        .join('');
-                } else {
-                    platformsDisplay.innerHTML = '<span style="opacity:0.5">No platforms selected</span>';
-                }
-            }
-            
-            // Logo
-            if (logo && this.activeCompany.branding && this.activeCompany.branding.logo) {
-                logo.src = this.activeCompany.branding.logo;
-                logo.style.display = 'block';
-                if (logoPlaceholder) logoPlaceholder.style.display = 'none';
-            } else {
-                if (logo) logo.style.display = 'none';
-                if (logoPlaceholder) logoPlaceholder.style.display = 'flex';
-            }
-        } else {
-            infoCard.style.display = 'none';
-        }
-    },
-    
-    /**
-     * Create new company
-     */
-    async createCompany(companyData) {
-        try {
-            const response = await fetch(`${this.apiBase}/api/companies`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(companyData)
-            });
-            
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || `API error: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            if (!data.success) {
-                throw new Error(data.error || 'Failed to create company');
-            }
-            
-            console.log('[Company Selector] Company created:', data.company.id);
-            
-            // Reload companies
-            await this.loadCompanies();
-            
-            // Set as active
-            this.setActiveCompany(data.company.id);
-            
-            return data.company;
-            
-        } catch (error) {
-            console.error('[Company Selector] Create error:', error);
-            throw error;
-        }
-    },
-    
-    /**
-     * Update company
-     */
-    async updateCompany(companyId, updates) {
-        try {
-            const response = await fetch(`${this.apiBase}/api/companies/${companyId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updates)
-            });
-            
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || `API error: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            if (!data.success) {
-                throw new Error(data.error || 'Failed to update company');
-            }
-            
-            console.log('[Company Selector] Company updated:', companyId);
-            
-            // Reload companies
-            await this.loadCompanies();
-            
-            // Update active if it's the current company
-            if (this.activeCompany && this.activeCompany.id === companyId) {
-                this.setActiveCompany(companyId);
-            }
-            
-            return data.company;
-            
-        } catch (error) {
-            console.error('[Company Selector] Update error:', error);
-            throw error;
-        }
-    },
-    
-    /**
-     * Show error message
-     */
-    showError(message) {
-        // Simple alert for now, could be enhanced with toast notifications
-        alert(`❌ Error: ${message}`);
-    },
-    
-    /**
-     * Show success message
-     */
-    showSuccess(message) {
-        // Simple alert for now, could be enhanced with toast notifications
-        alert(`✅ Success: ${message}`);
+class CompanySelector {
+  constructor() {
+    this.companies = [];
+    this.activeCompanyId = null;
+    this.onCompanyChange = null; // Callback when company changes
+  }
+
+  async init() {
+    await this.loadCompanies();
+    this.restoreActiveCompany();
+    this.render();
+    this.setupEventListeners();
+  }
+
+  async loadCompanies() {
+    try {
+      const response = await fetch('http://192.168.254.4:3030/api/companies');
+      if (!response.ok) {
+        throw new Error(`Failed to load companies: ${response.status}`);
+      }
+      this.companies = await response.json();
+    } catch (error) {
+      console.error('Error loading companies:', error);
+      this.companies = [];
     }
-};
+  }
 
-/**
- * Switch company (called from dropdown)
- */
-function switchCompany(companyId) {
-    if (!companyId) {
-        CompanySelector.activeCompany = null;
-        localStorage.removeItem('pinky_active_company');
-        CompanySelector.renderCompanyInfo();
-        return;
+  restoreActiveCompany() {
+    const stored = localStorage.getItem('pinky_active_company');
+    if (stored && this.companies.find(c => c.id === stored)) {
+      this.activeCompanyId = stored;
+    } else if (this.companies.length > 0) {
+      this.activeCompanyId = this.companies[0].id;
+      this.saveActiveCompany();
     }
-    
-    CompanySelector.setActiveCompany(companyId);
-}
+  }
 
-/**
- * Show create company modal
- */
-function showCreateCompanyModal() {
-    const modal = document.getElementById('company-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const saveBtnText = document.getElementById('save-btn-text');
-    const companyIdInput = document.getElementById('company-id');
-    const form = document.getElementById('company-form');
-    
-    if (!modal) return;
-    
-    // Reset form
-    if (form) form.reset();
-    if (companyIdInput) companyIdInput.value = '';
-    
-    // Set mode to create
-    if (modalTitle) modalTitle.textContent = 'Create New Company';
-    if (saveBtnText) saveBtnText.textContent = 'Create Company';
-    
-    // Show modal
-    modal.style.display = 'flex';
-}
-
-/**
- * Edit current company
- */
-function editCurrentCompany() {
-    if (!CompanySelector.activeCompany) {
-        alert('No company selected');
-        return;
+  saveActiveCompany() {
+    if (this.activeCompanyId) {
+      localStorage.setItem('pinky_active_company', this.activeCompanyId);
     }
+  }
+
+  getActiveCompany() {
+    return this.companies.find(c => c.id === this.activeCompanyId) || null;
+  }
+
+  render() {
+    const container = document.getElementById('company-selector-container');
+    if (!container) return;
+
+    const activeCompany = this.getActiveCompany();
+
+    container.innerHTML = `
+      <div class="company-selector-wrapper">
+        <div class="company-selector-header">
+          <label class="company-selector-label">📊 Company:</label>
+          <div class="company-selector-dropdown">
+            <button class="company-selector-button" id="company-dropdown-btn">
+              ${activeCompany ? this.renderCompanyButton(activeCompany) : 'Select Company'}
+              <span class="dropdown-arrow">▼</span>
+            </button>
+            <div class="company-dropdown-menu" id="company-dropdown-menu">
+              ${this.renderDropdownItems()}
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item create-company-btn" id="create-company-btn">
+                <span class="item-icon">➕</span>
+                <span class="item-text">Create New Company</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        ${activeCompany ? this.renderCompanyInfo(activeCompany) : ''}
+      </div>
+
+      ${this.renderCreateCompanyModal()}
+    `;
+  }
+
+  renderCompanyButton(company) {
+    return `
+      <span class="company-logo">${company.logo || '🏢'}</span>
+      <span class="company-name">${company.name}</span>
+    `;
+  }
+
+  renderDropdownItems() {
+    if (this.companies.length === 0) {
+      return '<div class="dropdown-item empty">No companies yet</div>';
+    }
+
+    return this.companies.map(company => `
+      <button class="dropdown-item ${company.id === this.activeCompanyId ? 'active' : ''}" 
+              data-company-id="${company.id}">
+        <span class="item-logo">${company.logo || '🏢'}</span>
+        <span class="item-text">${company.name}</span>
+        ${company.id === this.activeCompanyId ? '<span class="item-check">✓</span>' : ''}
+      </button>
+    `).join('');
+  }
+
+  renderCompanyInfo(company) {
+    const platformCount = company.platforms ? Object.keys(company.platforms).length : 0;
+    const connectedPlatforms = company.platforms ? 
+      Object.entries(company.platforms)
+        .filter(([_, data]) => data.enabled)
+        .map(([name, _]) => this.getPlatformEmoji(name))
+        .join(' ') : '';
+
+    return `
+      <div class="company-info-bar">
+        <div class="info-item">
+          <span class="info-label">Platforms:</span>
+          <span class="info-value">${platformCount} connected ${connectedPlatforms}</span>
+        </div>
+        <button class="btn-edit-company" data-company-id="${company.id}" title="Edit Company">
+          ⚙️ Manage
+        </button>
+      </div>
+    `;
+  }
+
+  renderCreateCompanyModal() {
+    return `
+      <div class="company-modal" id="company-modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="modal-title">Create New Company</h3>
+            <button class="modal-close" id="modal-close-btn">✕</button>
+          </div>
+          <div class="modal-body">
+            <form id="company-form">
+              <div class="form-group">
+                <label for="company-name">Company Name *</label>
+                <input type="text" id="company-name" name="name" required 
+                       placeholder="e.g., Acme Corp" maxlength="100">
+              </div>
+
+              <div class="form-group">
+                <label for="company-logo">Logo Emoji</label>
+                <input type="text" id="company-logo" name="logo" 
+                       placeholder="🏢" maxlength="2">
+                <small>Optional: Pick an emoji to represent your company</small>
+              </div>
+
+              <div class="form-group">
+                <label for="company-website">Website</label>
+                <input type="url" id="company-website" name="website" 
+                       placeholder="https://example.com">
+              </div>
+
+              <div class="form-group">
+                <label for="company-industry">Industry</label>
+                <input type="text" id="company-industry" name="industry" 
+                       placeholder="e.g., Technology, Retail, Healthcare">
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="btn-cancel" id="cancel-btn">Cancel</button>
+                <button type="submit" class="btn-submit">
+                  <span id="submit-text">Create Company</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  setupEventListeners() {
+    // Dropdown toggle
+    const dropdownBtn = document.getElementById('company-dropdown-btn');
+    const dropdownMenu = document.getElementById('company-dropdown-menu');
     
-    const modal = document.getElementById('company-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const saveBtnText = document.getElementById('save-btn-text');
-    const companyIdInput = document.getElementById('company-id');
-    const nameInput = document.getElementById('company-name-input');
-    const logoInput = document.getElementById('company-logo-url');
-    const primaryColorInput = document.getElementById('brand-color-primary');
-    const secondaryColorInput = document.getElementById('brand-color-secondary');
-    
-    if (!modal) return;
-    
-    const company = CompanySelector.activeCompany;
-    
-    // Set mode to edit
-    if (modalTitle) modalTitle.textContent = 'Edit Company';
-    if (saveBtnText) saveBtnText.textContent = 'Save Changes';
-    if (companyIdInput) companyIdInput.value = company.id;
-    
-    // Populate form
-    if (nameInput) nameInput.value = company.name || '';
-    if (logoInput) logoInput.value = (company.branding && company.branding.logo) || '';
-    if (primaryColorInput) primaryColorInput.value = (company.branding && company.branding.colors && company.branding.colors.primary) || '#667eea';
-    if (secondaryColorInput) secondaryColorInput.value = (company.branding && company.branding.colors && company.branding.colors.secondary) || '#764ba2';
-    
-    // Check platforms
-    const platformCheckboxes = document.querySelectorAll('input[name="platforms"]');
-    platformCheckboxes.forEach(checkbox => {
-        checkbox.checked = (company.platforms || []).includes(checkbox.value);
+    if (dropdownBtn && dropdownMenu) {
+      dropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', () => {
+        dropdownMenu.classList.remove('show');
+      });
+
+      dropdownMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
+
+    // Company selection
+    document.querySelectorAll('.dropdown-item[data-company-id]').forEach(item => {
+      item.addEventListener('click', (e) => {
+        const companyId = e.currentTarget.getAttribute('data-company-id');
+        this.switchCompany(companyId);
+      });
     });
-    
-    // Show modal
-    modal.style.display = 'flex';
-}
 
-/**
- * Close company modal
- */
-function closeCompanyModal() {
+    // Create company button
+    const createBtn = document.getElementById('create-company-btn');
+    if (createBtn) {
+      createBtn.addEventListener('click', () => this.showCreateModal());
+    }
+
+    // Edit company buttons
+    document.querySelectorAll('.btn-edit-company').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const companyId = e.currentTarget.getAttribute('data-company-id');
+        this.showEditModal(companyId);
+      });
+    });
+
+    // Modal controls
+    const modal = document.getElementById('company-modal');
+    const closeBtn = document.getElementById('modal-close-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const form = document.getElementById('company-form');
+
+    if (closeBtn) closeBtn.addEventListener('click', () => this.hideModal());
+    if (cancelBtn) cancelBtn.addEventListener('click', () => this.hideModal());
+    
+    if (modal) {
+      modal.querySelector('.modal-overlay')?.addEventListener('click', () => this.hideModal());
+    }
+
+    if (form) {
+      form.addEventListener('submit', (e) => this.handleFormSubmit(e));
+    }
+  }
+
+  async switchCompany(companyId) {
+    this.activeCompanyId = companyId;
+    this.saveActiveCompany();
+    this.render();
+    this.setupEventListeners();
+
+    // Trigger callback if set
+    if (this.onCompanyChange && typeof this.onCompanyChange === 'function') {
+      const company = this.getActiveCompany();
+      await this.onCompanyChange(company);
+    }
+
+    // Close dropdown
+    document.getElementById('company-dropdown-menu')?.classList.remove('show');
+  }
+
+  showCreateModal() {
+    const modal = document.getElementById('company-modal');
+    const form = document.getElementById('company-form');
+    const title = document.getElementById('modal-title');
+    const submitText = document.getElementById('submit-text');
+
+    if (modal && form && title && submitText) {
+      form.reset();
+      form.dataset.mode = 'create';
+      delete form.dataset.companyId;
+      title.textContent = 'Create New Company';
+      submitText.textContent = 'Create Company';
+      modal.style.display = 'flex';
+    }
+  }
+
+  showEditModal(companyId) {
+    const company = this.companies.find(c => c.id === companyId);
+    if (!company) return;
+
+    const modal = document.getElementById('company-modal');
+    const form = document.getElementById('company-form');
+    const title = document.getElementById('modal-title');
+    const submitText = document.getElementById('submit-text');
+
+    if (modal && form && title && submitText) {
+      form.dataset.mode = 'edit';
+      form.dataset.companyId = companyId;
+      
+      document.getElementById('company-name').value = company.name || '';
+      document.getElementById('company-logo').value = company.logo || '';
+      document.getElementById('company-website').value = company.website || '';
+      document.getElementById('company-industry').value = company.industry || '';
+
+      title.textContent = 'Edit Company';
+      submitText.textContent = 'Save Changes';
+      modal.style.display = 'flex';
+    }
+  }
+
+  hideModal() {
     const modal = document.getElementById('company-modal');
     if (modal) {
-        modal.style.display = 'none';
+      modal.style.display = 'none';
     }
-}
+  }
 
-/**
- * Save company (create or update)
- */
-async function saveCompany() {
-    const companyIdInput = document.getElementById('company-id');
-    const nameInput = document.getElementById('company-name-input');
-    const logoInput = document.getElementById('company-logo-url');
-    const primaryColorInput = document.getElementById('brand-color-primary');
-    const secondaryColorInput = document.getElementById('brand-color-secondary');
-    const platformCheckboxes = document.querySelectorAll('input[name="platforms"]:checked');
+  async handleFormSubmit(e) {
+    e.preventDefault();
     
-    // Validate name
-    if (!nameInput || !nameInput.value.trim()) {
-        alert('Company name is required');
-        return;
-    }
-    
-    if (nameInput.value.trim().length < 2) {
-        alert('Company name must be at least 2 characters');
-        return;
-    }
-    
-    // Collect form data
-    const platforms = Array.from(platformCheckboxes).map(cb => cb.value);
-    
-    const companyData = {
-        name: nameInput.value.trim(),
-        platforms: platforms,
-        branding: {
-            logo: logoInput ? logoInput.value.trim() : '',
-            colors: {
-                primary: primaryColorInput ? primaryColorInput.value : '#667eea',
-                secondary: secondaryColorInput ? secondaryColorInput.value : '#764ba2'
-            }
-        }
+    const form = e.target;
+    const mode = form.dataset.mode;
+    const companyId = form.dataset.companyId;
+
+    const formData = {
+      name: document.getElementById('company-name').value.trim(),
+      logo: document.getElementById('company-logo').value.trim() || '🏢',
+      website: document.getElementById('company-website').value.trim(),
+      industry: document.getElementById('company-industry').value.trim(),
+      platforms: {}
     };
-    
+
     try {
-        const companyId = companyIdInput ? companyIdInput.value : '';
-        
-        if (companyId) {
-            // Update existing company
-            await CompanySelector.updateCompany(companyId, companyData);
-            CompanySelector.showSuccess('Company updated successfully!');
-        } else {
-            // Create new company
-            await CompanySelector.createCompany(companyData);
-            CompanySelector.showSuccess('Company created successfully!');
-        }
-        
-        closeCompanyModal();
-        
+      let response;
+      if (mode === 'create') {
+        response = await fetch('http://192.168.254.4:3030/api/companies', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+      } else {
+        response = await fetch(`http://192.168.254.4:3030/api/companies/${companyId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+      }
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to save company');
+      }
+
+      const result = await response.json();
+      
+      // Reload companies and switch to new/edited company
+      await this.loadCompanies();
+      
+      if (mode === 'create' && result.company) {
+        await this.switchCompany(result.company.id);
+      } else {
+        this.render();
+        this.setupEventListeners();
+      }
+
+      this.hideModal();
+      
     } catch (error) {
-        CompanySelector.showError(error.message);
+      console.error('Error saving company:', error);
+      alert(`Failed to save company: ${error.message}`);
     }
+  }
+
+  getPlatformEmoji(platform) {
+    const emojis = {
+      twitter: '🐦',
+      instagram: '📷',
+      facebook: '👍',
+      linkedin: '💼',
+      tiktok: '🎵',
+      youtube: '📺',
+      bluesky: '🦋',
+      mastodon: '🐘'
+    };
+    return emojis[platform.toLowerCase()] || '📱';
+  }
+
+  // Public method to refresh companies list
+  async refresh() {
+    await this.loadCompanies();
+    this.render();
+    this.setupEventListeners();
+  }
 }
 
-// Initialize on DOM ready
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    setTimeout(() => CompanySelector.init(), 100);
-} else {
-    document.addEventListener('DOMContentLoaded', () => CompanySelector.init());
-}
-
-// Make globally accessible
-window.CompanySelector = CompanySelector;
-window.switchCompany = switchCompany;
-window.showCreateCompanyModal = showCreateCompanyModal;
-window.editCurrentCompany = editCurrentCompany;
-window.closeCompanyModal = closeCompanyModal;
-window.saveCompany = saveCompany;
+// Global instance
+window.companySelector = new CompanySelector();
