@@ -47,7 +47,7 @@ class HeartbeatManager {
         .then(data => {
           if (data.heartbeatCount) this.metrics.heartbeatsCompleted = data.heartbeatCount;
           // Fetch task counts from API
-          fetch('http://192.168.254.4:3030/api/tasks')
+          fetch('/api/tasks')
             .then(r => r.json())
             .then(tasks => {
               const completed = tasks.filter(t => t.status === 'completed').length;

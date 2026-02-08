@@ -9,7 +9,7 @@ class SettingsManager {
         this.defaultSettings = {
             // API Configuration
             api: {
-                baseUrl: 'http://192.168.254.4:3030',
+                baseUrl: '',
                 timeout: 5000,
                 retryAttempts: 3
             },
@@ -324,7 +324,7 @@ class SettingsPageUI {
             <div class="settings-group">
                 <label class="setting-label">
                     <span>🌐 API Base URL</span>
-                    <input type="text" id="api-baseurl" class="setting-input" value="${baseUrl}" placeholder="http://192.168.254.4:3030">
+                    <input type="text" id="api-baseurl" class="setting-input" value="${baseUrl}" placeholder="/api">
                 </label>
                 <span class="setting-hint">The base URL for all API calls</span>
             </div>

@@ -5,7 +5,7 @@
 
 class HealthDashboard {
   constructor() {
-    this.apiBase = 'http://192.168.254.4:3030';
+    this.apiBase = '';
     this.updateInterval = 5000; // 5 seconds
     this.lastCheck = null;
     this.isOnline = false;

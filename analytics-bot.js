@@ -6,7 +6,7 @@
 
 class AnalyticsBot {
   constructor() {
-    this.apiBase = 'http://192.168.254.4:3030';
+    this.apiBase = '';
     this.refreshInterval = 30000; // 30 seconds
     this.tokenData = {
       codeAnalysis: 0,

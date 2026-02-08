@@ -51,7 +51,7 @@ class ExportPackageManager {
             
             // API Configuration (for reference)
             apiConfig: {
-                baseUrl: 'http://192.168.254.4:3030',
+                baseUrl: '',
                 endpoints: [
                     '/api/health',
                     '/api/tasks',
@@ -95,7 +95,7 @@ class ExportPackageManager {
      */
     async fetchTaskData() {
         try {
-            const response = await fetch('http://192.168.254.4:3030/api/tasks');
+            const response = await fetch('/api/tasks');
             if (!response.ok) return [];
             const tasks = await response.json();
             return tasks || [];

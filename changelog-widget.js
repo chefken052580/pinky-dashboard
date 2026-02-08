@@ -5,7 +5,7 @@
 
 class ChangelogWidget {
     constructor() {
-        this.apiUrl = 'http://192.168.254.4:3030';
+        this.apiUrl = '';
         this.changelog = [];
         this.currentVersion = '1.0.0'; // Will be fetched from API
         this.maxEntries = 10;

@@ -1,7 +1,7 @@
 // SocialBot UI - Company Management & Post Creation
 // Fetches from /api/companies and /api/posts
 
-const SOCIALBOT_API = 'http://192.168.254.4:3030';
+const SOCIALBOT_API = '';
 
 let socialBotState = {
     companies: [],
