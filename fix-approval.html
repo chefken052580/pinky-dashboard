@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fix Approval Queue - PinkyBot</title>
+  <link rel="stylesheet" href="fix-approval.css">
+</head>
+<body>
+  <div class="fix-approval-container">
+    <header class="approval-header">
+      <h1>🔧 Fix Approval Queue</h1>
+      <p class="subtitle">Review and approve auto-generated bug fixes</p>
+      <div class="stats-bar">
+        <div class="stat">
+          <span class="stat-value" id="pending-count">0</span>
+          <span class="stat-label">Pending Review</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="applied-count">0</span>
+          <span class="stat-label">Applied</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="rejected-count">0</span>
+          <span class="stat-label">Rejected</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="success-rate">0%</span>
+          <span class="stat-label">Success Rate</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="pending">Pending</button>
+      <button class="filter-btn" data-filter="applied">Applied</button>
+      <button class="filter-btn" data-filter="rejected">Rejected</button>
+      <button class="filter-btn" data-filter="all">All</button>
+    </div>
+
+    <div class="fixes-list" id="fixes-list">
+      <!-- Fixes will be dynamically loaded here -->
+    </div>
+
+    <div class="empty-state" id="empty-state" style="display: none;">
+      <div class="empty-icon">✅</div>
+      <h2>No pending fixes</h2>
+      <p>All auto-generated fixes have been reviewed!</p>
+    </div>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>Loading fixes...</p>
+    </div>
+  </div>
+
+  <!-- Fix Detail Modal -->
+  <div class="modal" id="fix-modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeFixModal()"></div>
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2 id="modal-bug-title">Loading...</h2>
+        <button class="close-btn" onclick="closeFixModal()">✕</button>
+      </header>
+      
+      <div class="modal-body">
+        <div class="fix-metadata">
+          <div class="meta-item">
+            <strong>Fix ID:</strong> <span id="modal-fix-id"></span>
+          </div>
+          <div class="meta-item">
+            <strong>Bug ID:</strong> <span id="modal-bug-id"></span>
+          </div>
+          <div class="meta-item">
+            <strong>Created:</strong> <span id="modal-created-at"></span>
+          </div>
+          <div class="meta-item">
+            <strong>Confidence:</strong> 
+            <span id="modal-confidence" class="confidence-badge"></span>
+          </div>
+        </div>
+
+        <section class="section">
+          <h3>📝 Fix Description</h3>
+          <pre id="modal-description" class="description-text"></pre>
+        </section>
+
+        <section class="section">
+          <h3>📁 Affected Files</h3>
+          <ul id="modal-files" class="files-list"></ul>
+        </section>
+
+        <section class="section">
+          <h3>🔀 Proposed Changes</h3>
+          <div class="patch-container">
+            <pre id="modal-patch" class="patch-code"></pre>
+          </div>
+        </section>
+
+        <section class="section" id="breaking-warning" style="display: none;">
+          <div class="warning-box">
+            ⚠️ <strong>Warning:</strong> This fix may contain breaking changes
+          </div>
+        </section>
+      </div>
+
+      <footer class="modal-footer">
+        <div class="action-buttons">
+          <button class="btn btn-approve" id="approve-btn" onclick="approveFix()">
+            ✓ Approve & Apply
+          </button>
+          <button class="btn btn-reject" id="reject-btn" onclick="showRejectDialog()">
+            ✕ Reject
+          </button>
+          <button class="btn btn-secondary" onclick="closeFixModal()">
+            Cancel
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Reject Dialog -->
+  <div class="modal" id="reject-modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeRejectDialog()"></div>
+    <div class="modal-content small">
+      <header class="modal-header">
+        <h2>Reject Fix</h2>
+        <button class="close-btn" onclick="closeRejectDialog()">✕</button>
+      </header>
+      
+      <div class="modal-body">
+        <p>Please provide a reason for rejecting this fix:</p>
+        <textarea id="reject-reason" placeholder="e.g., Fix doesn't address root cause, introduces new bug, etc." rows="4"></textarea>
+        <input type="text" id="rejected-by" placeholder="Your name" value="Brain">
+      </div>
+
+      <footer class="modal-footer">
+        <button class="btn btn-reject" onclick="confirmReject()">Reject Fix</button>
+        <button class="btn btn-secondary" onclick="closeRejectDialog()">Cancel</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="fix-approval.js"></script>
+</body>
+</html>
