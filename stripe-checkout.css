@@ -1,0 +1,343 @@
+/* Stripe Checkout Modal Styling */
+
+.stripe-checkout-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.stripe-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.stripe-modal-content {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+html.dark-mode .stripe-modal-content {
+  background: #1e1e2e;
+  border: 1px solid #444;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stripe-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+html.dark-mode .stripe-modal-close {
+  background: rgba(255, 255, 255, 0.1);
+  color: #aaa;
+}
+
+.stripe-modal-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+html.dark-mode .stripe-modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.stripe-modal-header {
+  text-align: center;
+  padding: 32px 32px 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+html.dark-mode .stripe-modal-header {
+  border-bottom-color: #333;
+}
+
+.stripe-modal-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.8em;
+  color: #333;
+}
+
+html.dark-mode .stripe-modal-header h2 {
+  color: #e0e0e0;
+}
+
+.stripe-modal-header p {
+  margin: 0;
+  color: #666;
+  font-size: 1em;
+}
+
+html.dark-mode .stripe-modal-header p {
+  color: #aaa;
+}
+
+.stripe-modal-body {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.stripe-pricing-card {
+  text-align: center;
+}
+
+.stripe-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.stripe-currency {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #4496ff;
+  margin-right: 4px;
+}
+
+.stripe-amount {
+  font-size: 3.5em;
+  font-weight: 700;
+  color: #4496ff;
+  line-height: 1;
+}
+
+.stripe-period {
+  font-size: 1.2em;
+  color: #666;
+  margin-left: 4px;
+}
+
+html.dark-mode .stripe-period {
+  color: #aaa;
+}
+
+.stripe-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  text-align: left;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stripe-features li {
+  padding: 10px 0;
+  color: #333;
+  font-size: 0.95em;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+html.dark-mode .stripe-features li {
+  color: #e0e0e0;
+  border-bottom-color: #2a2a3e;
+}
+
+.stripe-features li:last-child {
+  border-bottom: none;
+}
+
+.stripe-checkout-btn {
+  width: 100%;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #4496ff 0%, #2270dd 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(68, 150, 255, 0.3);
+  margin-bottom: 12px;
+}
+
+.stripe-checkout-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(68, 150, 255, 0.4);
+}
+
+.stripe-checkout-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.stripe-secure-note {
+  color: #999;
+  font-size: 0.85em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.stripe-benefits {
+  background: #f9f9f9;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+html.dark-mode .stripe-benefits {
+  background: #2a2a3e;
+}
+
+.stripe-benefits h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.2em;
+  color: #333;
+  text-align: center;
+}
+
+html.dark-mode .stripe-benefits h3 {
+  color: #e0e0e0;
+}
+
+.benefit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.benefit-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+}
+
+html.dark-mode .benefit-item {
+  background: #1e1e2e;
+}
+
+.benefit-icon {
+  font-size: 2em;
+  margin-bottom: 8px;
+}
+
+.benefit-text {
+  font-size: 0.9em;
+  color: #666;
+  font-weight: 500;
+}
+
+html.dark-mode .benefit-text {
+  color: #aaa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .stripe-modal-content {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .stripe-modal-header {
+    padding: 24px 20px 16px;
+  }
+
+  .stripe-modal-header h2 {
+    font-size: 1.4em;
+  }
+
+  .stripe-modal-body {
+    padding: 20px;
+    gap: 24px;
+  }
+
+  .stripe-amount {
+    font-size: 2.5em;
+  }
+
+  .stripe-currency {
+    font-size: 1.2em;
+  }
+
+  .stripe-period {
+    font-size: 1em;
+  }
+
+  .stripe-features {
+    font-size: 0.9em;
+  }
+
+  .benefit-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stripe-checkout-btn {
+    padding: 14px 24px;
+    font-size: 1em;
+  }
+}
+
+/* Manage Subscription Button (in settings or sidebar) */
+.manage-subscription-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(68, 150, 255, 0.1);
+  border: 1px solid rgba(68, 150, 255, 0.3);
+  border-radius: 6px;
+  color: #4496ff;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.manage-subscription-btn:hover {
+  background: rgba(68, 150, 255, 0.2);
+  border-color: rgba(68, 150, 255, 0.5);
+  transform: translateY(-2px);
+}
