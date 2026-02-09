@@ -1309,31 +1309,34 @@
     <!-- DISABLED: broken fetch syntax <script src="cryptobot-controller.js"></script> -->
     <!-- DISABLED: broken fetch syntax <script src="cryptobot-view.js"></script> -->
 
+
     <script>
-    // Force render all bot modules after everything loads
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            console.log('[BotInit] Force rendering all bot modules...');
-            console.log('[BotInit] window.docsBotPro:', typeof window.docsBotPro);
-            console.log('[BotInit] docsbot-container:', document.getElementById('docsbot-container'));
-            console.log('[BotInit] businessbot-container:', document.getElementById('businessbot-container'));
-            console.log('[BotInit] codebot-container:', document.getElementById('codebot-container'));
-            console.log('[BotInit] researchbot-container:', document.getElementById('researchbot-container'));
-            console.log('[BotInit] filesystembot-container:', document.getElementById('filesystembot-container'));
-            ['docsBotPro','researchBotPro','codeBotPro','businessBotPro','filesystemBotPro','tasksBotPro'].forEach(name => {
-                console.log('[BotInit] Checking:', name, '=', typeof window[name]);
-                if (window[name] && typeof window[name].renderUI === 'function') {
-                    try {
-                        window[name].renderUI();
-                        console.log('[BotInit] SUCCESS rendered:', name);
-                    } catch(e) {
-                        console.error('[BotInit] FAILED:', name, e.message);
-                    }
-                } else {
-                    console.log('[BotInit] MISSING:', name);
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            var d = document.createElement('div');
+            d.style.cssText = 'position:fixed;top:10px;right:10px;background:#000;color:#0f0;padding:15px;z-index:99999;font-family:monospace;font-size:12px;max-width:400px;border:2px solid #0f0;border-radius:8px;white-space:pre;cursor:pointer;';
+            var log = 'BOT DEBUG:\n';
+            var ids = ['docsbot-container','researchbot-container','codebot-container','businessbot-container','filesystembot-container'];
+            var bots = ['docsBotPro','researchBotPro','codeBotPro','businessBotPro','filesystemBotPro'];
+            for (var i = 0; i < ids.length; i++) {
+                var el = document.getElementById(ids[i]);
+                log += ids[i] + ': ' + (el ? 'YES(' + el.innerHTML.length + ')' : 'MISSING') + '\n';
+            }
+            log += '---\n';
+            for (var i = 0; i < bots.length; i++) {
+                var b = window[bots[i]];
+                log += bots[i] + ': ' + (b ? 'EXISTS' : 'UNDEF');
+                if (b && b.renderUI) {
+                    try { b.renderUI(); log += ' RENDERED'; }
+                    catch(e) { log += ' ERR:' + e.message; }
                 }
-            });
-        }, 2000);
+                log += '\n';
+            }
+            log += '\nClick to close';
+            d.textContent = log;
+            d.onclick = function() { d.remove(); };
+            document.body.appendChild(d);
+        }, 2500);
     });
     </script>
 </body>
