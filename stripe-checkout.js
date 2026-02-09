@@ -5,14 +5,18 @@
 
 class StripeCheckout {
   constructor() {
-    this.stripePublicKey = this.getPublicKey();
+    this.stripePublicKey = null;
     this.stripe = null;
     this.apiBase = window.location.origin;
-    this.priceId = this.getPriceId();
+    this.priceId = null;
     this.init();
   }
 
-  init() {
+  async init() {
+    // Fetch keys from server first
+    this.stripePublicKey = await this.getPublicKey();
+    this.priceId = await this.getPriceId();
+    
     // Load Stripe.js if not already loaded
     if (!window.Stripe && !document.querySelector('script[src*="stripe.com"]')) {
       this.loadStripeJS();
@@ -27,18 +31,42 @@ class StripeCheckout {
     this.checkSubscriptionStatus();
   }
 
-  getPublicKey() {
-    // In production, this should come from environment or server config
-    // For now, check localStorage or default to test key
-    return localStorage.getItem('stripe_public_key') || 
-           'pk_test_51QkYourTestKeyHere'; // Replace with actual test key
+  async getPublicKey() {
+    // Fetch from server config API (no hardcoded keys!)
+    try {
+      const response = await fetch(`${API_BASE}/stripe/config`);
+      if (response.ok) {
+        const config = await response.json();
+        if (config.publishableKey) {
+          localStorage.setItem('stripe_public_key', config.publishableKey);
+          return config.publishableKey;
+        }
+      }
+    } catch (error) {
+      console.error('[Stripe] Failed to fetch public key:', error);
+    }
+    
+    // Fallback to localStorage (if previously fetched)
+    return localStorage.getItem('stripe_public_key') || null;
   }
 
-  getPriceId() {
-    // Stripe Price ID for Pro tier subscription
-    // This should be set in admin settings or environment
-    return localStorage.getItem('stripe_price_id') || 
-           'price_1QkYourPriceIDHere'; // Replace with actual price ID
+  async getPriceId() {
+    // Fetch price IDs from server config API
+    try {
+      const response = await fetch(`${API_BASE}/stripe/config`);
+      if (response.ok) {
+        const config = await response.json();
+        if (config.prices && config.prices.pro) {
+          localStorage.setItem('stripe_price_id', config.prices.pro);
+          return config.prices.pro;
+        }
+      }
+    } catch (error) {
+      console.error('[Stripe] Failed to fetch price ID:', error);
+    }
+    
+    // Fallback to localStorage (if previously fetched)
+    return localStorage.getItem('stripe_price_id') || null;
   }
 
   loadStripeJS() {
@@ -57,8 +85,8 @@ class StripeCheckout {
   }
 
   initializeStripe() {
-    if (!this.stripePublicKey || this.stripePublicKey.startsWith('pk_test_51QkYour')) {
-      console.warn('[Stripe] No valid public key configured. Stripe integration disabled.');
+    if (!this.stripePublicKey) {
+      console.warn('[Stripe] No public key available from server. Stripe integration disabled.');
       return;
     }
 
