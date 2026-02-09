@@ -559,7 +559,16 @@ function renderHeaderStats() {
         
         // Get heartbeat count from /api/activity
         const heartbeatsArray = activity.heartbeats || [];
-        const heartbeatCount = heartbeatsArray.length;
+        // Use heartbeat state baseline + live activity count
+        let heartbeatBaseline = 0;
+        try {
+            const stateResp = await fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/heartbeat/state');
+            if (stateResp.ok) {
+                const stateData = await stateResp.json();
+                heartbeatBaseline = (stateData.heartbeatCount || 0) || 0;
+            }
+        } catch(e) {}
+        const heartbeatCount = Math.max(heartbeatsArray.length, heartbeatBaseline);
         
         // Calculate tasks completed today (for header only)
         const now = new Date();
