@@ -68,6 +68,29 @@ class AnalyticsEngine {
   }
 
   /**
+   * Get call count for a specific bot (count activities matching bot keywords)
+   */
+  getCallCountForBot(botId, heartbeats) {
+    const keywords = {
+      'docs': ['doc', 'documentation', 'readme', 'memory'],
+      'research': ['research', 'search', 'web', 'fetch'],
+      'code': ['code', 'syntax', 'debug', 'commit', 'git'],
+      'social': ['social', 'post', 'tweet', 'linkedin'],
+      'business': ['business', 'revenue', 'client', 'metrics'],
+      'filesystem': ['file', 'read', 'write', 'directory'],
+      'tasks': ['task', 'pending', 'completed', 'running']
+    };
+
+    const botKeywords = keywords[botId] || [];
+    
+    // Count all heartbeats mentioning this bot's keywords
+    return heartbeats.filter(hb => {
+      const activity = (hb.activity || '').toLowerCase();
+      return botKeywords.some(kw => activity.includes(kw));
+    }).length;
+  }
+
+  /**
    * Get last active timestamp for a specific bot
    */
   getLastActiveForBot(botId, heartbeats) {
@@ -147,10 +170,11 @@ class AnalyticsEngine {
     this.bots.forEach(bot => {
       const lastActive = this.getLastActiveForBot(bot.id, metrics.heartbeats);
       const relativeTime = this.formatRelativeTime(lastActive);
+      const callCount = this.getCallCountForBot(bot.id, metrics.heartbeats);
       html += '<tr>';
       html += '<td>' + bot.icon + ' ' + bot.name + '</td>';
       html += '<td><span class="status-badge active">✓ ' + bot.status + '</span></td>';
-      html += '<td>' + Math.floor(Math.random() * 50) + '</td>';
+      html += '<td>' + callCount + '</td>';
       html += '<td>' + relativeTime + '</td>';
       html += '</tr>';
     });
