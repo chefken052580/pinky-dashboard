@@ -643,9 +643,9 @@ function loadApprovals() {
             
             list.innerHTML = data.pending.map(req => `
                 <div class="approval-item" data-id="${req.id}">
-                    <h4>📋 ${req.title}</h4>
-                    <div class="file">📁 ${req.file || 'N/A'}</div>
-                    <div class="description">${req.description || ''}</div>
+                    <h4>📋 ${req.title || "Approval #" + req.id.slice(-6)}</h4>
+                    <div class="file">📁 ${req.file || "No file specified"}</div>
+                    <div class="description">${req.description || "No description provided"}</div>
                     <textarea placeholder="Add instructions for Pinky (optional)..." id="instructions-${req.id}"></textarea>
                     <div class="approval-buttons">
                         <button class="btn-approve" onclick="respondApproval('${req.id}', true)">✅ Approve</button>
