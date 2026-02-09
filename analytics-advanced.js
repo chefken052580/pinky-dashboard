@@ -180,7 +180,16 @@ class AnalyticsEngine {
     html += '<div class="analytics-section">';
     html += '<h3>📊 Activity Log (Last 5)</h3>';
     html += '<div class="activity-table">';
-    const hbs = (activityData?.heartbeats || []).slice(-5).reverse();
+    const hbs = (activityData?.heartbeats || [])
+      .filter(hb => {
+        const activity = (hb.activity || '').toLowerCase();
+        return !activity.includes('heartbeat') && 
+               !activity.includes('work') && 
+               !activity.includes('seed') &&
+               !activity.includes('heartbeat_ok');
+      })
+      .slice(-5)
+      .reverse();
     hbs.forEach(hb => {
       const time = new Date(hb.timestamp).toLocaleTimeString();
       html += '<div class="activity-row">';
