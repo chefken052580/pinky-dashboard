@@ -13,7 +13,7 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
+      background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -47,19 +47,21 @@
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
+      background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
       margin: 0 auto 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+      animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    @keyframes shake {
-      10%, 90% { transform: translateX(-2px); }
-      20%, 80% { transform: translateX(4px); }
-      30%, 50%, 70% { transform: translateX(-6px); }
-      40%, 60% { transform: translateX(6px); }
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+      }
+      to {
+        transform: scale(1);
+      }
     }
 
     .error-icon svg {
@@ -79,16 +81,15 @@
       font-weight: 700;
     }
 
-    .error-badge {
+    .error-code {
       display: inline-block;
-      background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
-      color: white;
+      background: #feb2b2;
+      color: #742a2a;
       padding: 8px 20px;
       border-radius: 20px;
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 24px;
-      text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
@@ -100,9 +101,8 @@
     }
 
     .troubleshooting {
-      background: #fef5f5;
-      border-left: 4px solid #fc5c7d;
-      border-radius: 8px;
+      background: #f7fafc;
+      border-radius: 12px;
       padding: 24px;
       margin-bottom: 32px;
       text-align: left;
@@ -121,7 +121,7 @@
     }
 
     .troubleshooting li {
-      padding: 10px 0;
+      padding: 12px 0;
       color: #4a5568;
       display: flex;
       align-items: flex-start;
@@ -129,11 +129,11 @@
 
     .troubleshooting li:before {
       content: "•";
-      color: #fc5c7d;
+      color: #f56565;
       font-weight: bold;
       font-size: 20px;
       margin-right: 12px;
-      flex-shrink: 0;
+      line-height: 1.2;
     }
 
     .btn-container {
@@ -179,7 +179,7 @@
       padding-top: 24px;
       border-top: 1px solid #e2e8f0;
       font-size: 14px;
-      color: #4a5568;
+      color: #718096;
     }
 
     .support-link a {
@@ -215,25 +215,24 @@
   <div class="error-container">
     <div class="error-icon">
       <svg viewBox="0 0 52 52">
-        <circle cx="26" cy="26" r="22" fill="none" stroke="white" stroke-width="3"/>
-        <line x1="26" y1="18" x2="26" y2="32" stroke="white" stroke-width="3"/>
-        <circle cx="26" cy="38" r="2" fill="white"/>
+        <line x1="16" y1="16" x2="36" y2="36"/>
+        <line x1="36" y1="16" x2="16" y2="36"/>
       </svg>
     </div>
 
     <h1>Payment Failed</h1>
-    <div class="error-badge">Transaction Declined</div>
+    <div class="error-code" id="error-code">Payment Declined</div>
     
-    <p>We couldn't process your payment. Don't worry — your card has not been charged.</p>
+    <p id="error-message">Your payment could not be processed. This may be due to insufficient funds, an expired card, or your bank declining the transaction.</p>
 
     <div class="troubleshooting">
-      <h2>🔍 Common Issues</h2>
+      <h2>💳 What You Can Try:</h2>
       <ul>
-        <li><strong>Insufficient funds:</strong> Check your account balance</li>
-        <li><strong>Incorrect card details:</strong> Verify card number, expiration date, and CVC</li>
-        <li><strong>Card declined by bank:</strong> Contact your bank to authorize online payments</li>
-        <li><strong>Expired card:</strong> Use a card with a valid expiration date</li>
-        <li><strong>Billing address mismatch:</strong> Ensure billing address matches your bank records</li>
+        <li>Verify your card details are correct</li>
+        <li>Ensure you have sufficient funds</li>
+        <li>Try a different payment method</li>
+        <li>Contact your bank if the card was declined</li>
+        <li>Check if your card supports international transactions</li>
       </ul>
     </div>
 
@@ -243,36 +242,46 @@
     </div>
 
     <div class="support-link">
-      Still having issues? <a href="mailto:support@pinkybot.io">Contact Support</a>
+      Need help? <a href="mailto:support@pinkybot.io">Contact Support</a>
     </div>
   </div>
 
   <script>
-    // Clear any partial subscription data from localStorage
-    localStorage.removeItem('pinky_subscription_active');
-    localStorage.removeItem('pinky_subscription_session');
-
-    // Log error details for debugging (if available in URL params)
+    // Get error details from URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const errorCode = urlParams.get('error');
-    const errorMessage = urlParams.get('message');
+    const errorType = urlParams.get('error') || 'declined';
+    const sessionId = urlParams.get('session_id');
 
-    if (errorCode || errorMessage) {
-      console.error('Payment Error:', {
-        code: errorCode,
-        message: errorMessage
-      });
+    // Customize error message based on error type
+    const errorMessages = {
+      declined: 'Your payment was declined by your bank. Please verify your card details and try again.',
+      insufficient_funds: 'Your card has insufficient funds. Please try a different payment method.',
+      expired_card: 'Your card has expired. Please use a different card.',
+      processing_error: 'There was an error processing your payment. Please try again in a few moments.',
+      canceled: 'You canceled the payment process. No charges were made.',
+      network_error: 'A network error occurred. Please check your connection and try again.'
+    };
 
-      // Optional: Send error to backend for analytics
-      fetch('/api/analytics/payment-error', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          errorCode,
-          errorMessage,
-          timestamp: new Date().toISOString()
-        })
-      }).catch(err => console.error('Analytics logging failed:', err));
+    const errorCodes = {
+      declined: 'Card Declined',
+      insufficient_funds: 'Insufficient Funds',
+      expired_card: 'Expired Card',
+      processing_error: 'Processing Error',
+      canceled: 'Payment Canceled',
+      network_error: 'Network Error'
+    };
+
+    // Update error message and code
+    if (errorMessages[errorType]) {
+      document.getElementById('error-message').textContent = errorMessages[errorType];
+      document.getElementById('error-code').textContent = errorCodes[errorType];
+    }
+
+    // Log error for analytics (optional)
+    if (sessionId) {
+      console.error('Payment failed:', { errorType, sessionId });
+      // Optional: Send to analytics endpoint
+      // fetch('/api/analytics/payment-error', { method: 'POST', body: JSON.stringify({ errorType, sessionId }) });
     }
   </script>
 </body>
