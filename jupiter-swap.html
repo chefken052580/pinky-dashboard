@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Jupiter Swap - CryptoBot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+    h1 { color: #a78bfa; }
+    .swap-container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 16px;
+      padding: 30px;
+    }
+    .token-input {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+    }
+    .token-select {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .token-select select {
+      flex: 1;
+      padding: 12px;
+      background: #334155;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .token-amount input {
+      width: 100%;
+      padding: 15px;
+      background: #334155;
+      border: none;
+      color: white;
+      font-size: 24px;
+      border-radius: 8px;
+      outline: none;
+    }
+    .swap-arrow {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 32px;
+      cursor: pointer;
+    }
+    .swap-button {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border: none;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .swap-button:hover {
+      transform: scale(1.02);
+    }
+    .swap-details {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔄 Jupiter Swap</h1>
+  <p style="color:#94a3b8; margin-bottom:30px;">Swap tokens on Solana with best prices via Jupiter aggregator</p>
+
+  <div class="swap-container">
+    <!-- From Token -->
+    <div class="token-input">
+      <div class="token-select">
+        <span>From</span>
+        <select id="fromToken">
+          <option value="SOL">SOL</option>
+          <option value="USDC">USDC</option>
+          <option value="USDT">USDT</option>
+          <option value="PINKY">PINKY</option>
+        </select>
+      </div>
+      <div class="token-amount">
+        <input type="number" id="fromAmount" placeholder="0.00" value="1.0">
+      </div>
+      <div style="color:#94a3b8; font-size:13px; margin-top:10px;">
+        Balance: <span id="fromBalance">5.234</span>
+      </div>
+    </div>
+
+    <!-- Swap Arrow -->
+    <div class="swap-arrow" onclick="swapTokens()">
+      ⬇️
+    </div>
+
+    <!-- To Token -->
+    <div class="token-input">
+      <div class="token-select">
+        <span>To</span>
+        <select id="toToken">
+          <option value="USDC" selected>USDC</option>
+          <option value="SOL">SOL</option>
+          <option value="USDT">USDT</option>
+          <option value="PINKY">PINKY</option>
+        </select>
+      </div>
+      <div class="token-amount">
+        <input type="number" id="toAmount" placeholder="0.00" value="145.50" readonly>
+      </div>
+      <div style="color:#94a3b8; font-size:13px; margin-top:10px;">
+        Balance: <span id="toBalance">2,450.12</span>
+      </div>
+    </div>
+
+    <!-- Swap Details -->
+    <div class="swap-details">
+      <div class="detail-row">
+        <span>Rate</span>
+        <span id="rate">1 SOL ≈ 145.50 USDC</span>
+      </div>
+      <div class="detail-row">
+        <span>Price Impact</span>
+        <span id="priceImpact" style="color:#10b981;">&lt;0.01%</span>
+      </div>
+      <div class="detail-row">
+        <span>Network Fee</span>
+        <span id="networkFee">0.000005 SOL (~$0.001)</span>
+      </div>
+      <div class="detail-row">
+        <span>Route</span>
+        <span id="route">SOL → USDC (Direct)</span>
+      </div>
+    </div>
+
+    <button class="swap-button" onclick="executeSwap()">Swap Tokens</button>
+  </div>
+
+  <script>
+    function swapTokens() {
+      const fromToken = document.getElementById('fromToken');
+      const toToken = document.getElementById('toToken');
+      
+      const tempValue = fromToken.value;
+      fromToken.value = toToken.value;
+      toToken.value = tempValue;
+      
+      updateQuote();
+    }
+
+    function updateQuote() {
+      const fromAmount = parseFloat(document.getElementById('fromAmount').value) || 0;
+      const fromToken = document.getElementById('fromToken').value;
+      const toToken = document.getElementById('toToken').value;
+      
+      // Mock exchange rates
+      const rates = {
+        'SOL_USDC': 145.50,
+        'USDC_SOL': 0.00687,
+        'SOL_PINKY': 1000000,
+        'PINKY_SOL': 0.000001
+      };
+      
+      const rateKey = `${fromToken}_${toToken}`;
+      const rate = rates[rateKey] || 1;
+      const toAmount = (fromAmount * rate).toFixed(2);
+      
+      document.getElementById('toAmount').value = toAmount;
+      document.getElementById('rate').textContent = `1 ${fromToken} ≈ ${rate.toLocaleString()} ${toToken}`;
+    }
+
+    async function executeSwap() {
+      if (!window.solana || !window.solana.publicKey) {
+        alert('Please connect your Phantom wallet first!');
+        return;
+      }
+      
+      const fromAmount = document.getElementById('fromAmount').value;
+      const fromToken = document.getElementById('fromToken').value;
+      const toToken = document.getElementById('toToken').value;
+      
+      if (!fromAmount || fromAmount <= 0) {
+        alert('Please enter a valid amount');
+        return;
+      }
+      
+      const button = event.target;
+      button.disabled = true;
+      button.textContent = 'Swapping...';
+      
+      try {
+        // Mock swap execution (replace with real Jupiter API)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        alert(`✅ Swap successful!\\n${fromAmount} ${fromToken} → ${toToken}`);
+        button.textContent = 'Swap Tokens';
+        button.disabled = false;
+      } catch (err) {
+        alert('❌ Swap failed: ' + err.message);
+        button.textContent = 'Swap Tokens';
+        button.disabled = false;
+      }
+    }
+
+    // Auto-update quote when amount changes
+    document.getElementById('fromAmount').addEventListener('input', updateQuote);
+    document.getElementById('fromToken').addEventListener('change', updateQuote);
+    document.getElementById('toToken').addEventListener('change', updateQuote);
+  </script>
+</body>
+</html>
