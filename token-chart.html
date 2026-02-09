@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Token Chart Viewer - CryptoBot</title>
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+    h1 { color: #a78bfa; }
+    .chart-controls {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .chart-controls input, .chart-controls select {
+      padding: 10px;
+      background: #334155;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .chart-controls button {
+      padding: 10px 20px;
+      background: #6366f1;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .chart-controls button:hover {
+      background: #4f46e5;
+    }
+    #tradingview_chart {
+      height: 600px;
+      background: #1e293b;
+      border-radius: 12px;
+    }
+    .chart-info {
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .info-item {
+      text-align: center;
+    }
+    .info-value {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+    .info-label {
+      color: #94a3b8;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📈 Token Chart Viewer</h1>
+  
+  <div class="chart-controls">
+    <input type="text" id="tokenInput" placeholder="Enter token (e.g. BTCUSDT)" value="BTCUSDT">
+    <select id="intervalSelect">
+      <option value="1">1m</option>
+      <option value="5">5m</option>
+      <option value="15" selected>15m</option>
+      <option value="60">1H</option>
+      <option value="240">4H</option>
+      <option value="D">1D</option>
+      <option value="W">1W</option>
+    </select>
+    <select id="chartTypeSelect">
+      <option value="1" selected>Candlestick</option>
+      <option value="0">Bar</option>
+      <option value="3">Line</option>
+      <option value="9">Area</option>
+    </select>
+    <button onclick="loadChart()">Load Chart</button>
+    <button onclick="toggleFullscreen()">Fullscreen</button>
+  </div>
+
+  <div id="tradingview_chart"></div>
+
+  <div class="chart-info">
+    <div class="info-item">
+      <div class="info-label">Price</div>
+      <div class="info-value" id="price">$45,234.50</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">24h Change</div>
+      <div class="info-value" id="change" style="color:#10b981;">+3.2%</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">24h Volume</div>
+      <div class="info-value" id="volume">$28.5B</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Market Cap</div>
+      <div class="info-value" id="marketcap">$890B</div>
+    </div>
+  </div>
+
+  <script>
+    let tvWidget = null;
+
+    function loadChart() {
+      const token = document.getElementById('tokenInput').value.toUpperCase();
+      const interval = document.getElementById('intervalSelect').value;
+      const chartType = parseInt(document.getElementById('chartTypeSelect').value);
+
+      // Clear existing chart
+      if (tvWidget) {
+        tvWidget.remove();
+      }
+
+      // Initialize TradingView widget
+      tvWidget = new TradingView.widget({
+        autosize: true,
+        symbol: `BINANCE:${token}`,
+        interval: interval,
+        timezone: "America/New_York",
+        theme: "dark",
+        style: chartType,
+        locale: "en",
+        toolbar_bg: "#1e293b",
+        enable_publishing: false,
+        hide_top_toolbar: false,
+        hide_legend: false,
+        save_image: true,
+        container_id: "tradingview_chart",
+        studies: [
+          "MASimple@tv-basicstudies",
+          "Volume@tv-basicstudies"
+        ],
+        disabled_features: [
+          "use_localstorage_for_settings",
+          "header_symbol_search",
+          "header_compare"
+        ],
+        enabled_features: [
+          "study_templates"
+        ],
+        overrides: {
+          "mainSeriesProperties.candleStyle.upColor": "#10b981",
+          "mainSeriesProperties.candleStyle.downColor": "#ef4444",
+          "mainSeriesProperties.candleStyle.borderUpColor": "#10b981",
+          "mainSeriesProperties.candleStyle.borderDownColor": "#ef4444",
+          "mainSeriesProperties.candleStyle.wickUpColor": "#10b981",
+          "mainSeriesProperties.candleStyle.wickDownColor": "#ef4444",
+        }
+      });
+
+      // Update token info (mock data)
+      updateTokenInfo(token);
+    }
+
+    function updateTokenInfo(token) {
+      // Mock price data (replace with real API)
+      const mockPrices = {
+        'BTCUSDT': { price: 45234.50, change: 3.2, volume: '28.5B', cap: '890B' },
+        'ETHUSDT': { price: 2456.78, change: -1.5, volume: '12.3B', cap: '295B' },
+        'SOLUSDT': { price: 98.45, change: 5.8, volume: '2.1B', cap: '42B' }
+      };
+
+      const data = mockPrices[token] || { price: 0, change: 0, volume: '0', cap: '0' };
+      
+      document.getElementById('price').textContent = '$' + data.price.toLocaleString();
+      document.getElementById('change').textContent = (data.change >= 0 ? '+' : '') + data.change + '%';
+      document.getElementById('change').style.color = data.change >= 0 ? '#10b981' : '#ef4444';
+      document.getElementById('volume').textContent = '$' + data.volume;
+      document.getElementById('marketcap').textContent = '$' + data.cap;
+    }
+
+    function toggleFullscreen() {
+      const elem = document.getElementById('tradingview_chart');
+      if (!document.fullscreenElement) {
+        elem.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Load default chart on page load
+    window.addEventListener('load', () => {
+      loadChart();
+    });
+
+    // Listen for Enter key in token input
+    document.getElementById('tokenInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        loadChart();
+      }
+    });
+  </script>
+</body>
+</html>
