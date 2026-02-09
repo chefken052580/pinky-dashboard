@@ -931,9 +931,105 @@
                 <div id="export-package-container"></div>
             </div>
 
+            <!-- About View -->
             <div id="about-view" class="view">
                 <h2>ℹ️ About PinkyBot</h2>
-                <div id="about-container"></div>
+                <p style="color:white;margin-bottom:25px;">
+                    System information, architecture, and technical details.
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🔢</div>
+                        <div class="stat-content">
+                            <div class="stat-value">v3.0.0</div>
+                            <div class="stat-label">Version</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="system-uptime">--</div>
+                            <div class="stat-label">Uptime</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏗️</div>
+                        <div class="stat-content">
+                            <div class="stat-value">Express + React</div>
+                            <div class="stat-label">Architecture</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔌</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="api-count">40+</div>
+                            <div class="stat-label">API Endpoints</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:30px;">
+                    <h3>🛠️ Tech Stack</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Backend</span>
+                            <span class="activity-bot">Node.js + Express</span>
+                            <span class="activity-message">REST API server with PM2 process management</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">Frontend</span>
+                            <span class="activity-bot">Vanilla JS + CSS Grid</span>
+                            <span class="activity-message">Responsive dashboard with real-time updates</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">AI Models</span>
+                            <span class="activity-bot">Claude Sonnet 4.5 + Grok 4</span>
+                            <span class="activity-message">Multi-model support via OpenRouter/xAI APIs</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">Database</span>
+                            <span class="activity-bot">JSON Files + Git</span>
+                            <span class="activity-message">Git-based persistence with version control</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">Blockchain</span>
+                            <span class="activity-bot">Solana Web3.js</span>
+                            <span class="activity-message">Wallet integration for PINKY token payments</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:30px;">
+                    <h3>📡 API Endpoints</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">GET</span>
+                            <span class="activity-bot">/api/tasks</span>
+                            <span class="activity-message">Task management system</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">GET</span>
+                            <span class="activity-bot">/api/usage</span>
+                            <span class="activity-message">Token usage statistics</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">GET</span>
+                            <span class="activity-bot">/api/activity</span>
+                            <span class="activity-message">Heartbeat and activity logs</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">POST</span>
+                            <span class="activity-bot">/api/codebot/*</span>
+                            <span class="activity-message">Git commits, code stats, syntax errors</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">POST</span>
+                            <span class="activity-bot">/api/stripe/checkout</span>
+                            <span class="activity-message">Subscription payments</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="business-view" class="view">
@@ -1383,6 +1479,7 @@
     
     <script src="export-package-ui.js"></script>
     <script src="data-export-ui.js"></script>
+    <script src="about-pinkybot-ui.js"></script>
     <script src="system-health-widget.js"></script>
     <script src="changelog-widget.js"></script>
     
