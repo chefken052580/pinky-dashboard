@@ -34,7 +34,7 @@ class TriageDashboard {
       return this.bugs;
     } catch (error) {
       console.error('Failed to load bugs:', error);
-      this.showError('Failed to load bugs. Please try again.');
+      console.warn('[Triage] Bug API unavailable');
       return [];
     }
   }

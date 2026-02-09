@@ -1,10 +1,10 @@
 /* Pinky Bot Dashboard - Unified Styles */
 :root {
---bg-body: linear-gradient(135deg, #0a0a1a 0%, #12122e 50%, #0a0a1a 100%);
-    --bg-sidebar: #0d0d24;
-    --bg-card: rgba(15, 15, 40, 0.85);
-    --bg-card-hover: rgba(20, 20, 55, 0.9);
-    --bg-subtle: rgba(15, 15, 40, 0.6);
+--bg-body: linear-gradient(135deg, #0e0b2e 0%, #1a1352 50%, #0e0b2e 100%);
+    --bg-sidebar: #14103d;
+    --bg-card: rgba(24, 20, 70, 0.85);
+    --bg-card-hover: rgba(32, 27, 85, 0.9);
+    --bg-subtle: rgba(24, 20, 70, 0.6);
     --bg-input: rgba(255, 255, 255, 0.05);
     --text-primary: #e0e0ff;
     --text-secondary: #a0a0c0;
@@ -18,15 +18,15 @@
     --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --gradient-blue: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
     --gradient-green: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
-    --border-default: rgba(102, 126, 234, 0.25);
+    --border-default: rgba(102, 126, 234, 0.35);
     --border-subtle: rgba(255, 255, 255, 0.06);
     --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
     --shadow-card-hover: 0 8px 30px rgba(102, 126, 234, 0.15);
     --shadow-header: 0 2px 15px rgba(0, 0, 0, 0.4);
-    --activity-bg: rgba(15, 15, 40, 0.5);
+    --activity-bg: rgba(24, 20, 70, 0.5);
     --activity-border: #00d4ff;
-    --activity-item-bg: rgba(20, 20, 55, 0.5);
-    --scrollbar-track: rgba(15, 15, 40, 0.5);
+    --activity-item-bg: rgba(32, 27, 85, 0.5);
+    --scrollbar-track: rgba(24, 20, 70, 0.5);
     --scrollbar-thumb: #667eea;
     --scrollbar-hover: #00d4ff;
     --btn-border: #667eea;
@@ -41,10 +41,10 @@ html.light-mode {
     --bg-card-hover: #fafbff;
     --bg-subtle: #f4f5fb;
     --bg-input: #f8f9fc;
-    --text-primary: #1a1a2e;
-    --text-secondary: #555;
-    --text-muted: #888;
-    --text-heading: #667eea;
+    --text-primary: #0a0a18;
+    --text-secondary: #2a2a3e;
+    --text-muted: #555;
+    --text-heading: #4a5cd4;
     --text-on-accent: #ffffff;
     --accent-primary: #667eea;
     --accent-secondary: #764ba2;

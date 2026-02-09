@@ -69,7 +69,7 @@ class BugTracker {
         this.filteredBugs = [...this.bugs];
         this.renderBugs();
       } else {
-        this.showError('Failed to load bugs');
+        console.warn('[BugTracker] Bug API unavailable');
       }
     } catch (err) {
       console.error('[BugTracker] Failed to load bugs:', err);

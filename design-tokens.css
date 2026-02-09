@@ -213,11 +213,11 @@
 /* ============================================
    GLOBAL RESETS USING TOKENS
    ============================================ */
-body {
+/* OVERRIDDEN BY styles.css body {
     background: var(--bg-body) !important;
     color: var(--text-primary) !important;
     font-family: var(--font-main) !important;
-}
+} */
 
 /* Unified scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
