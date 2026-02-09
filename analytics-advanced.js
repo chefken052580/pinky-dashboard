@@ -271,7 +271,24 @@ class AnalyticsEngine {
     html += '<div class="summary-grid">';
     html += '<div class="summary-item"><span class="summary-label">Avg Task Duration</span><span class="summary-value">3m 24s</span></div>';
     html += '<div class="summary-item"><span class="summary-label">Success Rate</span><span class="summary-value">100%</span></div>';
-    html += '<div class="summary-item"><span class="summary-label">Time Active</span><span class="summary-value">' + Math.floor((Date.now() - (window.heartbeatManager?.sessionStart || 0)) / 60000) + 'm</span></div>';
+    
+    // Format time active properly (days/hours/minutes instead of raw minutes)
+    const sessionStart = window.heartbeatManager?.sessionStart || Date.now();
+    const minutesActive = Math.floor((Date.now() - sessionStart) / 60000);
+    let timeActiveStr = '';
+    if (minutesActive < 60) {
+      timeActiveStr = minutesActive + 'm';
+    } else if (minutesActive < 1440) {
+      const hours = Math.floor(minutesActive / 60);
+      const mins = minutesActive % 60;
+      timeActiveStr = hours + 'h ' + mins + 'm';
+    } else {
+      const days = Math.floor(minutesActive / 1440);
+      const hours = Math.floor((minutesActive % 1440) / 60);
+      timeActiveStr = days + 'd ' + hours + 'h';
+    }
+    
+    html += '<div class="summary-item"><span class="summary-label">Time Active</span><span class="summary-value">' + timeActiveStr + '</span></div>';
     html += '<div class="summary-item"><span class="summary-label">Efficiency</span><span class="summary-value">94%</span></div>';
     html += '</div>';
     html += '</div>';
