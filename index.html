@@ -1489,5 +1489,46 @@
     <!-- DISABLED: broken fetch syntax <script src="cryptobot-view.js"></script> -->
 
 
+    <script src="header-live-data.js"></script>
+    <script src="keyboard-shortcuts.js"></script>
+    <script src="notification-badge-manager.js"></script>
+    <script src="pinky-control.js"></script>
+    <script src="changelog-modal.js"></script>
+    <script src="export-handler.js"></script>
+    <script src="log-activity.js"></script>
+    <script src="main.js"></script>
+    <script src="bot-orchestrator.js"></script>
+    <script src="analytics-bot.js"></script>
+    <script src="tasks-bot.js"></script>
+    <script src="task-search-filter.js"></script>
+    <script src="monitoring-dashboard.js"></script>
+    <script src="gitbot.js"></script>
+    <script src="lintbot.js"></script>
+    <script src="company-manager.js"></script>
+    <script src="company-analytics.js"></script>
+    <script src="post-calendar.js"></script>
+    <script src="socialbot-demo.js"></script>
+    <script src="bug-report-ui.js"></script>
+    <script src="bug-reporter.js"></script>
+    <script src="bug-screenshot-uploader.js"></script>
+    <script src="bug-tracker-public.js"></script>
+    <script src="bug-status-widget.js"></script>
+    <script src="known-issues.js"></script>
+    <script src="fix-approval.js"></script>
+    <script src="approval-queue-autofix.js"></script>
+    <script src="triage-dashboard.js"></script>
+    <script>
+    // Force init all bot UIs after scripts load
+    (function() {
+        function initAllBotUIs() {
+            try { if (typeof BusinessBotUI !== 'undefined') { var b = new BusinessBotUI(); b.init(); } } catch(e) {}
+            try { if (typeof AboutPinkyBotUI !== 'undefined') { var a = new AboutPinkyBotUI(); a.init(); } } catch(e) {}
+            try { if (typeof DataExportUI !== 'undefined') { var d = new DataExportUI(); d.init(); } } catch(e) {}
+            try { if (typeof initCodeBotUI === 'function') { initCodeBotUI(); } } catch(e) {}
+        }
+        initAllBotUIs();
+        setTimeout(initAllBotUIs, 1500);
+    })();
+    </script>
 </body>
 </html>
