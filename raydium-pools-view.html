@@ -1,0 +1,364 @@
+<!-- Raydium Pools Viewer - Solana DEX Liquidity Monitoring -->
+<div class="raydium-container">
+  <div class="raydium-header">
+    <div class="raydium-title-section">
+      <h2 style="margin: 0; font-size: 24px; display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 32px;">💧</span>
+        Raydium Liquidity Pools
+      </h2>
+      <p style="margin: 5px 0 0 0; font-size: 13px; color: #999;">
+        Real-time Solana DEX pool monitoring • Auto-refreshes every 45 seconds
+      </p>
+    </div>
+    <div class="raydium-controls">
+      <span style="font-size: 13px; color: #999;">Last refresh: <span id="raydium-last-refresh">--:--:--</span></span>
+      <button class="raydium-refresh-btn" onclick="window.RaydiumPoolsViewer && window.RaydiumPoolsViewer.refreshPools()" title="Refresh data">
+        🔄 Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="raydium-stats-grid">
+    <div class="raydium-stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <div class="stat-label">Total TVL</div>
+        <div class="stat-value" id="raydium-stat-tvl">$0</div>
+      </div>
+    </div>
+    
+    <div class="raydium-stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <div class="stat-label">24h Volume</div>
+        <div class="stat-value" id="raydium-stat-volume">$0</div>
+      </div>
+    </div>
+    
+    <div class="raydium-stat-card">
+      <div class="stat-icon">📈</div>
+      <div class="stat-content">
+        <div class="stat-label">Avg APR</div>
+        <div class="stat-value" id="raydium-stat-apr">0%</div>
+      </div>
+    </div>
+    
+    <div class="raydium-stat-card">
+      <div class="stat-icon">🏊</div>
+      <div class="stat-content">
+        <div class="stat-label">Active Pools</div>
+        <div class="stat-value" id="raydium-stat-pools">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pools Table -->
+  <div class="raydium-section">
+    <div class="section-header">
+      <h3>🔝 Top Liquidity Pools</h3>
+      <span class="section-badge">Top 20</span>
+    </div>
+    <div id="raydium-pools-container" class="raydium-content">
+      <div class="raydium-loading">
+        <div class="loading-spinner"></div>
+        <p>Loading Raydium pools...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Footer -->
+  <div class="raydium-footer">
+    <p style="font-size: 12px; color: #666; margin: 0;">
+      Data provided by <a href="https://raydium.io" target="_blank" style="color: #00d4ff;">Raydium Protocol</a> • 
+      Click pool to view on Raydium • APR values are estimates based on current rates
+    </p>
+  </div>
+</div>
+
+<style>
+.raydium-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.raydium-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(0, 212, 255, 0.2);
+}
+
+.raydium-title-section {
+  flex: 1;
+}
+
+.raydium-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.raydium-refresh-btn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #5ac8fa, #007aff);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 10px rgba(90, 200, 250, 0.3);
+}
+
+.raydium-refresh-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(90, 200, 250, 0.5);
+}
+
+.raydium-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 35px;
+}
+
+.raydium-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  transition: all 0.3s;
+}
+
+.raydium-stat-card:hover {
+  border-color: #00d4ff;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
+}
+
+.raydium-stat-card .stat-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.raydium-stat-card .stat-content {
+  flex: 1;
+}
+
+.raydium-stat-card .stat-label {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.raydium-stat-card .stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #00d4ff;
+}
+
+.raydium-section {
+  margin-bottom: 40px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+}
+
+.section-badge {
+  padding: 5px 15px;
+  background: rgba(90, 200, 250, 0.2);
+  border: 1px solid #5ac8fa;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #5ac8fa;
+}
+
+.raydium-content {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 25px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.raydium-loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 20px;
+  border: 4px solid rgba(0, 212, 255, 0.2);
+  border-top-color: #00d4ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.raydium-empty {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.raydium-error {
+  text-align: center;
+  padding: 40px;
+  color: #ff4444;
+}
+
+.raydium-table {
+  width: 100%;
+}
+
+.raydium-table-header,
+.raydium-table-row {
+  display: grid;
+  grid-template-columns: 50px 2fr 1fr 1fr 1fr 1fr 100px;
+  gap: 15px;
+  padding: 15px;
+  align-items: center;
+}
+
+.raydium-table-header {
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #999;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.raydium-table-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s;
+}
+
+.raydium-table-row:hover {
+  background: rgba(90, 200, 250, 0.05);
+}
+
+.sort-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: 0;
+  transition: color 0.3s;
+}
+
+.sort-btn:hover {
+  color: #00d4ff;
+}
+
+.sort-btn.active {
+  color: #00d4ff;
+}
+
+.pool-pair-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pool-pair-name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.pool-pair-address {
+  font-size: 11px;
+  color: #666;
+  font-family: 'Courier New', monospace;
+}
+
+.pool-col-apr.high-apr {
+  color: #00ff88;
+  font-weight: bold;
+}
+
+.pool-col-apr.medium-apr {
+  color: #ffa500;
+}
+
+.pool-col-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.pool-action-btn {
+  padding: 8px 12px;
+  background: rgba(90, 200, 250, 0.2);
+  border: 1px solid #5ac8fa;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.pool-action-btn:hover {
+  background: rgba(90, 200, 250, 0.4);
+  transform: scale(1.1);
+}
+
+.raydium-footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 1024px) {
+  .raydium-table-header,
+  .raydium-table-row {
+    grid-template-columns: 40px 1.5fr 1fr 1fr 80px;
+    gap: 10px;
+  }
+  
+  .pool-col-volume,
+  .pool-col-price {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .raydium-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .raydium-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+</style>
+
+<script src="raydium-pools.js"></script>
