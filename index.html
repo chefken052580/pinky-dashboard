@@ -473,38 +473,53 @@
                 
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon">📊</div>
+                        <div class="stat-icon">🔍</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="research-reports">0</div>
-                            <div class="stat-label">Reports Generated</div>
+                            <div class="stat-value" id="research-searches">0</div>
+                            <div class="stat-label">Web Searches</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">🌐</div>
+                        <div class="stat-icon">📝</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="research-sources">0</div>
-                            <div class="stat-label">Sources Analyzed</div>
+                            <div class="stat-value" id="research-notes">0</div>
+                            <div class="stat-label">Research Notes</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">💡</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="research-insights">0</div>
-                            <div class="stat-label">Insights Found</div>
+                            <div class="stat-value" id="research-findings">0</div>
+                            <div class="stat-label">Key Findings</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Interactive Bot Interface -->
-                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
-                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
-                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
-                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
-                        This bot is currently under development. Interactive features will be available in a future update.
-                    </p>
-                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
-                        🐭 Pinky is working on it! Check back soon for world domination features.
-                    </p>
+                <!-- ResearchBot Real UI -->
+                <div class="research-bot-container" style="margin-top:25px;">
+                    <!-- Recent Findings -->
+                    <div style="background:rgba(255,107,107,0.1);border:1px solid #ff6b6b;border-radius:12px;padding:20px;margin-bottom:20px;">
+                        <h3 style="color:#ff6b6b;margin-bottom:15px;">💡 Recent Findings</h3>
+                        <div id="research-findings-list" style="max-height:300px;overflow-y:auto;">
+                            <div style="text-align:center;color:#aaa;padding:20px;">No findings yet. Start researching!</div>
+                        </div>
+                    </div>
+
+                    <!-- Web Search History -->
+                    <div style="background:rgba(0,212,255,0.1);border:1px solid #00d4ff;border-radius:12px;padding:20px;margin-bottom:20px;">
+                        <h3 style="color:#00d4ff;margin-bottom:15px;">🔍 Web Search History</h3>
+                        <div id="research-searches-list" style="max-height:300px;overflow-y:auto;">
+                            <div style="text-align:center;color:#aaa;padding:20px;">No searches yet.</div>
+                        </div>
+                    </div>
+
+                    <!-- Saved Research Notes -->
+                    <div style="background:rgba(102,126,234,0.1);border:1px solid #667eea;border-radius:12px;padding:20px;">
+                        <h3 style="color:#667eea;margin-bottom:15px;">📝 Saved Research Notes</h3>
+                        <div id="research-notes-list" style="max-height:300px;overflow-y:auto;">
+                            <div style="text-align:center;color:#aaa;padding:20px;">No notes saved yet.</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="recent-activity" style="margin-top:25px;">
@@ -1472,6 +1487,90 @@
         }
       } catch (error) {
         console.error('[DocsBot] Error loading data:', error);
+      }
+    })();
+    
+    // Load ResearchBot data
+    (async function loadResearchBotData() {
+      try {
+        const res = await fetch('/api/research/history');
+        const data = await res.json();
+        
+        if (!data.success) {
+          console.error('[ResearchBot] Failed to load:', data.error);
+          return;
+        }
+        
+        // Update stats
+        document.getElementById('research-searches').textContent = data.stats.totalSearches;
+        document.getElementById('research-notes').textContent = data.stats.totalNotes;
+        document.getElementById('research-findings').textContent = data.stats.totalFindings;
+        
+        // Load findings
+        const findingsList = document.getElementById('research-findings-list');
+        if (findingsList && data.findings && data.findings.length > 0) {
+          let html = '';
+          data.findings.slice(0, 20).forEach(finding => {
+            const time = new Date(finding.timestamp);
+            const relevanceColor = finding.relevance === 'high' ? '#ff6b6b' : finding.relevance === 'medium' ? '#f7b731' : '#aaa';
+            
+            html += '<div style="background:#1a1a2e;border:1px solid rgba(255,107,107,0.3);border-radius:8px;padding:12px;margin-bottom:10px;">';
+            html += '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">';
+            html += `<div style="color:#ff6b6b;font-weight:bold;">💡 ${finding.title}</div>`;
+            html += `<div style="color:${relevanceColor};font-size:11px;font-weight:bold;text-transform:uppercase;">${finding.relevance}</div>`;
+            html += '</div>';
+            html += `<div style="color:#fff;font-size:13px;margin-bottom:8px;">${finding.summary}</div>`;
+            if (finding.url) {
+              html += `<div style="margin-bottom:8px;"><a href="${finding.url}" target="_blank" style="color:#00d4ff;font-size:12px;text-decoration:none;">🔗 ${finding.url}</a></div>`;
+            }
+            html += `<div style="color:#aaa;font-size:11px;">${time.toLocaleDateString()} ${time.toLocaleTimeString()}</div>`;
+            html += '</div>';
+          });
+          findingsList.innerHTML = html;
+        }
+        
+        // Load search history
+        const searchesList = document.getElementById('research-searches-list');
+        if (searchesList && data.searches && data.searches.length > 0) {
+          let html = '';
+          data.searches.slice(0, 20).forEach(search => {
+            const time = new Date(search.timestamp);
+            
+            html += '<div style="background:#1a1a2e;border:1px solid rgba(0,212,255,0.3);border-radius:8px;padding:12px;margin-bottom:10px;">';
+            html += `<div style="color:#00d4ff;font-weight:bold;margin-bottom:6px;">🔍 "${search.query}"</div>`;
+            html += `<div style="color:#aaa;font-size:12px;">Source: ${search.source} • ${time.toLocaleDateString()} ${time.toLocaleTimeString()}</div>`;
+            if (search.results && search.results.length > 0) {
+              html += `<div style="color:#fff;font-size:12px;margin-top:6px;">📊 ${search.results.length} results</div>`;
+            }
+            html += '</div>';
+          });
+          searchesList.innerHTML = html;
+        }
+        
+        // Load research notes
+        const notesList = document.getElementById('research-notes-list');
+        if (notesList && data.notes && data.notes.length > 0) {
+          let html = '';
+          data.notes.slice(0, 20).forEach(note => {
+            const time = new Date(note.timestamp);
+            
+            html += '<div style="background:#1a1a2e;border:1px solid rgba(102,126,234,0.3);border-radius:8px;padding:12px;margin-bottom:10px;">';
+            html += `<div style="color:#667eea;font-weight:bold;margin-bottom:6px;">📝 ${note.title}</div>`;
+            html += `<div style="color:#fff;font-size:13px;margin-bottom:8px;">${note.content.substring(0, 200)}${note.content.length > 200 ? '...' : ''}</div>`;
+            if (note.tags && note.tags.length > 0) {
+              html += '<div style="margin-bottom:6px;">';
+              note.tags.forEach(tag => {
+                html += `<span style="background:rgba(102,126,234,0.2);color:#667eea;padding:2px 8px;border-radius:4px;font-size:11px;margin-right:6px;">${tag}</span>`;
+              });
+              html += '</div>';
+            }
+            html += `<div style="color:#aaa;font-size:11px;">${time.toLocaleDateString()} ${time.toLocaleTimeString()}</div>`;
+            html += '</div>';
+          });
+          notesList.innerHTML = html;
+        }
+      } catch (error) {
+        console.error('[ResearchBot] Error loading data:', error);
       }
     })();
     </script>
