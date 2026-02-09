@@ -191,23 +191,48 @@ class FeatureGating {
       return; // Already expired
     }
     
+    // Check if warning was dismissed today
+    const dismissKey = 'pinky_expiry_warning_dismissed';
+    const lastDismissed = localStorage.getItem(dismissKey);
+    const today = new Date().toDateString();
+    
+    if (lastDismissed === today) {
+      return; // Don't show again until tomorrow
+    }
+    
+    // Determine urgency level (<7 days = critical red)
+    const isCritical = daysUntilExpiry < 7;
+    const warningClass = isCritical ? 
+      'subscription-warning expiry-warning expiry-critical' : 
+      'subscription-warning expiry-warning';
+    
     const warning = document.createElement('div');
-    warning.className = 'subscription-warning expiry-warning';
+    warning.className = warningClass;
     warning.innerHTML = `
       <div class="warning-content">
-        <span class="warning-icon">⚠️</span>
+        <span class="warning-icon">${isCritical ? '🚨' : '⚠️'}</span>
         <div class="warning-text">
-          <strong>Subscription Expiring Soon</strong>
+          <strong>${isCritical ? 'URGENT: ' : ''}Subscription Expiring Soon</strong>
           <p>Your Pro subscription expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? 's' : ''} on ${expiryDate.toLocaleDateString()}</p>
         </div>
         <button class="renew-btn" onclick="featureGating.renewSubscription()">Renew Now</button>
-        <button class="dismiss-warning" onclick="this.closest('.subscription-warning').remove()">✕</button>
+        <button class="dismiss-warning" onclick="featureGating.dismissExpiryWarning()">✕</button>
       </div>
     `;
     
     // Add to page (top of main content)
     const mainContent = document.querySelector('.main-content') || document.body;
     mainContent.insertBefore(warning, mainContent.firstChild);
+  }
+  
+  dismissExpiryWarning() {
+    // Save dismissal date to localStorage
+    const today = new Date().toDateString();
+    localStorage.setItem('pinky_expiry_warning_dismissed', today);
+    
+    // Remove warning from DOM
+    const warning = document.querySelector('.expiry-warning');
+    if (warning) warning.remove();
   }
   
   showPaymentFailureWarning(data) {

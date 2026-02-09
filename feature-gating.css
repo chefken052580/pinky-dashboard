@@ -504,6 +504,19 @@
   box-shadow: 0 8px 32px rgba(243, 156, 18, 0.4);
 }
 
+/* Critical expiry warning (<7 days) - RED */
+.subscription-warning.expiry-critical {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+  box-shadow: 0 8px 32px rgba(231, 76, 60, 0.6) !important;
+  border: 2px solid #c0392b;
+  animation: pulse-red 2s ease-in-out infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 8px 32px rgba(231, 76, 60, 0.6); }
+  50% { box-shadow: 0 8px 48px rgba(231, 76, 60, 0.9); }
+}
+
 .subscription-warning.payment-failure-warning {
   background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
   box-shadow: 0 8px 32px rgba(231, 76, 60, 0.4);
