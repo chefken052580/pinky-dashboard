@@ -797,13 +797,6 @@ class TasksBotEnhanced {
           html += '<div style="color:#fbbf24;font-size:0.8em;font-weight:600;">⏱️ ' + elapsedStr + '</div>';
         }
         html += '</div>';
-        // Timer elapsed
-        if (typeof taskTimer !== 'undefined' && taskTimer) {
-          var elapsed = taskTimer.getElapsed(task.id);
-          if (elapsed > 0) {
-            html += '<span style="color:#4496ff;font-size:0.75em;flex-shrink:0;">⏱️ ' + taskTimer.formatElapsed(elapsed) + '</span>';
-          }
-        }
         html += '</div>';
         // Collapsible log accordion (hidden by default)
         if (task.notes) {
