@@ -196,14 +196,20 @@ class AnalyticsEngine {
       cost: data.cost || 0
     })).sort((a, b) => b.tokens - a.tokens);
     
-    models.forEach(model => {
-      const percent = Math.round(model.percent);
-      html += '<div class="token-row">';
-      html += '<span class="token-name">' + model.name + '</span>';
-      html += '<div class="token-bar-container"><div class="token-bar" style="width:' + percent + '%"></div></div>';
-      html += '<span class="token-count">' + fmt(model.tokens) + ' tokens ($' + model.cost.toFixed(2) + ')</span>';
-      html += '</div>';
-    });
+    console.log('[Analytics] Token breakdown models:', models.map(m => m.name + ' = ' + Math.round(m.percent) + '%'));
+    
+    if (models.length === 0) {
+      html += '<div style="color: #aaa; padding: 20px; text-align: center;">No model usage data available</div>';
+    } else {
+      models.forEach(model => {
+        const percent = Math.round(model.percent);
+        html += '<div class="token-row">';
+        html += '<span class="token-name">' + model.name + '</span>';
+        html += '<div class="token-bar-container"><div class="token-bar" style="width:' + percent + '%"></div></div>';
+        html += '<span class="token-count">' + fmt(model.tokens) + ' tokens ($' + model.cost.toFixed(2) + ')</span>';
+        html += '</div>';
+      });
+    }
     
     // Token type breakdown
     html += '<hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-color);">';
