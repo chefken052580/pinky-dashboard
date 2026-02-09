@@ -555,7 +555,7 @@ class FeatureGating {
     }
   }
   
-  showUpgradePrompt(featureName) { return; // DISABLED - all Pro
+  showUpgradePrompt(featureName) {
     // Create modal
     const modal = document.createElement('div');
     modal.className = 'upgrade-modal';
@@ -615,24 +615,37 @@ class FeatureGating {
     document.body.appendChild(modal);
   }
   
-  upgradeToPro() {
-    // For now, just unlock locally (payment integration Phase 3.2)
-    console.log('[Feature Gating] Upgrading to Pro (demo mode)');
-    
-    if (confirm('Demo Mode: This will unlock Pro features locally.\n\nIn production, this will redirect to payment checkout.\n\nContinue?')) {
-      this.setTier('pro');
+  async upgradeToPro() {
+    try {
+      console.log('[Feature Gating] Initiating Stripe checkout for Pro tier...');
       
-      // Close modal
-      const modal = document.querySelector('.upgrade-modal');
-      if (modal) modal.remove();
+      // Check for PINKY token discount
+      const tokenDiscount = window.pinkyTokenBalance >= 10000;
       
-      // Show success message
-      this.showSuccessMessage('Upgraded to Pro! 🎉');
+      // Create Stripe checkout session
+      const response = await fetch('http://192.168.254.4:3030/api/stripe/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tier: 'pro',
+          tokenDiscount: tokenDiscount,
+          successUrl: `${window.location.origin}/success`,
+          cancelUrl: window.location.href
+        })
+      });
       
-      // Refresh page to apply changes
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      const data = await response.json();
+      
+      if (data.success && data.url) {
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+      
+    } catch (error) {
+      console.error('[Feature Gating] Upgrade error:', error);
+      alert('Failed to start checkout. Please try again or contact support.');
     }
   }
   
