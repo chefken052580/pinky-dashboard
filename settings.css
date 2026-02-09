@@ -538,3 +538,104 @@
         color: #2e7d32;
     }
 }
+
+/* Subscription Management Styles */
+.subscription-details {
+    margin: 15px 0;
+}
+
+.subscription-info {
+    background: var(--bg-tertiary, #252525);
+    border: 1px solid var(--border-color, #333);
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color, #333);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row .label {
+    font-weight: 600;
+    color: var(--text-secondary, #999);
+}
+
+.info-row .value {
+    color: var(--text-primary, #fff);
+    font-weight: 500;
+}
+
+.info-row .value.status-active {
+    color: #4caf50;
+}
+
+.info-row .value.status-past_due {
+    color: #ff9800;
+}
+
+.info-row .value.status-canceled {
+    color: #f44336;
+}
+
+.tier-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tier-badge.tier-free {
+    background: rgba(158, 158, 158, 0.15);
+    color: #9e9e9e;
+    border: 1px solid rgba(158, 158, 158, 0.3);
+}
+
+.tier-badge.tier-pro {
+    background: rgba(102, 126, 234, 0.15);
+    color: #667eea;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.tier-badge.tier-enterprise {
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+/* Light mode adjustments */
+@media (prefers-color-scheme: light) {
+    .subscription-info {
+        background: #fafafa;
+        border-color: #ddd;
+    }
+    
+    .info-row {
+        border-bottom-color: #eee;
+    }
+    
+    .tier-badge.tier-free {
+        background: rgba(158, 158, 158, 0.2);
+        color: #616161;
+    }
+    
+    .tier-badge.tier-pro {
+        background: rgba(102, 126, 234, 0.2);
+        color: #5a67d8;
+    }
+    
+    .tier-badge.tier-enterprise {
+        background: rgba(255, 215, 0, 0.2);
+        color: #f57c00;
+    }
+}

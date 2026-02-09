@@ -610,6 +610,16 @@ class SettingsPageUI {
             this.deactivateLicenseKey();
         });
         
+        // Manage subscription button (Stripe portal)
+        document.getElementById('manage-subscription-btn')?.addEventListener('click', () => {
+            this.openStripePortal();
+        });
+        
+        // Cancel subscription button
+        document.getElementById('cancel-subscription-btn')?.addEventListener('click', () => {
+            this.cancelSubscription();
+        });
+        
         // Load current license status
         this.loadLicenseStatus();
         
@@ -1015,6 +1025,173 @@ class SettingsPageUI {
         setTimeout(() => {
             msgEl.classList.add('hidden');
         }, 5000);
+    }
+    
+    /**
+     * Load subscription details (Stripe + License unified)
+     */
+    async loadSubscriptionStatus() {
+        try {
+            const email = localStorage.getItem('pinky_user_email');
+            const licenseKey = localStorage.getItem('pinky_license_key');
+            const instanceId = localStorage.getItem('pinky_instance_id');
+            
+            const params = new URLSearchParams();
+            if (email) params.append('email', email);
+            if (licenseKey) params.append('licenseKey', licenseKey);
+            if (instanceId) params.append('instanceId', instanceId);
+            
+            const response = await fetch(`${API_BASE}/tier/status?${params}`);
+            
+            if (!response.ok) {
+                console.error('[Settings] Failed to load subscription status');
+                return;
+            }
+            
+            const data = await response.json();
+            
+            // Update tier badge
+            const tierBadge = document.getElementById('current-tier-badge');
+            const tierDesc = document.getElementById('tier-description');
+            
+            if (tierBadge && tierDesc) {
+                const tierName = data.tier.toUpperCase();
+                tierBadge.textContent = `${tierName} Tier`;
+                tierBadge.className = `tier-badge tier-${data.tier}`;
+                
+                if (data.tier === 'free') {
+                    tierDesc.textContent = "You're on the Free tier with Dashboard, Chat, and TasksBot.";
+                } else if (data.tier === 'pro') {
+                    tierDesc.textContent = "You have access to all 9 bots, analytics, and premium features.";
+                } else if (data.tier === 'enterprise') {
+                    tierDesc.textContent = "You have full Enterprise access with white-label, SSO, and SLA.";
+                }
+            }
+            
+            // Show subscription details
+            const detailsSection = document.getElementById('subscription-details-section');
+            if (detailsSection) {
+                let detailsHTML = '';
+                
+                if (data.source === 'stripe') {
+                    // Stripe subscription
+                    detailsHTML = `
+                        <div class="subscription-info">
+                            <div class="info-row">
+                                <span class="label">💳 Payment Method:</span>
+                                <span class="value">Stripe Subscription</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">📅 Next Billing:</span>
+                                <span class="value">${data.currentPeriodEnd ? new Date(data.currentPeriodEnd).toLocaleDateString() : 'N/A'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">💰 Plan:</span>
+                                <span class="value">Pro - $29/month</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Status:</span>
+                                <span class="value status-${data.details.status}">${data.details.status ? data.details.status.toUpperCase() : 'Unknown'}</span>
+                            </div>
+                        </div>
+                    `;
+                } else if (data.source === 'license') {
+                    // License key
+                    detailsHTML = `
+                        <div class="subscription-info">
+                            <div class="info-row">
+                                <span class="label">🔑 License Type:</span>
+                                <span class="value">Self-Hosted License</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">📅 Expires:</span>
+                                <span class="value">${data.expiresAt ? new Date(data.expiresAt).toLocaleDateString() : 'Never'}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Tier:</span>
+                                <span class="value">${data.tier.toUpperCase()}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                detailsSection.innerHTML = detailsHTML;
+            }
+            
+            // Show/hide action buttons
+            const upgradeBtn = document.getElementById('upgrade-tier-btn');
+            const manageBtn = document.getElementById('manage-subscription-btn');
+            const cancelBtn = document.getElementById('cancel-subscription-btn');
+            
+            if (data.tier === 'free') {
+                upgradeBtn?.classList.remove('hidden');
+                manageBtn?.classList.add('hidden');
+                cancelBtn?.classList.add('hidden');
+            } else if (data.source === 'stripe') {
+                upgradeBtn?.classList.add('hidden');
+                manageBtn?.classList.remove('hidden');
+                cancelBtn?.classList.remove('hidden');
+            } else if (data.source === 'license') {
+                upgradeBtn?.classList.add('hidden');
+                manageBtn?.classList.add('hidden');
+                cancelBtn?.classList.add('hidden');
+            }
+            
+        } catch (error) {
+            console.error('[Settings] Error loading subscription status:', error);
+        }
+    }
+    
+    /**
+     * Open Stripe customer portal
+     */
+    async openStripePortal() {
+        try {
+            const customerId = localStorage.getItem('pinky_stripe_customer_id');
+            
+            if (!customerId) {
+                alert('No Stripe customer ID found. Please contact support.');
+                return;
+            }
+            
+            const response = await fetch(`${API_BASE}/stripe/portal`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    customerId: customerId,
+                    returnUrl: window.location.href
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.url) {
+                window.open(data.url, '_blank');
+            } else {
+                alert('Failed to open customer portal. Please try again later.');
+            }
+        } catch (error) {
+            console.error('[Settings] Failed to open Stripe portal:', error);
+            alert('Error opening billing portal. Please contact support.');
+        }
+    }
+    
+    /**
+     * Cancel subscription
+     */
+    async cancelSubscription() {
+        if (!confirm('Are you sure you want to cancel your subscription? You will lose access to Pro features at the end of your billing period.')) {
+            return;
+        }
+        
+        try {
+            // In Stripe, cancellation is handled via the customer portal
+            // We open the portal and let them cancel there
+            this.openStripePortal();
+        } catch (error) {
+            console.error('[Settings] Failed to cancel subscription:', error);
+            alert('Error canceling subscription. Please try again or contact support.');
+        }
     }
 }
 
