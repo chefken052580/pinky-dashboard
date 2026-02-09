@@ -860,6 +860,10 @@ class TasksBotEnhanced {
   calculateTaskAge(timestamp) {
     try {
       if (!timestamp) return 'unknown age';
+      // Handle non-date values like "Pinky" or "Brain"
+      if (typeof timestamp === 'string' && !/\d{4}/.test(timestamp)) {
+        return 'no date';
+      }
       const assignedDate = new Date(timestamp);
       if (isNaN(assignedDate.getTime())) return 'unknown age';
       

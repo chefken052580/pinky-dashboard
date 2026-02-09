@@ -884,3 +884,19 @@ body {
   50% { transform: rotate(-12deg) scale(1.3); }
   100% { transform: rotate(-12deg) scale(1); opacity: 1; }
 }
+
+/* === Widget Title Colors === */
+/* Dark mode (default) */
+#heartbeat-status-container h3,
+#task-statistics-container h3,
+.widget-title {
+  color: #39ff14 !important;
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+}
+/* Lite mode override */
+body.lite-mode #heartbeat-status-container h3,
+body.lite-mode #task-statistics-container h3,
+body.lite-mode .widget-title {
+  color: #ffffff !important;
+  text-shadow: none;
+}
