@@ -260,7 +260,7 @@
 /* Dark Mode (already applied by default) */
 @media (prefers-color-scheme: light) {
     .system-health-widget {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         color: var(--text-primary);
     }
 
@@ -273,7 +273,7 @@
     }
 
     .metric-card {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         border-color: var(--border-default);
     }
 

@@ -212,7 +212,7 @@ class AnalyticsEngine {
     }
     
     // Token type breakdown
-    html += '<hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-color);">';
+    html += '<hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-default);">';
     html += '<h4>📊 Token Types</h4>';
     
     // Separate Input/Output from Cache for proper scaling

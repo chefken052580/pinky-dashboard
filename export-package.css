@@ -266,7 +266,7 @@
 /* Dark Mode (already applied by default) */
 @media (prefers-color-scheme: light) {
     .export-package-container {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         color: var(--text-primary);
     }
 
@@ -283,12 +283,12 @@
     }
 
     .import-area {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         border-color: var(--border-default);
     }
 
     .package-info {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         border-color: var(--border-default);
     }
 

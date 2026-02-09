@@ -336,7 +336,7 @@
 /* Light theme support */
 @media (prefers-color-scheme: light) {
     .settings-container {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         color: #222;
     }
     
@@ -373,7 +373,7 @@
     
     .setting-input,
     .setting-input-small {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         border-color: var(--border-default);
         color: #222;
     }
@@ -389,12 +389,12 @@
     }
     
     .info-box {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         border-left-color: #ff6b6b;
     }
     
     .btn-secondary {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         color: #222;
         border-color: var(--border-default);
     }
@@ -515,7 +515,7 @@
 /* Light mode adjustments for license section */
 @media (prefers-color-scheme: light) {
     .license-key-section {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         border-color: var(--border-default);
     }
     
@@ -616,7 +616,7 @@
 /* Light mode adjustments */
 @media (prefers-color-scheme: light) {
     .subscription-info {
-        background: var(--surface-2);
+        background: var(--bg-subtle);
         border-color: var(--border-default);
     }
     

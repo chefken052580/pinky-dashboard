@@ -1,7 +1,7 @@
 /* Changelog Widget Styles */
 
 #changelog-widget {
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    background: linear-gradient(135deg, var(--bg-subtle) 0%, var(--bg-card-hover) 100%);
     border: 2px solid var(--accent-primary);
     border-radius: 12px;
     padding: 0;

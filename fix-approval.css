@@ -322,7 +322,7 @@
 }
 
 .close-btn:hover {
-  background: var(--surface-2);
+  background: var(--bg-subtle);
 }
 
 .modal-body {
@@ -336,7 +336,7 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
   padding: 16px;
-  background: var(--surface-2);
+  background: var(--bg-subtle);
   border-radius: 8px;
   margin-bottom: 24px;
 }
@@ -352,7 +352,7 @@
 }
 
 .description-text {
-  background: var(--surface-2);
+  background: var(--bg-subtle);
   padding: 16px;
   border-radius: 8px;
   white-space: pre-wrap;
@@ -367,7 +367,7 @@
 
 .files-list li {
   padding: 8px 12px;
-  background: var(--surface-2);
+  background: var(--bg-subtle);
   border-radius: 6px;
   margin-bottom: 4px;
   font-family: 'Courier New', monospace;

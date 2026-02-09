@@ -401,7 +401,7 @@ class FileAttachmentUI {
     if (!listContainer) return;
 
     const item = document.createElement('div');
-    item.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--surface-2); border: 1px solid var(--border-subtle); border-radius: 4px; font-size: 12px;';
+    item.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--bg-subtle); border: 1px solid var(--border-subtle); border-radius: 4px; font-size: 12px;';
     item.innerHTML = `
       <span>${this.getFileIcon(attachment.type)}</span>
       <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${this.truncate(attachment.filename, 30)}</span>

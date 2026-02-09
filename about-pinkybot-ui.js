@@ -108,7 +108,7 @@ class AboutPinkyBotUI {
         <!-- Architecture Diagram -->
         <div class="recent-activity" style="margin-bottom:30px;">
           <h3>🏗️ System Architecture</h3>
-          <div style="background:var(--surface-1);border:1px solid rgba(102,126,234,0.3);border-radius:12px;padding:30px;margin-top:15px;">
+          <div style="background:var(--bg-card);border:1px solid rgba(102,126,234,0.3);border-radius:12px;padding:30px;margin-top:15px;">
             <pre style="color:var(--text-primary);font-size:0.85em;line-height:1.8;font-family:monospace;margin:0;">
 ┌─────────────────┐
 │ Web Dashboard   │  (pinky-dashboard/)
@@ -144,7 +144,7 @@ class AboutPinkyBotUI {
         </div>
 
         <!-- Footer Info -->
-        <div style="text-align:center;margin-top:40px;padding-top:20px;border-top:1px solid var(--border-color);color:var(--text-secondary);font-size:0.9em;">
+        <div style="text-align:center;margin-top:40px;padding-top:20px;border-top:1px solid var(--border-default);color:var(--text-secondary);font-size:0.9em;">
           <p>PinkyBot - Autonomous AI Task Management System</p>
           <p>Built with OpenClaw framework • Running on AMD Ryzen 9 7950X</p>
           <p>For support: <a href="https://github.com/pinkybot/pinkybot" style="color:var(--purple);">GitHub</a> | 

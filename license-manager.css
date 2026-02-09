@@ -190,7 +190,7 @@ html.dark-mode .license-help-text {
 .license-info-box {
   margin-top: 32px;
   padding: 20px;
-  background: var(--surface-2);
+  background: var(--bg-subtle);
   border-radius: 12px;
   text-align: center;
 }
