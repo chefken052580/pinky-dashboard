@@ -95,21 +95,24 @@ class AnalyticsEngine {
    */
   getLastActiveForBot(botId, heartbeats) {
     const keywords = {
-      'docs': ['doc', 'documentation', 'readme', 'memory'],
-      'research': ['research', 'search', 'web', 'fetch'],
-      'code': ['code', 'syntax', 'debug', 'commit', 'git'],
-      'social': ['social', 'post', 'tweet', 'linkedin'],
-      'business': ['business', 'revenue', 'client', 'metrics'],
-      'filesystem': ['file', 'read', 'write', 'directory'],
-      'tasks': ['task', 'pending', 'completed', 'running']
+      'docs': ['docsbot', 'generated doc', 'memory update', 'readme'],
+      'research': ['researchbot', 'web search', 'web_search', 'web_fetch'],
+      'code': ['codebot', 'commit:', 'git add', 'syntax check'],
+      'social': ['socialbot', 'tweet', 'linkedin', 'instagram'],
+      'business': ['businessbot', 'revenue', 'invoice', 'client'],
+      'filesystem': ['filesystembot', 'file ops', 'directory'],
+      'tasks': ['tasksbot', 'task update', 'task complete']
     };
 
     const botKeywords = keywords[botId] || [];
     
-    // Find most recent heartbeat mentioning this bot's keywords
+    // Find most recent heartbeat mentioning this bot's keywords (more specific matching)
     for (let i = heartbeats.length - 1; i >= 0; i--) {
       const activity = (heartbeats[i].activity || '').toLowerCase();
-      if (botKeywords.some(kw => activity.includes(kw))) {
+      // Require at least 2 keyword matches OR exact bot name match for better accuracy
+      const matchCount = botKeywords.filter(kw => activity.includes(kw)).length;
+      const hasExactBotName = activity.includes(botId + 'bot');
+      if (matchCount >= 2 || hasExactBotName) {
         return heartbeats[i].timestamp;
       }
     }
