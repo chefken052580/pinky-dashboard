@@ -151,6 +151,48 @@ class AboutPage {
                         </div>
                     </div>
 
+                    <!-- Tech Stack -->
+                    <div class="about-card">
+                        <h2>🛠️ Tech Stack</h2>
+                        <ul class="features-list">
+                            <li><strong>Backend:</strong> Node.js 18+ (Express.js)</li>
+                            <li><strong>Frontend:</strong> Vanilla JavaScript (ES6+)</li>
+                            <li><strong>UI:</strong> Custom CSS, Chart.js, Grid/Flexbox</li>
+                            <li><strong>Storage:</strong> JSON file-based (memory/)</li>
+                            <li><strong>Process:</strong> PM2 process manager</li>
+                            <li><strong>Git:</strong> Version control & pre-commit hooks</li>
+                        </ul>
+                    </div>
+
+                    <!-- Architecture -->
+                    <div class="about-card">
+                        <h2>🏗️ Architecture</h2>
+                        <div class="arch-diagram">
+                            <div class="arch-layer"><span class="arch-box">📱 Dashboard UI</span></div>
+                            <div class="arch-arrow">⬇️</div>
+                            <div class="arch-layer"><span class="arch-box">🔌 REST API</span> <span class="arch-box">⚡ Express Server</span></div>
+                            <div class="arch-arrow">⬇️</div>
+                            <div class="arch-layer"><span class="arch-box">🧠 AI Engine</span> <span class="arch-box">🤖 Bot Army</span></div>
+                            <div class="arch-arrow">⬇️</div>
+                            <div class="arch-layer"><span class="arch-box">💾 JSON Storage</span> <span class="arch-box">📂 Filesystem</span></div>
+                        </div>
+                    </div>
+
+                    <!-- API Endpoints -->
+                    <div class="about-card">
+                        <h2>🔌 API Endpoints</h2>
+                        <ul class="endpoints-list">
+                            <li><code>GET /api/tasks</code> - List all tasks</li>
+                            <li><code>POST /api/tasks</code> - Update task status</li>
+                            <li><code>GET /api/usage</code> - Token usage stats</li>
+                            <li><code>GET /api/activity</code> - Activity log</li>
+                            <li><code>GET /api/health</code> - System health check</li>
+                            <li><code>GET /api/code/*</code> - Code stats & commits</li>
+                            <li><code>GET /api/docs/*</code> - Documentation</li>
+                            <li><code>GET /api/research/*</code> - Research data</li>
+                        </ul>
+                    </div>
+
                     <!-- Links & Resources -->
                     <div class="about-card">
                         <h2>🔗 Resources</h2>
