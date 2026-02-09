@@ -297,7 +297,8 @@ class DataExportUI {
 
 // Initialize globally
 let dataExport;
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
   dataExport = new DataExportUI();
   
   // Watch for export view becoming visible
@@ -320,3 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+} else {
+  // DOMContentLoaded already fired, init now
+  (function() {
+  })();
+}

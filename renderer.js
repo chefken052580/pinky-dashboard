@@ -175,15 +175,20 @@ function switchView(viewId) {
         
         // Initialize bot modules when switching to their views
         // Init -ui.js scripts when their views activate
-        if (viewId === 'business-view' && window.BusinessBotUI) {
-            new BusinessBotUI().init();
-        }
-        if (viewId === 'about-view' && window.AboutPinkyBotUI) {
-            new AboutPinkyBotUI().init();
-        }
-        if (viewId === 'export-view' && window.DataExportUI) {
-            new DataExportUI().init();
-        }
+        try {
+            if (viewId === 'business-view' && typeof BusinessBotUI !== 'undefined') {
+                new BusinessBotUI().init();
+            }
+            if (viewId === 'about-view' && typeof AboutPinkyBotUI !== 'undefined') {
+                new AboutPinkyBotUI().init();
+            }
+            if (viewId === 'export-view' && typeof DataExportUI !== 'undefined') {
+                new DataExportUI().init();
+            }
+            if (viewId === 'code-view' && window.CodeBotUI) {
+                window.CodeBotUI.refresh();
+            }
+        } catch(e) { console.log('Bot UI init error:', e.message); }
         if (viewId === 'code-view' && window.codeBotPro) {
             window.codeBotPro.renderUI();
         }

@@ -241,7 +241,8 @@ class AboutPinkyBotUI {
 
 // Initialize globally
 let aboutPinkyBot;
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
   aboutPinkyBot = new AboutPinkyBotUI();
   
   // Watch for about view becoming visible
@@ -264,3 +265,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+} else {
+  // DOMContentLoaded already fired, init now
+  (function() {
+  })();
+}

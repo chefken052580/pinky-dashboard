@@ -199,7 +199,8 @@ class BusinessBotUI {
 
 // Initialize globally
 let businessBot;
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
   businessBot = new BusinessBotUI();
   
   // Watch for business view becoming visible
@@ -222,3 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+} else {
+  // DOMContentLoaded already fired, init now
+  (function() {
+  })();
+}
