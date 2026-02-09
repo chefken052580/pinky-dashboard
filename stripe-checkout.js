@@ -204,7 +204,7 @@ class StripeCheckout {
       const solanaAddress = localStorage.getItem('solana_wallet_address') || null;
 
       // Create checkout session via backend API
-      const response = await fetch(`${this.apiBase}/api/stripe/create-checkout-session`, {
+      const response = await fetch(`${this.apiBase}/api/stripe/checkout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
