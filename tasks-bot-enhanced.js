@@ -265,33 +265,22 @@ class TasksBotEnhanced {
     e.dataTransfer.setData('text/plain', JSON.stringify(task));
     taskEl.classList.add('dragging');
     this.draggedElement = taskEl;
-    // Capture original height for placeholder
-    this.dragHeight = taskEl.offsetHeight;
-    // Slight delay so browser captures drag image before we shrink it
-    setTimeout(() => { taskEl.style.opacity = '0.4'; taskEl.style.transform = 'scale(0.95)'; }, 0);
+    this.dragSourceZone = taskEl.closest('[data-drop-zone]');
+    setTimeout(() => { taskEl.style.opacity = '0.3'; }, 0);
   }
 
   /**
    * Drag end
    */
   onDragEnd(e) {
-    const el = e.target.closest('.task-item') || e.target;
-    el.classList.remove('dragging');
-    el.style.opacity = '';
-    el.style.transform = '';
+    if (this.draggedElement) {
+      this.draggedElement.classList.remove('dragging');
+      this.draggedElement.style.opacity = '';
+    }
     this.draggedElement = null;
-    // Clean up ALL visual indicators
+    this.dragSourceZone = null;
     if (this.container) {
-      this.container.querySelectorAll('[data-drop-zone]').forEach(z => {
-        z.classList.remove('drag-over');
-      });
-      this.container.querySelectorAll('.task-item').forEach(item => {
-        item.style.transition = '';
-        item.style.transform = '';
-        item.style.marginTop = '';
-        item.style.marginBottom = '';
-      });
-      // Remove any placeholder
+      this.container.querySelectorAll('[data-drop-zone]').forEach(z => z.classList.remove('drag-over'));
       this.container.querySelectorAll('.drag-placeholder').forEach(p => p.remove());
     }
   }
@@ -307,60 +296,42 @@ class TasksBotEnhanced {
 
     if (!this.draggedElement) return;
 
-    // Find closest task item to cursor
-    const items = [...zone.querySelectorAll('.task-item:not(.dragging)')];
+    // Throttle: only reposition every 50ms
+    const now = Date.now();
+    if (this._lastDragOver && now - this._lastDragOver < 50) return;
+    this._lastDragOver = now;
+
+    // Find the element we're hovering over
     const mouseY = e.clientY;
+    const items = [...zone.querySelectorAll('.task-item:not(.dragging)')];
 
-    // Remove old placeholder
-    zone.querySelectorAll('.drag-placeholder').forEach(p => p.remove());
-
-    // Reset all transforms
-    items.forEach(item => {
-      item.style.transition = 'transform 0.2s ease';
-      item.style.transform = '';
-    });
-
-    // Find insertion point
     let insertBefore = null;
     for (const item of items) {
       const rect = item.getBoundingClientRect();
-      const midY = rect.top + rect.height / 2;
-      if (mouseY < midY) {
+      if (mouseY < rect.top + rect.height / 2) {
         insertBefore = item;
         break;
       }
     }
 
-    // Create visual placeholder
-    let placeholder = zone.querySelector('.drag-placeholder');
-    if (!placeholder) {
-      placeholder = document.createElement('div');
-      placeholder.className = 'drag-placeholder';
-      placeholder.style.cssText = 'height:' + (this.dragHeight || 48) + 'px;background:rgba(0,212,255,0.08);border:2px dashed rgba(0,212,255,0.4);border-radius:6px;transition:all 0.2s ease;margin:4px 0;';
-    }
-
+    // Move the actual dragged element in the DOM
     if (insertBefore) {
-      zone.insertBefore(placeholder, insertBefore);
+      if (this.draggedElement.nextSibling !== insertBefore) {
+        zone.insertBefore(this.draggedElement, insertBefore);
+      }
     } else {
-      zone.appendChild(placeholder);
+      if (this.draggedElement !== zone.lastElementChild) {
+        zone.appendChild(this.draggedElement);
+      }
     }
-
-    // Store insertion reference for onDrop
-    this.dropInsertBefore = insertBefore;
   }
 
   /**
    * Drag leave
    */
   onDragLeave(e) {
-    // Only remove if actually leaving the zone (not entering a child)
     if (!e.currentTarget.contains(e.relatedTarget)) {
       e.currentTarget.classList.remove('drag-over');
-      e.currentTarget.querySelectorAll('.drag-placeholder').forEach(p => p.remove());
-      e.currentTarget.querySelectorAll('.task-item').forEach(item => {
-        item.style.transition = 'transform 0.2s ease';
-        item.style.transform = '';
-      });
     }
   }
 
