@@ -1,3 +1,11 @@
+/* Override dashboard .view.active: block → flex for chat */
+#chat-view.view.active {
+    display: flex !important;
+    height: calc(100vh - 70px);
+    padding: 0;
+    overflow: hidden;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    PINKY CHAT v2 — "Talk to the AI that built himself"
    Theme: Deep space purple/blue matching PinkyBot.io landing page
@@ -31,6 +39,14 @@
 
 /* ─── Google Font Import ─── */
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+/* ─── Override dashboard .view.active: block → flex for chat ─── */
+#chat-view.view.active {
+    display: flex !important;
+    height: calc(100vh - 70px);
+    padding: 0;
+    overflow: hidden;
+}
 
 /* ═══════════════════════════════════════
    MAIN CONTAINER

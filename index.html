@@ -794,15 +794,17 @@
                         <div class="chat-header-stats" id="chat-header-stats"></div>
                     </div>
                     <div class="chat-messages" id="chat-messages">
-                        <div class="chat-empty-state">
-                            <div class="pinky-ascii" style="font-family:monospace;font-size:0.7em;color:#1e2a40;white-space:pre;line-height:1.2;">    ╭──────────────────╮
-    │   🐭  PINKY AI   │
-    │    Dashboard     │
-    │     Chat v1      │
-    ╰──────────────────╯</div>
-                            <h3 style="color:#556070;font-size:1.1em;margin:0;">Chat with Pinky</h3>
-                            <p style="color:#3a4560;font-size:0.85em;margin:0;max-width:400px;">Ask about tasks, check status, give commands, or just say hi. Conversations are saved and searchable.</p>
-                        </div>
+                            <div class="chat-empty-state">
+                                <div class="pinky-avatar-large">🐭</div>
+                                <h3>Chat with Pinky</h3>
+                                <p>Ask about tasks, check status, give commands, or just say hi. Your conversations are saved and searchable.</p>
+                                <div class="chat-quick-actions">
+                                    <button class="chat-quick-btn" onclick="PinkyChat.quickSend('What are you working on right now?')">📋 Current tasks</button>
+                                    <button class="chat-quick-btn" onclick="PinkyChat.quickSend('Show me your heartbeat status and what you accomplished today')">💓 Status report</button>
+                                    <button class="chat-quick-btn" onclick="PinkyChat.quickSend('What needs to be done next? Check the task queue.')">🎯 Next task</button>
+                                    <button class="chat-quick-btn" onclick="PinkyChat.quickSend('How much have you spent in API costs today?')">💰 Cost check</button>
+                                </div>
+                            </div>
                     </div>
                     <div class="chat-input-area">
                         <div class="chat-input-wrapper">
