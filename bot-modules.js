@@ -92,7 +92,7 @@ class ResearchBotPro {
     const container = document.getElementById('researchbot-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">🔬 ResearchBotPro - Intelligence Gatherer</div>';
+    let html = '<div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.3);border-radius:12px;padding:20px;margin-bottom:20px;"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">🔬 ResearchBotPro - Intelligence Gatherer</div>';
     
     html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
     html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🌐 Multi-Source Aggregation</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Pull data from 50+ sources: news, social, academic, gov</div></div>';
@@ -167,7 +167,7 @@ class CodeBotPro {
     const container = document.getElementById('codebot-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">💻 CodeBotPro - Development Assistant</div>';
+    let html = '<div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.3);border-radius:12px;padding:20px;margin-bottom:20px;"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">💻 CodeBotPro - Development Assistant</div>';
     
     html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
     html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔍 Code Review AI</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Auto-review code: style, patterns, best practices</div></div>';
@@ -236,7 +236,7 @@ class BusinessBotPro {
     const container = document.getElementById('businessbot-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">💼 BusinessBotPro - Growth Intelligence</div>';
+    let html = '<div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.3);border-radius:12px;padding:20px;margin-bottom:20px;"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">💼 BusinessBotPro - Growth Intelligence</div>';
     
     html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
     html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🎯 Opportunity Finder</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Identify market gaps, emerging niches, untapped segments</div></div>';
@@ -279,7 +279,7 @@ class FileSystemBotPro {
     const container = document.getElementById('filesystembot-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">📁 FileSystemBotPro - Smart File Manager</div>';
+    let html = '<div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.3);border-radius:12px;padding:20px;margin-bottom:20px;"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">📁 FileSystemBotPro - Smart File Manager</div>';
     
     html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
     html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🏷️ Smart Tagging</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Auto-tag files by type, content, project, date</div></div>';
@@ -329,7 +329,7 @@ class TasksBotPro {
     const container = document.getElementById('tasksbot-pro-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">🎯 TasksBotPro - Advanced PM</div>';
+    let html = '<div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.3);border-radius:12px;padding:20px;margin-bottom:20px;"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">🎯 TasksBotPro - Advanced PM</div>';
     
     html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
     html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📊 Burndown Charts</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Track sprint progress, velocity, burndown/burnup</div></div>';
