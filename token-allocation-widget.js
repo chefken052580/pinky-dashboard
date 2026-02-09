@@ -109,6 +109,13 @@ class TokenAllocationWidget {
         </div>
       </div>
 
+      <div class="model-breakdown">
+        <h4>Token Usage by Model</h4>
+        <div id="model-allocation-bars" class="allocation-bars">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
       <div class="heartbeat-metrics">
         <h4>Heartbeat Performance</h4>
         <div class="metrics-grid">
@@ -149,21 +156,23 @@ class TokenAllocationWidget {
       // Show loading state
       this.renderLoading();
 
-      const [allocationRes, metricsRes] = await Promise.all([
+      const [allocationRes, metricsRes, usageRes] = await Promise.all([
         fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/analytics/token-allocation'),
-        fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/analytics/heartbeat-metrics')
+        fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/analytics/heartbeat-metrics'),
+        fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/usage')
       ]);
 
-      if (!allocationRes.ok || !metricsRes.ok) {
-        const status = !allocationRes.ok ? allocationRes.status : metricsRes.status;
+      if (!allocationRes.ok || !metricsRes.ok || !usageRes.ok) {
+        const status = !allocationRes.ok ? allocationRes.status : (!metricsRes.ok ? metricsRes.status : usageRes.status);
         throw new Error(`API returned status ${status}`);
       }
 
       this.data = await allocationRes.json();
       this.metrics = await metricsRes.json();
+      this.usage = await usageRes.json();
 
       // Validate response data
-      if (!this.data || !this.metrics) {
+      if (!this.data || !this.metrics || !this.usage) {
         throw new Error('Invalid or empty response data');
       }
 
@@ -253,12 +262,84 @@ class TokenAllocationWidget {
       document.getElementById('hb-exec').textContent = `${this.metrics.averageExecTimePerHeartbeat || 0}s`;
       document.getElementById('hb-exec-total').textContent = `${Math.round((this.metrics.totalExecTime || 0) / 60)}m`;
 
+      // Model breakdown
+      this.renderModelBreakdown();
+
       // Last updated
       document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
     } catch (err) {
       console.error('[TokenAllocation] Render error:', err.message);
       this.renderError(`Failed to render data: ${err.message}`);
     }
+  }
+
+  renderModelBreakdown() {
+    const container = document.getElementById('model-allocation-bars');
+    if (!container || !this.usage || !this.usage.byModel) {
+      return;
+    }
+
+    const byModel = this.usage.byModel;
+    const totalTokens = this.usage.totalTokens || 1;
+    
+    // Clear existing content
+    container.innerHTML = '';
+
+    // If no models, show message
+    if (Object.keys(byModel).length === 0) {
+      container.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">No model usage data available</div>';
+      return;
+    }
+
+    // Create bars for each model
+    Object.entries(byModel).forEach(([modelName, modelData]) => {
+      const tokens = modelData.tokens || 0;
+      const percentage = totalTokens > 0 ? Math.round((tokens / totalTokens) * 100) : 0;
+      
+      // Get short model name
+      const shortName = this.getShortModelName(modelName);
+      const emoji = this.getModelEmoji(modelName);
+
+      const itemHTML = `
+        <div class="allocation-item">
+          <div class="allocation-label">
+            <span class="category-name">${emoji} ${shortName}</span>
+            <span class="percentage">${percentage}%</span>
+          </div>
+          <div class="allocation-bar">
+            <div class="allocation-fill model-${this.getModelClass(modelName)}" style="width: ${Math.min(percentage, 100)}%">
+              <span class="tokens-label">${this.formatNumber(tokens)}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      container.insertAdjacentHTML('beforeend', itemHTML);
+    });
+  }
+
+  getShortModelName(fullName) {
+    // Convert full model names to short readable versions
+    if (fullName.includes('claude-sonnet')) return 'Claude Sonnet 4.5';
+    if (fullName.includes('claude-haiku')) return 'Claude Haiku 4.5';
+    if (fullName.includes('grok')) return 'Grok (xAI)';
+    if (fullName.includes('gpt-4')) return 'GPT-4';
+    if (fullName.includes('gpt-3.5')) return 'GPT-3.5';
+    return fullName.substring(0, 20); // Fallback: truncate long names
+  }
+
+  getModelEmoji(modelName) {
+    if (modelName.includes('claude-sonnet')) return '🧠';
+    if (modelName.includes('claude-haiku')) return '⚡';
+    if (modelName.includes('grok')) return '🤖';
+    if (modelName.includes('gpt-4')) return '🔷';
+    if (modelName.includes('gpt-3.5')) return '🔹';
+    return '🤖';
+  }
+
+  getModelClass(modelName) {
+    // Return CSS-safe class name
+    return modelName.replace(/[^a-z0-9]/gi, '-').toLowerCase();
   }
 
   formatNumber(n) {
