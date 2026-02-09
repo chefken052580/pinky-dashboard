@@ -63,7 +63,7 @@ class BusinessBotUI {
         <!-- Revenue Tracking -->
         <div class="recent-activity" style="margin-bottom:30px;">
           <h3>💵 Revenue Tracking</h3>
-          <div style="background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.3);border-radius:12px;padding:25px;margin-top:15px;">
+          <div style="background:var(--surface-1);border:1px solid rgba(102,126,234,0.3);border-radius:12px;padding:25px;margin-top:15px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
               <div>
                 <div style="color:var(--text-secondary);font-size:0.9em;margin-bottom:8px;">Quarterly Revenue</div>
@@ -136,7 +136,7 @@ class BusinessBotUI {
                 <div style="font-size:2em;margin-bottom:10px;">👥</div>
                 <div>No clients added yet</div>
                 <button 
-                  style="margin-top:15px;padding:10px 20px;background:var(--purple);border:none;border-radius:8px;color:white;cursor:pointer;font-size:0.9em;" 
+                  style="margin-top:15px;padding:10px 20px;background:var(--purple);border:none;border-radius:8px;color:var(--text-heading);cursor:pointer;font-size:0.9em;" 
                   onclick="businessBot.showClientModal('add')">
                   Add Your First Client
                 </button>

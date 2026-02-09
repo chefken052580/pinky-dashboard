@@ -41,7 +41,7 @@ body {
     top: 15px;
     left: 15px;
     z-index: 1000;
-    background: white;
+    background: var(--bg-card);
     border: none;
     border-radius: 8px;
     padding: 12px;
@@ -72,7 +72,7 @@ body {
 
 /* Header */
 .dashboard-header {
-    background: white;
+    background: var(--bg-card);
     padding: 20px 30px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     display: flex;
@@ -135,7 +135,7 @@ body {
 /* Sidebar */
 .sidebar {
     width: 280px;
-    background: white;
+    background: var(--bg-card);
     padding: 20px;
     overflow-y: auto;
 }
@@ -253,7 +253,7 @@ body {
 }
 
 .stat-card {
-    background: white;
+    background: var(--stat-card-bg);
     border-radius: 15px;
     padding: 25px;
     display: flex;
@@ -282,14 +282,14 @@ body {
 }
 
 .stat-label {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.95em;
     margin-top: 5px;
 }
 
 /* Quick Actions */
 .quick-actions {
-    background: white;
+    background: var(--bg-card);
     border-radius: 15px;
     padding: 25px;
     margin-bottom: 30px;
@@ -310,7 +310,7 @@ body {
 .action-btn {
     padding: 15px 20px;
     border: 2px solid #667eea;
-    background: white;
+    background: var(--bg-card);
     color: #667eea;
     border-radius: 10px;
     cursor: pointer;
@@ -333,7 +333,7 @@ body {
 
 /* Recent Activity */
 .recent-activity {
-    background: white;
+    background: var(--bg-card);
     border-radius: 15px;
     padding: 25px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
@@ -361,7 +361,7 @@ body {
 }
 
 .activity-time {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.9em;
 }
 
@@ -371,12 +371,12 @@ body {
 }
 
 .activity-message {
-    color: #333;
+    color: var(--text-primary);
 }
 
 /* Pinky Activity Monitor */
 .pinky-monitor {
-    background: white;
+    background: var(--bg-card);
     border-radius: 15px;
     padding: 25px;
     margin-top: 30px;
@@ -651,7 +651,7 @@ body {
 
 /* Bot Interactive Interface Styles */
 .bot-interface {
-    background: white;
+    background: var(--bg-card);
     border-radius: 15px;
     padding: 25px;
     margin: 20px 0;
@@ -737,7 +737,7 @@ body {
 }
 
 .bot-output {
-    background: white;
+    background: var(--bg-card);
     border: 2px solid #e9ecef;
     border-radius: 10px;
     padding: 20px;
@@ -752,7 +752,7 @@ body {
 }
 
 .output-placeholder {
-    color: #999;
+    color: var(--text-muted);
     font-style: italic;
     text-align: center;
     padding: 50px 20px;
@@ -772,7 +772,7 @@ body {
 
 .btn-small {
     padding: 8px 15px;
-    background: white;
+    background: var(--bg-card);
     border: 2px solid #667eea;
     color: #667eea;
     border-radius: 8px;

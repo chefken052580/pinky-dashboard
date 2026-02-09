@@ -108,7 +108,7 @@ class AboutPinkyBotUI {
         <!-- Architecture Diagram -->
         <div class="recent-activity" style="margin-bottom:30px;">
           <h3>🏗️ System Architecture</h3>
-          <div style="background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.3);border-radius:12px;padding:30px;margin-top:15px;">
+          <div style="background:var(--surface-1);border:1px solid rgba(102,126,234,0.3);border-radius:12px;padding:30px;margin-top:15px;">
             <pre style="color:var(--text-primary);font-size:0.85em;line-height:1.8;font-family:monospace;margin:0;">
 ┌─────────────────┐
 │ Web Dashboard   │  (pinky-dashboard/)
