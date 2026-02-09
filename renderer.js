@@ -188,6 +188,9 @@ function switchView(viewId) {
             if (viewId === 'code-view' && window.CodeBotUI) {
                 window.CodeBotUI.refresh();
             }
+            if (viewId === 'social-view' && window.initSocialBotUI) {
+                window.initSocialBotUI();
+            }
         } catch(e) { console.log('Bot UI init error:', e.message); }
         if (viewId === 'code-view' && window.codeBotPro) {
             window.codeBotPro.renderUI();
