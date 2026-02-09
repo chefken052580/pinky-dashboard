@@ -1065,31 +1065,8 @@
         window.addEventListener('load', () => {
             console.log('[Dashboard] Initializing all modules...');
             setTimeout(() => {
-                // Inject container divs for bot modules
-                const containers = {
-                    'docs-view': '<div id="docsbot-container"></div>',
-                    'research-view': '<div id="researchbot-container"></div>',
-                    'code-view': '<div id="codebot-container"></div>',
-                    'business-view': '<div id="businessbot-container"></div>',
-                    'filesystem-view': '<div id="filesystembot-container"></div>',
-                    'tasks-view': '<div id="tasksbot-pro-container"></div>',
-                    'crypto-view-container': '<div id="crypto-view"></div>'
-                };
-                
-                for (const [viewId, container] of Object.entries(containers)) {
-                    const view = document.getElementById(viewId);
-                    if (view && !view.querySelector('[id*="bot-container"]')) {
-                        view.insertAdjacentHTML('afterbegin', container);
-                    }
-                }
-                // Render all bot modules into their containers
-                if (window.docsBotPro) window.docsBotPro.renderUI();
-                if (window.researchBotPro) window.researchBotPro.renderUI();
-                if (window.codeBotPro) window.codeBotPro.renderUI();
-                if (window.businessBotPro) window.businessBotPro.renderUI();
-                if (window.filesystemBotPro) window.filesystemBotPro.renderUI();
-                if (window.tasksBotPro) window.tasksBotPro.renderUI();
-                console.log('[Dashboard] All bot modules rendered');
+                // Bot modules render via switchView in renderer.js
+                console.log('[Dashboard] Bot containers ready in HTML');
                 
                 // Initialize Fixed Settings (replaces old broken version)
                 if (window.settingsManagerFixed) {
@@ -1152,13 +1129,7 @@
                     }).catch(err => console.log('[Dashboard] Analytics error:', err.message));
                 }
                 
-                // Initialize other bot modules
-                if (window.docsBotPro) window.docsBotPro.renderUI();
-                if (window.researchBotPro) window.researchBotPro.renderUI();
-                if (window.codeBotPro) window.codeBotPro.renderUI();
-                if (window.businessBotPro) window.businessBotPro.renderUI();
-                if (window.filesystemBotPro) window.filesystemBotPro.renderUI();
-                if (window.tasksBotPro) window.tasksBotPro.renderUI();
+                // Bot modules render on view switch
                 
                 // Load activity data
                 if (typeof loadActivityData === 'function') {
@@ -1311,38 +1282,5 @@
     <!-- DISABLED: broken fetch syntax <script src="cryptobot-view.js"></script> -->
 
 
-    <script>
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            var d = document.createElement('div');
-            d.style.cssText = 'position:fixed;top:10px;right:10px;background:#000;color:#0f0;padding:15px;z-index:99999;font-family:monospace;font-size:12px;max-width:400px;border:2px solid #0f0;border-radius:8px;white-space:pre;cursor:pointer;';
-            var log = 'BOT DEBUG:\n';
-            var ids = ['docsbot-container','researchbot-container','codebot-container','businessbot-container','filesystembot-container'];
-            var bots = ['docsBotPro','researchBotPro','codeBotPro','businessBotPro','filesystemBotPro'];
-            for (var i = 0; i < ids.length; i++) {
-                var el = document.getElementById(ids[i]);
-                log += ids[i] + ': ' + (el ? 'YES(' + el.innerHTML.length + ')' : 'MISSING') + '\n';
-            }
-            log += '---\n';
-            for (var i = 0; i < bots.length; i++) {
-                var b = window[bots[i]];
-                log += bots[i] + ': ' + (b ? 'EXISTS' : 'UNDEF');
-                if (b && b.renderUI) {
-                    try { b.renderUI(); log += ' RENDERED'; }
-                    catch(e) { log += ' ERR:' + e.message; }
-                }
-                log += '\n';
-            }
-            log += '\nClick to close';
-            d.textContent = log;
-            var closeBtn = document.createElement('button');
-            closeBtn.textContent = 'X CLOSE';
-            closeBtn.style.cssText = 'background:red;color:white;border:none;padding:5px 10px;cursor:pointer;margin-top:10px;display:block;';
-            closeBtn.onclick = function() { d.remove(); };
-            d.appendChild(closeBtn);
-            document.body.appendChild(d);
-        }, 2500);
-    });
-    </script>
 </body>
 </html>
