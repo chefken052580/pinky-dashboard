@@ -9,18 +9,6 @@
     <meta http-equiv="Expires" content="0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Pinky Bot Dashboard - World Domination Control Center</title>
-        <link rel="stylesheet" href="monitoring-dashboard.css">
-    <link rel="stylesheet" href="post-calendar.css">
-    <link rel="stylesheet" href="bug-report-ui.css">
-    <link rel="stylesheet" href="bug-reporter.css">
-    <link rel="stylesheet" href="bug-screenshot-uploader.css">
-    <link rel="stylesheet" href="bug-tracker-public.css">
-    <link rel="stylesheet" href="bug-status-widget.css">
-    <link rel="stylesheet" href="known-issues.css">
-    <link rel="stylesheet" href="fix-approval.css">
-    <link rel="stylesheet" href="approval-queue-autofix.css">
-    <link rel="stylesheet" href="triage-dashboard.css">
-    <link rel="stylesheet" href="design-tokens.css">
     <link rel="stylesheet" href="styles.css?v=1770609375">
     <link rel="stylesheet" href="mobile-responsive.css">
     <link rel="stylesheet" href="system-monitor.css">
@@ -32,18 +20,24 @@
     <link rel="stylesheet" href="export-package.css">
     <link rel="stylesheet" href="system-health-widget.css">
     <link rel="stylesheet" href="changelog-widget.css">
-        <link rel="stylesheet" href="notification-sounds.css">
+    <link rel="stylesheet" href="error-page-pinky.css">
+    <link rel="stylesheet" href="notification-sounds.css">
     <link rel="stylesheet" href="task-analytics.css">
     <link rel="stylesheet" href="tooltip-system.css">
     <link rel="stylesheet" href="sidebar-styling.css">
     <link rel="stylesheet" href="about-page.css">
-        <link rel="stylesheet" href="approval-queue.css">
-        <link rel="stylesheet" href="task-search-filter.css">
+    <link rel="stylesheet" href="wordpress-page-maker.css">
+    <link rel="stylesheet" href="approval-queue.css">
+    <link rel="stylesheet" href="token-allocation-widget.css">
+    <link rel="stylesheet" href="task-search-filter.css">
     <link rel="stylesheet" href="keyboard-shortcuts.css">
-            <link rel="stylesheet" href="license-manager.css">
+    <link rel="stylesheet" href="token-warning-ui.css">
+    <link rel="stylesheet" href="stripe-checkout.css">
+    <link rel="stylesheet" href="license-manager.css">
     <link rel="stylesheet" href="feature-gating.css">
     <link rel="stylesheet" href="company-selector.css">
-        <link rel="stylesheet" href="bug-submission.css">
+    <link rel="stylesheet" href="wordpress-manager.css">
+    <link rel="stylesheet" href="bug-submission.css">
     <link rel="stylesheet" href="cryptobot-view.css?v=999">
 </head>
 <body>
@@ -233,16 +227,16 @@
                 </div>
 
                 <!-- Task Statistics Widget -->
-                <div id="task-statistics-container" style="margin-top: 2rem; padding: 1.5rem; background: var(--surface-1); border-radius: var(--radius-lg); border: 1px solid var(--border-default);">
+                <div id="task-statistics-container" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
                 </div>
 
                 <!-- Task History Chart - Last 30 Days -->
-                <div id="task-history-chart-container" style="margin-top: 2rem; padding: 1.5rem; background: var(--surface-1); border-radius: var(--radius-lg); border: 1px solid var(--border-default);">
+                <div id="task-history-chart-container" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
                 </div>
 
                 <!-- Analytics Dashboard Section -->
-                <div id="analytics-dashboard-section" style="margin-top: 2rem; padding: 1.5rem; background: var(--surface-1); border-radius: var(--radius-lg); border: 1px solid var(--border-default);">
-                    <h3 style="color: var(--text-accent); margin-bottom: 15px;">📈 Analytics Dashboard</h3>
+                <div id="analytics-dashboard-section" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
+                    <h3 style="color: #4496ff; margin-bottom: 15px;">📈 Analytics Dashboard</h3>
                     <div id="health-dashboard-container-main" style="margin-bottom: 20px;"></div>
                     <div id="changelog-widget-main" style="margin-bottom: 20px;"></div>
                     <div id="system-monitor-container-main" style="margin-bottom: 20px;"></div>
@@ -401,242 +395,122 @@
             <!-- Bot-Specific Views -->
             
             <!-- DocsBot View -->
-                        <div id="docs-view" class="view">
+            <div id="docs-view" class="view">
                 <h2>📝 DocsBot - Documentation Master</h2>
-                <p style="color:var(--text-secondary);margin-bottom:25px;">
-                    Auto-generates documentation, changelogs, and project reports from your codebase.
+                <p style="color:white;margin-bottom:25px;">
+                    Generates daily logs, memory updates, and comprehensive documentation.
                 </p>
-                <div id="docsbot-container"></div>
-
-                <!-- Documentation Stats -->
+                
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📄</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="docs-generated" style="color:#4ade80;">0</div>
+                            <div class="stat-value" id="docs-generated">0</div>
                             <div class="stat-label">Docs Generated</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">✍️</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="docs-words" style="color:#00d4ff;">0</div>
+                            <div class="stat-value" id="docs-words">0</div>
                             <div class="stat-label">Words Written</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">🕒</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="docs-time" style="color:#fbbf24;">0h</div>
+                            <div class="stat-value" id="docs-time">0h</div>
                             <div class="stat-label">Time Saved</div>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📊</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="docs-coverage" style="color:#a78bfa;">0%</div>
-                            <div class="stat-label">Doc Coverage</div>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Document Types -->
-                <div class="stats-grid" style="margin-top:20px;">
-                    <div class="stat-card">
-                        <div class="stat-icon">📋</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="docs-readmes">0</div>
-                            <div class="stat-label">READMEs</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🔌</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="docs-api-docs">0</div>
-                            <div class="stat-label">API Docs</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📜</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="docs-changelogs">0</div>
-                            <div class="stat-label">Changelogs</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📑</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="docs-reports">0</div>
-                            <div class="stat-label">Reports</div>
-                        </div>
-                    </div>
+                <!-- Interactive Bot Interface -->
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
                 </div>
 
-                <!-- Quick Generate -->
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>⚡ Quick Generate</h3>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px;">
-                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('readme')" class="action-btn" style="padding:15px;border-radius:10px;">📋 Generate README</button>
-                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('api')" class="action-btn" style="padding:15px;border-radius:10px;background:var(--gradient-blue);">🔌 API Documentation</button>
-                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('changelog')" class="action-btn" style="padding:15px;border-radius:10px;background:var(--gradient-green);">📜 Changelog</button>
-                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('report')" class="action-btn" style="padding:15px;border-radius:10px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;">📑 Daily Report</button>
-                    </div>
-                </div>
-
-                <!-- Recent Documentation -->
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>📚 Recent Documentation</h3>
-                    <div id="docs-recent-list" class="activity-feed">
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 DocsBot Activity</h3>
+                    <div id="docs-activity" class="activity-feed">
                         <div class="activity-item">
-                            <span class="activity-time">Today</span>
-                            <span class="activity-bot" style="color:#4ade80;">DocsBot</span>
-                            <span class="activity-message">Ready to generate documentation! Click a button above to start.</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Documentation Quality -->
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>✅ Documentation Quality</h3>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-top:15px;">
-                        <div class="feature-card" style="padding:18px;">
-                            <div class="feature-title">📝 Code Comments</div>
-                            <div class="feature-desc">Auto-generate JSDoc comments for all functions</div>
-                        </div>
-                        <div class="feature-card" style="padding:18px;">
-                            <div class="feature-title">🔄 Version Control</div>
-                            <div class="feature-desc">Track doc versions, diffs, and rollback changes</div>
-                        </div>
-                        <div class="feature-card" style="padding:18px;">
-                            <div class="feature-title">📤 Export Formats</div>
-                            <div class="feature-desc">Export as Markdown, PDF, HTML, or DOCX</div>
+                            <span class="activity-time">Waiting...</span>
+                            <span class="activity-bot">DocsBot</span>
+                            <span class="activity-message">Ready to generate documentation! 📝</span>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- ResearchBot View -->
             <div id="research-view" class="view">
                 <h2>🔍 ResearchBot - Intelligence Gatherer</h2>
-                <p style="color:var(--text-secondary);margin-bottom:25px;">
-                    AI-powered market research, competitor analysis, and trend discovery engine.
+                <p style="color:white;margin-bottom:25px;">
+                    Conducts market research, competitor analysis, and trend discovery.
                 </p>
-                <div id="researchbot-container"></div>
-
-                <!-- Research Stats -->
+                
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📊</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="research-reports" style="color:#4ade80;">0</div>
+                            <div class="stat-value" id="research-reports">0</div>
                             <div class="stat-label">Reports Generated</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">🌐</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="research-sources" style="color:#00d4ff;">0</div>
+                            <div class="stat-value" id="research-sources">0</div>
                             <div class="stat-label">Sources Analyzed</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">💡</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="research-insights" style="color:#fbbf24;">0</div>
+                            <div class="stat-value" id="research-insights">0</div>
                             <div class="stat-label">Insights Found</div>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📈</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="research-trends" style="color:#a78bfa;">0</div>
-                            <div class="stat-label">Trends Tracked</div>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Research Categories -->
-                <div class="stats-grid" style="margin-top:20px;">
-                    <div class="stat-card">
-                        <div class="stat-icon">🏢</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="research-competitors">0</div>
-                            <div class="stat-label">Competitors Tracked</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🪙</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="research-crypto">0</div>
-                            <div class="stat-label">Crypto Reports</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🤖</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="research-ai">0</div>
-                            <div class="stat-label">AI/Tech Reports</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📱</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="research-social">0</div>
-                            <div class="stat-label">Social Trends</div>
-                        </div>
-                    </div>
+                <!-- Interactive Bot Interface -->
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
                 </div>
 
-                <!-- Quick Research -->
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>🚀 Quick Research</h3>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px;">
-                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('market')" class="action-btn" style="padding:15px;border-radius:10px;">📊 Market Analysis</button>
-                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('competitor')" class="action-btn" style="padding:15px;border-radius:10px;background:var(--gradient-blue);">🏢 Competitor Intel</button>
-                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('trend')" class="action-btn" style="padding:15px;border-radius:10px;background:var(--gradient-green);">📈 Trend Discovery</button>
-                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('crypto')" class="action-btn" style="padding:15px;border-radius:10px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;">🪙 Crypto Research</button>
-                    </div>
-                </div>
-
-                <!-- Recent Research -->
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>📋 Recent Research</h3>
-                    <div id="research-recent-list" class="activity-feed">
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 ResearchBot Activity</h3>
+                    <div id="research-activity" class="activity-feed">
                         <div class="activity-item">
-                            <span class="activity-time">Today</span>
-                            <span class="activity-bot" style="color:#00d4ff;">ResearchBot</span>
-                            <span class="activity-message">Ready to research! Select a topic above or use the analysis tools.</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Research Capabilities -->
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>🧠 Research Capabilities</h3>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-top:15px;">
-                        <div class="feature-card" style="padding:18px;">
-                            <div class="feature-title">🔎 Deep Analysis</div>
-                            <div class="feature-desc">Multi-source research with AI-powered synthesis</div>
-                        </div>
-                        <div class="feature-card" style="padding:18px;">
-                            <div class="feature-title">📊 Visual Reports</div>
-                            <div class="feature-desc">Generate charts, comparisons, and executive summaries</div>
-                        </div>
-                        <div class="feature-card" style="padding:18px;">
-                            <div class="feature-title">⏰ Scheduled Reports</div>
-                            <div class="feature-desc">Auto-run research on schedule with email delivery</div>
+                            <span class="activity-time">Waiting...</span>
+                            <span class="activity-bot">ResearchBot</span>
+                            <span class="activity-message">Ready to research! 🔍</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-<div id="code-view" class="view">
+            <!-- CodeBot View -->
+            <div id="code-view" class="view">
                 <h2>💻 CodeBot - Development Assistant</h2>
-                <p style="color:var(--text-secondary);margin-bottom:25px;">
+                <p style="color:white;margin-bottom:25px;">
                     Real-time code statistics, commit history, and syntax error tracking.
                 </p>
                 
-                <div id="codebot-container"></div>
-
                 <!-- Code Statistics -->
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -722,7 +596,7 @@
             <!-- SocialBot View -->
             <div id="social-view" class="view">
                 <h2>📱 SocialBot - Content Creator</h2>
-                <p style="color:var(--text-secondary);margin-bottom:25px;">
+                <p style="color:white;margin-bottom:25px;">
                     Creates engaging social media content and manages campaigns.
                 </p>
                 
@@ -756,18 +630,56 @@
                     </div>
                 </div>
 
+                <!-- Interactive Bot Interface -->
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
+                </div>
+
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 BusinessBot Activity</h3>
+                    <div id="business-activity" class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Waiting...</span>
+                            <span class="activity-bot">BusinessBot</span>
+                            <span class="activity-message">Ready to analyze! 💼</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- FileSystemBot View -->
             <div id="filesystem-view" class="view">
                 <h2>📁 FileSystemBot - AI File Assistant</h2>
-                <p style="color:var(--text-secondary);margin-bottom:25px;">
+                <p style="color:white;margin-bottom:25px;">
                     FileSystemBot helps Pinky stay organized! No permissions outside Pinky's workspace.
                 </p>
-                <div id="filesystembot-container"></div>
                 
                 <!-- Interactive Bot Interface -->
-                
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
+                </div>
+
+                <!-- Report Bug Button -->
+                <div style="text-align:center;margin:25px 0;">
+                    <button onclick="openBugSubmission('filesystem')" style="background:linear-gradient(135deg,#ff6b6b,#ee5a6f);color:white;border:none;padding:15px 30px;border-radius:8px;font-size:16px;cursor:pointer;box-shadow:0 4px 15px rgba(255,107,107,0.3);transition:all 0.3s ease;">
+                        🐛 Report a Bug
+                    </button>
+                    <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:10px;">Found an issue? Help us improve FileSystemBot!</p>
+                </div>
 
                 <div class="recent-activity" style="margin-top:25px;">
                     <h3>📊 Recent FileSystem Activity</h3>
@@ -780,8 +692,8 @@
                     </div>
                 </div>
 
-                <div style="background:var(--bg-card);border-radius:var(--radius-lg);padding:25px;margin-top:25px;">
-                    <h3 style="color:var(--primary-purple);">ℹ️ About FileSystemBot</h3>
+                <div style="background:white;border-radius:15px;padding:25px;margin-top:25px;">
+                    <h3 style="color:#667eea;">ℹ️ About FileSystemBot</h3>
                     <p style="margin-top:15px;line-height:1.6;">
                         FileSystemBot is Pinky's personal assistant for file management and organization.
                         It has <strong>limited permissions</strong> - only allowed to work within Pinky's workspace
@@ -832,7 +744,7 @@
             <!-- Social Media View -->
             <div id="social-media-view" class="view">
                 <h2>🌐 SocialBot - Social Media Manager</h2>
-                <p style="color:var(--text-secondary);margin-bottom:25px;">
+                <p style="color:white;margin-bottom:25px;">
                     Manage all your social media companies and content in one place.
                 </p>
                 
@@ -946,19 +858,189 @@
                 <div id="wordpress-page-maker"></div>
             </div>
 
+            <!-- Export View -->
             <div id="export-view" class="view">
+                <h2>📦 Export & Backup</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    Download your data, generate reports, and create backups.
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('tasks', 'json')">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-content">
+                            <div class="stat-value">JSON</div>
+                            <div class="stat-label">Task History</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('activity', 'csv')">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-value">CSV</div>
+                            <div class="stat-label">Activity Logs</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('usage', 'json')">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <div class="stat-value">JSON</div>
+                            <div class="stat-label">Token Usage</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('screenshot', 'png')">
+                        <div class="stat-icon">📸</div>
+                        <div class="stat-content">
+                            <div class="stat-value">PNG</div>
+                            <div class="stat-label">Dashboard Screenshot</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:30px;">
+                    <h3>📁 Export Options</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item" onclick="exportData('tasks', 'json')" style="cursor:pointer;">
+                            <span class="activity-time">📋 JSON</span>
+                            <span class="activity-bot">Task History</span>
+                            <span class="activity-message">Complete task database with status, notes, timestamps</span>
+                        </div>
+                        <div class="activity-item" onclick="exportData('activity', 'csv')" style="cursor:pointer;">
+                            <span class="activity-time">📊 CSV</span>
+                            <span class="activity-bot">Activity Logs</span>
+                            <span class="activity-message">Heartbeat data, execution times, token counts</span>
+                        </div>
+                        <div class="activity-item" onclick="exportData('usage', 'json')" style="cursor:pointer;">
+                            <span class="activity-time">💰 JSON</span>
+                            <span class="activity-bot">Token Usage</span>
+                            <span class="activity-message">Model-by-model breakdown, costs, input/output totals</span>
+                        </div>
+                        <div class="activity-item" onclick="exportData('memory', 'zip')" style="cursor:pointer;">
+                            <span class="activity-time">🧠 ZIP</span>
+                            <span class="activity-bot">Memory Files</span>
+                            <span class="activity-message">MEMORY.md + daily memory logs (memory/*.md)</span>
+                        </div>
+                        <div class="activity-item" onclick="exportData('all', 'zip')" style="cursor:pointer;">
+                            <span class="activity-time">📦 ZIP</span>
+                            <span class="activity-bot">Full Backup</span>
+                            <span class="activity-message">All data + screenshots + configuration</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
                 <h2>📦 Export & Distribute</h2>
                 <div id="export-package-container"></div>
             </div>
 
+            <!-- About View -->
             <div id="about-view" class="view">
                 <h2>ℹ️ About PinkyBot</h2>
-                <div id="about-container"></div>
+                <p style="color:white;margin-bottom:25px;">
+                    System information, architecture, and technical details.
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🔢</div>
+                        <div class="stat-content">
+                            <div class="stat-value">v3.0.0</div>
+                            <div class="stat-label">Version</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="system-uptime">--</div>
+                            <div class="stat-label">Uptime</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏗️</div>
+                        <div class="stat-content">
+                            <div class="stat-value">Express + React</div>
+                            <div class="stat-label">Architecture</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔌</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="api-count">40+</div>
+                            <div class="stat-label">API Endpoints</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:30px;">
+                    <h3>🛠️ Tech Stack</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Backend</span>
+                            <span class="activity-bot">Node.js + Express</span>
+                            <span class="activity-message">REST API server with PM2 process management</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">Frontend</span>
+                            <span class="activity-bot">Vanilla JS + CSS Grid</span>
+                            <span class="activity-message">Responsive dashboard with real-time updates</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">AI Models</span>
+                            <span class="activity-bot">Claude Sonnet 4.5 + Grok 4</span>
+                            <span class="activity-message">Multi-model support via OpenRouter/xAI APIs</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">Database</span>
+                            <span class="activity-bot">JSON Files + Git</span>
+                            <span class="activity-message">Git-based persistence with version control</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">Blockchain</span>
+                            <span class="activity-bot">Solana Web3.js</span>
+                            <span class="activity-message">Wallet integration for PINKY token payments</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:30px;">
+                    <h3>📡 API Endpoints</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">GET</span>
+                            <span class="activity-bot">/api/tasks</span>
+                            <span class="activity-message">Task management system</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">GET</span>
+                            <span class="activity-bot">/api/usage</span>
+                            <span class="activity-message">Token usage statistics</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">GET</span>
+                            <span class="activity-bot">/api/activity</span>
+                            <span class="activity-message">Heartbeat and activity logs</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">POST</span>
+                            <span class="activity-bot">/api/codebot/*</span>
+                            <span class="activity-message">Git commits, code stats, syntax errors</span>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-time">POST</span>
+                            <span class="activity-bot">/api/stripe/checkout</span>
+                            <span class="activity-message">Subscription payments</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="business-view" class="view">
                 <div class="view-header"><h2>🏢 BusinessBot</h2></div>
-                <div id="businessbot-container"></div>
+                <div id="businessbot-container" class="coming-soon-container">
+                    <div style="text-align:center;padding:60px 20px;color:#a0a0c0;">
+                        <div style="font-size:48px;margin-bottom:16px;">🏢</div>
+                        <h3 style="color:#667eea;margin-bottom:8px;">BusinessBot — Coming Soon</h3>
+                        <p>Business analytics, reporting, and automation tools.</p>
+                    </div>
+                </div>
             </div>
             <!-- CryptoBot View -->
             <div id="crypto-view" class="view">
@@ -1221,10 +1303,6 @@
     <link rel="stylesheet" href="visual-polish.css">
     <script src="bot-upgrades.js"></script>
     <script src="bot-modules.js"></script>
-    <script src="codebot-ui.js"></script>
-    <script src="data-export-ui.js"></script>
-    <script src="about-pinkybot-ui.js"></script>
-    <script src="businessbot-ui.js"></script>
     <script src="settings-fixed.js"></script>
     <script src="theme-manager.js"></script>
     <script src="task-queue-integration.js"></script>
@@ -1276,8 +1354,23 @@
         window.addEventListener('load', () => {
             console.log('[Dashboard] Initializing all modules...');
             setTimeout(() => {
-                // Bot modules render via switchView in renderer.js
-                console.log('[Dashboard] Bot containers ready in HTML');
+                // Inject container divs for bot modules
+                const containers = {
+                    'docs-view': '<div id="docsbot-container"></div>',
+                    'research-view': '<div id="researchbot-container"></div>',
+                    'code-view': '<div id="codebot-container"></div>',
+                    'business-view': '<div id="businessbot-container"></div>',
+                    'filesystem-view': '<div id="filesystembot-container"></div>',
+                    'tasks-view': '<div id="tasksbot-pro-container"></div>',
+                    'crypto-view-container': '<div id="crypto-view"></div>'
+                };
+                
+                for (const [viewId, container] of Object.entries(containers)) {
+                    const view = document.getElementById(viewId);
+                    if (view && !view.querySelector('[id*="bot-container"]')) {
+                        view.insertAdjacentHTML('beforeend', container);
+                    }
+                }
                 
                 // Initialize Fixed Settings (replaces old broken version)
                 if (window.settingsManagerFixed) {
@@ -1340,7 +1433,13 @@
                     }).catch(err => console.log('[Dashboard] Analytics error:', err.message));
                 }
                 
-                // Bot modules render on view switch
+                // Initialize other bot modules
+                if (window.docsBotPro) window.docsBotPro.renderUI();
+                if (window.researchBotPro) window.researchBotPro.renderUI();
+                if (window.codeBotPro) window.codeBotPro.renderUI();
+                if (window.businessBotPro) window.businessBotPro.renderUI();
+                if (window.filesystemBotPro) window.filesystemBotPro.renderUI();
+                if (window.tasksBotPro) window.tasksBotPro.renderUI();
                 
                 // Load activity data
                 if (typeof loadActivityData === 'function') {
@@ -1379,6 +1478,9 @@
     <script src="settings-page.js"></script>
     
     <script src="export-package-ui.js"></script>
+    <script src="data-export-ui.js"></script>
+    <script src="about-pinkybot-ui.js"></script>
+    <script src="businessbot-ui.js"></script>
     <script src="system-health-widget.js"></script>
     <script src="changelog-widget.js"></script>
     
@@ -1386,7 +1488,8 @@
     <script src="loading-animation.js"></script>
     
     <!-- Error Page with Pinky personality -->
-    
+    <script src="error-page-pinky.js"></script>
+
     <!-- Notification Sounds with customizable themes -->
     <script src="notification-sounds.js"></script>
 
@@ -1400,7 +1503,8 @@
     <script src="about-page.js"></script>
 
     <!-- WordPress Page Maker -->
-        
+    <script src="wordpress-page-maker.js"></script>
+    
     <!-- Bug Submission System -->
     <script src="bug-submission.js"></script>
     
@@ -1444,16 +1548,17 @@
             }
         });
     </script>
-    <!-- DISABLED  -->
-    <!-- DISABLED  -->
-    <!-- DISABLED <script src="tier-resolver.js"></script> -->
-    <!-- DISABLED <script src="license-manager.js"></script> -->
-    <!-- DISABLED <script src="feature-gating.js"></script> -->
-    <!-- DISABLED <script src="tier-management.js"></script> -->
+    <script src="token-warning-ui.js"></script>
+    <script src="stripe-checkout.js"></script>
+    <script src="tier-resolver.js"></script>
+    <script src="license-manager.js"></script>
+    <script src="feature-gating.js"></script>
+    <script src="tier-management.js"></script>
     <script src="load-company-selector.js"></script>
     <script src="company-selector.js"></script>
     <script src="load-wordpress-manager.js"></script>
-        
+    <script src="wordpress-manager.js"></script>
+    
     <!-- Bug Submission Helper -->
     <script>
         function openBugSubmission(context) {
@@ -1483,11 +1588,13 @@
     </script>
     <!-- Crypto Bot & Wallet Integration -->
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-        <script src="dashboard-metamask-connect.js"></script>
+    <script src="dashboard-wallet-connect.js"></script>
+    <script src="dashboard-metamask-connect.js"></script>
     <script src="unified-wallet-manager.js"></script>
-    <!-- DISABLED: broken fetch syntax <script src="cryptobot-controller.js"></script> -->
-    <!-- DISABLED: broken fetch syntax <script src="cryptobot-view.js"></script> -->
-
-
+    <script src="cryptobot-controller.js"></script>
+    <script src="cryptobot-view.js"></script>
+    <script src="codebot-ui.js"></script>
+    <script src="export-handler.js"></script>
 </body>
 </html>
+test
