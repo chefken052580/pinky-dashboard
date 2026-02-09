@@ -691,7 +691,14 @@ class TasksBotEnhanced {
         
         html += '<div class="task-item completed">';
         html += '<div class="task-header">';
-        html += '<div class="verified-stamp"><div class="stamp-circle">VERIFIED</div><span class="stamp-text">✓ Done</span></div>';
+        // Choose stamp based on task type
+        if (task.name && task.name.includes('DENIED')) {
+          html += '<div class="verified-stamp failed-stamp"><div class="stamp-circle failed">FAILED</div><span class="stamp-text failed-text">✗ Denied</span></div>';
+        } else if (task.notes && (task.notes.includes('Brain') || task.notes.includes('ADMIN') || task.notes.includes('--no-verify'))) {
+          html += '<div class="verified-stamp admin-stamp"><div class="stamp-circle admin">ADMIN</div><span class="stamp-text admin-text">⚡ Brain</span></div>';
+        } else {
+          html += '<div class="verified-stamp"><div class="stamp-circle">VERIFIED</div><span class="stamp-text">✓ Done</span></div>';
+        }
         html += '<span class="task-name">' + this.escapeAttr(task.name) + '</span>';
         
         // Add revert button if commit hash found

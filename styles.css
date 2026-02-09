@@ -900,3 +900,31 @@ body.lite-mode .widget-title {
   color: #ffffff !important;
   text-shadow: none;
 }
+
+/* === FAILED stamp (denied tasks) === */
+.failed-stamp {
+  border-color: #ff4757 !important;
+  background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(255, 107, 107, 0.1) 100%) !important;
+}
+.stamp-circle.failed {
+  border-color: #ff4757 !important;
+  color: #ff4757 !important;
+  box-shadow: 0 0 12px rgba(255, 71, 87, 0.4) !important;
+}
+.stamp-text.failed-text {
+  color: #ff4757 !important;
+}
+
+/* === ADMIN stamp (Brain/manual tasks) === */
+.admin-stamp {
+  border-color: #ffa502 !important;
+  background: linear-gradient(135deg, rgba(255, 165, 2, 0.1) 0%, rgba(255, 195, 18, 0.1) 100%) !important;
+}
+.stamp-circle.admin {
+  border-color: #ffa502 !important;
+  color: #ffa502 !important;
+  box-shadow: 0 0 12px rgba(255, 165, 2, 0.4) !important;
+}
+.stamp-text.admin-text {
+  color: #ffa502 !important;
+}
