@@ -38,6 +38,7 @@
     <link rel="stylesheet" href="company-selector.css">
     <link rel="stylesheet" href="wordpress-manager.css">
     <link rel="stylesheet" href="bug-submission.css">
+    <link rel="stylesheet" href="cryptobot-view.css">
 </head>
 <body>
     <!-- Onboarding Screen -->
@@ -164,6 +165,7 @@
                     <span style="font-size:0.7em;opacity:0.7;">Wallet & DeFi Manager</span>
                 </button>
             </nav>
+
             <nav class="view-nav">
                 <h3>📱 Views</h3>
                 <button class="view-button" data-view="social-media">
@@ -841,10 +843,12 @@
                     </div>
                 </div>
             </div>
+
             <!-- CryptoBot View -->
             <div id="crypto-view" class="view">
                 <div id="crypto-view-container"></div>
             </div>
+
         </main>
     </div>
 
@@ -1194,17 +1198,18 @@
                     window.taskQueueManager.renderUI();
                     console.log('[Dashboard] Task Queue rendered');
                 }
+                
                 // Load CryptoBot View
-                fetch("cryptobot-view.html")
+                fetch('cryptobot-view.html')
                     .then(r => r.text())
                     .then(html => {
-                        const cryptoContainer = document.getElementById("crypto-view-container");
+                        const cryptoContainer = document.getElementById('crypto-view-container');
                         if (cryptoContainer) {
                             cryptoContainer.innerHTML = html;
-                            console.log("[Dashboard] CryptoBot view loaded");
+                            console.log('[Dashboard] CryptoBot view loaded');
                         }
                     })
-                    .catch(err => console.error("[Dashboard] Failed to load CryptoBot view:", err));
+                    .catch(err => console.error('[Dashboard] Failed to load CryptoBot view:', err));
                 
                 // Initialize FileSystemBot LLM
                 if (window.fileSystemBotLLM) {
@@ -1355,6 +1360,14 @@
     <script src="load-wordpress-manager.js"></script>
     <script src="wordpress-manager.js"></script>
     
+    <!-- Crypto Bot & Wallet Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <script src="dashboard-wallet-connect.js"></script>
+    <script src="dashboard-metamask-connect.js"></script>
+    <script src="unified-wallet-manager.js"></script>
+    <script src="cryptobot-controller.js"></script>
+    <script src="cryptobot-view.js"></script>
+    
     <!-- Bug Submission Helper -->
     <script>
         function openBugSubmission(context) {
@@ -1382,12 +1395,5 @@
             }
         }
     </script>
-    <!-- Crypto Bot & Wallet Integration -->
-    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-    <script src="dashboard-wallet-connect.js"></script>
-    <script src="dashboard-metamask-connect.js"></script>
-    <script src="unified-wallet-manager.js"></script>
-    <script src="cryptobot-controller.js"></script>
-    <script src="cryptobot-view.js"></script>
 </body>
 </html>
