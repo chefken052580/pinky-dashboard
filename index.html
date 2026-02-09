@@ -508,53 +508,87 @@
             <div id="code-view" class="view">
                 <h2>💻 CodeBot - Development Assistant</h2>
                 <p style="color:white;margin-bottom:25px;">
-                    Generates code, debugs issues, and provides technical solutions.
+                    Real-time code statistics, commit history, and syntax error tracking.
                 </p>
                 
+                <!-- Code Statistics -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📝</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="code-files">0</div>
-                            <div class="stat-label">Files Generated</div>
+                            <div class="stat-value" id="code-commits-count">0</div>
+                            <div class="stat-label">Total Commits</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">🐛</div>
+                        <div class="stat-icon">➕</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="code-bugs">0</div>
-                            <div class="stat-label">Bugs Fixed</div>
+                            <div class="stat-value" id="code-lines-added" style="color:#4ade80;">+0</div>
+                            <div class="stat-label">Lines Added (Last 30)</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">⚡</div>
+                        <div class="stat-icon">➖</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="code-lines">0</div>
-                            <div class="stat-label">Lines Written</div>
+                            <div class="stat-value" id="code-lines-removed" style="color:#f87171;">-0</div>
+                            <div class="stat-label">Lines Removed (Last 30)</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📁</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="code-files-count">0</div>
+                            <div class="stat-label">Files Changed (Last 30)</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Interactive Bot Interface -->
-                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
-                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
-                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
-                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
-                        This bot is currently under development. Interactive features will be available in a future update.
-                    </p>
-                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
-                        🐭 Pinky is working on it! Check back soon for world domination features.
-                    </p>
+                <!-- File Type Breakdown -->
+                <div class="stats-grid" style="margin-top:20px;">
+                    <div class="stat-card">
+                        <div class="stat-icon">🟨</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="code-js-files">0</div>
+                            <div class="stat-label">JavaScript Files</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🟧</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="code-html-files">0</div>
+                            <div class="stat-label">HTML Files</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🟦</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="code-css-files">0</div>
+                            <div class="stat-label">CSS Files</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="recent-activity" style="margin-top:25px;">
-                    <h3>📊 CodeBot Activity</h3>
-                    <div id="code-activity" class="activity-feed">
-                        <div class="activity-item">
-                            <span class="activity-time">Waiting...</span>
-                            <span class="activity-bot">CodeBot</span>
-                            <span class="activity-message">Ready to code! 💻</span>
-                        </div>
+                <!-- Recent Commits -->
+                <div class="recent-activity" style="margin-top:30px;">
+                    <h3>📜 Recent Commits</h3>
+                    <div id="code-commits-list" class="activity-feed">
+                        <div class="activity-item">Loading commits...</div>
+                    </div>
+                </div>
+
+                <!-- Syntax Errors -->
+                <div class="recent-activity" style="margin-top:30px;">
+                    <h3>🐛 Syntax Errors (Pre-Commit Hook)</h3>
+                    <div id="code-syntax-errors" class="activity-feed">
+                        <div class="activity-item">Checking for errors...</div>
+                    </div>
+                </div>
+
+                <!-- Top Contributors -->
+                <div class="recent-activity" style="margin-top:30px;">
+                    <h3>👥 Top Contributors</h3>
+                    <div id="code-contributors" class="activity-feed">
+                        <div class="activity-item">Loading contributors...</div>
                     </div>
                 </div>
             </div>
@@ -1392,5 +1426,7 @@
     <script src="unified-wallet-manager.js"></script>
     <script src="cryptobot-controller.js"></script>
     <script src="cryptobot-view.js"></script>
+    <script src="codebot-ui.js"></script>
 </body>
 </html>
+test
