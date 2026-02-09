@@ -858,7 +858,75 @@
                 <div id="wordpress-page-maker"></div>
             </div>
 
+            <!-- Export View -->
             <div id="export-view" class="view">
+                <h2>📦 Export & Backup</h2>
+                <p style="color:white;margin-bottom:25px;">
+                    Download your data, generate reports, and create backups.
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('tasks', 'json')">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-content">
+                            <div class="stat-value">JSON</div>
+                            <div class="stat-label">Task History</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('activity', 'csv')">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-value">CSV</div>
+                            <div class="stat-label">Activity Logs</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('usage', 'json')">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <div class="stat-value">JSON</div>
+                            <div class="stat-label">Token Usage</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('screenshot', 'png')">
+                        <div class="stat-icon">📸</div>
+                        <div class="stat-content">
+                            <div class="stat-value">PNG</div>
+                            <div class="stat-label">Dashboard Screenshot</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity" style="margin-top:30px;">
+                    <h3>📁 Export Options</h3>
+                    <div class="activity-feed">
+                        <div class="activity-item" onclick="exportData('tasks', 'json')" style="cursor:pointer;">
+                            <span class="activity-time">📋 JSON</span>
+                            <span class="activity-bot">Task History</span>
+                            <span class="activity-message">Complete task database with status, notes, timestamps</span>
+                        </div>
+                        <div class="activity-item" onclick="exportData('activity', 'csv')" style="cursor:pointer;">
+                            <span class="activity-time">📊 CSV</span>
+                            <span class="activity-bot">Activity Logs</span>
+                            <span class="activity-message">Heartbeat data, execution times, token counts</span>
+                        </div>
+                        <div class="activity-item" onclick="exportData('usage', 'json')" style="cursor:pointer;">
+                            <span class="activity-time">💰 JSON</span>
+                            <span class="activity-bot">Token Usage</span>
+                            <span class="activity-message">Model-by-model breakdown, costs, input/output totals</span>
+                        </div>
+                        <div class="activity-item" onclick="exportData('memory', 'zip')" style="cursor:pointer;">
+                            <span class="activity-time">🧠 ZIP</span>
+                            <span class="activity-bot">Memory Files</span>
+                            <span class="activity-message">MEMORY.md + daily memory logs (memory/*.md)</span>
+                        </div>
+                        <div class="activity-item" onclick="exportData('all', 'zip')" style="cursor:pointer;">
+                            <span class="activity-time">📦 ZIP</span>
+                            <span class="activity-bot">Full Backup</span>
+                            <span class="activity-message">All data + screenshots + configuration</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
                 <h2>📦 Export & Distribute</h2>
                 <div id="export-package-container"></div>
             </div>
@@ -1428,6 +1496,7 @@
     <script src="cryptobot-controller.js"></script>
     <script src="cryptobot-view.js"></script>
     <script src="codebot-ui.js"></script>
+    <script src="export-handler.js"></script>
 </body>
 </html>
 test
