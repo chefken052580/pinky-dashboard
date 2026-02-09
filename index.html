@@ -557,6 +557,7 @@
                 <p style="color:white;margin-bottom:25px;">
                     FileSystemBot helps Pinky stay organized! No permissions outside Pinky's workspace.
                 </p>
+                <div id="filesystembot-container"></div>
                 
                 <!-- Interactive Bot Interface -->
                 
@@ -1078,7 +1079,7 @@
                 for (const [viewId, container] of Object.entries(containers)) {
                     const view = document.getElementById(viewId);
                     if (view && !view.querySelector('[id*="bot-container"]')) {
-                        view.insertAdjacentHTML('beforeend', container);
+                        view.insertAdjacentHTML('afterbegin', container);
                     }
                 }
                 // Render all bot modules into their containers
