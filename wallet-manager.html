@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Wallet Manager - PinkyBot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 { margin-bottom: 30px; }
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .wallet-card {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 16px;
+      padding: 25px;
+      border: 2px solid #475569;
+    }
+    .wallet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .wallet-logo {
+      font-size: 48px;
+    }
+    .connect-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .connect-btn:hover {
+      transform: scale(1.05);
+    }
+    .wallet-info {
+      margin-top: 15px;
+    }
+    .wallet-address {
+      font-family: monospace;
+      font-size: 12px;
+      color: #94a3b8;
+      margin: 5px 0;
+    }
+    .balance {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .portfolio-summary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+    }
+    .total-value {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .connected {
+      background: #10b981;
+    }
+    .disconnected {
+      background: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Wallet Manager</h1>
+    
+    <div class="portfolio-summary">
+      <div>Total Portfolio Value</div>
+      <div class="total-value" id="totalValue">$0.00</div>
+      <div id="portfolioBreakdown"></div>
+    </div>
+    
+    <br><br>
+    
+    <div class="wallet-grid">
+      <!-- Phantom Wallet -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <div>
+            <div class="wallet-logo">👻</div>
+            <h2>Phantom</h2>
+            <span class="status-badge" id="phantomStatus">Disconnected</span>
+          </div>
+          <button class="connect-btn" onclick="connectPhantom()" id="phantomBtn">Connect</button>
+        </div>
+        <div class="wallet-info" id="phantomInfo"></div>
+      </div>
+      
+      <!-- MetaMask -->
+      <div class="wallet-card">
+        <div class="wallet-header">
+          <div>
+            <div class="wallet-logo">🦊</div>
+            <h2>MetaMask</h2>
+            <span class="status-badge" id="metamaskStatus">Disconnected</span>
+          </div>
+          <button class="connect-btn" onclick="connectMetaMask()" id="metamaskBtn">Connect</button>
+        </div>
+        <div class="wallet-info" id="metamaskInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let wallets = {
+      phantom: { connected: false, balance: 0, address: null },
+      metamask: { connected: false, balance: 0, address: null }
+    };
+
+    async function connectPhantom() {
+      if (!window.solana || !window.solana.isPhantom) {
+        alert('Phantom wallet not installed. Visit https://phantom.app/');
+        return;
+      }
+      
+      try {
+        const resp = await window.solana.connect();
+        const address = resp.publicKey.toString();
+        
+        // Mock balance check
+        const balance = Math.floor(Math.random() * 10000);
+        
+        wallets.phantom = {
+          connected: true,
+          address,
+          balance,
+          token: 'PINKY',
+          value: balance * 0.0001 // Mock price
+        };
+        
+        updateUI();
+      } catch (err) {
+        console.error('Phantom connection failed:', err);
+      }
+    }
+
+    async function connectMetaMask() {
+      if (typeof window.ethereum === 'undefined') {
+        alert('MetaMask not installed. Visit https://metamask.io/');
+        return;
+      }
+      
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const address = accounts[0];
+        
+        // Mock balance check
+        const balance = (Math.random() * 10).toFixed(4);
+        
+        wallets.metamask = {
+          connected: true,
+          address,
+          balance,
+          token: 'ETH',
+          value: balance * 2500 // Mock ETH price
+        };
+        
+        updateUI();
+      } catch (err) {
+        console.error('MetaMask connection failed:', err);
+      }
+    }
+
+    function updateUI() {
+      // Update Phantom
+      if (wallets.phantom.connected) {
+        document.getElementById('phantomStatus').textContent = 'Connected';
+        document.getElementById('phantomStatus').className = 'status-badge connected';
+        document.getElementById('phantomBtn').textContent = 'Disconnect';
+        document.getElementById('phantomInfo').innerHTML = `
+          <div class="wallet-address">${wallets.phantom.address}</div>
+          <div class="balance">${wallets.phantom.balance.toLocaleString()} PINKY</div>
+          <div>≈ $${wallets.phantom.value.toFixed(2)}</div>
+        `;
+      }
+      
+      // Update MetaMask
+      if (wallets.metamask.connected) {
+        document.getElementById('metamaskStatus').textContent = 'Connected';
+        document.getElementById('metamaskStatus').className = 'status-badge connected';
+        document.getElementById('metamaskBtn').textContent = 'Disconnect';
+        document.getElementById('metamaskInfo').innerHTML = `
+          <div class="wallet-address">${wallets.metamask.address}</div>
+          <div class="balance">${wallets.metamask.balance} ETH</div>
+          <div>≈ $${wallets.metamask.value.toFixed(2)}</div>
+        `;
+      }
+      
+      // Update portfolio total
+      const total = (wallets.phantom.value || 0) + (wallets.metamask.value || 0);
+      document.getElementById('totalValue').textContent = `$${total.toFixed(2)}`;
+      
+      const breakdown = [];
+      if (wallets.phantom.connected) {
+        breakdown.push(`${wallets.phantom.token}: $${wallets.phantom.value.toFixed(2)}`);
+      }
+      if (wallets.metamask.connected) {
+        breakdown.push(`${wallets.metamask.token}: $${wallets.metamask.value.toFixed(2)}`);
+      }
+      
+      document.getElementById('portfolioBreakdown').textContent = breakdown.join(' | ');
+    }
+
+    // Load saved wallet connections
+    window.addEventListener('load', () => {
+      const phantomAddr = localStorage.getItem('pinky_wallet_address');
+      const ethAddr = localStorage.getItem('eth_wallet_address');
+      
+      if (phantomAddr) {
+        wallets.phantom = {
+          connected: true,
+          address: phantomAddr,
+          balance: parseInt(localStorage.getItem('pinky_token_balance')) || 0,
+          token: 'PINKY',
+          value: 0
+        };
+        updateUI();
+      }
+      
+      if (ethAddr) {
+        wallets.metamask = {
+          connected: true,
+          address: ethAddr,
+          balance: parseFloat(localStorage.getItem('eth_wallet_balance')) || 0,
+          token: 'ETH',
+          value: 0
+        };
+        updateUI();
+      }
+    });
+  </script>
+</body>
+</html>
