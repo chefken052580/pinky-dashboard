@@ -280,14 +280,34 @@ function loadActivityData() {
         .then(data => {
             // Extract heartbeats from API response {heartbeats: [...]}
             const heartbeatsArray = data.heartbeats || [];
+            
+            // Calculate aggregate usage stats from heartbeats
+            let totalTokens = 0;
+            let totalExec = 0;
+            let totalFiles = 0;
+            const responses = [];
+            
+            heartbeatsArray.forEach(hb => {
+                if (hb.tokens) totalTokens += hb.tokens;
+                if (hb.exec) totalExec += hb.exec;
+                if (hb.files) totalFiles += hb.files;
+                if (hb.lagMs !== undefined) responses.push(hb.lagMs);
+            });
+            
             activityData = {
                 heartbeats: heartbeatsArray,
-                heartbeatCount: heartbeatsArray.length
+                heartbeatCount: heartbeatsArray.length,
+                usage: {
+                    tokens: totalTokens,
+                    exec: totalExec,
+                    files: totalFiles,
+                    responses: responses
+                }
             };
             updateMonitorStats();
             renderMonitorChart(currentMonitorView);
             renderHeaderStats();
-            console.log('[Monitor] Loaded activity data from /api/activity: ' + heartbeatsArray.length + ' heartbeats');
+            console.log('[Monitor] Loaded activity data from /api/activity: ' + heartbeatsArray.length + ' heartbeats, ' + totalExec + ' exec calls');
         })
         .catch(err => {
             console.error('[Monitor] Failed to load activity data:', err);
