@@ -156,6 +156,13 @@
                     <span class="notification-badge business-badge hidden">0</span>
                     <span class="bot-status online"></span>
                 </button>
+                <button class="bot-button" data-bot="crypto">
+                    <span class="bot-icon">🪙</span>
+                    <span class="bot-name">CryptoBot</span>
+                    <span class="notification-badge crypto-badge hidden">0</span>
+                    <span class="bot-status online"></span>
+                    <span style="font-size:0.7em;opacity:0.7;">Wallet & DeFi Manager</span>
+                </button>
             </nav>
 
             <nav class="view-nav">
@@ -835,6 +842,10 @@
                     </div>
                 </div>
             </div>
+
+            <!-- CryptoBot View -->
+            <div id="crypto-view-container"></div>
+
         </main>
     </div>
 
@@ -1150,7 +1161,8 @@
                     'code-view': '<div id="codebot-container"></div>',
                     'business-view': '<div id="businessbot-container"></div>',
                     'filesystem-view': '<div id="filesystembot-container"></div>',
-                    'tasks-view': '<div id="tasksbot-pro-container"></div>'
+                    'tasks-view': '<div id="tasksbot-pro-container"></div>',
+                    'crypto-view-container': '<div id="crypto-view"></div>'
                 };
                 
                 for (const [viewId, container] of Object.entries(containers)) {
@@ -1183,6 +1195,18 @@
                     window.taskQueueManager.renderUI();
                     console.log('[Dashboard] Task Queue rendered');
                 }
+                
+                // Load CryptoBot View
+                fetch('cryptobot-view.html')
+                    .then(r => r.text())
+                    .then(html => {
+                        const cryptoContainer = document.getElementById('crypto-view-container');
+                        if (cryptoContainer) {
+                            cryptoContainer.innerHTML = html;
+                            console.log('[Dashboard] CryptoBot view loaded');
+                        }
+                    })
+                    .catch(err => console.error('[Dashboard] Failed to load CryptoBot view:', err));
                 
                 // Initialize FileSystemBot LLM
                 if (window.fileSystemBotLLM) {
@@ -1332,6 +1356,13 @@
     <script src="company-selector.js"></script>
     <script src="load-wordpress-manager.js"></script>
     <script src="wordpress-manager.js"></script>
+    
+    <!-- Crypto Bot & Wallet Integration -->
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <script src="dashboard-wallet-connect.js"></script>
+    <script src="dashboard-metamask-connect.js"></script>
+    <script src="unified-wallet-manager.js"></script>
+    <script src="cryptobot-controller.js"></script>
     
     <!-- Bug Submission Helper -->
     <script>

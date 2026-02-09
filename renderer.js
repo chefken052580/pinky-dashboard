@@ -660,6 +660,7 @@ function loadApprovals() {
                     <textarea placeholder="Add instructions for Pinky (optional)..." id="instructions-${req.id}"></textarea>
                     <div class="approval-buttons">
                         <button class="btn-approve" onclick="respondApproval('${req.id}', true)">✅ Approve</button>
+                        <button class="btn-admin" onclick="adminHandle('${req.id}')" style="background:linear-gradient(135deg,#ffa502,#ff9f43);color:#000;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;font-weight:600;font-size:0.9em;">⚡ Admin Handle</button>
                         <button class="btn-deny" onclick="respondApproval('${req.id}', false)">❌ Deny</button>
                     </div>
                     <div class="approval-time">Requested: ${formatDateEST(req.createdAt)}</div>
