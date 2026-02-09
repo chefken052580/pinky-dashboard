@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Failed - PinkyBot.io</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .error-container {
+      background: white;
+      border-radius: 16px;
+      padding: 48px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .error-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+    }
+
+    @keyframes shake {
+      10%, 90% { transform: translateX(-2px); }
+      20%, 80% { transform: translateX(4px); }
+      30%, 50%, 70% { transform: translateX(-6px); }
+      40%, 60% { transform: translateX(6px); }
+    }
+
+    .error-icon svg {
+      width: 40px;
+      height: 40px;
+      stroke: white;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #1a202c;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    .error-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #4a5568;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .troubleshooting {
+      background: #fef5f5;
+      border-left: 4px solid #fc5c7d;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+
+    .troubleshooting h2 {
+      font-size: 18px;
+      color: #1a202c;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .troubleshooting ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .troubleshooting li {
+      padding: 10px 0;
+      color: #4a5568;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .troubleshooting li:before {
+      content: "•";
+      color: #fc5c7d;
+      font-weight: bold;
+      font-size: 20px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+      background: #f7fafc;
+    }
+
+    .support-link {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 14px;
+      color: #4a5568;
+    }
+
+    .support-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .support-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 640px) {
+      .error-container {
+        padding: 32px 24px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .btn-container {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <div class="error-icon">
+      <svg viewBox="0 0 52 52">
+        <circle cx="26" cy="26" r="22" fill="none" stroke="white" stroke-width="3"/>
+        <line x1="26" y1="18" x2="26" y2="32" stroke="white" stroke-width="3"/>
+        <circle cx="26" cy="38" r="2" fill="white"/>
+      </svg>
+    </div>
+
+    <h1>Payment Failed</h1>
+    <div class="error-badge">Transaction Declined</div>
+    
+    <p>We couldn't process your payment. Don't worry — your card has not been charged.</p>
+
+    <div class="troubleshooting">
+      <h2>🔍 Common Issues</h2>
+      <ul>
+        <li><strong>Insufficient funds:</strong> Check your account balance</li>
+        <li><strong>Incorrect card details:</strong> Verify card number, expiration date, and CVC</li>
+        <li><strong>Card declined by bank:</strong> Contact your bank to authorize online payments</li>
+        <li><strong>Expired card:</strong> Use a card with a valid expiration date</li>
+        <li><strong>Billing address mismatch:</strong> Ensure billing address matches your bank records</li>
+      </ul>
+    </div>
+
+    <div class="btn-container">
+      <a href="/pricing" class="btn btn-primary">Try Again</a>
+      <a href="/" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+
+    <div class="support-link">
+      Still having issues? <a href="mailto:support@pinkybot.io">Contact Support</a>
+    </div>
+  </div>
+
+  <script>
+    // Clear any partial subscription data from localStorage
+    localStorage.removeItem('pinky_subscription_active');
+    localStorage.removeItem('pinky_subscription_session');
+
+    // Log error details for debugging (if available in URL params)
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorCode = urlParams.get('error');
+    const errorMessage = urlParams.get('message');
+
+    if (errorCode || errorMessage) {
+      console.error('Payment Error:', {
+        code: errorCode,
+        message: errorMessage
+      });
+
+      // Optional: Send error to backend for analytics
+      fetch('/api/analytics/payment-error', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          errorCode,
+          errorMessage,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(err => console.error('Analytics logging failed:', err));
+    }
+  </script>
+</body>
+</html>

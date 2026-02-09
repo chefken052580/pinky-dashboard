@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - PinkyBot.io</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .success-container {
+      background: white;
+      border-radius: 16px;
+      padding: 48px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .checkmark {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+
+    .checkmark svg {
+      width: 40px;
+      height: 40px;
+      stroke: white;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      animation: drawCheck 0.8s ease-in-out 0.2s forwards;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+    }
+
+    @keyframes drawCheck {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #1a202c;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #4a5568;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .next-steps {
+      background: #f7fafc;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+      text-align: left;
+    }
+
+    .next-steps h2 {
+      font-size: 18px;
+      color: #1a202c;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .next-steps ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .next-steps li {
+      padding: 12px 0;
+      color: #4a5568;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .next-steps li:before {
+      content: "✓";
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      flex-shrink: 0;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+      background: #f7fafc;
+    }
+
+    .session-id {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 12px;
+      color: #a0aec0;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f4f6;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 640px) {
+      .success-container {
+        padding: 32px 24px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .btn-container {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="success-container">
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Verifying your payment...</p>
+    </div>
+
+    <div id="success-content" style="display: none;">
+      <div class="checkmark">
+        <svg viewBox="0 0 52 52">
+          <polyline points="14 27 22 35 38 19"/>
+        </svg>
+      </div>
+
+      <h1>Payment Successful!</h1>
+      <div class="tier-badge" id="tier-badge">Pro Tier Unlocked</div>
+      
+      <p>Your subscription is now active. Welcome to PinkyBot Pro! You now have access to all premium features.</p>
+
+      <div class="next-steps">
+        <h2>🎉 What's Next?</h2>
+        <ul>
+          <li>Access advanced AI task management tools</li>
+          <li>Manage multiple companies from one dashboard</li>
+          <li>Integrate with WordPress for SEO automation</li>
+          <li>Export analytics and reports</li>
+          <li>Priority support from the PinkyBot team</li>
+        </ul>
+      </div>
+
+      <div class="btn-container">
+        <a href="/" class="btn btn-primary">Go to Dashboard</a>
+        <a href="/pricing" class="btn btn-secondary">View Plan Details</a>
+      </div>
+
+      <div class="session-id">
+        <strong>Session ID:</strong> <span id="session-id">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Get session_id from URL query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+
+    // Simulate payment verification (replace with actual API call)
+    setTimeout(() => {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('success-content').style.display = 'block';
+      
+      if (sessionId) {
+        document.getElementById('session-id').textContent = sessionId;
+        
+        // Store tier in localStorage for feature gating
+        localStorage.setItem('pinky_tier', 'pro');
+        localStorage.setItem('pinky_subscription_active', 'true');
+        localStorage.setItem('pinky_subscription_session', sessionId);
+      } else {
+        document.getElementById('session-id').textContent = 'N/A';
+      }
+
+      // Optional: Verify session with backend API
+      if (sessionId) {
+        verifySession(sessionId);
+      }
+    }, 2000);
+
+    async function verifySession(sessionId) {
+      try {
+        const response = await fetch(`/api/stripe/verify-session/${sessionId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          // Update tier badge if backend returns different tier
+          if (data.tier === 'enterprise') {
+            document.getElementById('tier-badge').textContent = 'Enterprise Tier Unlocked';
+          }
+        }
+      } catch (error) {
+        console.error('Session verification failed:', error);
+      }
+    }
+  </script>
+</body>
+</html>
