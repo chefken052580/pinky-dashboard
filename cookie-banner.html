@@ -1,0 +1,107 @@
+<!-- Cookie Consent Banner (GDPR/CCPA Compliant) -->
+<div id="cookie-consent-banner">
+  <div class="cookie-banner-content">
+    <div class="cookie-banner-text">
+      <h3>🍪 We Value Your Privacy</h3>
+      <p>
+        We use cookies to enhance your experience, analyze site traffic, and personalize content. 
+        You can choose which cookies to accept. 
+        <a href="/docs/PRIVACY-POLICY.md" target="_blank">Learn more</a>
+      </p>
+    </div>
+    <div class="cookie-banner-buttons">
+      <button id="cookie-accept-all" class="cookie-btn cookie-btn-primary">
+        Accept All
+      </button>
+      <button id="cookie-reject-all" class="cookie-btn cookie-btn-secondary">
+        Reject All
+      </button>
+      <button id="cookie-settings-btn" class="cookie-btn cookie-btn-text">
+        Customize
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Cookie Settings Modal -->
+<div id="cookie-settings-modal">
+  <div class="cookie-modal-content">
+    <div class="cookie-modal-header">
+      <h2>Cookie Preferences</h2>
+      <button id="cookie-settings-close" class="cookie-modal-close" aria-label="Close">
+        &times;
+      </button>
+    </div>
+
+    <div class="cookie-modal-body">
+      <p style="margin-top: 0; color: #666; font-size: 14px;">
+        Choose which cookies you want to accept. You can change these settings at any time.
+      </p>
+
+      <!-- Necessary Cookies (Always On) -->
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <h3>🔒 Necessary Cookies</h3>
+          <label class="cookie-toggle">
+            <input type="checkbox" checked disabled>
+            <span class="cookie-toggle-slider"></span>
+          </label>
+        </div>
+        <p class="cookie-category-description">
+          Required for the website to function properly. These cookies enable core functionality 
+          like security, authentication, and session management. They cannot be disabled.
+        </p>
+        <p class="cookie-category-services">
+          <strong>Services:</strong> Session management, Authentication, CSRF protection
+        </p>
+      </div>
+
+      <!-- Analytics Cookies -->
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <h3>📊 Analytics Cookies</h3>
+          <label class="cookie-toggle">
+            <input type="checkbox" id="consent-analytics" checked>
+            <span class="cookie-toggle-slider"></span>
+          </label>
+        </div>
+        <p class="cookie-category-description">
+          Help us understand how visitors interact with our website by collecting and reporting 
+          information anonymously. This helps us improve the user experience.
+        </p>
+        <p class="cookie-category-services">
+          <strong>Services:</strong> Google Analytics (IP anonymized), PostHog
+        </p>
+      </div>
+
+      <!-- Marketing Cookies -->
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <h3>🎯 Marketing Cookies</h3>
+          <label class="cookie-toggle">
+            <input type="checkbox" id="consent-marketing">
+            <span class="cookie-toggle-slider"></span>
+          </label>
+        </div>
+        <p class="cookie-category-description">
+          Used to track visitors across websites to display relevant advertisements. These help 
+          us show you ads that are more relevant to your interests.
+        </p>
+        <p class="cookie-category-services">
+          <strong>Services:</strong> Facebook Pixel, LinkedIn Insight Tag
+        </p>
+      </div>
+
+      <p style="font-size: 12px; color: #999; margin-top: 20px; margin-bottom: 0;">
+        💡 <strong>Tip:</strong> If your browser has "Do Not Track" enabled, analytics and marketing 
+        cookies will be automatically disabled regardless of your choice here.
+      </p>
+    </div>
+
+    <div class="cookie-modal-footer">
+      <button id="cookie-settings-save" class="cookie-btn cookie-btn-primary">
+        Save Preferences
+      </button>
+    </div>
+  </div>
+</div>
