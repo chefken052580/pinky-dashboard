@@ -1082,6 +1082,14 @@
                         view.insertAdjacentHTML('beforeend', container);
                     }
                 }
+                // Render all bot modules into their containers
+                if (window.docsBotPro) window.docsBotPro.renderUI();
+                if (window.researchBotPro) window.researchBotPro.renderUI();
+                if (window.codeBotPro) window.codeBotPro.renderUI();
+                if (window.businessBotPro) window.businessBotPro.renderUI();
+                if (window.filesystemBotPro) window.filesystemBotPro.renderUI();
+                if (window.tasksBotPro) window.tasksBotPro.renderUI();
+                console.log('[Dashboard] All bot modules rendered');
                 
                 // Initialize Fixed Settings (replaces old broken version)
                 if (window.settingsManagerFixed) {
