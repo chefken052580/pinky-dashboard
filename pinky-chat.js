@@ -396,9 +396,9 @@
             var tokens = session.tokenCount || 0;
             stats.innerHTML = '<span>' + msgCount + ' msgs</span>' +
                 (tokens ? '<span class="chat-cost-badge">~' + (tokens * 0.000003).toFixed(4) + ' USD</span>' : '') +
-                '<span class="chat-model-badge">Grok 4</span>';
+                '<span class="chat-model-badge">Pinky AI</span>';
         } else if (stats) {
-            stats.innerHTML = '<span class="chat-model-badge">Grok 4</span>';
+            stats.innerHTML = '<span class="chat-model-badge">Pinky AI</span>';
         }
     }
 
