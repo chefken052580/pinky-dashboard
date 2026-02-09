@@ -219,12 +219,14 @@ class AnalyticsEngine {
     const ioTotal = metrics.tokensInput + metrics.tokensOutput;
     const cacheTotal = metrics.tokensCacheRead + metrics.tokensCacheWrite;
     
-    // Input/Output section (scaled to I/O total) - FIXED: Bars now scale by actual values
+    // Input/Output section (scaled to I/O total)
     html += '<div style="margin-bottom: 20px;"><strong>Input/Output Usage</strong> <small style="color: #999;">(Total: ' + fmt(ioTotal) + ')</small></div>';
     
-    // Calculate percentages explicitly (Output should be larger bar if value is larger)
+    // Calculate percentages (Output should be larger bar if value is larger)
     const inputPercent = ioTotal > 0 ? Math.round((metrics.tokensInput / ioTotal) * 100) : 0;
     const outputPercent = ioTotal > 0 ? Math.round((metrics.tokensOutput / ioTotal) * 100) : 0;
+    
+    console.log('[Analytics] Token I/O: Input=' + metrics.tokensInput + ' (' + inputPercent + '%), Output=' + metrics.tokensOutput + ' (' + outputPercent + '%)');
     
     // Render Input bar (should be SMALLER if input < output)
     html += '<div class="token-row">';
