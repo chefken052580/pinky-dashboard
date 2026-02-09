@@ -174,7 +174,16 @@ function switchView(viewId) {
         }
         
         // Initialize bot modules when switching to their views
-        // businessbot-ui.js handles business-view via MutationObserver
+        // Init -ui.js scripts when their views activate
+        if (viewId === 'business-view' && window.BusinessBotUI) {
+            new BusinessBotUI().init();
+        }
+        if (viewId === 'about-view' && window.AboutPinkyBotUI) {
+            new AboutPinkyBotUI().init();
+        }
+        if (viewId === 'export-view' && window.DataExportUI) {
+            new DataExportUI().init();
+        }
         if (viewId === 'code-view' && window.codeBotPro) {
             window.codeBotPro.renderUI();
         }
