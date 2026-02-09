@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Phantom Wallet Connect</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .wallet-section {
+      border: 2px solid #9333ea;
+      border-radius: 12px;
+      padding: 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    button {
+      background: white;
+      color: #9333ea;
+      border: none;
+      padding: 15px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px 0;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.2);
+    }
+    .success { background: rgba(34,197,94,0.3); }
+    .error { background: rgba(239,68,68,0.3); }
+  </style>
+</head>
+<body>
+  <div class="wallet-section">
+    <h1>🔐 Connect Phantom Wallet</h1>
+    <p>Connect your Solana wallet to verify PINKY token holdings and unlock 20% lifetime discount.</p>
+    
+    <button id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
+    
+    <div id="status" class="status" style="display:none;"></div>
+  </div>
+
+  <script>
+    async function connectWallet() {
+      const statusEl = document.getElementById('status');
+      const connectBtn = document.getElementById('connectBtn');
+      
+      // Check if Phantom is installed
+      if (!window.solana || !window.solana.isPhantom) {
+        statusEl.className = 'status error';
+        statusEl.innerHTML = '❌ Phantom wallet not detected. <a href="https://phantom.app/" target="_blank" style="color:white;">Install Phantom</a>';
+        statusEl.style.display = 'block';
+        return;
+      }
+      
+      try {
+        connectBtn.disabled = true;
+        connectBtn.textContent = 'Connecting...';
+        
+        // Connect to Phantom
+        const resp = await window.solana.connect();
+        const walletAddress = resp.publicKey.toString();
+        
+        statusEl.innerHTML = `✅ Connected: ${walletAddress.slice(0,8)}...${walletAddress.slice(-8)}<br>Checking PINKY balance...`;
+        statusEl.className = 'status';
+        statusEl.style.display = 'block';
+        
+        // Verify token balance
+        const response = await fetch('/api/wallet/verify-balance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ walletAddress })
+        });
+        
+        const data = await response.json();
+        
+        if (data.eligible) {
+          localStorage.setItem('pinky_wallet_address', walletAddress);
+          localStorage.setItem('pinky_token_discount', 'true');
+          localStorage.setItem('pinky_token_balance', data.balance);
+          
+          statusEl.className = 'status success';
+          statusEl.innerHTML = `
+            🎉 <strong>Discount Activated!</strong><br>
+            Balance: ${data.balance.toLocaleString()} PINKY<br>
+            Discount: 20% on all plans<br>
+            <small>Your discount will be applied automatically at checkout.</small>
+          `;
+        } else {
+          statusEl.className = 'status error';
+          statusEl.innerHTML = `
+            ❌ Insufficient Balance<br>
+            Current: ${data.balance.toLocaleString()} PINKY<br>
+            Required: ${data.minRequired.toLocaleString()} PINKY<br>
+            <small>Buy PINKY on <a href="https://jup.ag/" target="_blank" style="color:white;">Jupiter</a> to qualify.</small>
+          `;
+        }
+        
+        connectBtn.textContent = 'Reconnect Wallet';
+        connectBtn.disabled = false;
+        
+      } catch (err) {
+        console.error('Wallet connection error:', err);
+        statusEl.className = 'status error';
+        statusEl.innerHTML = '❌ Connection failed. Please try again.';
+        statusEl.style.display = 'block';
+        connectBtn.textContent = 'Connect Wallet';
+        connectBtn.disabled = false;
+      }
+    }
+    
+    // Check if wallet already connected on load
+    window.addEventListener('load', async () => {
+      if (localStorage.getItem('pinky_token_discount') === 'true') {
+        const balance = localStorage.getItem('pinky_token_balance');
+        document.getElementById('status').className = 'status success';
+        document.getElementById('status').innerHTML = `✅ Already connected! Balance: ${parseInt(balance).toLocaleString()} PINKY<br>20% discount active.`;
+        document.getElementById('status').style.display = 'block';
+        document.getElementById('connectBtn').textContent = 'Reconnect Wallet';
+      }
+    });
+  </script>
+</body>
+</html>
