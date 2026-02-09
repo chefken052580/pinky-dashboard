@@ -626,17 +626,17 @@ class TasksBotEnhanced {
           const isSelected = this.selectedTasks.has(task.id);
           html += '<input type="checkbox" onclick="event.stopPropagation();window.tasksBotEnhanced.toggleTaskSelection(\'' + task.id + '\')" ' + (isSelected ? 'checked' : '') + ' style="margin-right:8px;cursor:pointer;width:18px;height:18px;">';
         }
+        var taskAge = this.calculateTaskAge(task.updated || task.created || task.assigned);
+        var ageColor = taskAge.includes('w') ? '#ff6b6b' : taskAge.includes('d') && parseInt(taskAge) > 3 ? '#ffa500' : '#64748b';
+        html += '<span style="color:' + ageColor + ';font-size:0.75em;white-space:nowrap;padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:3px;flex-shrink:0;" title="Task age">' + taskAge + '</span>';
         html += '<span class="priority-badge" onclick="event.stopPropagation();window.tasksBotEnhanced.cyclePriority(\'' + this.escapeAttr(task.name).replace(/'/g, "\\\\'") + '\',\'' + (task.priority || 'P3') + '\');" style="cursor:pointer;" title="Click to change priority">' + (task.priority || 'P3') + '</span>';
         html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.startTaskNow(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + task.id + '\');" title="Start this task now" style="background:#00d4ff;color:#0f0e1a;border:none;border-radius:4px;padding:3px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">▶ Start</button>';
         html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.deleteTask(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + task.id + '\');" title="Delete task" style="background:#ff4444;color:#fff;border:none;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:0.8em;">✕</button>';
         html += '<span class="task-name" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;">' + this.escapeAttr(task.name) + '</span>';
-        var taskAge = this.calculateTaskAge(task.updated || task.created || task.assigned);
-        var ageColor = taskAge.includes('w') ? '#ff6b6b' : taskAge.includes('d') && parseInt(taskAge) > 3 ? '#ffa500' : '#64748b';
-        html += '<span style="color:' + ageColor + ';font-size:0.75em;white-space:nowrap;padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:3px;flex-shrink:0;" title="Task age">' + taskAge + '</span>';
         html += '</div>';
         
         if (task.notes) {
-          html += '<div class="task-desc">' + this.escapeAttr(task.notes) + '</div>';
+          html += '<div class="task-desc" title="' + this.escapeAttr(task.notes) + '" style="font-size:0.75em;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;">' + (this.escapeAttr(task.notes).length > 80 ? this.escapeAttr(task.notes).substring(0, 80) + '...' : this.escapeAttr(task.notes)) + '</div>';
         }
         
         // Age now inline in task-header
@@ -664,7 +664,7 @@ class TasksBotEnhanced {
         html += '</div>';
         
         if (task.notes) {
-          html += '<div class="task-desc">' + this.escapeAttr(task.notes) + '</div>';
+          html += '<div class="task-desc" title="' + this.escapeAttr(task.notes) + '" style="font-size:0.75em;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;">' + (this.escapeAttr(task.notes).length > 80 ? this.escapeAttr(task.notes).substring(0, 80) + '...' : this.escapeAttr(task.notes)) + '</div>';
         }
         
         html += '<div class="task-meta">';
@@ -747,7 +747,7 @@ class TasksBotEnhanced {
         html += '</div>';
         
         if (task.notes) {
-          html += '<div class="task-desc">' + this.escapeAttr(task.notes) + '</div>';
+          html += '<div class="task-desc" title="' + this.escapeAttr(task.notes) + '" style="font-size:0.75em;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;">' + (this.escapeAttr(task.notes).length > 80 ? this.escapeAttr(task.notes).substring(0, 80) + '...' : this.escapeAttr(task.notes)) + '</div>';
         }
         
         html += '<div class="task-meta">';
@@ -796,7 +796,7 @@ class TasksBotEnhanced {
         html += '<span class="task-name">' + this.escapeAttr(task.name) + '</span>';
         html += '</div>';
         if (task.notes) {
-          html += '<div class="task-desc" style="color:#fca5a5;">' + this.escapeAttr(task.notes) + '</div>';
+          html += '<div class="task-desc" style="color:#fca5a5;">' + (this.escapeAttr(task.notes).length > 80 ? this.escapeAttr(task.notes).substring(0, 80) + '...' : this.escapeAttr(task.notes)) + '</div>';
         }
         html += '<div style="margin:4px 0;font-size:0.8em;color:#ef4444;">💀 Failed after ' + attemptCount + ' attempts (10 debugs + 3 workarounds)</div>';
         html += '<div class="task-meta">';
