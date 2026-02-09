@@ -425,16 +425,31 @@
                     </div>
                 </div>
 
-                <!-- Interactive Bot Interface -->
-                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
-                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
-                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
-                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
-                        This bot is currently under development. Interactive features will be available in a future update.
-                    </p>
-                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
-                        🐭 Pinky is working on it! Check back soon for world domination features.
-                    </p>
+                <!-- DocsBot Real UI -->
+                <div class="docs-bot-container" style="margin-top:25px;">
+                    <!-- MEMORY.md Preview -->
+                    <div style="background:rgba(102,126,234,0.1);border:1px solid #667eea;border-radius:12px;padding:20px;margin-bottom:20px;">
+                        <h3 style="color:#667eea;margin-bottom:15px;">📝 MEMORY.md Preview</h3>
+                        <div id="memory-preview" style="background:#1a1a2e;border-radius:8px;padding:15px;max-height:300px;overflow-y:auto;color:#fff;font-family:monospace;font-size:13px;line-height:1.6;white-space:pre-wrap;">
+                            Loading...
+                        </div>
+                        <div id="memory-stats" style="margin-top:10px;color:#aaa;font-size:13px;">
+                            📊 Loading stats...
+                        </div>
+                    </div>
+
+                    <!-- All .md Documents List -->
+                    <div style="background:rgba(0,212,255,0.1);border:1px solid #00d4ff;border-radius:12px;padding:20px;">
+                        <h3 style="color:#00d4ff;margin-bottom:15px;">📚 All Documentation Files</h3>
+                        <div id="docs-filter" style="margin-bottom:15px;">
+                            <input type="text" id="docs-search" placeholder="🔍 Search docs..." style="width:100%;padding:10px;border:1px solid #00d4ff;border-radius:6px;background:#1a1a2e;color:#fff;">
+                        </div>
+                        <div id="docs-list" style="max-height:500px;overflow-y:auto;">
+                            <div style="text-align:center;color:#aaa;padding:40px;">
+                                Loading documentation files...
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="recent-activity" style="margin-top:25px;">
@@ -1383,5 +1398,82 @@
     <script src="unified-wallet-manager.js"></script>
     <script src="cryptobot-controller.js"></script>
     <script src="cryptobot-view.js"></script>
+    
+    <!-- DocsBot Data Loader -->
+    <script>
+    (async function loadDocsBotData() {
+      try {
+        // Load MEMORY.md
+        const memoryRes = await fetch('/api/docs/memory');
+        const memoryData = await memoryRes.json();
+        
+        if (memoryData.success) {
+          const preview = document.getElementById('memory-preview');
+          const stats = document.getElementById('memory-stats');
+          
+          if (preview) {
+            // Show first 1500 chars
+            const previewText = memoryData.content.substring(0, 1500);
+            preview.textContent = previewText + (memoryData.content.length > 1500 ? '\n\n... (truncated, full content available)' : '');
+          }
+          
+          if (stats) {
+            const lastMod = new Date(memoryData.lastModified);
+            stats.innerHTML = `📊 ${memoryData.wordCount.toLocaleString()} words • ${(memoryData.size/1024).toFixed(1)} KB • Last updated: ${lastMod.toLocaleDateString()} ${lastMod.toLocaleTimeString()}`;
+          }
+        }
+        
+        // Load all .md docs
+        const docsRes = await fetch('/api/docs/list');
+        const docsData = await docsRes.json();
+        
+        if (docsData.success) {
+          const docsList = document.getElementById('docs-list');
+          
+          if (docsList && docsData.docs) {
+            let html = '<div style="color:#fff;">';
+            html += `<div style="margin-bottom:15px;color:#aaa;font-size:14px;">📚 ${docsData.totalDocs} documents • ${docsData.totalWords.toLocaleString()} total words</div>`;
+            
+            docsData.docs.forEach(doc => {
+              const lastMod = new Date(doc.lastModified);
+              const relTime = Math.round((Date.now() - lastMod) / (1000*60*60*24));
+              const timeStr = relTime === 0 ? 'today' : relTime === 1 ? 'yesterday' : `${relTime}d ago`;
+              
+              html += '<div class="doc-item" style="background:#1a1a2e;border:1px solid rgba(0,212,255,0.3);border-radius:8px;padding:12px;margin-bottom:10px;transition:all 0.3s;">';
+              html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+              html += '<div style="flex:1;">';
+              html += `<div style="color:#00d4ff;font-weight:bold;margin-bottom:4px;">📄 ${doc.name}</div>`;
+              html += `<div style="color:#aaa;font-size:12px;">${doc.path}</div>`;
+              html += '</div>';
+              html += '<div style="text-align:right;">';
+              html += `<div style="color:#fff;font-size:14px;font-weight:bold;">${doc.wordCount.toLocaleString()} words</div>`;
+              html += `<div style="color:#aaa;font-size:11px;">${timeStr}</div>`;
+              html += '</div>';
+              html += '</div>';
+              html += '</div>';
+            });
+            
+            html += '</div>';
+            docsList.innerHTML = html;
+            
+            // Add search filter
+            const searchInput = document.getElementById('docs-search');
+            if (searchInput) {
+              searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const items = docsList.querySelectorAll('.doc-item');
+                items.forEach(item => {
+                  const text = item.textContent.toLowerCase();
+                  item.style.display = text.includes(query) ? 'block' : 'none';
+                });
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.error('[DocsBot] Error loading data:', error);
+      }
+    })();
+    </script>
 </body>
 </html>
