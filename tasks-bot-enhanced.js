@@ -756,12 +756,12 @@ class TasksBotEnhanced {
           if (timeMatch) completedTime = timeMatch[1];
         }
         if (!completedTime) completedTime = this.formatTime(task.updated);
-        html += '<span style="color:#64748b;font-size:0.75em;flex-shrink:0;white-space:nowrap;text-align:right;">';
-        html += 'Completed: ' + completedTime;
+        html += '<div style="flex-shrink:0;text-align:right;line-height:1.4;">';
+        html += '<div style="color:#4ade80;font-size:0.85em;font-weight:600;">Completed: ' + completedTime + '</div>';
         if (commitHash) {
-          html += '<br><span style="color:#555;font-family:monospace;font-size:0.9em;">commit: ' + commitHash + '</span>';
+          html += '<div style="color:#00d4ff;font-family:monospace;font-size:0.75em;">commit: ' + commitHash + '</div>';
         }
-        html += '</span>';
+        html += '</div>';
         // Timer elapsed
         if (typeof taskTimer !== 'undefined' && taskTimer) {
           var elapsed = taskTimer.getElapsed(task.id);
