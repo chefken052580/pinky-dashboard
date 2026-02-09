@@ -181,18 +181,38 @@ class AnalyticsEngine {
     // Token type breakdown
     html += '<hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-color);">';
     html += '<h4>📊 Token Types</h4>';
-    const typeBreakdown = [
+    
+    // Separate Input/Output from Cache for proper scaling
+    const ioTotal = metrics.tokensInput + metrics.tokensOutput;
+    const cacheTotal = metrics.tokensCacheRead + metrics.tokensCacheWrite;
+    
+    // Input/Output section (scaled to I/O total)
+    html += '<div style="margin-bottom: 20px;"><strong>Input/Output Usage</strong></div>';
+    const ioBreakdown = [
       { name: 'Input Tokens', value: metrics.tokensInput, icon: '📥' },
-      { name: 'Output Tokens', value: metrics.tokensOutput, icon: '📤' },
+      { name: 'Output Tokens', value: metrics.tokensOutput, icon: '📤' }
+    ];
+    ioBreakdown.forEach(type => {
+      const percent = ioTotal > 0 ? (type.value / ioTotal) * 100 : 0;
+      html += '<div class="token-row">';
+      html += '<span class="token-name">' + type.icon + ' ' + type.name + '</span>';
+      html += '<div class="token-bar-container"><div class="token-bar" style="width:' + Math.min(percent, 100) + '%"></div></div>';
+      html += '<span class="token-count">' + fmt(type.value) + ' (' + Math.round(percent) + '%)</span>';
+      html += '</div>';
+    });
+    
+    // Cache section (scaled to cache total)
+    html += '<div style="margin: 20px 0 10px;"><strong>Cache Usage</strong></div>';
+    const cacheBreakdown = [
       { name: 'Cache Read', value: metrics.tokensCacheRead, icon: '📖' },
       { name: 'Cache Write', value: metrics.tokensCacheWrite, icon: '💾' }
     ];
-    typeBreakdown.forEach(type => {
-      const percent = (type.value / metrics.tokensUsed) * 100 || 0;
+    cacheBreakdown.forEach(type => {
+      const percent = cacheTotal > 0 ? (type.value / cacheTotal) * 100 : 0;
       html += '<div class="token-row">';
       html += '<span class="token-name">' + type.icon + ' ' + type.name + '</span>';
-      html += '<div class="token-bar-container"><div class="token-bar" style="width:' + percent + '%"></div></div>';
-      html += '<span class="token-count">' + fmt(type.value) + '</span>';
+      html += '<div class="token-bar-container"><div class="token-bar" style="width:' + Math.min(percent, 100) + '%"></div></div>';
+      html += '<span class="token-count">' + fmt(type.value) + ' (' + Math.round(percent) + '%)</span>';
       html += '</div>';
     });
     
