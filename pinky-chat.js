@@ -1,6 +1,7 @@
 /**
- * Pinky Chat - Dashboard Chat Interface
- * Full chat with session management, search, and persistent history
+ * Pinky Chat v2 — "Talk to the AI that built himself"
+ * Full chat with session management, search, persistent history,
+ * code block copy, hover actions, connection status, scroll-to-bottom FAB
  */
 
 (function() {
@@ -8,13 +9,18 @@
 
     var currentSessionId = null;
     var isWaiting = false;
+    var chatInitialized = false;
+    var scrollFab = null;
 
     // ─── Init ───
     function init() {
-        console.log('[PinkyChat] Initializing...');
+        if (chatInitialized) return;
+        chatInitialized = true;
+        console.log('[PinkyChat v2] Initializing...');
         loadSessions();
         bindEvents();
-        console.log('[PinkyChat] Ready!');
+        createScrollFab();
+        console.log('[PinkyChat v2] Ready!');
     }
 
     // ─── Event Bindings ───
@@ -36,7 +42,7 @@
             // Auto-resize
             textarea.addEventListener('input', function() {
                 this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+                this.style.height = Math.min(this.scrollHeight, 160) + 'px';
             });
         }
 
@@ -56,45 +62,47 @@
                 }, 300);
             });
         }
+
+        // Scroll listener for FAB visibility
+        var msgContainer = document.getElementById('chat-messages');
+        if (msgContainer) {
+            msgContainer.addEventListener('scroll', function() {
+                var distFromBottom = this.scrollHeight - this.scrollTop - this.clientHeight;
+                if (scrollFab) {
+                    if (distFromBottom > 200) {
+                        scrollFab.classList.add('visible');
+                    } else {
+                        scrollFab.classList.remove('visible');
+                    }
+                }
+            });
+        }
     }
 
-    // ─── Helper: Safe JSON Response Handler ───
-    function safeJsonResponse(response, context) {
-        context = context || 'API';
+    // ─── Scroll to Bottom FAB ───
+    function createScrollFab() {
+        var chatMain = document.querySelector('.chat-main');
+        if (!chatMain || document.querySelector('.chat-scroll-fab')) return;
         
-        // Check if response is OK
-        if (!response.ok) {
-            var contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('text/html')) {
-                return Promise.reject(new Error(context + ' returned HTML error (HTTP ' + response.status + '). Server may be down.'));
-            }
-            return Promise.reject(new Error(context + ' error: HTTP ' + response.status + ' ' + response.statusText));
-        }
-        
-        // Check content-type before parsing
-        var contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-            return Promise.reject(new Error(context + ' returned non-JSON response (Content-Type: ' + contentType + '). Expected JSON.'));
-        }
-        
-        return response.json();
+        scrollFab = document.createElement('button');
+        scrollFab.className = 'chat-scroll-fab';
+        scrollFab.innerHTML = '↓';
+        scrollFab.title = 'Scroll to bottom';
+        scrollFab.addEventListener('click', function() {
+            scrollToBottom(true);
+        });
+        chatMain.appendChild(scrollFab);
     }
 
     // ─── Sessions ───
     function loadSessions() {
         fetch('/api/chat/sessions')
-            .then(function(r) { return safeJsonResponse(r, 'Chat/Sessions'); })
+            .then(function(r) { return r.json(); })
             .then(function(sessions) {
                 renderSessionList(sessions);
             })
             .catch(function(err) {
                 console.error('[PinkyChat] Failed to load sessions:', err);
-                var list = document.getElementById('chat-session-list');
-                if (list) {
-                    list.innerHTML = '<div style="padding:20px;text-align:center;color:#e74c3c;font-size:0.8em;">' +
-                        '⚠️ Failed to load sessions<br>' +
-                        '<small>Could not load chats right now</small></div>';
-                }
             });
     }
 
@@ -103,8 +111,8 @@
         if (!list) return;
 
         if (!sessions || sessions.length === 0) {
-            list.innerHTML = '<div style="padding:20px;text-align:center;color:#3a4560;font-size:0.8em;">' +
-                'No conversations yet.<br>Start chatting with Pinky!</div>';
+            list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--chat-text-muted,#5e5580);font-size:0.78em;font-family:var(--chat-font,monospace);">' +
+                'No conversations yet.<br><span style="opacity:0.6">Start chatting with Pinky!</span></div>';
             return;
         }
 
@@ -137,17 +145,13 @@
         });
 
         fetch('/api/chat/session/' + sessionId)
-            .then(function(r) { return safeJsonResponse(r, 'Chat/Session'); })
+            .then(function(r) { return r.json(); })
             .then(function(session) {
                 renderMessages(session.messages);
                 updateHeader(session);
             })
             .catch(function(err) {
                 console.error('[PinkyChat] Failed to load session:', err);
-                var msgs = document.getElementById('chat-messages');
-                if (msgs) {
-                    msgs.innerHTML = '<div class="chat-empty-state" style="color:#e74c3c;">🐭 Couldn\'t load this conversation right now. Try refreshing!</div>';
-                }
             });
     }
 
@@ -159,12 +163,10 @@
         }
         updateHeader(null);
         
-        // Remove active from all sessions
         document.querySelectorAll('.chat-session-item').forEach(function(el) {
             el.classList.remove('active');
         });
 
-        // Focus input
         var input = document.getElementById('chat-input');
         if (input) input.focus();
     }
@@ -173,7 +175,6 @@
         if (!confirm('Delete this conversation?')) return;
         
         fetch('/api/chat/session/' + sessionId, { method: 'DELETE' })
-            .then(function(r) { return safeJsonResponse(r, 'Chat/Delete'); })
             .then(function() {
                 if (currentSessionId === sessionId) {
                     newSession();
@@ -182,24 +183,18 @@
             })
             .catch(function(err) {
                 console.error('[PinkyChat] Delete failed:', err);
-                alert('Failed to delete conversation: ' + (err.message || 'Unknown error'));
             });
     }
 
     // ─── Search ───
     function searchSessions(query) {
         fetch('/api/chat/search?q=' + encodeURIComponent(query))
-            .then(function(r) { return safeJsonResponse(r, 'Chat/Search'); })
+            .then(function(r) { return r.json(); })
             .then(function(results) {
                 renderSearchResults(results);
             })
             .catch(function(err) {
                 console.error('[PinkyChat] Search failed:', err);
-                var list = document.getElementById('chat-session-list');
-                if (list) {
-                    list.innerHTML = '<div style="padding:20px;text-align:center;color:#e74c3c;font-size:0.8em;">' +
-                        '⚠️ Search failed: ' + (err.message || 'Unknown error') + '</div>';
-                }
             });
     }
 
@@ -208,7 +203,7 @@
         if (!list) return;
 
         if (!results || results.length === 0) {
-            list.innerHTML = '<div style="padding:20px;text-align:center;color:#3a4560;font-size:0.8em;">No matches found</div>';
+            list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--chat-text-muted);font-size:0.78em;">No matches found</div>';
             return;
         }
 
@@ -255,70 +250,36 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                sessionId: currentSessionId,
-                message: message
+                message: message,
+                sessionId: currentSessionId
             })
         })
-        .then(function(r) {
-            // Check if response is OK
-            if (!r.ok) {
-                // If response is HTML (error page), provide better error message
-                var contentType = r.headers.get('content-type');
-                if (contentType && contentType.includes('text/html')) {
-                    return Promise.reject(new Error('Oops! Pinky\'s brain hiccupped 🧠 Give me a sec and try again!'));
-                }
-                // For other errors, include status code
-                return Promise.reject(new Error('Hmm, something went wrong on my end 🐭 Try again in a moment!'));
-            }
-            
-            // Check if response is JSON before parsing
-            var contentType = r.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                return Promise.reject(new Error('I got a weird response back... 🤔 Try again!'));
-            }
-            
-            return r.json();
-        })
+        .then(function(r) { return r.json(); })
         .then(function(data) {
             hideTyping();
             setWaiting(false);
 
-            if (data.error) {
-                appendMessage('assistant', '🐭 ' + (data.error || 'Something went wrong'));
-                return;
-            }
-
-            // Update session ID if new
-            if (!currentSessionId && data.sessionId) {
+            if (data.sessionId && !currentSessionId) {
                 currentSessionId = data.sessionId;
             }
 
-            // Add assistant response
-            appendMessage('assistant', data.response);
+            if (data.response) {
+                appendMessage('assistant', data.response);
+            } else if (data.error) {
+                appendMessage('assistant', '⚠️ Error: ' + data.error);
+            }
 
-            // Update header
-            updateHeader({
-                title: message.length > 50 ? message.substring(0, 50) + '...' : message,
-                messages: [],
-                tokenCount: data.tokens ? (data.tokens.input_tokens + data.tokens.output_tokens) : 0
-            });
-
-            // Refresh session list
             loadSessions();
         })
         .catch(function(err) {
             hideTyping();
             setWaiting(false);
-            // Provide clear error message (avoid exposing raw JSON parse errors)
-            var errorMsg = err.message || 'Connection error';
-            if (errorMsg.includes('Unexpected token')) {
-                errorMsg = 'My wires got crossed for a sec! Try sending that again.';
-            }
-            appendMessage('assistant', '🐭 ' + errorMsg + ' (If this keeps happening, check that the backend is running)');
+            appendMessage('assistant', '⚠️ Connection error — is the backend running?');
+            console.error('[PinkyChat] Send failed:', err);
         });
     }
 
-    // ─── Rendering ───
+    // ─── Render Messages ───
     function renderMessages(messages) {
         var container = document.getElementById('chat-messages');
         if (!container) return;
@@ -329,7 +290,20 @@
         }
 
         container.innerHTML = '';
+        var lastDate = '';
+        
         messages.forEach(function(msg) {
+            // Date divider
+            var msgDate = new Date(msg.timestamp || Date.now());
+            var dateStr = msgDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            if (dateStr !== lastDate) {
+                lastDate = dateStr;
+                var divider = document.createElement('div');
+                divider.className = 'chat-date-divider';
+                divider.innerHTML = '<span>' + dateStr + '</span>';
+                container.appendChild(divider);
+            }
+            
             appendMessage(msg.role, msg.content, msg.timestamp, false);
         });
         scrollToBottom();
@@ -340,21 +314,49 @@
         if (!container) return;
 
         var time = timestamp ? new Date(timestamp) : new Date();
-        var timeStr = formatTime(time);
+        var timeStr = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/New_York' }) + ' EST';
         var avatar = role === 'user' ? '👤' : '🐭';
         var name = role === 'user' ? 'LORD_CRACKER' : 'PINKY';
         var rendered = renderMarkdown(content);
+        var msgId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
 
         var div = document.createElement('div');
         div.className = 'chat-msg ' + role;
+        div.id = msgId;
         div.innerHTML = '<div class="chat-msg-avatar">' + avatar + '</div>' +
             '<div class="chat-msg-body">' +
             '<div class="chat-msg-name">' + name + '</div>' +
-            '<div class="chat-msg-content">' + rendered + '</div>' +
+            '<div class="chat-msg-content">' + rendered +
+            '<div class="chat-msg-actions">' +
+            '<button class="chat-msg-action-btn" onclick="PinkyChat.copyMessage(\'' + msgId + '\')" title="Copy">📋</button>' +
+            '</div>' +
+            '</div>' +
             '<div class="chat-msg-time">' + timeStr + '</div>' +
             '</div>';
 
         container.appendChild(div);
+
+        // Add copy buttons to code blocks
+        div.querySelectorAll('pre').forEach(function(pre) {
+            var btn = document.createElement('button');
+            btn.className = 'code-copy-btn';
+            btn.textContent = 'Copy';
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var code = pre.querySelector('code');
+                var text = code ? code.textContent : pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+            pre.style.position = 'relative';
+            pre.appendChild(btn);
+        });
 
         if (scroll !== false) {
             scrollToBottom();
@@ -368,9 +370,10 @@
         var div = document.createElement('div');
         div.id = 'chat-typing-indicator';
         div.className = 'chat-typing';
-        div.innerHTML = '<div class="chat-msg-avatar" style="background:linear-gradient(135deg,#ff44aa22,#ff668822);border:1px solid #ff44aa44;">🐭</div>' +
-            '<div class="chat-msg-content" style="background:linear-gradient(135deg,#1a1028,#140e22);border:1px solid rgba(255,68,170,0.12);border-radius:12px;border-top-left-radius:4px;">' +
+        div.innerHTML = '<div class="chat-msg-avatar" style="background:linear-gradient(135deg,rgba(244,114,182,0.15),rgba(124,58,237,0.2));border:1px solid rgba(244,114,182,0.3);width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.15em;">🐭</div>' +
+            '<div class="chat-msg-content">' +
             '<div class="typing-dots"><span></span><span></span><span></span></div>' +
+            '<div class="typing-label">Pinky is thinking...</div>' +
             '</div>';
         container.appendChild(div);
         scrollToBottom();
@@ -386,32 +389,29 @@
         var stats = document.getElementById('chat-header-stats');
         
         if (title) {
-            title.textContent = session ? (session.title || 'Chat') : 'New Conversation';
+            title.textContent = session ? (session.title || 'Chat with Pinky') : 'New Conversation';
         }
         if (stats && session) {
             var msgCount = session.messages ? session.messages.length : session.messageCount || 0;
             var tokens = session.tokenCount || 0;
-            stats.textContent = msgCount + ' msgs · ' + tokens + ' tokens';
+            stats.innerHTML = '<span>' + msgCount + ' msgs</span>' +
+                (tokens ? '<span class="chat-cost-badge">~' + (tokens * 0.000003).toFixed(4) + ' USD</span>' : '') +
+                '<span class="chat-model-badge">Grok 4</span>';
         } else if (stats) {
-            stats.textContent = '';
+            stats.innerHTML = '<span class="chat-model-badge">Grok 4</span>';
         }
     }
 
     function getEmptyState() {
         return '<div class="chat-empty-state">' +
-            '<div class="pinky-ascii">' +
-            '    ╭──────────────────╮\n' +
-            '    │   🐭  PINKY AI   │\n' +
-            '    │    Dashboard     │\n' +
-            '    │     Chat v1      │\n' +
-            '    ╰──────────────────╯\n' +
-            '</div>' +
+            '<div class="pinky-avatar-large">🐭</div>' +
             '<h3>Chat with Pinky</h3>' +
             '<p>Ask about tasks, check status, give commands, or just say hi. Your conversations are saved and searchable.</p>' +
-            '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px;">' +
-            '<button onclick="PinkyChat.quickSend(\'What are you working on right now?\')" style="padding:8px 14px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;color:#00d4ff;cursor:pointer;font-size:0.8em;font-family:monospace;">📋 Current tasks</button>' +
-            '<button onclick="PinkyChat.quickSend(\'Show me your heartbeat status and what you accomplished today\')" style="padding:8px 14px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;color:#00d4ff;cursor:pointer;font-size:0.8em;font-family:monospace;">💓 Status report</button>' +
-            '<button onclick="PinkyChat.quickSend(\'What needs to be done next? Check the task queue.\')" style="padding:8px 14px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:8px;color:#00d4ff;cursor:pointer;font-size:0.8em;font-family:monospace;">🎯 Next task</button>' +
+            '<div class="chat-quick-actions">' +
+            '<button class="chat-quick-btn" onclick="PinkyChat.quickSend(\'What are you working on right now?\')">📋 Current tasks</button>' +
+            '<button class="chat-quick-btn" onclick="PinkyChat.quickSend(\'Show me your heartbeat status and what you accomplished today\')">💓 Status report</button>' +
+            '<button class="chat-quick-btn" onclick="PinkyChat.quickSend(\'What needs to be done next? Check the task queue.\')">🎯 Next task</button>' +
+            '<button class="chat-quick-btn" onclick="PinkyChat.quickSend(\'How much have you spent in API costs today?\')">💰 Cost check</button>' +
             '</div>' +
             '</div>';
     }
@@ -421,9 +421,10 @@
         if (!text) return '';
         var html = escapeHtml(text);
         
-        // Code blocks
+        // Code blocks with language labels
         html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(m, lang, code) {
-            return '<pre><code class="lang-' + lang + '">' + code.trim() + '</code></pre>';
+            var langLabel = lang ? '<div style="position:absolute;top:4px;left:12px;font-size:0.65em;color:rgba(167,139,250,0.5);text-transform:uppercase;letter-spacing:1px;">' + lang + '</div>' : '';
+            return '<pre style="position:relative;">' + langLabel + '<code class="lang-' + lang + '">' + code.trim() + '</code></pre>';
         });
         
         // Inline code
@@ -435,8 +436,18 @@
         // Italic
         html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
         
+        // Strikethrough
+        html = html.replace(/~~(.+?)~~/g, '<del style="color:var(--chat-text-muted);">$1</del>');
+        
         // Links
-        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color:#00d4ff;">$1</a>');
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+        
+        // Blockquotes
+        html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+        
+        // Unordered lists
+        html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+        html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
         
         // Line breaks
         html = html.replace(/\n/g, '<br>');
@@ -455,9 +466,6 @@
         var now = new Date();
         var diff = now - date;
         
-        // Convert to EST (UTC-5)
-        var estDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-        
         if (diff < 60000) return 'Just now';
         if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
         
@@ -465,13 +473,7 @@
         var msgDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         
         if (msgDay.getTime() === today.getTime()) {
-            // Show time with EST explicitly
-            var hours = estDate.getHours();
-            var minutes = estDate.getMinutes();
-            var ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12;
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            return hours + ':' + minutes + ' ' + ampm + ' EST';
+            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
         }
         
         var yesterday = new Date(today);
@@ -480,14 +482,18 @@
             return 'Yesterday';
         }
         
-        return estDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/New_York' });
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 
-    function scrollToBottom() {
+    function scrollToBottom(smooth) {
         var container = document.getElementById('chat-messages');
         if (container) {
             setTimeout(function() {
-                container.scrollTop = container.scrollHeight;
+                if (smooth) {
+                    container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+                } else {
+                    container.scrollTop = container.scrollHeight;
+                }
             }, 50);
         }
     }
@@ -499,9 +505,11 @@
         if (btn) {
             btn.disabled = waiting;
             btn.textContent = waiting ? 'THINKING...' : 'SEND';
+            btn.classList.toggle('thinking', waiting);
         }
         if (textarea) {
             textarea.disabled = waiting;
+            if (!waiting) textarea.focus();
         }
     }
 
@@ -513,13 +521,40 @@
         }
     }
 
+    function copyMessage(msgId) {
+        var msg = document.getElementById(msgId);
+        if (!msg) return;
+        var content = msg.querySelector('.chat-msg-content');
+        if (!content) return;
+        
+        // Get text content without action buttons
+        var clone = content.cloneNode(true);
+        var actions = clone.querySelector('.chat-msg-actions');
+        if (actions) actions.remove();
+        var copyBtns = clone.querySelectorAll('.code-copy-btn');
+        copyBtns.forEach(function(b) { b.remove(); });
+        
+        navigator.clipboard.writeText(clone.textContent.trim()).then(function() {
+            var btn = msg.querySelector('.chat-msg-action-btn');
+            if (btn) {
+                btn.classList.add('copied');
+                btn.innerHTML = '✓';
+                setTimeout(function() {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = '📋';
+                }, 2000);
+            }
+        });
+    }
+
     // ─── Public API ───
     window.PinkyChat = {
         init: init,
         openSession: openSession,
         deleteSession: deleteSession,
         newSession: newSession,
-        quickSend: quickSend
+        quickSend: quickSend,
+        copyMessage: copyMessage
     };
 
     // Auto-init when chat view becomes visible
@@ -527,7 +562,6 @@
         mutations.forEach(function(m) {
             if (m.target.id === 'chat-view' && m.target.classList.contains('active')) {
                 init();
-                observer.disconnect();
             }
         });
     });
