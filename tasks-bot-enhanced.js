@@ -950,7 +950,9 @@ class TasksBotEnhanced {
       if (!timestamp) return 'unknown';
       const date = new Date(timestamp);
       if (isNaN(date.getTime())) return timestamp;
-      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString().slice(0, 5);
+      // Full date + time with hours, minutes, seconds in 12hr format
+      var opts = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'America/New_York' };
+      return date.toLocaleString('en-US', opts) + ' EST';
     } catch (e) {
       return timestamp;
     }
