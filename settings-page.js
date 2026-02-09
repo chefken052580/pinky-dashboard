@@ -277,18 +277,20 @@ class SettingsPageUI {
                     </p>
                 </div>
                 
-                <div class="tier-actions">
-                    <button class="btn btn-primary" id="toggle-tier-btn" onclick="window.featureGating.showUpgradePrompt('All Premium Features')">
-                        Upgrade to Pro
-                    </button>
-                    <button class="btn btn-secondary" id="demo-tier-toggle" style="margin-left: 10px;">
-                        🔄 Demo Tier Toggle
-                    </button>
+                <div class="subscription-details" id="subscription-details-section">
+                    <!-- Populated by loadSubscriptionDetails() -->
                 </div>
                 
-                <div class="tier-info-box">
-                    <strong>💡 Demo Mode:</strong> Use "Demo Tier Toggle" to test Free vs Pro tier restrictions.
-                    In production, tier changes would go through payment processing.
+                <div class="tier-actions">
+                    <button class="btn btn-primary" id="upgrade-tier-btn" onclick="window.featureGating.showUpgradePrompt('All Premium Features')">
+                        Upgrade to Pro
+                    </button>
+                    <button class="btn btn-secondary hidden" id="manage-subscription-btn">
+                        ⚙️ Manage Subscription
+                    </button>
+                    <button class="btn btn-secondary hidden" id="cancel-subscription-btn">
+                        ❌ Cancel Subscription
+                    </button>
                 </div>
             </div>
             
@@ -611,6 +613,9 @@ class SettingsPageUI {
         // Load current license status
         this.loadLicenseStatus();
         
+        // Load subscription status (Stripe + License unified)
+        this.loadSubscriptionStatus();
+        
         // Update last saved time
         this.updateLastSavedTime();
         this.updateSettingsSize();
@@ -857,6 +862,112 @@ class SettingsPageUI {
         // Trigger feature gating update
         if (window.featureGating) {
             window.featureGating.updateTierFromLicense('free');
+        }
+    }
+    
+    /**
+     * Load subscription status from unified tier API
+     * Shows Stripe subscription OR license key info
+     */
+    async loadSubscriptionStatus() {
+        try {
+            const email = localStorage.getItem('pinky_user_email');
+            const licenseKey = localStorage.getItem('pinky_license_key');
+            const instanceId = localStorage.getItem('pinky_instance_id');
+            
+            const params = new URLSearchParams();
+            if (email) params.append('email', email);
+            if (licenseKey) params.append('licenseKey', licenseKey);
+            if (instanceId) params.append('instanceId', instanceId);
+            
+            const response = await fetch(`${API_BASE}/tier/status?${params}`);
+            const data = await response.json();
+            
+            // Update tier badge
+            const tierBadge = document.getElementById('current-tier-badge');
+            const tierDescription = document.getElementById('tier-description');
+            const toggleBtn = document.getElementById('toggle-tier-btn');
+            
+            if (data.tier === 'pro' || data.tier === 'enterprise') {
+                tierBadge.textContent = `${data.tier.toUpperCase()} Tier`;
+                tierBadge.className = 'tier-badge pro';
+                
+                // Show different info based on source
+                if (data.source === 'stripe') {
+                    tierDescription.innerHTML = `
+                        🎉 You're on the <strong>${data.tier.toUpperCase()}</strong> tier via Stripe subscription.<br>
+                        <span class="tier-meta">Next billing: ${data.expiresAt ? new Date(data.expiresAt).toLocaleDateString() : 'N/A'}</span>
+                    `;
+                    toggleBtn.textContent = 'Manage Subscription';
+                    toggleBtn.onclick = () => this.openStripeCustomerPortal();
+                } else if (data.source === 'license') {
+                    const daysRemaining = data.expiresAt ? Math.ceil((new Date(data.expiresAt) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                    tierDescription.innerHTML = `
+                        🎉 You're on the <strong>${data.tier.toUpperCase()}</strong> tier via license key.<br>
+                        <span class="tier-meta">Expires: ${data.expiresAt ? new Date(data.expiresAt).toLocaleDateString() : 'Never'} ${daysRemaining ? `(${daysRemaining} days remaining)` : ''}</span>
+                    `;
+                    toggleBtn.textContent = 'View License Details';
+                    toggleBtn.onclick = () => document.getElementById('license-key-section').scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                // Free tier
+                tierBadge.textContent = 'Free Tier';
+                tierBadge.className = 'tier-badge free';
+                tierDescription.innerHTML = `
+                    You're on the Free tier with Dashboard, Chat, and TasksBot.<br>
+                    <span class="tier-meta">Upgrade to Pro for all 9 bots + analytics + multi-company support.</span>
+                `;
+                toggleBtn.textContent = 'Upgrade to Pro';
+                toggleBtn.onclick = () => window.featureGating?.showUpgradePrompt('All Premium Features');
+            }
+            
+        } catch (error) {
+            console.error('[Settings] Failed to load subscription status:', error);
+        }
+    }
+    
+    /**
+     * Open Stripe customer portal for subscription management
+     */
+    async openStripeCustomerPortal() {
+        try {
+            const email = localStorage.getItem('pinky_user_email');
+            if (!email) {
+                alert('No email found. Please configure your account email first.');
+                return;
+            }
+            
+            // Get customer ID from Stripe
+            const customerResponse = await fetch(`${API_BASE}/stripe/customer/${email}`);
+            const customerData = await customerResponse.json();
+            
+            if (!customerData.customer || !customerData.customer.id) {
+                alert('No Stripe subscription found for this account.');
+                return;
+            }
+            
+            // Create portal session
+            const portalResponse = await fetch(`${API_BASE}/stripe/portal`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    customerId: customerData.customer.id,
+                    returnUrl: window.location.href
+                })
+            });
+            
+            const portalData = await portalResponse.json();
+            
+            if (portalData.url) {
+                // Open portal in new tab
+                window.open(portalData.url, '_blank');
+            } else {
+                alert('Failed to open customer portal. Please try again.');
+            }
+            
+        } catch (error) {
+            console.error('[Settings] Failed to open customer portal:', error);
+            alert('Error opening customer portal: ' + error.message);
         }
     }
     
