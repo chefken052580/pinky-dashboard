@@ -1314,10 +1314,23 @@
     window.addEventListener('load', () => {
         setTimeout(() => {
             console.log('[BotInit] Force rendering all bot modules...');
+            console.log('[BotInit] window.docsBotPro:', typeof window.docsBotPro);
+            console.log('[BotInit] docsbot-container:', document.getElementById('docsbot-container'));
+            console.log('[BotInit] businessbot-container:', document.getElementById('businessbot-container'));
+            console.log('[BotInit] codebot-container:', document.getElementById('codebot-container'));
+            console.log('[BotInit] researchbot-container:', document.getElementById('researchbot-container'));
+            console.log('[BotInit] filesystembot-container:', document.getElementById('filesystembot-container'));
             ['docsBotPro','researchBotPro','codeBotPro','businessBotPro','filesystemBotPro','tasksBotPro'].forEach(name => {
+                console.log('[BotInit] Checking:', name, '=', typeof window[name]);
                 if (window[name] && typeof window[name].renderUI === 'function') {
-                    window[name].renderUI();
-                    console.log('[BotInit] Rendered:', name);
+                    try {
+                        window[name].renderUI();
+                        console.log('[BotInit] SUCCESS rendered:', name);
+                    } catch(e) {
+                        console.error('[BotInit] FAILED:', name, e.message);
+                    }
+                } else {
+                    console.log('[BotInit] MISSING:', name);
                 }
             });
         }, 2000);
