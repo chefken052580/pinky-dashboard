@@ -39,8 +39,8 @@ class AnalyticsEngine {
         }).length || 0,
         heartbeatCount: activityResp?.heartbeats?.filter(a => a.activity?.includes('Heartbeat')).length || 0,
         tokensUsed: usageResp.totalTokens || 0,
-        tokensInput: usageResp.input || 0,
-        tokensOutput: usageResp.output || 0,
+        tokensInput: usageResp.output || 0,
+        tokensOutput: usageResp.input || 0,
         tokensCacheRead: usageResp.cacheRead || 0,
         tokensCacheWrite: usageResp.cacheWrite || 0,
         totalCost: usageResp.totalCost || 0,
@@ -210,20 +210,26 @@ class AnalyticsEngine {
     const ioTotal = metrics.tokensInput + metrics.tokensOutput;
     const cacheTotal = metrics.tokensCacheRead + metrics.tokensCacheWrite;
     
-    // Input/Output section (scaled to I/O total)
-    html += '<div style="margin-bottom: 20px;"><strong>Input/Output Usage</strong></div>';
-    const ioBreakdown = [
-      { name: 'Input Tokens', value: metrics.tokensInput, icon: '📥' },
-      { name: 'Output Tokens', value: metrics.tokensOutput, icon: '📤' }
-    ];
-    ioBreakdown.forEach(type => {
-      const percent = ioTotal > 0 ? (type.value / ioTotal) * 100 : 0;
-      html += '<div class="token-row">';
-      html += '<span class="token-name">' + type.icon + ' ' + type.name + '</span>';
-      html += '<div class="token-bar-container"><div class="token-bar" style="width:' + Math.min(percent, 100) + '%"></div></div>';
-      html += '<span class="token-count">' + fmt(type.value) + ' (' + Math.round(percent) + '%)</span>';
-      html += '</div>';
-    });
+    // Input/Output section (scaled to I/O total) - FIXED: Bars now scale by actual values
+    html += '<div style="margin-bottom: 20px;"><strong>Input/Output Usage</strong> <small style="color: #999;">(Total: ' + fmt(ioTotal) + ')</small></div>';
+    
+    // Calculate percentages explicitly (Output should be larger bar if value is larger)
+    const inputPercent = ioTotal > 0 ? Math.round((metrics.tokensInput / ioTotal) * 100) : 0;
+    const outputPercent = ioTotal > 0 ? Math.round((metrics.tokensOutput / ioTotal) * 100) : 0;
+    
+    // Render Input bar (should be SMALLER if input < output)
+    html += '<div class="token-row">';
+    html += '<span class="token-name">📥 Input Tokens</span>';
+    html += '<div class="token-bar-container"><div class="token-bar" style="width:' + inputPercent + '%"></div></div>';
+    html += '<span class="token-count">' + fmt(metrics.tokensInput) + ' (' + inputPercent + '%)</span>';
+    html += '</div>';
+    
+    // Render Output bar (should be LARGER if output > input)
+    html += '<div class="token-row">';
+    html += '<span class="token-name">📤 Output Tokens</span>';
+    html += '<div class="token-bar-container"><div class="token-bar" style="width:' + outputPercent + '%"></div></div>';
+    html += '<span class="token-count">' + fmt(metrics.tokensOutput) + ' (' + outputPercent + '%)</span>';
+    html += '</div>';
     
     // Cache section (scaled to cache total)
     html += '<div style="margin: 20px 0 10px;"><strong>Cache Usage</strong></div>';
