@@ -1,74 +1,95 @@
-<!-- CryptoBot Dashboard View (injected into crypto-view-container) -->
-<div class="crypto-sidebar">
-    <h2>💎 CryptoBot</h2>
-    <div class="crypto-menu-item active" onclick="showCryptoView('dashboard')">📊 Dashboard</div>
-    <div class="crypto-menu-item" onclick="showCryptoView('wallets')">🔐 Wallets</div>
-    <div class="crypto-menu-item" onclick="showCryptoView('prices')">💰 Price Tracker</div>
-    <div class="crypto-menu-item" onclick="showCryptoView('alerts')">🔔 Alerts</div>
-    <div class="crypto-menu-item" onclick="showCryptoView('portfolio')">📈 Portfolio</div>
-    <div class="crypto-menu-item" onclick="showCryptoView('defi')">🌐 DeFi</div>
-    <div class="crypto-menu-item" onclick="showCryptoView('settings')">⚙️ Settings</div>
+<!-- CryptoBot Dashboard View Fragment — loaded into #crypto-view-container -->
+
+<!-- Portfolio Summary Cards -->
+<div class="crypto-summary-cards">
+    <div class="crypto-card">
+        <div class="card-header">
+            <span class="card-icon">💰</span>
+            <span class="card-title">Portfolio Value</span>
+        </div>
+        <div class="card-value portfolio-value">$0.00</div>
+        <div class="card-change change-24h">+0.00% (24h)</div>
+    </div>
+    <div class="crypto-card">
+        <div class="card-header">
+            <span class="card-icon">🔐</span>
+            <span class="card-title">Connected Wallets</span>
+        </div>
+        <div class="card-value wallet-count">0</div>
+        <div class="card-action">
+            <button class="btn-connect-wallet-primary">Connect Wallet</button>
+        </div>
+    </div>
+    <div class="crypto-card">
+        <div class="card-header">
+            <span class="card-icon">🐭</span>
+            <span class="card-title">PINKY Balance</span>
+        </div>
+        <div class="card-value pinky-balance">0.00</div>
+        <div class="card-status discount-status">10,000 more for 20% off</div>
+    </div>
+    <div class="crypto-card">
+        <div class="card-header">
+            <span class="card-icon">📊</span>
+            <span class="card-title">24h P&L</span>
+        </div>
+        <div class="card-value profit-loss">$0.00</div>
+        <div class="card-change pl-percentage">+0.00%</div>
+    </div>
 </div>
-<div class="crypto-main-content" id="cryptoMainContent">
-    <h1>CryptoBot Dashboard</h1>
-    <div class="crypto-stat-grid">
-        <div class="crypto-stat-card">
-            <div class="crypto-stat-label">Total Portfolio</div>
-            <div class="crypto-stat-value">$12,543.21</div>
-            <div style="color:#10b981;">+5.2% (24h)</div>
-        </div>
-        <div class="crypto-stat-card">
-            <div class="crypto-stat-label">Connected Wallets</div>
-            <div class="crypto-stat-value">3</div>
-            <div style="color:#94a3b8;">Phantom, MetaMask, Trust</div>
-        </div>
-        <div class="crypto-stat-card">
-            <div class="crypto-stat-label">Active Alerts</div>
-            <div class="crypto-stat-value">7</div>
-            <div style="color:#f59e0b;">2 triggered today</div>
-        </div>
-        <div class="crypto-stat-card">
-            <div class="crypto-stat-label">Gas Tracker</div>
-            <div class="crypto-stat-value">42 Gwei</div>
-            <div style="color:#10b981;">Low congestion</div>
+
+<!-- Price Ticker -->
+<div class="crypto-ticker">
+    <div class="ticker-scroll"></div>
+</div>
+
+<!-- Wallets Section -->
+<div class="crypto-wallets-section">
+    <div class="section-header">
+        <h3>🔐 Connected Wallets</h3>
+        <button class="btn-manage-wallets">Manage Wallets</button>
+    </div>
+    <div class="wallets-list">
+        <p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">No wallets connected. Click "Connect Wallet" to get started.</p>
+    </div>
+</div>
+
+<!-- Holdings Section -->
+<div class="crypto-holdings-section">
+    <div class="section-header">
+        <h3>💹 Token Holdings</h3>
+        <div class="holdings-filter">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="solana">Solana</button>
+            <button class="filter-btn" data-filter="ethereum">Ethereum</button>
         </div>
     </div>
-    <div class="crypto-card">
-        <h2>🚨 Recent Alerts</h2>
-        <div class="crypto-price-alert">
-            <strong>BTC</strong> broke above $45,000 — Price alert triggered at 14:32 EST
-        </div>
-        <div class="crypto-price-alert">
-            <strong>ETH</strong> dropped below $2,500 — Price alert triggered at 09:15 EST
-        </div>
+    <div class="holdings-list">
+        <p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">Connect a wallet to view holdings.</p>
     </div>
-    <div class="crypto-card">
-        <h2>💹 Top Holdings</h2>
-        <table style="width:100%; margin-top:15px;">
-            <tr>
-                <th style="text-align:left;">Asset</th>
-                <th style="text-align:right;">Amount</th>
-                <th style="text-align:right;">Value</th>
-                <th style="text-align:right;">24h Change</th>
-            </tr>
-            <tr style="border-bottom:1px solid #334155; height:40px;">
-                <td>BTC</td>
-                <td style="text-align:right;">0.2543</td>
-                <td style="text-align:right;">$11,443.50</td>
-                <td style="text-align:right; color:#10b981;">+3.2%</td>
-            </tr>
-            <tr style="border-bottom:1px solid #334155; height:40px;">
-                <td>ETH</td>
-                <td style="text-align:right;">2.45</td>
-                <td style="text-align:right;">$6,125.00</td>
-                <td style="text-align:right; color:#ef4444;">-1.5%</td>
-            </tr>
-            <tr style="height:40px;">
-                <td>PINKY</td>
-                <td style="text-align:right;">5,000</td>
-                <td style="text-align:right;">$500.00</td>
-                <td style="text-align:right; color:#10b981;">+12.8%</td>
-            </tr>
-        </table>
+</div>
+
+<!-- Wallet Connect Modal -->
+<div class="wallet-modal" style="display:none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Connect Wallet</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="wallet-options">
+            <div class="wallet-option" data-wallet="phantom">
+                <span>👻</span> Phantom (Solana)
+            </div>
+            <div class="wallet-option" data-wallet="metamask">
+                <span>🦊</span> MetaMask (Ethereum)
+            </div>
+            <div class="wallet-option" data-wallet="solflare">
+                <span>☀️</span> Solflare (Solana)
+            </div>
+            <div class="wallet-option" data-wallet="walletconnect">
+                <span>🔗</span> WalletConnect
+            </div>
+        </div>
     </div>
 </div>
