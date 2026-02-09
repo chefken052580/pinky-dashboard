@@ -151,7 +151,7 @@ class TaskStatistics {
       console.error('[TaskStatistics] Update failed - API unavailable');
       if (statusEl) {
         statusEl.textContent = '⚠️ API Error';
-        statusEl.style.color = '#ff6644';
+        statusEl.style.color = 'var(--accent-pink)';
       }
       return;
     }
@@ -210,8 +210,8 @@ class TaskStatistics {
     }[stats.trend] || '➡️';
 
     // Color for completion rate
-    let rateColor = '#ff4444'; // red
-    if (stats.completionRate >= 90) rateColor = '#44ff44'; // green
+    let rateColor = 'var(--accent-pink)'; // red
+    if (stats.completionRate >= 90) rateColor = 'var(--accent-green)'; // green
     else if (stats.completionRate >= 75) rateColor = '#ffbb44'; // orange
     else if (stats.completionRate >= 50) rateColor = '#ffdd44'; // yellow
 
@@ -232,7 +232,7 @@ class TaskStatistics {
 
         <!-- Completed Tasks -->
         <div class="task-stat-box">
-          <div class="stat-number" style="color: #44ff44;">✅ ${stats.completed}</div>
+          <div class="stat-number" style="color: var(--accent-green);">✅ ${stats.completed}</div>
           <div class="stat-label">Completed</div>
           <div class="stat-small">of ${stats.total} total</div>
         </div>
@@ -246,7 +246,7 @@ class TaskStatistics {
 
         <!-- Pending -->
         <div class="task-stat-box">
-          <div class="stat-number" style="color: #ddddff;">⏳ ${stats.pending}</div>
+          <div class="stat-number" style="color: var(--text-secondary);">⏳ ${stats.pending}</div>
           <div class="stat-label">Pending</div>
           <div class="stat-small">waiting</div>
         </div>
@@ -267,7 +267,7 @@ class TaskStatistics {
 
         <!-- Avg Tasks/HB -->
         <div class="task-stat-box">
-          <div class="stat-number" style="color: #9999ff;">${stats.avgTasksPerHeartbeat}</div>
+          <div class="stat-number" style="color: var(--accent-primary);">${stats.avgTasksPerHeartbeat}</div>
           <div class="stat-label">Avg/Heartbeat</div>
           <div class="stat-small">tasks per cycle</div>
         </div>
