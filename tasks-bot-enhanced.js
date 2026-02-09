@@ -752,10 +752,30 @@ class TasksBotEnhanced {
         // Extract completion time from notes first (e.g. "COMPLETED [2026-02-08 11:53 PM EST]")
         var completedTime = '';
         if (task.notes) {
+          // Try COMPLETED [timestamp] first
           var timeMatch = task.notes.match(/COMPLETED\s*\[([^\]]+)\]/i);
-          if (timeMatch) completedTime = timeMatch[1];
+          if (timeMatch) { completedTime = timeMatch[1]; }
+          // Try "Handled by Brain — Work already completed" style dates
+          if (!completedTime) {
+            var dateMatch = task.notes.match(/(\d{4}-\d{2}-\d{2}\s+\d{1,2}:\d{2}[^—]*)/);
+            if (dateMatch) completedTime = dateMatch[1].trim();
+          }
         }
-        if (!completedTime) completedTime = this.formatTime(task.updated);
+        if (!completedTime && task.updated) {
+          // Format updated field - handle both ISO and date-only
+          try {
+            var d = new Date(task.updated);
+            if (!isNaN(d.getTime())) {
+              // Check if it has actual time (not midnight = date-only)
+              if (d.getUTCHours() !== 0 || d.getUTCMinutes() !== 0) {
+                completedTime = d.toLocaleString('en-US', {month:'2-digit',day:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'America/New_York'}) + ' EST';
+              } else {
+                completedTime = d.toLocaleDateString('en-US', {month:'2-digit',day:'2-digit',year:'numeric',timeZone:'America/New_York'});
+              }
+            }
+          } catch(e) { completedTime = task.updated; }
+        }
+        if (!completedTime) completedTime = 'unknown';
         html += '<div style="flex-shrink:0;text-align:right;line-height:1.4;">';
         html += '<div style="color:#4ade80;font-size:0.85em;font-weight:600;">Completed: ' + completedTime + '</div>';
         if (commitHash) {
