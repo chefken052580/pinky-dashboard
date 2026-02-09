@@ -14,7 +14,7 @@
 .changelog-header {
     background: linear-gradient(135deg, var(--accent-primary) 0%, rgba(59, 130, 246, 0.7) 100%);
     padding: 15px 20px;
-    color: white;
+    color: var(--text-primary);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -35,7 +35,7 @@
     font-size: 1em;
     cursor: pointer;
     transition: all 0.2s;
-    color: white;
+    color: var(--text-primary);
 }
 
 .changelog-refresh-btn:hover {
@@ -249,7 +249,7 @@ html.light-mode #changelog-widget {
 
 html.light-mode .changelog-header {
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: white;
+    color: var(--text-primary);
 }
 
 /* Mobile responsive */

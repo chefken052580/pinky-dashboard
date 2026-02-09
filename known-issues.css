@@ -36,7 +36,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 10px 15px;
-  color: white;
+  color: var(--text-primary);
   font-size: 14px;
   cursor: pointer;
 }
@@ -94,7 +94,7 @@
   flex: 1;
   font-size: 18px;
   margin: 0;
-  color: white;
+  color: var(--text-primary);
 }
 
 .issue-badges {
@@ -146,7 +146,7 @@
 
 .vote-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: var(--text-primary);
   border: none;
   border-radius: 6px;
   padding: 8px 16px;
@@ -188,7 +188,7 @@
 .empty-state h3, .error-state h3 {
   font-size: 24px;
   margin-bottom: 10px;
-  color: white;
+  color: var(--text-primary);
 }
 
 .empty-state p, .error-state p {

@@ -323,7 +323,7 @@ class FileSystemBotLLM {
     ];
 
     caps.forEach(cap => {
-      html += '<div class="capability-card" onclick="window.fileSystemBotLLM.showCapability(\'' + cap.id + '\')" style="background:#1a1a2e;border:1px solid #00d4ff;border-radius:8px;padding:15px;cursor:pointer;transition:all 0.3s;">';
+      html += '<div class="capability-card" onclick="window.fileSystemBotLLM.showCapability(\'' + cap.id + '\')" style="background:var(--bg-card);border:1px solid #00d4ff;border-radius:8px;padding:15px;cursor:pointer;transition:all 0.3s;">';
       html += '<div style="display:flex;align-items:center;">';
       html += '<span class="cap-emoji" style="font-size:2em;margin-right:10px;">' + cap.emoji + '</span>';
       html += '<div class="cap-info">';
@@ -339,8 +339,8 @@ class FileSystemBotLLM {
     html += '<div class="fsbot-interface" style="margin-top:30px;">';
     html += '<h4 style="color:#00d4ff;margin-bottom:15px;">Ask FileSystemBot</h4>';
     html += '<div class="fsbot-input-group" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">';
-    html += '<input type="text" id="fsbot-prompt" placeholder="What would you like me to do?" style="flex:1;min-width:250px;padding:10px;border:1px solid #00d4ff;border-radius:6px;background:#1a1a2e;color:#fff;">';
-    html += '<select id="fsbot-capability" style="padding:10px;border:1px solid #00d4ff;border-radius:6px;background:#1a1a2e;color:#fff;">';
+    html += '<input type="text" id="fsbot-prompt" placeholder="What would you like me to do?" style="flex:1;min-width:250px;padding:10px;border:1px solid #00d4ff;border-radius:6px;background:var(--bg-card);color:#fff;">';
+    html += '<select id="fsbot-capability" style="padding:10px;border:1px solid #00d4ff;border-radius:6px;background:var(--bg-card);color:#fff;">';
     caps.forEach(cap => {
       html += '<option value="' + cap.id + '">' + cap.emoji + ' ' + cap.name + '</option>';
     });

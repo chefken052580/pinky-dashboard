@@ -15,12 +15,12 @@
 }
 
 .upload-area:hover {
-  border-color: #00d4ff;
+  border-color: var(--text-heading);
   background: rgba(0, 212, 255, 0.05);
 }
 
 .upload-area.drag-over {
-  border-color: #00d4ff;
+  border-color: var(--text-heading);
   background: rgba(0, 212, 255, 0.1);
   transform: scale(1.02);
 }
@@ -32,16 +32,16 @@
 
 .upload-text p {
   margin: 0.5rem 0;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .upload-text strong {
-  color: #00d4ff;
+  color: var(--text-heading);
 }
 
 .upload-hint {
   font-size: 0.875rem;
-  color: #a0a0c0;
+  color: var(--text-secondary);
 }
 
 .screenshot-actions {
@@ -55,7 +55,7 @@
   background: linear-gradient(135deg, #667eea, #764ba2);
   border: none;
   border-radius: 8px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -84,7 +84,7 @@
 }
 
 .screenshot-preview:hover {
-  border-color: #00d4ff;
+  border-color: var(--text-heading);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
 }
@@ -110,7 +110,7 @@
 
 .file-name {
   font-size: 0.75rem;
-  color: #ffffff;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -118,7 +118,7 @@
 
 .file-size {
   font-size: 0.7rem;
-  color: #a0a0c0;
+  color: var(--text-secondary);
 }
 
 .compressed-label {
@@ -136,7 +136,7 @@
   background: rgba(239, 68, 68, 0.9);
   border: none;
   border-radius: 50%;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 1rem;
   cursor: pointer;
   display: flex;
@@ -191,7 +191,7 @@
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;

@@ -24,7 +24,7 @@
 
 .bug-modal-content {
     position: relative;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0e1a 100%);
+    background: var(--bg-card);
     border: 2px solid #00d4ff;
     border-radius: 12px;
     max-width: 600px;
@@ -44,7 +44,7 @@
 }
 
 .bug-modal-header h2 {
-    color: #00d4ff;
+    color: var(--text-heading);
     font-size: 24px;
     margin: 0;
     text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
@@ -76,7 +76,7 @@
 
 .bug-form-group label {
     display: block;
-    color: #00d4ff;
+    color: var(--text-heading);
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 8px;
@@ -89,9 +89,9 @@
     width: 100%;
     padding: 12px;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    border: 1px solid var(--border-default);
     border-radius: 6px;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 14px;
     font-family: inherit;
     transition: all 0.3s ease;
@@ -100,7 +100,7 @@
 .bug-form-group input:focus,
 .bug-form-group textarea:focus {
     outline: none;
-    border-color: #00d4ff;
+    border-color: var(--text-heading);
     box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
 }
 
@@ -116,7 +116,7 @@
 .bug-upload-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: 1px solid rgba(102, 126, 234, 0.5);
-    color: #ffffff;
+    color: var(--text-primary);
     padding: 10px 20px;
     border-radius: 6px;
     cursor: pointer;
@@ -141,14 +141,14 @@
     gap: 10px;
     padding: 10px;
     background: rgba(0, 212, 255, 0.1);
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    border: 1px solid var(--border-default);
     border-radius: 6px;
     margin-top: 8px;
 }
 
 .bug-file-item span {
     flex: 1;
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 13px;
 }
 
@@ -176,7 +176,7 @@
 }
 
 .bug-info-text {
-    color: #00d4ff;
+    color: var(--text-heading);
     font-size: 13px;
     margin: 0;
 }
@@ -191,7 +191,7 @@
     flex: 1;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #ffffff;
+    color: var(--text-primary);
     padding: 12px 24px;
     border-radius: 6px;
     cursor: pointer;
@@ -208,7 +208,7 @@
     flex: 2;
     background: linear-gradient(135deg, #00d4ff 0%, #00a1cc 100%);
     border: 1px solid rgba(0, 212, 255, 0.5);
-    color: #ffffff;
+    color: var(--text-primary);
     padding: 12px 24px;
     border-radius: 6px;
     cursor: pointer;
@@ -251,13 +251,13 @@
 }
 
 .bug-success h3 {
-    color: #00d4ff;
+    color: var(--text-heading);
     font-size: 24px;
     margin: 0 0 12px 0;
 }
 
 .bug-success p {
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 14px;
     margin: 8px 0;
     line-height: 1.6;
@@ -267,9 +267,9 @@
     margin-top: 20px;
     padding: 12px 20px;
     background: rgba(0, 212, 255, 0.1);
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    border: 1px solid var(--border-default);
     border-radius: 6px;
-    color: #00d4ff;
+    color: var(--text-heading);
     font-size: 14px;
     font-weight: 600;
 }
@@ -278,7 +278,7 @@
     margin-top: 24px;
     background: linear-gradient(135deg, #00d4ff 0%, #00a1cc 100%);
     border: 1px solid rgba(0, 212, 255, 0.5);
-    color: #ffffff;
+    color: var(--text-primary);
     padding: 12px 32px;
     border-radius: 6px;
     cursor: pointer;

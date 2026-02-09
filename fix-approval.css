@@ -52,7 +52,7 @@
   padding: 16px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 8px;
-  color: white;
+  color: var(--text-primary);
 }
 
 .stat-value {
@@ -89,12 +89,12 @@
 
 .filter-btn:hover {
   background: #667eea;
-  color: white;
+  color: var(--text-primary);
 }
 
 .filter-btn.active {
   background: #667eea;
-  color: white;
+  color: var(--text-primary);
 }
 
 /* Fixes List */
@@ -421,7 +421,7 @@
 
 .btn-approve {
   background: #10b981;
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-approve:hover {
@@ -430,7 +430,7 @@
 
 .btn-reject {
   background: #ef4444;
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-reject:hover {

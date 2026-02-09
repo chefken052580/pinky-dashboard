@@ -2,14 +2,14 @@
 
 .system-monitor {
   padding: 20px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: var(--bg-card);
   border-radius: 8px;
   margin-bottom: 20px;
 }
 
 .system-monitor h3 {
   margin-top: 0;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1.3em;
   margin-bottom: 15px;
 }
@@ -174,7 +174,7 @@
 }
 
 .throttle-info strong {
-  color: #fff;
+  color: var(--text-primary);
   display: inline-block;
   margin-right: 8px;
 }

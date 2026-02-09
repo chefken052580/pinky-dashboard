@@ -167,7 +167,7 @@ html.dark-mode .license-help-text {
   flex: 1;
   padding: 14px 24px;
   background: linear-gradient(135deg, #4496ff 0%, #2270dd 100%);
-  color: white;
+  color: var(--text-primary);
   border: none;
   border-radius: 8px;
   font-size: 1em;
@@ -361,7 +361,7 @@ html.dark-mode .license-info-value {
 
 .license-btn-activate {
   background: linear-gradient(135deg, #4496ff 0%, #2270dd 100%);
-  color: white;
+  color: var(--text-primary);
 }
 
 .license-btn-activate:hover {

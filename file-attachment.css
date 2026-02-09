@@ -11,7 +11,7 @@
   margin-top: 12px;
   padding: 12px;
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.06), rgba(0, 255, 136, 0.04));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -40,7 +40,7 @@
 
 .btn-attach-file:hover {
   background: linear-gradient(135deg, #00d4ff44, #00ff8844);
-  border-color: #00d4ff88;
+  border-color: var(--text-heading)88;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 212, 255, 0.15);
   color: #0a0e27;
@@ -368,7 +368,7 @@
 @media (prefers-color-scheme: dark) {
   .preview-content {
     background-color: #2d2d2d;
-    color: #ffffff;
+    color: var(--text-primary);
   }
 
   .preview-content p {
@@ -381,7 +381,7 @@
   }
 
   .close-preview:hover {
-    color: #ffffff;
+    color: var(--text-primary);
     background-color: #4d4d4d;
   }
 }

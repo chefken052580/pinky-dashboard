@@ -115,7 +115,7 @@
         max-width: 85% !important;
         height: 100vh !important;
         z-index: 999 !important;
-        background: #0f0e1a !important;
+        background: var(--bg-card) !important;
         transition: left 0.3s ease !important;
         overflow-y: auto !important;
         box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5) !important;
@@ -408,7 +408,7 @@
         width: 220px !important;
         height: 100vh !important;
         z-index: 999 !important;
-        background: #0f0e1a !important;
+        background: var(--bg-card) !important;
         transition: left 0.3s ease !important;
         overflow-y: auto !important;
         box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5) !important;

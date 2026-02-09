@@ -81,7 +81,7 @@
 
 .add-company-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: var(--text-primary);
   border-color: transparent;
 }
 
@@ -275,7 +275,7 @@
 
 .btn-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-primary:hover {
@@ -346,7 +346,7 @@
 
 .edit-btn {
   background: #667eea;
-  color: white;
+  color: var(--text-primary);
 }
 
 .edit-btn:hover {
@@ -355,7 +355,7 @@
 
 .delete-btn {
   background: #ef4444;
-  color: white;
+  color: var(--text-primary);
 }
 
 .delete-btn:hover {

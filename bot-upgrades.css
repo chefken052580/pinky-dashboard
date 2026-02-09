@@ -13,13 +13,13 @@
 
 .settings-section {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 25px;
 }
 
 .settings-section h3 {
-  color: #00d4ff;
+  color: var(--text-heading);
   margin-bottom: 20px;
   font-size: 1.3em;
 }
@@ -34,15 +34,15 @@
 }
 
 .api-card {
-  background: rgba(10, 10, 20, 0.5);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 10px;
   padding: 20px;
   transition: all 0.3s ease;
 }
 
 .api-card:hover {
-  border-color: rgba(0, 212, 255, 0.5);
+  border-color: var(--accent-primary);
   box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
 }
 
@@ -60,7 +60,7 @@
 }
 
 .api-header h4 {
-  color: #fff;
+  color: var(--text-primary);
   margin: 0;
   flex: 1;
 }
@@ -104,7 +104,7 @@
 }
 
 input:checked + .toggle-slider {
-  background-color: #00d4ff;
+  background-color: var(--text-heading);
 }
 
 input:checked + .toggle-slider:before {
@@ -120,8 +120,8 @@ input:checked + .toggle-slider:before {
 
 .api-input {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  color: #fff;
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
   padding: 10px;
   border-radius: 6px;
   font-size: 0.9em;
@@ -130,7 +130,7 @@ input:checked + .toggle-slider:before {
 
 .api-input:focus {
   outline: none;
-  border-color: #00d4ff;
+  border-color: var(--text-heading);
   background: rgba(0, 212, 255, 0.05);
   box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
 }
@@ -160,15 +160,15 @@ input:checked + .toggle-slider:before {
 }
 
 .bot-config-card {
-  background: rgba(10, 10, 20, 0.5);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 10px;
   padding: 15px;
   transition: all 0.3s ease;
 }
 
 .bot-config-card:hover {
-  border-color: rgba(0, 212, 255, 0.5);
+  border-color: var(--accent-primary);
 }
 
 .bot-config-header {
@@ -176,15 +176,15 @@ input:checked + .toggle-slider:before {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
 }
 
 .priority-select {
   width: 100%;
   background: rgba(0, 212, 255, 0.1);
-  border: 1px solid rgba(0, 212, 255, 0.3);
-  color: #fff;
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
   padding: 8px;
   border-radius: 6px;
   cursor: pointer;
@@ -192,7 +192,7 @@ input:checked + .toggle-slider:before {
 
 .priority-select:focus {
   outline: none;
-  border-color: #00d4ff;
+  border-color: var(--text-heading);
 }
 
 /* Notification Settings */
@@ -208,7 +208,7 @@ input:checked + .toggle-slider:before {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #fff;
+  color: var(--text-primary);
   cursor: pointer;
   user-select: none;
 }
@@ -223,14 +223,14 @@ input:checked + .toggle-slider:before {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .appearance-settings input[type="color"],
 .appearance-settings select {
   background: rgba(0, 212, 255, 0.1);
-  border: 1px solid rgba(0, 212, 255, 0.3);
-  color: #fff;
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
   padding: 8px;
   border-radius: 6px;
   cursor: pointer;
@@ -246,20 +246,20 @@ input:checked + .toggle-slider:before {
 
 .post-composer {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 25px;
 }
 
 .post-composer h3 {
-  color: #00d4ff;
+  color: var(--text-heading);
   margin-bottom: 15px;
 }
 
 .scheduled-queue,
 .social-analytics {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 25px;
 }
@@ -274,7 +274,7 @@ input:checked + .toggle-slider:before {
 
 .bot-module {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
@@ -285,7 +285,7 @@ input:checked + .toggle-slider:before {
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
-  color: #00d4ff;
+  color: var(--text-heading);
   font-size: 1.1em;
   font-weight: bold;
 }
@@ -298,20 +298,20 @@ input:checked + .toggle-slider:before {
 }
 
 .feature-card {
-  background: rgba(10, 10, 20, 0.5);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 10px;
   padding: 15px;
   transition: all 0.3s ease;
 }
 
 .feature-card:hover {
-  border-color: rgba(0, 212, 255, 0.5);
+  border-color: var(--accent-primary);
   transform: translateY(-2px);
 }
 
 .feature-title {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   margin-bottom: 8px;
 }

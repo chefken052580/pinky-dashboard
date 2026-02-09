@@ -7,7 +7,7 @@
   border-radius: 12px;
   padding: 16px 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  color: white;
+  color: var(--text-primary);
   max-width: 280px;
   animation: tooltipSlideIn 0.3s ease-out;
   opacity: 1;
@@ -28,7 +28,7 @@
 
 .pinky-tooltip.light-mode {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: var(--text-primary);
 }
 
 .pinky-tooltip.dark-mode {
@@ -61,7 +61,7 @@
   right: 8px;
   background: rgba(255, 255, 255, 0.2);
   border: none;
-  color: white;
+  color: var(--text-primary);
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -272,7 +272,7 @@ html.dark-mode .feature-name {
 
 .btn-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-primary:hover {

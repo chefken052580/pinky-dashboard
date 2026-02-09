@@ -88,7 +88,7 @@
 
 .add-task-input button {
   background: var(--accent-primary);
-  color: white;
+  color: var(--text-primary);
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
@@ -311,7 +311,7 @@
 .task-actions button:hover {
   background: var(--accent-primary);
   border-color: var(--accent-primary);
-  color: white;
+  color: var(--text-primary);
 }
 
 /* Task description */

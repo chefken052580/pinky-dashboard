@@ -279,7 +279,7 @@ class SocialMediaBotPro {
     let html = '<div class="social-pro-interface" style="padding:20px;">';
     
     // Company Selector at top
-    html += '<div style="margin-bottom:20px; padding:15px; background:#1a1a2e; border-radius:8px; border-left:3px solid #00d4ff;">';
+    html += '<div style="margin-bottom:20px; padding:15px; background:var(--bg-card); border-radius:8px; border-left:3px solid #00d4ff;">';
     html += '<label style="display:block; margin-bottom:10px; font-weight:bold;">📦 Select Companies:</label>';
     html += '<div style="display:flex; flex-wrap:wrap; gap:10px;">';
     
@@ -352,7 +352,7 @@ class SocialMediaBotPro {
     } else {
       this.companies.forEach((company, idx) => {
         const platforms = company.platforms ? Object.keys(company.platforms) : [];
-        html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; border-top:3px solid ' + this.getCompanyColor(idx) + ';">';
+        html += '<div style="background:var(--bg-card); padding:15px; border-radius:8px; border-top:3px solid ' + this.getCompanyColor(idx) + ';">';
         html += '<h4 style="margin-top:0; color:' + this.getCompanyColor(idx) + ';">' + company.name + '</h4>';
         html += '<div style="font-size:0.9em; color:#999; margin-bottom:10px;">Platforms: ' + platforms.length + '</div>';
         html += '<div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;">';
@@ -375,12 +375,12 @@ class SocialMediaBotPro {
 
   renderCreatePostTab() {
     let html = '<div style="max-width:800px;">';
-    html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; margin-bottom:15px;">';
+    html += '<div style="background:var(--bg-card); padding:15px; border-radius:8px; margin-bottom:15px;">';
     html += '<label style="display:block; margin-bottom:10px; font-weight:bold;">📝 Post Content:</label>';
     html += '<textarea id="social-content-text" placeholder="Write your post content here..." style="width:100%; height:150px; padding:10px; border-radius:4px; background:#0a0a0a; color:#fff; border:1px solid #333; font-family:monospace;" />';
     html += '</div>';
 
-    html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; margin-bottom:15px;">';
+    html += '<div style="background:var(--bg-card); padding:15px; border-radius:8px; margin-bottom:15px;">';
     html += '<label style="display:block; margin-bottom:10px; font-weight:bold;">🎯 Platform Filter:</label>';
     html += '<div style="display:flex; flex-wrap:wrap; gap:8px;">';
     
@@ -404,7 +404,7 @@ class SocialMediaBotPro {
     html += '</div>';
     html += '</div>';
 
-    html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; margin-bottom:15px;">';
+    html += '<div style="background:var(--bg-card); padding:15px; border-radius:8px; margin-bottom:15px;">';
     html += '<label style="display:block; margin-bottom:10px; font-weight:bold;">⏰ Schedule:</label>';
     html += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">';
     html += '<div>';
@@ -436,7 +436,7 @@ class SocialMediaBotPro {
       html += '<p style="color:#999;">No scheduled posts. Create one in the Create Post tab.</p>';
     } else {
       scheduled.forEach(post => {
-        html += '<div style="background:#1a1a2e; padding:15px; border-radius:8px; border-left:3px solid #ffd97d;">';
+        html += '<div style="background:var(--bg-card); padding:15px; border-radius:8px; border-left:3px solid #ffd97d;">';
         html += '<div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px;">';
         html += '<div>';
         html += '<div style="font-weight:bold; margin-bottom:5px;">📅 ' + new Date(post.scheduledTime).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }) + '</div>';

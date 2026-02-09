@@ -17,7 +17,7 @@
 .search-filter-header h3 {
   margin: 0;
   font-size: 1.1em;
-  color: #fff;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -52,7 +52,7 @@
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(68, 136, 255, 0.3);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.95em;
   font-family: inherit;
   transition: all 0.2s ease;
@@ -75,8 +75,8 @@
 }
 
 .task-filter-select option {
-  background: #1a1a2e;
-  color: #fff;
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 .search-hint {

@@ -88,7 +88,7 @@ body {
 
 .btn-sync {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-sync:hover {
@@ -203,7 +203,7 @@ body {
 
 .bug-id-badge {
   background: var(--primary-color);
-  color: white;
+  color: var(--text-primary);
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -218,10 +218,10 @@ body {
   text-transform: capitalize;
 }
 
-.severity-critical { background: var(--danger-color); color: white; }
-.severity-high { background: var(--warning-color); color: white; }
-.severity-medium { background: var(--secondary-color); color: white; }
-.severity-low { background: var(--success-color); color: white; }
+.severity-critical { background: var(--danger-color); color: var(--text-primary); }
+.severity-high { background: var(--warning-color); color: var(--text-primary); }
+.severity-medium { background: var(--secondary-color); color: var(--text-primary); }
+.severity-low { background: var(--success-color); color: var(--text-primary); }
 
 .status-badge {
   padding: 4px 10px;
@@ -231,13 +231,13 @@ body {
   text-transform: capitalize;
 }
 
-.status-pending { background: #64748B; color: white; }
-.status-confirmed { background: var(--secondary-color); color: white; }
-.status-duplicate { background: #6B7280; color: white; }
-.status-fixing { background: var(--warning-color); color: white; }
-.status-fixed { background: var(--success-color); color: white; }
-.status-cannot-reproduce { background: var(--danger-color); color: white; }
-.status-user-error { background: #78350F; color: white; }
+.status-pending { background: #64748B; color: var(--text-primary); }
+.status-confirmed { background: var(--secondary-color); color: var(--text-primary); }
+.status-duplicate { background: #6B7280; color: var(--text-primary); }
+.status-fixing { background: var(--warning-color); color: var(--text-primary); }
+.status-fixed { background: var(--success-color); color: var(--text-primary); }
+.status-cannot-reproduce { background: var(--danger-color); color: var(--text-primary); }
+.status-user-error { background: #78350F; color: var(--text-primary); }
 
 .bug-card-description {
   color: var(--text-muted);
@@ -462,27 +462,27 @@ body {
 
 .btn-confirm {
   background: var(--success-color);
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-duplicate {
   background: var(--text-muted);
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-cannot-reproduce {
   background: var(--danger-color);
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-user-error {
   background: var(--warning-color);
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-fixing {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
+  color: var(--text-primary);
 }
 
 .btn-action:hover {
@@ -523,7 +523,7 @@ body {
   border: none;
   border-radius: 6px;
   background: var(--primary-color);
-  color: white;
+  color: var(--text-primary);
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;

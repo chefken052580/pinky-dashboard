@@ -7,7 +7,7 @@
 
 .task-queue-section {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 20px;
   margin: 20px auto;
@@ -34,12 +34,12 @@
 .task-queue-close-btn:hover {
   background: rgba(255, 68, 68, 0.4);
   border-color: #ff4444;
-  color: #fff;
+  color: var(--text-primary);
   transform: scale(1.05);
 }
 
 .task-queue-section h3 {
-  color: #00d4ff;
+  color: var(--text-heading);
   margin-bottom: 20px;
 }
 
@@ -72,7 +72,7 @@
 }
 
 .task-title {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 1.1em;
   margin: 8px 0;
@@ -89,8 +89,8 @@
 }
 
 .task-item {
-  background: rgba(10, 10, 20, 0.5);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 10px;
@@ -101,7 +101,7 @@
 }
 
 .task-type {
-  color: #00d4ff;
+  color: var(--text-heading);
   font-weight: bold;
   font-size: 0.85em;
   background: rgba(0, 212, 255, 0.1);
@@ -110,7 +110,7 @@
 }
 
 .task-name {
-  color: #fff;
+  color: var(--text-primary);
   flex: 1;
 }
 
@@ -174,13 +174,13 @@
 
 .filesystembot-llm {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 20px;
 }
 
 .filesystembot-llm h3 {
-  color: #00d4ff;
+  color: var(--text-heading);
   margin-bottom: 20px;
 }
 
@@ -197,8 +197,8 @@
 }
 
 .capability-card {
-  background: rgba(10, 10, 20, 0.5);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 10px;
   padding: 15px;
   cursor: pointer;
@@ -209,7 +209,7 @@
 }
 
 .capability-card:hover {
-  border-color: rgba(0, 212, 255, 0.5);
+  border-color: var(--accent-primary);
   background: rgba(0, 212, 255, 0.1);
   transform: translateY(-2px);
 }
@@ -220,7 +220,7 @@
 }
 
 .cap-info h5 {
-  color: #fff;
+  color: var(--text-primary);
   margin: 0 0 5px 0;
   font-size: 0.95em;
 }
@@ -246,13 +246,13 @@
 
 .social-api-connectors {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 20px;
 }
 
 .social-api-connectors h3 {
-  color: #00d4ff;
+  color: var(--text-heading);
   margin-bottom: 20px;
 }
 
@@ -264,15 +264,15 @@
 }
 
 .api-connector-card {
-  background: rgba(10, 10, 20, 0.5);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 10px;
   padding: 15px;
   transition: all 0.3s ease;
 }
 
 .api-connector-card:hover {
-  border-color: rgba(0, 212, 255, 0.5);
+  border-color: var(--accent-primary);
   background: rgba(0, 212, 255, 0.1);
 }
 
@@ -289,7 +289,7 @@
 }
 
 .connector-header h4 {
-  color: #fff;
+  color: var(--text-primary);
   margin: 0;
   font-size: 0.95em;
 }
@@ -318,7 +318,7 @@
 }
 
 .connector-required strong {
-  color: #fff;
+  color: var(--text-primary);
   display: block;
   margin-bottom: 5px;
 }
@@ -326,7 +326,7 @@
 .connector-required li {
   list-style: none;
   padding-left: 10px;
-  color: #00d4ff;
+  color: var(--text-heading);
 }
 
 .connector-actions {
@@ -351,13 +351,13 @@
 
 .settings-panel {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 20px;
 }
 
 .settings-panel h3 {
-  color: #00d4ff;
+  color: var(--text-heading);
   margin-bottom: 20px;
   margin-top: 0;
 }
@@ -369,8 +369,8 @@
 }
 
 .api-card {
-  background: rgba(10, 10, 20, 0.5);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 10px;
   padding: 15px;
   transition: all 0.3s ease;
@@ -394,7 +394,7 @@
 }
 
 .api-header h4 {
-  color: #fff;
+  color: var(--text-primary);
   margin: 0;
   flex: 1;
   font-size: 0.95em;
@@ -412,8 +412,8 @@
 .api-input {
   width: 100%;
   background: rgba(0, 212, 255, 0.05);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  color: #fff;
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
   padding: 8px;
   border-radius: 6px;
   margin-bottom: 8px;
@@ -423,7 +423,7 @@
 
 .api-input:focus {
   outline: none;
-  border-color: #00d4ff;
+  border-color: var(--text-heading);
   background: rgba(0, 212, 255, 0.1);
 }
 
@@ -449,18 +449,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(10, 10, 20, 0.5);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 10px;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .bot-setting select {
   background: rgba(0, 212, 255, 0.1);
-  border: 1px solid rgba(0, 212, 255, 0.3);
-  color: #fff;
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
   padding: 6px 10px;
   border-radius: 4px;
   cursor: pointer;
@@ -468,7 +468,7 @@
 
 .bot-setting select:focus {
   outline: none;
-  border-color: #00d4ff;
+  border-color: var(--text-heading);
 }
 
 /* Responsive */

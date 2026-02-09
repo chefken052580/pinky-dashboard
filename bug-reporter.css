@@ -5,7 +5,7 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: var(--bg-card);
   border: 2px solid #00d4ff;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
@@ -23,13 +23,13 @@
 .bug-report-modal .modal-header h2 {
   margin: 0;
   font-size: 24px;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .bug-report-modal .close-btn {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 24px;
   width: 40px;
   height: 40px;
@@ -55,7 +55,7 @@
 .bug-report-modal .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #00d4ff;
+  color: var(--text-heading);
   font-weight: 600;
   font-size: 14px;
 }
@@ -67,9 +67,9 @@
   width: 100%;
   padding: 12px 15px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  border: 1px solid var(--border-default);
   border-radius: 6px;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 14px;
   font-family: inherit;
   transition: all 0.3s ease;
@@ -79,7 +79,7 @@
 .bug-report-modal .form-group select:focus,
 .bug-report-modal .form-group textarea:focus {
   outline: none;
-  border-color: #00d4ff;
+  border-color: var(--text-heading);
   background: rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
 }
@@ -105,7 +105,7 @@
 /* Environment Info Box */
 .env-info-box {
   background: rgba(0, 212, 255, 0.05);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 6px;
   padding: 15px;
   font-size: 13px;
@@ -139,7 +139,7 @@
   top: 10px;
   right: 10px;
   background: rgba(255, 0, 0, 0.8);
-  color: #ffffff;
+  color: var(--text-primary);
   border: none;
   padding: 8px 12px;
   border-radius: 4px;
@@ -179,7 +179,7 @@
 
 .btn-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
+  color: var(--text-primary);
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
@@ -190,7 +190,7 @@
 
 .btn-secondary {
   background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  color: var(--text-primary);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
@@ -220,7 +220,7 @@
 }
 
 .success-message h3 {
-  color: #00d4ff;
+  color: var(--text-heading);
   margin-bottom: 10px;
   font-size: 24px;
 }
@@ -277,7 +277,7 @@
 
 .btn-report-bug {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: #ffffff;
+  color: var(--text-primary);
   border: none;
   padding: 15px 25px;
   border-radius: 50px;

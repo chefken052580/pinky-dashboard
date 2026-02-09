@@ -70,7 +70,7 @@
 
 .btn-export-json {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .btn-export-json:hover {
@@ -80,7 +80,7 @@
 
 .btn-export-config {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .btn-export-config:hover {
@@ -90,7 +90,7 @@
 
 .btn-export-summary {
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .btn-export-summary:hover {
@@ -100,7 +100,7 @@
 
 .btn-import-package {
     background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .btn-import-package:hover {
@@ -200,7 +200,7 @@
 
 .export-notification {
     background: #333;
-    color: #fff;
+    color: var(--text-primary);
     padding: 12px 16px;
     border-radius: 6px;
     margin-bottom: 10px;

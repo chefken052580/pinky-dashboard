@@ -6,14 +6,14 @@
 
 .heartbeat-status {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 20px;
   margin: 20px 0;
 }
 
 .heartbeat-status h3 {
-  color: #00d4ff;
+  color: var(--text-heading);
   margin-bottom: 15px;
 }
 
@@ -24,8 +24,8 @@
 }
 
 .heartbeat-stat {
-  background: rgba(10, 10, 20, 0.5);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 12px;
   text-align: center;
@@ -33,7 +33,7 @@
 }
 
 .heartbeat-stat:hover {
-  border-color: rgba(0, 212, 255, 0.5);
+  border-color: var(--accent-primary);
   background: rgba(0, 212, 255, 0.1);
 }
 
@@ -45,7 +45,7 @@
 }
 
 .stat-value {
-  color: #00d4ff;
+  color: var(--text-heading);
   font-size: 1.8em;
   font-weight: bold;
   display: block;
@@ -58,7 +58,7 @@
 }
 
 .analytics-dashboard h2 {
-  color: #00d4ff;
+  color: var(--text-heading);
   margin-bottom: 25px;
 }
 
@@ -71,7 +71,7 @@
 
 .metric-card {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  border: 1px solid var(--border-default);
   border-radius: 10px;
   padding: 15px;
   display: flex;
@@ -81,7 +81,7 @@
 }
 
 .metric-card:hover {
-  border-color: rgba(0, 212, 255, 0.6);
+  border-color: var(--accent-primary);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
 }
@@ -98,7 +98,7 @@
 }
 
 .metric-value {
-  color: #00d4ff;
+  color: var(--text-heading);
   font-size: 1.6em;
   font-weight: bold;
 }
@@ -107,7 +107,7 @@
 
 .analytics-section {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
@@ -124,7 +124,7 @@
 .analytics-table {
   width: 100%;
   border-collapse: collapse;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .analytics-table thead {
@@ -132,16 +132,16 @@
 }
 
 .analytics-table th {
-  color: #00d4ff;
+  color: var(--text-heading);
   text-align: left;
   padding: 12px;
   font-weight: bold;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .analytics-table td {
   padding: 12px;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .analytics-table tbody tr:hover {
@@ -176,7 +176,7 @@
 }
 
 .token-name {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.95em;
 }
 
@@ -230,7 +230,7 @@
 
 .summary-item {
   background: rgba(0, 212, 255, 0.05);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 12px;
   text-align: center;
@@ -244,7 +244,7 @@
 }
 
 .summary-value {
-  color: #00d4ff;
+  color: var(--text-heading);
   font-size: 1.4em;
   font-weight: bold;
   display: block;
@@ -270,7 +270,7 @@
 }
 
 .activity-time {
-  color: #00d4ff;
+  color: var(--text-heading);
   font-size: 0.85em;
   font-weight: bold;
 }

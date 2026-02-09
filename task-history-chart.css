@@ -34,7 +34,7 @@
 .task-history-header h3 {
   margin: 0;
   font-size: 1.3em;
-  color: #fff;
+  color: var(--text-primary);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -400,7 +400,7 @@
 }
 
 .legend-item:hover {
-  color: #fff;
+  color: var(--text-primary);
   transform: translateY(-2px);
 }
 

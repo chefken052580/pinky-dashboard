@@ -2,7 +2,7 @@
 
 #crypto-view {
     padding: 20px;
-    color: #ffffff;
+    color: var(--text-primary);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
@@ -71,7 +71,7 @@
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
-    color: white;
+    color: var(--text-primary);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -132,7 +132,7 @@
     font-size: 20px;
     font-weight: 600;
     margin: 0;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .btn-manage-wallets {
@@ -140,7 +140,7 @@
     border: 1px solid rgba(138, 43, 226, 0.3);
     border-radius: 6px;
     padding: 8px 16px;
-    color: white;
+    color: var(--text-primary);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -193,7 +193,7 @@
     border: none;
     border-radius: 8px;
     padding: 12px 24px;
-    color: white;
+    color: var(--text-primary);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -227,13 +227,13 @@
 .filter-btn:hover {
     background: rgba(138, 43, 226, 0.2);
     border-color: rgba(138, 43, 226, 0.4);
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .filter-btn.active {
     background: linear-gradient(135deg, #8b5cf6, #6366f1);
     border-color: transparent;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 /* Token Holdings List */
@@ -282,7 +282,7 @@
 .token-name {
     font-size: 15px;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .token-symbol {
@@ -301,7 +301,7 @@
 .price {
     font-size: 15px;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .amount-usd,
@@ -393,7 +393,7 @@
 .ticker-price {
     font-size: 13px;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .ticker-change {
@@ -448,7 +448,7 @@
     font-size: 20px;
     font-weight: 600;
     margin: 0;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .modal-close {
@@ -469,7 +469,7 @@
 .modal-close:hover {
     background: rgba(138, 43, 226, 0.2);
     border-color: rgba(138, 43, 226, 0.4);
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .modal-body {
@@ -516,7 +516,7 @@
 .wallet-name {
     font-size: 16px;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--text-primary);
     margin-bottom: 4px;
 }
 
@@ -629,7 +629,7 @@
     border-left: 4px solid #10b981;
 }
 .crypto-stat-label { color: #94a3b8; font-size: 14px; margin-bottom: 5px; }
-.crypto-stat-value { font-size: 32px; font-weight: bold; color: white; }
+.crypto-stat-value { font-size: 32px; font-weight: bold; color: var(--text-primary); }
 .crypto-card {
     background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     border-radius: 12px;

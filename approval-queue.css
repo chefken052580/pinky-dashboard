@@ -56,7 +56,7 @@
 .approval-close-btn:hover {
   background: rgba(255, 68, 68, 0.4);
   border-color: #ff4444;
-  color: #fff;
+  color: var(--text-primary);
   transform: scale(1.05);
 }
 .approval-list {
@@ -69,7 +69,7 @@
   font-size: 0.95em;
 }
 .approval-item {
-  background: rgba(20, 40, 80, 0.4);
+  background: var(--bg-subtle);
   border: 1px solid rgba(68, 150, 255, 0.15);
   border-radius: 12px;
   padding: 16px;
@@ -127,7 +127,7 @@
   flex: 1;
   padding: 10px;
   background: linear-gradient(135deg, #2e7d32, #43a047);
-  color: white;
+  color: var(--text-primary);
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -179,7 +179,7 @@
   top: 0;
   right: 0;
   background: #ef5350;
-  color: white;
+  color: var(--text-primary);
   font-size: 0.55em;
   font-weight: 700;
   min-width: 18px;
