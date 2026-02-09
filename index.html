@@ -1195,7 +1195,7 @@
                     console.log('[Dashboard] Task Queue rendered');
                 }
                 // Load CryptoBot View
-                fetch("cryptobot-view.html")
+                fetch("cryptobot-view.html?v=2")
                     .then(r => r.text())
                     .then(html => {
                         const cryptoContainer = document.getElementById("crypto-view-container");
