@@ -283,20 +283,27 @@ class AnalyticsEngine {
     html += '<div class="summary-item"><span class="summary-label">Avg Task Duration</span><span class="summary-value">3m 24s</span></div>';
     html += '<div class="summary-item"><span class="summary-label">Success Rate</span><span class="summary-value">100%</span></div>';
     
-    // Format time active properly (days/hours/minutes instead of raw minutes)
-    const sessionStart = window.heartbeatManager?.sessionStart || Date.now();
-    const minutesActive = Math.floor((Date.now() - sessionStart) / 60000);
-    let timeActiveStr = '';
-    if (minutesActive < 60) {
-      timeActiveStr = minutesActive + 'm';
-    } else if (minutesActive < 1440) {
-      const hours = Math.floor(minutesActive / 60);
-      const mins = minutesActive % 60;
-      timeActiveStr = hours + 'h ' + mins + 'm';
-    } else {
+    // Calculate time active from heartbeat data (more reliable than sessionStart)
+    let minutesActive = 0;
+    const heartbeats = activityData?.heartbeats || [];
+    if (heartbeats.length > 0) {
+      const firstHB = heartbeats[0].timestamp;
+      const lastHB = heartbeats[heartbeats.length - 1].timestamp;
+      minutesActive = Math.floor((lastHB - firstHB) / 60000);
+    }
+    
+    // Format time active (minutes → hours → days)
+    let timeActiveStr = '0m';
+    if (minutesActive >= 1440) {
       const days = Math.floor(minutesActive / 1440);
       const hours = Math.floor((minutesActive % 1440) / 60);
       timeActiveStr = days + 'd ' + hours + 'h';
+    } else if (minutesActive >= 60) {
+      const hours = Math.floor(minutesActive / 60);
+      const mins = minutesActive % 60;
+      timeActiveStr = hours + 'h ' + mins + 'm';
+    } else if (minutesActive > 0) {
+      timeActiveStr = minutesActive + 'm';
     }
     
     html += '<div class="summary-item"><span class="summary-label">Time Active</span><span class="summary-value">' + timeActiveStr + '</span></div>';
