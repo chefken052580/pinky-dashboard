@@ -1334,7 +1334,11 @@
             }
             log += '\nClick to close';
             d.textContent = log;
-            d.onclick = function() { d.remove(); };
+            var closeBtn = document.createElement('button');
+            closeBtn.textContent = 'X CLOSE';
+            closeBtn.style.cssText = 'background:red;color:white;border:none;padding:5px 10px;cursor:pointer;margin-top:10px;display:block;';
+            closeBtn.onclick = function() { d.remove(); };
+            d.appendChild(closeBtn);
             document.body.appendChild(d);
         }, 2500);
     });
