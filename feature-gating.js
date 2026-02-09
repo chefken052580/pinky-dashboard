@@ -230,6 +230,30 @@ class FeatureGating {
     mainContent.insertBefore(warning, mainContent.firstChild);
   }
   
+  showUpgradeSuccess(tier) {
+    const success = document.createElement('div');
+    success.className = 'subscription-success';
+    success.innerHTML = `
+      <div class="success-content">
+        <span class="success-icon">🎉</span>
+        <div class="success-text">
+          <strong>Upgrade Successful!</strong>
+          <p>You now have access to ${tier.toUpperCase()} tier features. All bots and features are now unlocked.</p>
+        </div>
+        <button class="dismiss-success" onclick="this.closest('.subscription-success').remove()">✕</button>
+      </div>
+    `;
+    
+    // Add to page (top of main content)
+    const mainContent = document.querySelector('.main-content') || document.body;
+    mainContent.insertBefore(success, mainContent.firstChild);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+      success.remove();
+    }, 5000);
+  }
+  
   renewSubscription() {
     // Redirect to Stripe customer portal or checkout
     fetch('http://192.168.254.4:3030/api/stripe/portal', {
@@ -254,7 +278,9 @@ class FeatureGating {
   }
   
   getCurrentTier() {
-    return 'pro';
+    // Get live tier from localStorage (set by checkSubscriptionStatus)
+    const tier = localStorage.getItem('pinky_tier');
+    return tier || 'free'; // Default to free if not set
   }
   
   setTier(tier) {
@@ -268,19 +294,42 @@ class FeatureGating {
     this.applyFeatureGating();
   }
   
+  /**
+   * Update tier from license activation
+   * Called by settings-page.js after license activation
+   */
+  updateTierFromLicense(tier) {
+    console.log(`[Feature Gating] License activated, updating tier to: ${tier}`);
+    this.setTier(tier);
+    
+    // Show success message
+    this.showUpgradeSuccess(tier);
+    
+    // Refresh subscription status from API
+    this.checkSubscriptionStatus();
+  }
+  
   isPro() {
-    return true;
+    return this.getCurrentTier() === 'pro' || this.getCurrentTier() === 'enterprise';
   }
   
   isFree() {
     return this.getCurrentTier() === 'free';
   }
   
-  isFeatureAllowed(featureId) { return true; // FORCED PRO
+  isFeatureAllowed(featureId) {
     const tier = this.getCurrentTier();
+    
+    // Enterprise and Pro have access to everything
+    if (tier === 'enterprise' || tier === 'pro') {
+      return true;
+    }
+    
+    // Free tier: check allowed features list
+    const tierData = this.tiers[tier] || this.tiers.free;
     const allowedFeatures = [
-      ...this.tiers[tier].bots,
-      ...this.tiers[tier].features
+      ...tierData.bots,
+      ...tierData.features
     ];
     
     return allowedFeatures.includes(featureId);
