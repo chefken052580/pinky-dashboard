@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Raydium Pools - CryptoBot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+    h1 { color: #a78bfa; }
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #1e293b;
+      border-radius: 8px;
+    }
+    .filter-bar input {
+      flex: 1;
+      padding: 10px;
+      background: #334155;
+      border: none;
+      color: white;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      text-align: left;
+      padding: 15px;
+      background: #1e293b;
+      position: sticky;
+      top: 0;
+    }
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #334155;
+    }
+    tr:hover {
+      background: #1e293b;
+    }
+    .pool-name {
+      font-weight: bold;
+      color: #a78bfa;
+    }
+    .apr-high {
+      color: #10b981;
+      font-weight: bold;
+    }
+    .tvl-badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      background: #334155;
+    }
+  </style>
+</head>
+<body>
+  <h1>💧 Raydium Liquidity Pools</h1>
+  
+  <div class="filter-bar">
+    <input type="text" placeholder="Search pools..." id="searchInput">
+    <button style="padding:10px 20px; background:#6366f1; border:none; color:white; border-radius:6px; cursor:pointer;">Refresh</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Pool</th>
+        <th>TVL</th>
+        <th>24h Volume</th>
+        <th>APR</th>
+        <th>7d Fees</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="pool-name">SOL/USDC</div>
+          <div style="font-size:12px; color:#94a3b8;">Main liquidity pair</div>
+        </td>
+        <td>$45.2M</td>
+        <td>$12.5M</td>
+        <td class="apr-high">24.5%</td>
+        <td>$87,500</td>
+        <td><button style="padding:8px 16px; background:#10b981; border:none; color:white; border-radius:6px; cursor:pointer;">Add Liquidity</button></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="pool-name">RAY/SOL</div>
+          <div style="font-size:12px; color:#94a3b8;">Native token pair</div>
+        </td>
+        <td>$18.7M</td>
+        <td>$3.2M</td>
+        <td class="apr-high">45.8%</td>
+        <td>$32,000</td>
+        <td><button style="padding:8px 16px; background:#10b981; border:none; color:white; border-radius:6px; cursor:pointer;">Add Liquidity</button></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="pool-name">USDC/USDT</div>
+          <div style="font-size:12px; color:#94a3b8;">Stablecoin pair</div>
+        </td>
+        <td>$92.3M</td>
+        <td>$45.8M</td>
+        <td>5.2%</td>
+        <td>$238,140</td>
+        <td><button style="padding:8px 16px; background:#10b981; border:none; color:white; border-radius:6px; cursor:pointer;">Add Liquidity</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const filter = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('tbody tr');
+      
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>
