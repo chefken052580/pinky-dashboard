@@ -1,0 +1,264 @@
+<div class="phantom-wallet-container">
+    <!-- Connection Status Bar -->
+    <div class="wallet-status-bar" id="phantom-status-bar" style="display: none;">
+        <div class="status-info">
+            <span class="status-icon">✅</span>
+            <span class="status-text">Connected: <span id="phantom-wallet-address"></span></span>
+        </div>
+        <button class="btn-disconnect" onclick="disconnectPhantom()">Disconnect</button>
+    </div>
+
+    <!-- Connect Button (shown when not connected) -->
+    <div class="wallet-connect-section" id="phantom-connect-section">
+        <button class="btn-connect-phantom" onclick="connectPhantom()">
+            <img src="https://phantom.app/img/logo.png" alt="Phantom" class="wallet-logo" onerror="this.style.display='none'">
+            <span class="connect-text">Connect Phantom Wallet</span>
+        </button>
+        <p class="wallet-hint">Connect your Solana wallet to view balances and manage tokens</p>
+    </div>
+
+    <!-- Wallet Info (shown after connection) -->
+    <div class="wallet-info-panel" id="phantom-info-panel" style="display: none;">
+        <div class="info-header">
+            <h3>Wallet Balances</h3>
+            <button class="btn-refresh" onclick="refreshPhantomBalances()">🔄 Refresh</button>
+        </div>
+
+        <!-- SOL Balance -->
+        <div class="balance-card sol-balance">
+            <div class="balance-header">
+                <span class="token-icon">◎</span>
+                <span class="token-name">Solana</span>
+            </div>
+            <div class="balance-amount" id="phantom-sol-balance">0.00 SOL</div>
+            <div class="balance-usd" id="phantom-sol-usd">$0.00 USD</div>
+        </div>
+
+        <!-- PINKY Token Balance -->
+        <div class="balance-card pinky-balance">
+            <div class="balance-header">
+                <span class="token-icon">🪙</span>
+                <span class="token-name">$PINKY Token</span>
+            </div>
+            <div class="balance-amount" id="phantom-pinky-balance">0.00 PINKY</div>
+            <div class="balance-status" id="phantom-pinky-status">No discount active</div>
+        </div>
+
+        <!-- Other SPL Tokens -->
+        <div class="spl-tokens-section">
+            <h4>Other Tokens</h4>
+            <div class="spl-tokens-list" id="phantom-spl-list">
+                <p class="empty-message">No other tokens found</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="phantom-loading" id="phantom-loading" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Connecting to Phantom...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div class="phantom-error" id="phantom-error" style="display: none;">
+        <div class="error-icon">⚠️</div>
+        <p class="error-message" id="phantom-error-message"></p>
+        <button class="btn-retry" onclick="retryPhantomConnection()">Retry</button>
+    </div>
+</div>
+
+<script>
+// Phantom Wallet UI Controller
+(async function() {
+    'use strict';
+
+    let phantomAdapter = null;
+
+    // Initialize when ready
+    async function initPhantomUI() {
+        // Wait for adapter to be available
+        if (!window.phantomAdapter) {
+            setTimeout(initPhantomUI, 100);
+            return;
+        }
+
+        phantomAdapter = window.phantomAdapter;
+
+        // Register callbacks
+        phantomAdapter.on('onConnect', handleWalletConnect);
+        phantomAdapter.on('onDisconnect', handleWalletDisconnect);
+        phantomAdapter.on('onBalanceChange', handleBalanceChange);
+
+        // Check if wallet was previously connected
+        checkPreviousConnection();
+
+        console.log('[Phantom UI] Initialized');
+    }
+
+    // Check for previous connection
+    function checkPreviousConnection() {
+        const wallets = JSON.parse(localStorage.getItem('crypto_wallets') || '[]');
+        const phantomWallet = wallets.find(w => w.type === 'phantom');
+        
+        if (phantomWallet && phantomWallet.address) {
+            // Auto-reconnect attempt (silent)
+            console.log('[Phantom UI] Found previous connection, attempting auto-reconnect...');
+        }
+    }
+
+    // Connect to Phantom wallet
+    window.connectPhantom = async function() {
+        const loadingEl = document.getElementById('phantom-loading');
+        const errorEl = document.getElementById('phantom-error');
+        const connectSection = document.getElementById('phantom-connect-section');
+
+        try {
+            // Show loading
+            connectSection.style.display = 'none';
+            errorEl.style.display = 'none';
+            loadingEl.style.display = 'block';
+
+            // Connect
+            const result = await phantomAdapter.connect();
+
+            // Hide loading
+            loadingEl.style.display = 'none';
+
+            console.log('[Phantom UI] Connection successful:', result);
+
+        } catch (error) {
+            // Hide loading, show error
+            loadingEl.style.display = 'none';
+            showError(error.message);
+            connectSection.style.display = 'block';
+        }
+    };
+
+    // Disconnect wallet
+    window.disconnectPhantom = async function() {
+        try {
+            await phantomAdapter.disconnect();
+        } catch (error) {
+            console.error('[Phantom UI] Disconnect failed:', error);
+        }
+    };
+
+    // Refresh balances
+    window.refreshPhantomBalances = async function() {
+        try {
+            const balances = await phantomAdapter.refreshBalances();
+            console.log('[Phantom UI] Balances refreshed:', balances);
+        } catch (error) {
+            showError('Failed to refresh balances: ' + error.message);
+        }
+    };
+
+    // Retry connection
+    window.retryPhantomConnection = function() {
+        const errorEl = document.getElementById('phantom-error');
+        const connectSection = document.getElementById('phantom-connect-section');
+        
+        errorEl.style.display = 'none';
+        connectSection.style.display = 'block';
+    };
+
+    // Handle wallet connect
+    function handleWalletConnect(data) {
+        const statusBar = document.getElementById('phantom-status-bar');
+        const connectSection = document.getElementById('phantom-connect-section');
+        const infoPanel = document.getElementById('phantom-info-panel');
+        const addressEl = document.getElementById('phantom-wallet-address');
+
+        // Show connected UI
+        connectSection.style.display = 'none';
+        statusBar.style.display = 'flex';
+        infoPanel.style.display = 'block';
+
+        // Update address (truncated)
+        const address = data.address;
+        addressEl.textContent = `${address.slice(0, 4)}...${address.slice(-4)}`;
+        addressEl.title = address;
+
+        // Update balances
+        handleBalanceChange(data.balances);
+    }
+
+    // Handle wallet disconnect
+    function handleWalletDisconnect() {
+        const statusBar = document.getElementById('phantom-status-bar');
+        const connectSection = document.getElementById('phantom-connect-section');
+        const infoPanel = document.getElementById('phantom-info-panel');
+
+        // Show disconnected UI
+        statusBar.style.display = 'none';
+        infoPanel.style.display = 'none';
+        connectSection.style.display = 'block';
+    }
+
+    // Handle balance changes
+    function handleBalanceChange(balances) {
+        // Update SOL balance
+        const solBalanceEl = document.getElementById('phantom-sol-balance');
+        const solUsdEl = document.getElementById('phantom-sol-usd');
+        if (solBalanceEl) {
+            solBalanceEl.textContent = `${balances.SOL.toFixed(4)} SOL`;
+        }
+        // TODO: Fetch SOL price and calculate USD value
+
+        // Update PINKY balance
+        const pinkyBalanceEl = document.getElementById('phantom-pinky-balance');
+        const pinkyStatusEl = document.getElementById('phantom-pinky-status');
+        if (pinkyBalanceEl) {
+            pinkyBalanceEl.textContent = `${balances.PINKY.toLocaleString()} PINKY`;
+        }
+        
+        // Check for discount eligibility
+        if (pinkyStatusEl) {
+            if (balances.PINKY >= 10000) {
+                pinkyStatusEl.textContent = '20% discount active! 🎉';
+                pinkyStatusEl.classList.add('discount-active');
+            } else {
+                const needed = 10000 - balances.PINKY;
+                pinkyStatusEl.textContent = `${needed.toFixed(0)} more for 20% off`;
+                pinkyStatusEl.classList.remove('discount-active');
+            }
+        }
+
+        // Update SPL tokens list
+        const splListEl = document.getElementById('phantom-spl-list');
+        if (splListEl && balances.tokens) {
+            if (balances.tokens.length === 0 || (balances.tokens.length === 1 && balances.tokens[0].mint === 'YOUR_PINKY_TOKEN_MINT_ADDRESS_HERE')) {
+                splListEl.innerHTML = '<p class="empty-message">No other tokens found</p>';
+            } else {
+                splListEl.innerHTML = '';
+                balances.tokens.forEach(token => {
+                    if (token.mint !== 'YOUR_PINKY_TOKEN_MINT_ADDRESS_HERE') {
+                        const tokenCard = document.createElement('div');
+                        tokenCard.className = 'token-card';
+                        tokenCard.innerHTML = `
+                            <div class="token-name">${token.mint.slice(0, 8)}...</div>
+                            <div class="token-amount">${token.amount.toFixed(4)}</div>
+                        `;
+                        splListEl.appendChild(tokenCard);
+                    }
+                });
+            }
+        }
+    }
+
+    // Show error message
+    function showError(message) {
+        const errorEl = document.getElementById('phantom-error');
+        const errorMsgEl = document.getElementById('phantom-error-message');
+        
+        if (errorMsgEl) {
+            errorMsgEl.textContent = message;
+        }
+        errorEl.style.display = 'block';
+    }
+
+    // Initialize
+    initPhantomUI();
+
+})();
+</script>
