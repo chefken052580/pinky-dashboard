@@ -749,8 +749,15 @@ class TasksBotEnhanced {
           html += '<span onclick="event.stopPropagation();var el=document.getElementById(\'' + taskUniqueId + '-log\');if(el){el.style.display=el.style.display===\'none\'?\'block\':\'none\';}" style="color:#00d4ff;cursor:pointer;font-size:0.75em;flex-shrink:0;white-space:nowrap;text-decoration:underline;">📋 View Log</span>';
         }
         // Completed time + commit far right
+        // Extract completion time from notes first (e.g. "COMPLETED [2026-02-08 11:53 PM EST]")
+        var completedTime = '';
+        if (task.notes) {
+          var timeMatch = task.notes.match(/COMPLETED\s*\[([^\]]+)\]/i);
+          if (timeMatch) completedTime = timeMatch[1];
+        }
+        if (!completedTime) completedTime = this.formatTime(task.updated);
         html += '<span style="color:#64748b;font-size:0.75em;flex-shrink:0;white-space:nowrap;text-align:right;">';
-        html += 'Completed: ' + this.formatTime(task.updated);
+        html += 'Completed: ' + completedTime;
         if (commitHash) {
           html += '<br><span style="color:#555;font-family:monospace;font-size:0.9em;">commit: ' + commitHash + '</span>';
         }
