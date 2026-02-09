@@ -293,6 +293,53 @@ class SettingsPageUI {
             </div>
             
             <div class="settings-section-header">
+                <h3>🔑 License Key</h3>
+            </div>
+            
+            <div class="settings-group license-key-section">
+                <div class="license-key-status" id="license-key-status">
+                    <p class="license-status-text" id="license-status-text">
+                        No license key activated. Enter your license key below to unlock Pro or Enterprise features.
+                    </p>
+                    <div class="license-details hidden" id="license-details">
+                        <div class="license-detail-row">
+                            <span class="label">Tier:</span>
+                            <span class="value" id="license-tier">-</span>
+                        </div>
+                        <div class="license-detail-row">
+                            <span class="label">Expires:</span>
+                            <span class="value" id="license-expiry">-</span>
+                        </div>
+                        <div class="license-detail-row">
+                            <span class="label">Activations:</span>
+                            <span class="value" id="license-activations">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="license-key-input-group">
+                    <input 
+                        type="text" 
+                        id="license-key-input" 
+                        class="setting-input license-key-field" 
+                        placeholder="PINKY-XXXX-XXXX-XXXX-XXXX"
+                        maxlength="29"
+                    >
+                    <button class="btn btn-primary" id="activate-license-btn">
+                        🔓 Activate License
+                    </button>
+                </div>
+                
+                <div class="license-message hidden" id="license-message"></div>
+                
+                <div class="license-actions hidden" id="license-actions">
+                    <button class="btn btn-secondary" id="deactivate-license-btn">
+                        🔒 Deactivate License
+                    </button>
+                </div>
+            </div>
+            
+            <div class="settings-section-header">
                 <h3>🎨 Appearance</h3>
             </div>
             
@@ -551,6 +598,19 @@ class SettingsPageUI {
             this.testApiConnection();
         });
         
+        // License key activation
+        document.getElementById('activate-license-btn')?.addEventListener('click', () => {
+            this.activateLicenseKey();
+        });
+        
+        // License key deactivation
+        document.getElementById('deactivate-license-btn')?.addEventListener('click', () => {
+            this.deactivateLicenseKey();
+        });
+        
+        // Load current license status
+        this.loadLicenseStatus();
+        
         // Update last saved time
         this.updateLastSavedTime();
         this.updateSettingsSize();
@@ -685,6 +745,165 @@ class SettingsPageUI {
             const kb = (bytes / 1024).toFixed(2);
             sizeEl.textContent = `${kb} KB (${Object.keys(this.settings.settings).length} categories)`;
         }
+    }
+    
+    /**
+     * Load current license key status from localStorage
+     */
+    async loadLicenseStatus() {
+        const licenseKey = localStorage.getItem('pinky_license_key');
+        
+        if (!licenseKey) {
+            this.showLicenseStatus('inactive');
+            return;
+        }
+        
+        // Validate license key with backend
+        try {
+            const response = await fetch(`${API_BASE}/licenses/validate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ licenseKey })
+            });
+            
+            const data = await response.json();
+            
+            if (data.valid) {
+                this.showLicenseStatus('active', data.license);
+                document.getElementById('license-key-input').value = licenseKey;
+            } else {
+                // Invalid/expired license
+                localStorage.removeItem('pinky_license_key');
+                this.showLicenseStatus('inactive');
+                this.showLicenseMessage(data.error || 'License key is invalid or expired', 'error');
+            }
+        } catch (error) {
+            console.error('[License] Failed to validate license:', error);
+            this.showLicenseStatus('inactive');
+        }
+    }
+    
+    /**
+     * Activate license key
+     */
+    async activateLicenseKey() {
+        const licenseKeyInput = document.getElementById('license-key-input');
+        const licenseKey = licenseKeyInput.value.trim();
+        
+        if (!licenseKey) {
+            this.showLicenseMessage('Please enter a license key', 'error');
+            return;
+        }
+        
+        // Format check (PINKY-XXXX-XXXX-XXXX-XXXX)
+        if (!/^PINKY-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(licenseKey)) {
+            this.showLicenseMessage('Invalid license key format. Expected: PINKY-XXXX-XXXX-XXXX-XXXX', 'error');
+            return;
+        }
+        
+        const activateBtn = document.getElementById('activate-license-btn');
+        activateBtn.disabled = true;
+        activateBtn.textContent = '🔄 Validating...';
+        
+        try {
+            const response = await fetch(`${API_BASE}/licenses/validate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ licenseKey })
+            });
+            
+            const data = await response.json();
+            
+            if (data.valid) {
+                // Store in localStorage
+                localStorage.setItem('pinky_license_key', licenseKey);
+                
+                // Update UI
+                this.showLicenseStatus('active', data.license);
+                this.showLicenseMessage(`✅ License activated! Tier: ${data.license.tier.toUpperCase()}`, 'success');
+                
+                // Trigger feature gating update
+                if (window.featureGating) {
+                    window.featureGating.updateTierFromLicense(data.license.tier);
+                }
+            } else {
+                this.showLicenseMessage(data.error || 'License key is invalid or expired', 'error');
+            }
+        } catch (error) {
+            console.error('[License] Activation failed:', error);
+            this.showLicenseMessage('Failed to activate license: ' + error.message, 'error');
+        } finally {
+            activateBtn.disabled = false;
+            activateBtn.textContent = '🔓 Activate License';
+        }
+    }
+    
+    /**
+     * Deactivate license key
+     */
+    deactivateLicenseKey() {
+        if (!confirm('Are you sure you want to deactivate this license key? You will lose access to Pro/Enterprise features.')) {
+            return;
+        }
+        
+        // Remove from localStorage
+        localStorage.removeItem('pinky_license_key');
+        
+        // Reset UI
+        this.showLicenseStatus('inactive');
+        document.getElementById('license-key-input').value = '';
+        this.showLicenseMessage('License key deactivated', 'info');
+        
+        // Trigger feature gating update
+        if (window.featureGating) {
+            window.featureGating.updateTierFromLicense('free');
+        }
+    }
+    
+    /**
+     * Show license status UI
+     */
+    showLicenseStatus(status, license = null) {
+        const statusText = document.getElementById('license-status-text');
+        const details = document.getElementById('license-details');
+        const actions = document.getElementById('license-actions');
+        
+        if (status === 'active' && license) {
+            statusText.textContent = `✅ License key activated successfully!`;
+            statusText.className = 'license-status-text active';
+            
+            // Show details
+            document.getElementById('license-tier').textContent = license.tier.toUpperCase();
+            document.getElementById('license-expiry').textContent = license.expiresAt 
+                ? new Date(license.expiresAt).toLocaleDateString() 
+                : 'Never';
+            document.getElementById('license-activations').textContent = 
+                `${license.activationCount || 1} / ${license.maxActivations || 'Unlimited'}`;
+            
+            details.classList.remove('hidden');
+            actions.classList.remove('hidden');
+        } else {
+            statusText.textContent = 'No license key activated. Enter your license key below to unlock Pro or Enterprise features.';
+            statusText.className = 'license-status-text inactive';
+            
+            details.classList.add('hidden');
+            actions.classList.add('hidden');
+        }
+    }
+    
+    /**
+     * Show license message feedback
+     */
+    showLicenseMessage(text, type = 'info') {
+        const msgEl = document.getElementById('license-message');
+        msgEl.textContent = text;
+        msgEl.className = `license-message ${type}`;
+        msgEl.classList.remove('hidden');
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            msgEl.classList.add('hidden');
+        }, 5000);
     }
 }
 

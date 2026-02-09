@@ -405,3 +405,136 @@
         color: #0096ff;
     }
 }
+
+/* License Key Section Styles */
+.license-key-section {
+    background: var(--bg-tertiary, #252525);
+    border: 1px solid var(--border-color, #333);
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.license-key-status {
+    margin-bottom: 15px;
+}
+
+.license-status-text {
+    font-size: 14px;
+    margin: 0 0 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.license-status-text.inactive {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    color: var(--text-secondary, #999);
+}
+
+.license-status-text.active {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #4caf50;
+}
+
+.license-details {
+    background: var(--bg-secondary, #1e1e1e);
+    border: 1px solid var(--border-color, #333);
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.license-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color, #333);
+}
+
+.license-detail-row:last-child {
+    border-bottom: none;
+}
+
+.license-detail-row .label {
+    font-weight: 600;
+    color: var(--text-secondary, #999);
+}
+
+.license-detail-row .value {
+    color: var(--accent-primary, #00d4ff);
+    font-weight: 500;
+}
+
+.license-key-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.license-key-field {
+    flex: 1;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.license-message {
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.license-message.success {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #4caf50;
+}
+
+.license-message.error {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    color: #f44336;
+}
+
+.license-message.info {
+    background: rgba(33, 150, 243, 0.1);
+    border: 1px solid rgba(33, 150, 243, 0.3);
+    color: #2196f3;
+}
+
+.license-actions {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color, #333);
+}
+
+/* Light mode adjustments for license section */
+@media (prefers-color-scheme: light) {
+    .license-key-section {
+        background: #fafafa;
+        border-color: #ddd;
+    }
+    
+    .license-details {
+        background: #fff;
+        border-color: #ddd;
+    }
+    
+    .license-detail-row {
+        border-bottom-color: #eee;
+    }
+    
+    .license-status-text.inactive {
+        background: rgba(255, 193, 7, 0.15);
+        color: #ff6f00;
+    }
+    
+    .license-status-text.active {
+        background: rgba(76, 175, 80, 0.15);
+        color: #2e7d32;
+    }
+}
