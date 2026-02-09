@@ -228,16 +228,16 @@
                 </div>
 
                 <!-- Task Statistics Widget -->
-                <div id="task-statistics-container" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
+                <div id="task-statistics-container" style="margin-top: 2rem; padding: 1.5rem; background: var(--surface-1); border-radius: var(--radius-lg); border: 1px solid var(--border-default);">
                 </div>
 
                 <!-- Task History Chart - Last 30 Days -->
-                <div id="task-history-chart-container" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
+                <div id="task-history-chart-container" style="margin-top: 2rem; padding: 1.5rem; background: var(--surface-1); border-radius: var(--radius-lg); border: 1px solid var(--border-default);">
                 </div>
 
                 <!-- Analytics Dashboard Section -->
-                <div id="analytics-dashboard-section" style="margin-top: 2rem; padding: 1.5rem; background: rgba(20, 40, 80, 0.3); border-radius: 8px; border: 1px solid rgba(68, 150, 255, 0.2);">
-                    <h3 style="color: #4496ff; margin-bottom: 15px;">📈 Analytics Dashboard</h3>
+                <div id="analytics-dashboard-section" style="margin-top: 2rem; padding: 1.5rem; background: var(--surface-1); border-radius: var(--radius-lg); border: 1px solid var(--border-default);">
+                    <h3 style="color: var(--text-accent); margin-bottom: 15px;">📈 Analytics Dashboard</h3>
                     <div id="health-dashboard-container-main" style="margin-bottom: 20px;"></div>
                     <div id="changelog-widget-main" style="margin-bottom: 20px;"></div>
                     <div id="system-monitor-container-main" style="margin-bottom: 20px;"></div>
@@ -398,7 +398,7 @@
             <!-- DocsBot View -->
                         <div id="docs-view" class="view">
                 <h2>📝 DocsBot - Documentation Master</h2>
-                <p style="color:white;margin-bottom:25px;">
+                <p style="color:var(--text-secondary);margin-bottom:25px;">
                     Auto-generates documentation, changelogs, and project reports from your codebase.
                 </p>
                 <div id="docsbot-container"></div>
@@ -471,10 +471,10 @@
                 <div class="recent-activity" style="margin-top:30px;">
                     <h3>⚡ Quick Generate</h3>
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px;">
-                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('readme')" style="padding:15px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;color:#fff;border-radius:10px;cursor:pointer;font-weight:bold;">📋 Generate README</button>
-                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('api')" style="padding:15px;background:linear-gradient(135deg,#00d4ff,#0099cc);border:none;color:#000;border-radius:10px;cursor:pointer;font-weight:bold;">🔌 API Documentation</button>
-                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('changelog')" style="padding:15px;background:linear-gradient(135deg,#4ade80,#22c55e);border:none;color:#000;border-radius:10px;cursor:pointer;font-weight:bold;">📜 Changelog</button>
-                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('report')" style="padding:15px;background:linear-gradient(135deg,#fbbf24,#f59e0b);border:none;color:#000;border-radius:10px;cursor:pointer;font-weight:bold;">📑 Daily Report</button>
+                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('readme')" class="action-btn" style="padding:15px;border-radius:10px;">📋 Generate README</button>
+                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('api')" class="action-btn" style="padding:15px;border-radius:10px;background:var(--gradient-blue);">🔌 API Documentation</button>
+                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('changelog')" class="action-btn" style="padding:15px;border-radius:10px;background:var(--gradient-green);">📜 Changelog</button>
+                        <button class="action-btn" onclick="window.docsBotPro && window.docsBotPro.generateDoc('report')" class="action-btn" style="padding:15px;border-radius:10px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;">📑 Daily Report</button>
                     </div>
                 </div>
 
@@ -494,17 +494,17 @@
                 <div class="recent-activity" style="margin-top:30px;">
                     <h3>✅ Documentation Quality</h3>
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-top:15px;">
-                        <div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:18px;">
-                            <div style="color:#fff;font-weight:bold;margin-bottom:8px;">📝 Code Comments</div>
-                            <div style="color:#aaa;font-size:0.9em;">Auto-generate JSDoc comments for all functions</div>
+                        <div class="feature-card" style="padding:18px;">
+                            <div class="feature-title">📝 Code Comments</div>
+                            <div class="feature-desc">Auto-generate JSDoc comments for all functions</div>
                         </div>
-                        <div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:18px;">
-                            <div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔄 Version Control</div>
-                            <div style="color:#aaa;font-size:0.9em;">Track doc versions, diffs, and rollback changes</div>
+                        <div class="feature-card" style="padding:18px;">
+                            <div class="feature-title">🔄 Version Control</div>
+                            <div class="feature-desc">Track doc versions, diffs, and rollback changes</div>
                         </div>
-                        <div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:18px;">
-                            <div style="color:#fff;font-weight:bold;margin-bottom:8px;">📤 Export Formats</div>
-                            <div style="color:#aaa;font-size:0.9em;">Export as Markdown, PDF, HTML, or DOCX</div>
+                        <div class="feature-card" style="padding:18px;">
+                            <div class="feature-title">📤 Export Formats</div>
+                            <div class="feature-desc">Export as Markdown, PDF, HTML, or DOCX</div>
                         </div>
                     </div>
                 </div>
@@ -512,7 +512,7 @@
 
             <div id="research-view" class="view">
                 <h2>🔍 ResearchBot - Intelligence Gatherer</h2>
-                <p style="color:white;margin-bottom:25px;">
+                <p style="color:var(--text-secondary);margin-bottom:25px;">
                     AI-powered market research, competitor analysis, and trend discovery engine.
                 </p>
                 <div id="researchbot-container"></div>
@@ -585,10 +585,10 @@
                 <div class="recent-activity" style="margin-top:30px;">
                     <h3>🚀 Quick Research</h3>
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px;">
-                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('market')" style="padding:15px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;color:#fff;border-radius:10px;cursor:pointer;font-weight:bold;">📊 Market Analysis</button>
-                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('competitor')" style="padding:15px;background:linear-gradient(135deg,#00d4ff,#0099cc);border:none;color:#000;border-radius:10px;cursor:pointer;font-weight:bold;">🏢 Competitor Intel</button>
-                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('trend')" style="padding:15px;background:linear-gradient(135deg,#4ade80,#22c55e);border:none;color:#000;border-radius:10px;cursor:pointer;font-weight:bold;">📈 Trend Discovery</button>
-                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('crypto')" style="padding:15px;background:linear-gradient(135deg,#fbbf24,#f59e0b);border:none;color:#000;border-radius:10px;cursor:pointer;font-weight:bold;">🪙 Crypto Research</button>
+                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('market')" class="action-btn" style="padding:15px;border-radius:10px;">📊 Market Analysis</button>
+                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('competitor')" class="action-btn" style="padding:15px;border-radius:10px;background:var(--gradient-blue);">🏢 Competitor Intel</button>
+                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('trend')" class="action-btn" style="padding:15px;border-radius:10px;background:var(--gradient-green);">📈 Trend Discovery</button>
+                        <button class="action-btn" onclick="window.researchBotPro && window.researchBotPro.startResearch('crypto')" class="action-btn" style="padding:15px;border-radius:10px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;">🪙 Crypto Research</button>
                     </div>
                 </div>
 
@@ -608,17 +608,17 @@
                 <div class="recent-activity" style="margin-top:30px;">
                     <h3>🧠 Research Capabilities</h3>
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-top:15px;">
-                        <div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:18px;">
-                            <div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔎 Deep Analysis</div>
-                            <div style="color:#aaa;font-size:0.9em;">Multi-source research with AI-powered synthesis</div>
+                        <div class="feature-card" style="padding:18px;">
+                            <div class="feature-title">🔎 Deep Analysis</div>
+                            <div class="feature-desc">Multi-source research with AI-powered synthesis</div>
                         </div>
-                        <div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:18px;">
-                            <div style="color:#fff;font-weight:bold;margin-bottom:8px;">📊 Visual Reports</div>
-                            <div style="color:#aaa;font-size:0.9em;">Generate charts, comparisons, and executive summaries</div>
+                        <div class="feature-card" style="padding:18px;">
+                            <div class="feature-title">📊 Visual Reports</div>
+                            <div class="feature-desc">Generate charts, comparisons, and executive summaries</div>
                         </div>
-                        <div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:18px;">
-                            <div style="color:#fff;font-weight:bold;margin-bottom:8px;">⏰ Scheduled Reports</div>
-                            <div style="color:#aaa;font-size:0.9em;">Auto-run research on schedule with email delivery</div>
+                        <div class="feature-card" style="padding:18px;">
+                            <div class="feature-title">⏰ Scheduled Reports</div>
+                            <div class="feature-desc">Auto-run research on schedule with email delivery</div>
                         </div>
                     </div>
                 </div>
@@ -626,7 +626,7 @@
 
 <div id="code-view" class="view">
                 <h2>💻 CodeBot - Development Assistant</h2>
-                <p style="color:white;margin-bottom:25px;">
+                <p style="color:var(--text-secondary);margin-bottom:25px;">
                     Real-time code statistics, commit history, and syntax error tracking.
                 </p>
                 
@@ -717,7 +717,7 @@
             <!-- SocialBot View -->
             <div id="social-view" class="view">
                 <h2>📱 SocialBot - Content Creator</h2>
-                <p style="color:white;margin-bottom:25px;">
+                <p style="color:var(--text-secondary);margin-bottom:25px;">
                     Creates engaging social media content and manages campaigns.
                 </p>
                 
@@ -756,7 +756,7 @@
             <!-- FileSystemBot View -->
             <div id="filesystem-view" class="view">
                 <h2>📁 FileSystemBot - AI File Assistant</h2>
-                <p style="color:white;margin-bottom:25px;">
+                <p style="color:var(--text-secondary);margin-bottom:25px;">
                     FileSystemBot helps Pinky stay organized! No permissions outside Pinky's workspace.
                 </p>
                 <div id="filesystembot-container"></div>
@@ -775,8 +775,8 @@
                     </div>
                 </div>
 
-                <div style="background:white;border-radius:15px;padding:25px;margin-top:25px;">
-                    <h3 style="color:#667eea;">ℹ️ About FileSystemBot</h3>
+                <div style="background:var(--bg-card);border-radius:var(--radius-lg);padding:25px;margin-top:25px;">
+                    <h3 style="color:var(--primary-purple);">ℹ️ About FileSystemBot</h3>
                     <p style="margin-top:15px;line-height:1.6;">
                         FileSystemBot is Pinky's personal assistant for file management and organization.
                         It has <strong>limited permissions</strong> - only allowed to work within Pinky's workspace
@@ -827,7 +827,7 @@
             <!-- Social Media View -->
             <div id="social-media-view" class="view">
                 <h2>🌐 SocialBot - Social Media Manager</h2>
-                <p style="color:white;margin-bottom:25px;">
+                <p style="color:var(--text-secondary);margin-bottom:25px;">
                     Manage all your social media companies and content in one place.
                 </p>
                 
