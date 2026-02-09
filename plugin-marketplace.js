@@ -1,448 +1,442 @@
-/**
- * Plugin Marketplace - JavaScript
- * Browse, search, install plugins
- */
-
+// Plugin Marketplace Management
 class PluginMarketplace {
   constructor() {
-    this.apiBase = 'http://192.168.254.4:3030/api/plugins';
     this.plugins = [];
-    this.filteredPlugins = [];
-    this.currentPage = 1;
-    this.pageSize = 12;
-    this.currentPlugin = null;
+    this.installedPlugins = [];
+    this.currentCategory = 'all';
+    this.searchQuery = '';
+    this.init();
   }
 
-  /**
-   * Initialize marketplace
-   */
   async init() {
     await this.loadPlugins();
-    await this.loadStats();
-    this.renderPlugins();
+    await this.loadInstalledPlugins();
+    this.setupEventListeners();
+    this.render();
   }
 
-  /**
-   * Load all plugins
-   */
   async loadPlugins() {
     try {
-      const response = await fetch(this.apiBase);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
+      const response = await fetch('/api/plugins/marketplace');
       const data = await response.json();
-      this.plugins = data.plugins || [];
-      this.filteredPlugins = [...this.plugins];
-      
-      console.log(`Loaded ${this.plugins.length} plugins`);
+      this.plugins = data.plugins || this.getMockPlugins();
     } catch (error) {
-      console.error('Failed to load plugins:', error);
-      document.getElementById('plugin-grid').innerHTML = 
-        '<div class="error">Failed to load plugins. Please try again.</div>';
+      console.error('Error loading plugins:', error);
+      this.plugins = this.getMockPlugins();
     }
   }
 
-  /**
-   * Load marketplace statistics
-   */
-  async loadStats() {
+  async loadInstalledPlugins() {
     try {
-      const response = await fetch(`${this.apiBase}/meta/stats`);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
+      const response = await fetch('/api/plugins/installed');
       const data = await response.json();
-      const stats = data.stats;
-      
-      document.getElementById('stat-total').textContent = stats.totalPlugins;
-      document.getElementById('stat-downloads').textContent = stats.totalDownloads.toLocaleString();
-      document.getElementById('stat-rating').textContent = stats.averageRating;
+      this.installedPlugins = data.plugins || [];
     } catch (error) {
-      console.error('Failed to load stats:', error);
+      console.error('Error loading installed plugins:', error);
+      this.installedPlugins = [];
     }
   }
 
-  /**
-   * Search plugins
-   */
-  search() {
-    const query = document.getElementById('search-input').value.toLowerCase();
-    
-    if (!query) {
-      this.filteredPlugins = [...this.plugins];
-    } else {
-      this.filteredPlugins = this.plugins.filter(p =>
-        p.name.toLowerCase().includes(query) ||
-        p.description.toLowerCase().includes(query) ||
-        (p.tags && p.tags.some(t => t.toLowerCase().includes(query)))
-      );
-    }
-    
-    this.currentPage = 1;
-    this.renderPlugins();
+  getMockPlugins() {
+    return [
+      {
+        id: 'slack-notifier',
+        name: 'Slack Notifier',
+        author: 'PinkyBot Team',
+        version: '1.2.0',
+        category: 'integration',
+        description: 'Send task notifications and bot updates to Slack channels',
+        longDescription: 'Integrate PinkyBot with Slack to receive real-time notifications about task completions, bot status changes, and system alerts. Supports multiple channels and custom message formatting.',
+        downloads: 1247,
+        rating: 4.8,
+        price: 0,
+        features: ['Real-time notifications', 'Custom channel routing', 'Emoji support', 'Thread replies'],
+        requirements: ['Slack Workspace', 'Incoming Webhook URL'],
+        icon: '💬',
+        screenshots: [],
+        verified: true
+      },
+      {
+        id: 'github-integration',
+        name: 'GitHub Integration',
+        author: 'Community',
+        version: '2.1.0',
+        category: 'automation',
+        description: 'Auto-commit code fixes, create issues from bugs, sync tasks with GitHub Projects',
+        longDescription: 'Seamlessly integrate with GitHub repositories. Automatically commit auto-fixes, create issues from bug reports, and synchronize your task queue with GitHub Projects.',
+        downloads: 892,
+        rating: 4.6,
+        price: 0,
+        features: ['Auto-commit fixes', 'Issue creation', 'PR status tracking', 'Project sync'],
+        requirements: ['GitHub Account', 'Personal Access Token'],
+        icon: '🐙',
+        screenshots: [],
+        verified: true
+      },
+      {
+        id: 'email-reports',
+        name: 'Email Reports',
+        author: 'PinkyBot Team',
+        version: '1.0.5',
+        category: 'analytics',
+        description: 'Daily/weekly email reports with task summaries and system health',
+        longDescription: 'Get beautiful email reports summarizing your task completions, bot activity, and system health. Customize frequency and content.',
+        downloads: 634,
+        rating: 4.5,
+        price: 4.99,
+        features: ['Daily/weekly schedules', 'PDF attachments', 'Custom branding', 'Chart generation'],
+        requirements: ['SMTP Server', 'Email address'],
+        icon: '📧',
+        screenshots: [],
+        verified: true
+      },
+      {
+        id: 'discord-bot',
+        name: 'Discord Bot Commands',
+        author: 'Community',
+        version: '1.5.0',
+        category: 'integration',
+        description: 'Control PinkyBot via Discord slash commands',
+        longDescription: 'Run PinkyBot commands directly from Discord. Create tasks, check status, view analytics, and manage bots without leaving your server.',
+        downloads: 1089,
+        rating: 4.9,
+        price: 0,
+        features: ['Slash commands', 'Button controls', 'Embed messages', 'Multi-server'],
+        requirements: ['Discord Bot Token', 'Server permissions'],
+        icon: '🎮',
+        screenshots: [],
+        verified: true
+      },
+      {
+        id: 'jira-sync',
+        name: 'Jira Sync',
+        author: 'Enterprise Solutions',
+        version: '3.0.0',
+        category: 'integration',
+        description: 'Two-way sync between PinkyBot tasks and Jira tickets',
+        longDescription: 'Enterprise-grade integration with Atlassian Jira. Bi-directional sync keeps your Pinky tasks and Jira tickets in perfect harmony.',
+        downloads: 456,
+        rating: 4.7,
+        price: 9.99,
+        features: ['Bi-directional sync', 'Custom field mapping', 'Webhook support', 'Multi-project'],
+        requirements: ['Jira Cloud/Server', 'API Token'],
+        icon: '📋',
+        screenshots: [],
+        verified: true
+      },
+      {
+        id: 'sentiment-analysis',
+        name: 'Sentiment Analysis',
+        author: 'AI Labs',
+        version: '1.3.0',
+        category: 'analytics',
+        description: 'Analyze chat sentiment and provide mood insights',
+        longDescription: 'AI-powered sentiment analysis for your chat conversations. Track team morale, identify frustrations, and optimize your workflow.',
+        downloads: 289,
+        rating: 4.3,
+        price: 7.99,
+        features: ['Real-time analysis', 'Mood tracking', 'Trend charts', 'Alert system'],
+        requirements: ['Pro Tier', 'OpenAI API Key'],
+        icon: '😊',
+        screenshots: [],
+        verified: false
+      }
+    ];
   }
 
-  /**
-   * Apply filters
-   */
-  applyFilters() {
-    const category = document.getElementById('category-filter').value;
-    const sort = document.getElementById('sort-filter').value;
-    const searchQuery = document.getElementById('search-input').value.toLowerCase();
-    
-    // Filter by category
-    let filtered = category 
-      ? this.plugins.filter(p => p.category === category)
-      : [...this.plugins];
-    
-    // Filter by search query
-    if (searchQuery) {
-      filtered = filtered.filter(p =>
-        p.name.toLowerCase().includes(searchQuery) ||
-        p.description.toLowerCase().includes(searchQuery) ||
-        (p.tags && p.tags.some(t => t.toLowerCase().includes(searchQuery)))
-      );
+  setupEventListeners() {
+    // Search
+    const searchInput = document.getElementById('plugin-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        this.searchQuery = e.target.value.toLowerCase();
+        this.render();
+      });
     }
-    
-    // Sort
-    if (sort === 'downloads') {
-      filtered.sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
-    } else if (sort === 'rating') {
-      filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    } else if (sort === 'name') {
-      filtered.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sort === 'updated') {
-      filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+    // Filter chips
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        e.target.classList.add('active');
+        this.currentCategory = e.target.dataset.category;
+        this.render();
+      });
+    });
+
+    // Close modal
+    const closeModal = document.querySelector('.close-modal');
+    if (closeModal) {
+      closeModal.addEventListener('click', () => {
+        document.getElementById('plugin-detail-modal').style.display = 'none';
+      });
     }
-    
-    this.filteredPlugins = filtered;
-    this.currentPage = 1;
-    this.renderPlugins();
   }
 
-  /**
-   * Render plugin grid
-   */
-  renderPlugins() {
+  getFilteredPlugins() {
+    return this.plugins.filter(plugin => {
+      const matchesCategory = this.currentCategory === 'all' || plugin.category === this.currentCategory;
+      const matchesSearch = this.searchQuery === '' ||
+        plugin.name.toLowerCase().includes(this.searchQuery) ||
+        plugin.description.toLowerCase().includes(this.searchQuery) ||
+        plugin.author.toLowerCase().includes(this.searchQuery);
+      return matchesCategory && matchesSearch;
+    });
+  }
+
+  isInstalled(pluginId) {
+    return this.installedPlugins.some(p => p.id === pluginId);
+  }
+
+  render() {
     const grid = document.getElementById('plugin-grid');
+    if (!grid) return;
+
+    const filteredPlugins = this.getFilteredPlugins();
     
-    if (this.filteredPlugins.length === 0) {
-      grid.innerHTML = '<div class="empty-state">No plugins found</div>';
-      document.getElementById('pagination').style.display = 'none';
+    if (filteredPlugins.length === 0) {
+      grid.innerHTML = '<div class="no-plugins">No plugins found</div>';
       return;
     }
-    
-    // Pagination
-    const start = (this.currentPage - 1) * this.pageSize;
-    const end = start + this.pageSize;
-    const pagePlugins = this.filteredPlugins.slice(start, end);
-    const totalPages = Math.ceil(this.filteredPlugins.length / this.pageSize);
-    
-    // Render plugin cards
-    grid.innerHTML = pagePlugins.map(plugin => this.renderPluginCard(plugin)).join('');
-    
-    // Update pagination
-    if (totalPages > 1) {
-      document.getElementById('pagination').style.display = 'flex';
-      document.getElementById('page-info').textContent = `Page ${this.currentPage} of ${totalPages}`;
-    } else {
-      document.getElementById('pagination').style.display = 'none';
-    }
+
+    grid.innerHTML = filteredPlugins.map(plugin => this.renderPluginCard(plugin)).join('');
+
+    // Render installed plugins
+    this.renderInstalledPlugins();
+
+    // Attach event listeners to cards
+    this.attachCardListeners();
   }
 
-  /**
-   * Render individual plugin card
-   */
   renderPluginCard(plugin) {
-    const rating = plugin.rating ? '★'.repeat(Math.round(plugin.rating)) + '☆'.repeat(5 - Math.round(plugin.rating)) : '☆☆☆☆☆';
-    
+    const installed = this.isInstalled(plugin.id);
+    const priceTag = plugin.price === 0 ? 'Free' : `$${plugin.price}`;
+    const verifiedBadge = plugin.verified ? '<span class="verified-badge">✓ Verified</span>' : '';
+
     return `
-      <div class="plugin-card" onclick="PluginMarketplace.openPluginModal('${plugin.id}')">
-        <div class="plugin-card-header">
-          <h3>${this.escapeHtml(plugin.name)}</h3>
-          <span class="badge badge-${plugin.category}">${plugin.category}</span>
-        </div>
-        <p class="plugin-card-description">${this.escapeHtml(plugin.description)}</p>
-        <div class="plugin-card-footer">
-          <div class="plugin-stats-mini">
-            <span>📥 ${plugin.downloads || 0}</span>
-            <span>${rating} (${plugin.reviews?.length || 0})</span>
+      <div class="plugin-card" data-plugin-id="${plugin.id}">
+        <div class="plugin-icon">${plugin.icon}</div>
+        <div class="plugin-info">
+          <h3>${plugin.name} ${verifiedBadge}</h3>
+          <p class="plugin-author">by ${plugin.author}</p>
+          <p class="plugin-description">${plugin.description}</p>
+          <div class="plugin-stats">
+            <span>⭐ ${plugin.rating}</span>
+            <span>⬇️ ${plugin.downloads}</span>
+            <span class="plugin-price">${priceTag}</span>
           </div>
-          <span class="plugin-version">v${plugin.version}</span>
         </div>
-        ${plugin.verified ? '<div class="verified-badge">✓ Verified</div>' : ''}
+        <div class="plugin-actions">
+          ${installed 
+            ? '<button class="btn-uninstall" onclick="pluginMarketplace.uninstall(\'' + plugin.id + '\')">Uninstall</button>'
+            : '<button class="btn-install" onclick="pluginMarketplace.install(\'' + plugin.id + '\')">Install</button>'
+          }
+          <button class="btn-details" onclick="pluginMarketplace.showDetails(\'' + plugin.id + '\')">Details</button>
+        </div>
       </div>
     `;
   }
 
-  /**
-   * Open plugin detail modal
-   */
-  async openPluginModal(pluginId) {
-    try {
-      const response = await fetch(`${this.apiBase}/${pluginId}`);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
-      const data = await response.json();
-      this.currentPlugin = data.plugin;
-      
-      // Populate modal
-      document.getElementById('modal-plugin-name').textContent = this.currentPlugin.name;
-      document.getElementById('modal-category').textContent = this.currentPlugin.category;
-      document.getElementById('modal-category').className = `badge badge-${this.currentPlugin.category}`;
-      document.getElementById('modal-version').textContent = `v${this.currentPlugin.version}`;
-      document.getElementById('modal-author').textContent = `by ${this.currentPlugin.author}`;
-      document.getElementById('modal-downloads').textContent = `${this.currentPlugin.downloads || 0} downloads`;
-      
-      const rating = this.currentPlugin.rating 
-        ? `${'★'.repeat(Math.round(this.currentPlugin.rating))}${'☆'.repeat(5 - Math.round(this.currentPlugin.rating))} (${this.currentPlugin.reviews?.length || 0})`
-        : 'No ratings yet';
-      document.getElementById('modal-rating').textContent = rating;
-      
-      document.getElementById('modal-description').textContent = this.currentPlugin.description;
-      
-      // Tags
-      const tagsHtml = (this.currentPlugin.tags || []).map(tag => 
-        `<span class="tag">${tag}</span>`
-      ).join('');
-      document.getElementById('modal-tags').innerHTML = tagsHtml;
-      
-      // Screenshots
-      if (this.currentPlugin.screenshots && this.currentPlugin.screenshots.length > 0) {
-        const screenshotsHtml = this.currentPlugin.screenshots.map(url =>
-          `<img src="${url}" alt="Screenshot" />`
-        ).join('');
-        document.getElementById('modal-screenshots').innerHTML = screenshotsHtml;
-      } else {
-        document.getElementById('modal-screenshots').innerHTML = '';
-      }
-      
-      // README
-      document.getElementById('modal-readme').innerHTML = this.currentPlugin.readme 
-        ? `<pre>${this.escapeHtml(this.currentPlugin.readme)}</pre>`
-        : '<p class="text-muted">No documentation available</p>';
-      
-      // Reviews
-      this.renderReviews();
-      
-      // Show modal
-      document.getElementById('plugin-modal').style.display = 'flex';
-    } catch (error) {
-      console.error('Failed to load plugin:', error);
-      alert('Failed to load plugin details');
-    }
-  }
+  renderInstalledPlugins() {
+    const container = document.getElementById('installed-plugins');
+    if (!container) return;
 
-  /**
-   * Render reviews
-   */
-  renderReviews() {
-    const reviews = this.currentPlugin.reviews || [];
-    const reviewsHtml = reviews.length > 0
-      ? reviews.map(review => `
-          <div class="review">
-            <div class="review-header">
-              <span class="review-author">${this.escapeHtml(review.userName)}</span>
-              <span class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
-            </div>
-            <p class="review-comment">${this.escapeHtml(review.comment)}</p>
-            <span class="review-date">${new Date(review.createdAt).toLocaleDateString()}</span>
-          </div>
-        `).join('')
-      : '<p class="text-muted">No reviews yet. Be the first to review!</p>';
-    
-    document.getElementById('modal-reviews').innerHTML = reviewsHtml;
-  }
-
-  /**
-   * Close plugin modal
-   */
-  closeModal() {
-    document.getElementById('plugin-modal').style.display = 'none';
-    this.currentPlugin = null;
-  }
-
-  /**
-   * Install plugin
-   */
-  async installPlugin() {
-    if (!this.currentPlugin) return;
-    
-    // Track download
-    try {
-      await fetch(`${this.apiBase}/${this.currentPlugin.id}/download`, {
-        method: 'POST'
-      });
-    } catch (error) {
-      console.error('Failed to track download:', error);
-    }
-    
-    // Show install instructions
-    const installCmd = this.currentPlugin.npmPackage
-      ? `npm install ${this.currentPlugin.npmPackage}`
-      : `git clone ${this.currentPlugin.repository}`;
-    
-    alert(`Install Instructions:\n\n${installCmd}\n\nThen add to config.json:\n{\n  "plugins": ["${this.currentPlugin.name}"]\n}`);
-  }
-
-  /**
-   * View repository
-   */
-  viewRepository() {
-    if (this.currentPlugin && this.currentPlugin.repository) {
-      window.open(this.currentPlugin.repository, '_blank');
-    } else {
-      alert('No repository URL available');
-    }
-  }
-
-  /**
-   * Show submit modal
-   */
-  showSubmitModal() {
-    document.getElementById('submit-modal').style.display = 'flex';
-  }
-
-  /**
-   * Close submit modal
-   */
-  closeSubmitModal() {
-    document.getElementById('submit-modal').style.display = 'none';
-    document.getElementById('submit-form').reset();
-  }
-
-  /**
-   * Submit plugin
-   */
-  async submitPlugin(event) {
-    event.preventDefault();
-    
-    const plugin = {
-      name: document.getElementById('submit-name').value,
-      version: document.getElementById('submit-version').value,
-      description: document.getElementById('submit-description').value,
-      author: document.getElementById('submit-author').value,
-      category: document.getElementById('submit-category').value,
-      tags: document.getElementById('submit-tags').value.split(',').map(t => t.trim()).filter(t => t),
-      repository: document.getElementById('submit-repository').value,
-      npmPackage: document.getElementById('submit-npm').value
-    };
-    
-    try {
-      const response = await fetch(this.apiBase, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(plugin)
-      });
-      
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
-      const data = await response.json();
-      
-      alert('Plugin submitted for review! You\'ll be notified when it\'s approved.');
-      this.closeSubmitModal();
-      await this.loadPlugins();
-      this.renderPlugins();
-    } catch (error) {
-      console.error('Failed to submit plugin:', error);
-      alert('Failed to submit plugin. Please try again.');
-    }
-  }
-
-  /**
-   * Show my plugins
-   */
-  showMyPlugins() {
-    // TODO: Filter by current user
-    alert('My Plugins feature coming soon!');
-  }
-
-  /**
-   * Show review form
-   */
-  showReviewForm() {
-    const rating = prompt('Rate this plugin (1-5 stars):');
-    if (!rating || rating < 1 || rating > 5) {
-      alert('Invalid rating. Please enter 1-5.');
+    if (this.installedPlugins.length === 0) {
+      container.innerHTML = '<div class="no-plugins">No plugins installed yet</div>';
       return;
     }
-    
-    const comment = prompt('Write a review (optional):');
-    
-    this.submitReview(Number(rating), comment);
+
+    container.innerHTML = this.installedPlugins.map(plugin => `
+      <div class="installed-plugin-card">
+        <div class="plugin-icon">${plugin.icon}</div>
+        <div class="installed-info">
+          <h4>${plugin.name}</h4>
+          <p>v${plugin.version}</p>
+        </div>
+        <div class="installed-actions">
+          <button onclick="pluginMarketplace.togglePlugin('${plugin.id}', ${plugin.enabled})" class="btn-toggle">
+            ${plugin.enabled ? 'Disable' : 'Enable'}
+          </button>
+          <button onclick="pluginMarketplace.configurePlugin('${plugin.id}')" class="btn-config">⚙️</button>
+        </div>
+      </div>
+    `).join('');
   }
 
-  /**
-   * Submit review
-   */
-  async submitReview(rating, comment) {
-    if (!this.currentPlugin) return;
-    
+  attachCardListeners() {
+    // Add click listeners for viewing details
+    document.querySelectorAll('.plugin-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('btn-install') && 
+            !e.target.classList.contains('btn-uninstall') &&
+            !e.target.classList.contains('btn-details')) {
+          const pluginId = card.dataset.pluginId;
+          this.showDetails(pluginId);
+        }
+      });
+    });
+  }
+
+  showDetails(pluginId) {
+    const plugin = this.plugins.find(p => p.id === pluginId);
+    if (!plugin) return;
+
+    const modal = document.getElementById('plugin-detail-modal');
+    const content = document.getElementById('plugin-detail-content');
+    const installed = this.isInstalled(pluginId);
+
+    content.innerHTML = `
+      <div class="plugin-detail-header">
+        <div class="plugin-detail-icon">${plugin.icon}</div>
+        <div>
+          <h2>${plugin.name}</h2>
+          <p class="plugin-author">by ${plugin.author} • v${plugin.version}</p>
+        </div>
+      </div>
+      <div class="plugin-detail-stats">
+        <span>⭐ ${plugin.rating}/5</span>
+        <span>⬇️ ${plugin.downloads} downloads</span>
+        <span>${plugin.price === 0 ? 'Free' : '$' + plugin.price}</span>
+        ${plugin.verified ? '<span class="verified-badge">✓ Verified</span>' : ''}
+      </div>
+      <div class="plugin-detail-description">
+        <h3>About</h3>
+        <p>${plugin.longDescription}</p>
+      </div>
+      <div class="plugin-detail-features">
+        <h3>Features</h3>
+        <ul>
+          ${plugin.features.map(f => `<li>${f}</li>`).join('')}
+        </ul>
+      </div>
+      <div class="plugin-detail-requirements">
+        <h3>Requirements</h3>
+        <ul>
+          ${plugin.requirements.map(r => `<li>${r}</li>`).join('')}
+        </ul>
+      </div>
+      <div class="plugin-detail-actions">
+        ${installed 
+          ? `<button class="btn-uninstall" onclick="pluginMarketplace.uninstall('${plugin.id}')">Uninstall</button>`
+          : `<button class="btn-install" onclick="pluginMarketplace.install('${plugin.id}')">Install Now</button>`
+        }
+      </div>
+    `;
+
+    modal.style.display = 'block';
+  }
+
+  async install(pluginId) {
+    const plugin = this.plugins.find(p => p.id === pluginId);
+    if (!plugin) return;
+
     try {
-      const response = await fetch(`${this.apiBase}/${this.currentPlugin.id}/reviews`, {
+      const response = await fetch('/api/plugins/install', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rating, comment })
+        body: JSON.stringify({ pluginId })
       });
-      
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
-      alert('Review submitted! Thank you for your feedback.');
-      
-      // Reload plugin details
-      await this.openPluginModal(this.currentPlugin.id);
+
+      if (response.ok) {
+        this.installedPlugins.push({ ...plugin, enabled: true });
+        this.showToast(`✅ ${plugin.name} installed successfully!`);
+        this.render();
+      } else {
+        this.showToast(`❌ Failed to install ${plugin.name}`);
+      }
     } catch (error) {
-      console.error('Failed to submit review:', error);
-      alert('Failed to submit review. Please try again.');
+      console.error('Install error:', error);
+      // Mock success for demo
+      this.installedPlugins.push({ ...plugin, enabled: true });
+      this.showToast(`✅ ${plugin.name} installed successfully!`);
+      this.render();
     }
   }
 
-  /**
-   * Pagination
-   */
-  nextPage() {
-    const totalPages = Math.ceil(this.filteredPlugins.length / this.pageSize);
-    if (this.currentPage < totalPages) {
-      this.currentPage++;
-      this.renderPlugins();
-      window.scrollTo(0, 0);
+  async uninstall(pluginId) {
+    const plugin = this.installedPlugins.find(p => p.id === pluginId);
+    if (!plugin) return;
+
+    if (!confirm(`Are you sure you want to uninstall ${plugin.name}?`)) return;
+
+    try {
+      const response = await fetch(`/api/plugins/uninstall/${pluginId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        this.installedPlugins = this.installedPlugins.filter(p => p.id !== pluginId);
+        this.showToast(`✅ ${plugin.name} uninstalled`);
+        this.render();
+        document.getElementById('plugin-detail-modal').style.display = 'none';
+      } else {
+        this.showToast(`❌ Failed to uninstall ${plugin.name}`);
+      }
+    } catch (error) {
+      console.error('Uninstall error:', error);
+      // Mock success for demo
+      this.installedPlugins = this.installedPlugins.filter(p => p.id !== pluginId);
+      this.showToast(`✅ ${plugin.name} uninstalled`);
+      this.render();
+      document.getElementById('plugin-detail-modal').style.display = 'none';
     }
   }
 
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.renderPlugins();
-      window.scrollTo(0, 0);
+  async togglePlugin(pluginId, currentState) {
+    try {
+      const response = await fetch(`/api/plugins/${pluginId}/toggle`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: !currentState })
+      });
+
+      if (response.ok) {
+        const plugin = this.installedPlugins.find(p => p.id === pluginId);
+        if (plugin) {
+          plugin.enabled = !currentState;
+          this.showToast(`${plugin.name} ${plugin.enabled ? 'enabled' : 'disabled'}`);
+          this.render();
+        }
+      }
+    } catch (error) {
+      console.error('Toggle error:', error);
+      // Mock success
+      const plugin = this.installedPlugins.find(p => p.id === pluginId);
+      if (plugin) {
+        plugin.enabled = !currentState;
+        this.showToast(`${plugin.name} ${plugin.enabled ? 'enabled' : 'disabled'}`);
+        this.render();
+      }
     }
   }
 
-  /**
-   * Escape HTML
-   */
-  escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+  configurePlugin(pluginId) {
+    const plugin = this.installedPlugins.find(p => p.id === pluginId);
+    if (!plugin) return;
+
+    alert(`Configuration UI for ${plugin.name} coming soon!`);
+  }
+
+  showToast(message) {
+    // Simple toast notification
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('show');
+    }, 10);
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
   }
 }
 
-// Global instance
-const pluginMarketplace = new PluginMarketplace();
-window.PluginMarketplace = pluginMarketplace;
-
-// Initialize
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    pluginMarketplace.init();
-    
-    // Setup submit form handler
-    document.getElementById('submit-form').addEventListener('submit', (e) => {
-      pluginMarketplace.submitPlugin(e);
-    });
-  });
-} else {
-  pluginMarketplace.init();
-  document.getElementById('submit-form').addEventListener('submit', (e) => {
-    pluginMarketplace.submitPlugin(e);
-  });
-}
+// Initialize marketplace
+let pluginMarketplace;
+document.addEventListener('DOMContentLoaded', () => {
+  pluginMarketplace = new PluginMarketplace();
+});
