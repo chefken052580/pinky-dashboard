@@ -28,18 +28,6 @@ function formatTimeEST(timestamp) {
     });
 }
 
-// Format large numbers with K/M/B suffixes to prevent overflow
-function formatNumber(num) {
-    if (num >= 1000000000) {
-        return (num / 1000000000).toFixed(1) + 'B';
-    } else if (num >= 1000000) {
-        return (num / 1000000).toFixed(1) + 'M';
-    } else if (num >= 1000) {
-        return (num / 1000).toFixed(1) + 'K';
-    }
-    return num.toString();
-}
-
 // State
 let currentView = 'dashboard';
 let currentMonitorView = 'heartbeat';
@@ -292,34 +280,14 @@ function loadActivityData() {
         .then(data => {
             // Extract heartbeats from API response {heartbeats: [...]}
             const heartbeatsArray = data.heartbeats || [];
-            
-            // Calculate aggregate usage stats from heartbeats
-            let totalTokens = 0;
-            let totalExec = 0;
-            let totalFiles = 0;
-            const responses = [];
-            
-            heartbeatsArray.forEach(hb => {
-                if (hb.tokens) totalTokens += hb.tokens;
-                if (hb.exec) totalExec += hb.exec;
-                if (hb.files) totalFiles += hb.files;
-                if (hb.lagMs !== undefined) responses.push(hb.lagMs);
-            });
-            
             activityData = {
                 heartbeats: heartbeatsArray,
-                heartbeatCount: heartbeatsArray.length,
-                usage: {
-                    tokens: totalTokens,
-                    exec: totalExec,
-                    files: totalFiles,
-                    responses: responses
-                }
+                heartbeatCount: heartbeatsArray.length
             };
             updateMonitorStats();
             renderMonitorChart(currentMonitorView);
             renderHeaderStats();
-            console.log('[Monitor] Loaded activity data from /api/activity: ' + heartbeatsArray.length + ' heartbeats, ' + totalExec + ' exec calls');
+            console.log('[Monitor] Loaded activity data from /api/activity: ' + heartbeatsArray.length + ' heartbeats');
         })
         .catch(err => {
             console.error('[Monitor] Failed to load activity data:', err);
@@ -343,7 +311,7 @@ function updateMonitorStats() {
     }
     
     // Update usage stats
-    const tokensEl = document.getElementById('tokens-used'); if (tokensEl) tokensEl.textContent = formatNumber(activityData.usage.tokens);
+    const tokensEl = document.getElementById('tokens-used'); if (tokensEl) tokensEl.textContent = activityData.usage.tokens.toLocaleString();
     const execEl = document.getElementById('exec-calls'); if (execEl) execEl.textContent = activityData.usage.exec;
     const fileEl = document.getElementById('file-ops'); if (fileEl) fileEl.textContent = activityData.usage.files;
     
@@ -591,14 +559,18 @@ function renderHeaderStats() {
         
         // Get heartbeat count from /api/activity
         const heartbeatsArray = activity.heartbeats || [];
-        let heartbeatCount = heartbeatsArray.length;
-        // Fetch baseline from state file BEFORE rendering
+        const heartbeatCount = heartbeatsArray.length;
+        // Also fetch baseline from state file (non-blocking)
         fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/heartbeat/state')
           .then(r => r.json())
           .then(stateData => {
             const baseline = stateData.heartbeatCount || 0;
-            heartbeatCount = Math.max(heartbeatCount, baseline);
-          }).catch(() => {}).finally(() => {
+            const realCount = Math.max(heartbeatsArray.length, baseline);
+            const wakeupEl = document.getElementById("total-wakeups");
+            if (wakeupEl) wakeupEl.textContent = realCount;
+            const hbEl = container.querySelector('.stat-value');
+            if (hbEl) hbEl.textContent = realCount;
+          }).catch(() => {});
         
         // Calculate tasks completed today (for header only)
         const now = new Date();
@@ -636,7 +608,6 @@ function renderHeaderStats() {
         if (wakeupEl) wakeupEl.textContent = heartbeatCount;
         
         console.log('[HeaderStats] Updated: ' + heartbeatCount + ' heartbeats, ' + allCompleted + ' tasks, $' + apiCost.toFixed(2) + ' cost, ' + messages + ' messages, ' + completionRate + ' success rate');
-          }); // end finally
     });
 }
 document.addEventListener('DOMContentLoaded', function() {
