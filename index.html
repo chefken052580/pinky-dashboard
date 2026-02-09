@@ -508,87 +508,53 @@
             <div id="code-view" class="view">
                 <h2>💻 CodeBot - Development Assistant</h2>
                 <p style="color:white;margin-bottom:25px;">
-                    Real-time code statistics, commit history, and syntax error tracking.
+                    Generates code, debugs issues, and provides technical solutions.
                 </p>
                 
-                <!-- Code Statistics -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📝</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="code-commits-count">0</div>
-                            <div class="stat-label">Total Commits</div>
+                            <div class="stat-value" id="code-files">0</div>
+                            <div class="stat-label">Files Generated</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">➕</div>
+                        <div class="stat-icon">🐛</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="code-lines-added" style="color:#4ade80;">+0</div>
-                            <div class="stat-label">Lines Added (Last 30)</div>
+                            <div class="stat-value" id="code-bugs">0</div>
+                            <div class="stat-label">Bugs Fixed</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">➖</div>
+                        <div class="stat-icon">⚡</div>
                         <div class="stat-content">
-                            <div class="stat-value" id="code-lines-removed" style="color:#f87171;">-0</div>
-                            <div class="stat-label">Lines Removed (Last 30)</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📁</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="code-files-count">0</div>
-                            <div class="stat-label">Files Changed (Last 30)</div>
+                            <div class="stat-value" id="code-lines">0</div>
+                            <div class="stat-label">Lines Written</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- File Type Breakdown -->
-                <div class="stats-grid" style="margin-top:20px;">
-                    <div class="stat-card">
-                        <div class="stat-icon">🟨</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="code-js-files">0</div>
-                            <div class="stat-label">JavaScript Files</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🟧</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="code-html-files">0</div>
-                            <div class="stat-label">HTML Files</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🟦</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="code-css-files">0</div>
-                            <div class="stat-label">CSS Files</div>
-                        </div>
-                    </div>
+                <!-- Interactive Bot Interface -->
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
                 </div>
 
-                <!-- Recent Commits -->
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>📜 Recent Commits</h3>
-                    <div id="code-commits-list" class="activity-feed">
-                        <div class="activity-item">Loading commits...</div>
-                    </div>
-                </div>
-
-                <!-- Syntax Errors -->
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>🐛 Syntax Errors (Pre-Commit Hook)</h3>
-                    <div id="code-syntax-errors" class="activity-feed">
-                        <div class="activity-item">Checking for errors...</div>
-                    </div>
-                </div>
-
-                <!-- Top Contributors -->
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>👥 Top Contributors</h3>
-                    <div id="code-contributors" class="activity-feed">
-                        <div class="activity-item">Loading contributors...</div>
+                <div class="recent-activity" style="margin-top:25px;">
+                    <h3>📊 CodeBot Activity</h3>
+                    <div id="code-activity" class="activity-feed">
+                        <div class="activity-item">
+                            <span class="activity-time">Waiting...</span>
+                            <span class="activity-bot">CodeBot</span>
+                            <span class="activity-message">Ready to code! 💻</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -630,82 +596,20 @@
                     </div>
                 </div>
 
-                <!-- Social Media Platforms -->
-                <div style="margin-top:30px;">
-                    <h3 style="color:#667eea;margin-bottom:20px;">📱 Connected Platforms</h3>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:30px;">
-                        <!-- Twitter -->
-                        <div style="background:linear-gradient(135deg,#1DA1F2 0%,#0d8ecf 100%);padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(29,161,242,0.3);text-align:center;">
-                            <div style="font-size:48px;margin-bottom:10px;">𝕏</div>
-                            <div style="font-weight:600;color:white;font-size:16px;">Twitter</div>
-                            <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:5px;">12.4K followers</div>
-                            <button style="margin-top:12px;padding:8px 16px;background:white;color:#1DA1F2;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">Connect</button>
-                        </div>
-                        <!-- Instagram -->
-                        <div style="background:linear-gradient(135deg,#E1306C 0%,#C13584 50%,#833AB4 100%);padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(225,48,108,0.3);text-align:center;">
-                            <div style="font-size:48px;margin-bottom:10px;">📷</div>
-                            <div style="font-weight:600;color:white;font-size:16px;">Instagram</div>
-                            <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:5px;">8.7K followers</div>
-                            <button style="margin-top:12px;padding:8px 16px;background:white;color:#E1306C;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">Connect</button>
-                        </div>
-                        <!-- Facebook -->
-                        <div style="background:linear-gradient(135deg,#1877F2 0%,#0a5ccc 100%);padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(24,119,242,0.3);text-align:center;">
-                            <div style="font-size:48px;margin-bottom:10px;">👍</div>
-                            <div style="font-weight:600;color:white;font-size:16px;">Facebook</div>
-                            <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:5px;">15.2K likes</div>
-                            <button style="margin-top:12px;padding:8px 16px;background:white;color:#1877F2;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">Connect</button>
-                        </div>
-                        <!-- LinkedIn -->
-                        <div style="background:linear-gradient(135deg,#0077B5 0%,#005582 100%);padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(0,119,181,0.3);text-align:center;">
-                            <div style="font-size:48px;margin-bottom:10px;">💼</div>
-                            <div style="font-weight:600;color:white;font-size:16px;">LinkedIn</div>
-                            <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:5px;">3.1K connections</div>
-                            <button style="margin-top:12px;padding:8px 16px;background:white;color:#0077B5;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">Connect</button>
-                        </div>
-                        <!-- TikTok -->
-                        <div style="background:linear-gradient(135deg,#000000 0%,#EE1D52 100%);padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(238,29,82,0.3);text-align:center;">
-                            <div style="font-size:48px;margin-bottom:10px;">🎵</div>
-                            <div style="font-weight:600;color:white;font-size:16px;">TikTok</div>
-                            <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:5px;">45.6K followers</div>
-                            <button style="margin-top:12px;padding:8px 16px;background:white;color:#EE1D52;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">Connect</button>
-                        </div>
-                        <!-- YouTube -->
-                        <div style="background:linear-gradient(135deg,#FF0000 0%,#CC0000 100%);padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(255,0,0,0.3);text-align:center;">
-                            <div style="font-size:48px;margin-bottom:10px;">▶️</div>
-                            <div style="font-weight:600;color:white;font-size:16px;">YouTube</div>
-                            <div style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:5px;">9.8K subscribers</div>
-                            <button style="margin-top:12px;padding:8px 16px;background:white;color:#FF0000;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;">Connect</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Post Scheduler Mockup -->
-                <div style="margin-top:30px;background:rgba(0,0,0,0.3);border-radius:12px;padding:25px;border:1px solid rgba(102,126,234,0.3);">
-                    <h3 style="color:#667eea;margin-bottom:20px;">📅 Schedule Post</h3>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
-                        <div>
-                            <label style="color:rgba(255,255,255,0.9);font-size:14px;display:block;margin-bottom:8px;">Post Content</label>
-                            <textarea placeholder="What's happening? 📝" style="width:100%;min-height:120px;padding:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:white;font-family:inherit;font-size:14px;resize:vertical;"></textarea>
-                        </div>
-                        <div>
-                            <label style="color:rgba(255,255,255,0.9);font-size:14px;display:block;margin-bottom:8px;">Schedule For</label>
-                            <input type="datetime-local" style="width:100%;padding:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:white;margin-bottom:12px;">
-                            <label style="color:rgba(255,255,255,0.9);font-size:14px;display:block;margin-bottom:8px;">Select Platforms</label>
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                <button style="padding:8px 16px;background:rgba(29,161,242,0.2);border:1px solid #1DA1F2;color:#1DA1F2;border-radius:6px;cursor:pointer;font-size:13px;">𝕏 Twitter</button>
-                                <button style="padding:8px 16px;background:rgba(225,48,108,0.2);border:1px solid #E1306C;color:#E1306C;border-radius:6px;cursor:pointer;font-size:13px;">📷 Instagram</button>
-                                <button style="padding:8px 16px;background:rgba(24,119,242,0.2);border:1px solid #1877F2;color:#1877F2;border-radius:6px;cursor:pointer;font-size:13px;">👍 Facebook</button>
-                                <button style="padding:8px 16px;background:rgba(0,119,181,0.2);border:1px solid #0077B5;color:#0077B5;border-radius:6px;cursor:pointer;font-size:13px;">💼 LinkedIn</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="text-align:right;">
-                        <button style="padding:12px 24px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:8px;cursor:pointer;font-size:15px;font-weight:600;box-shadow:0 4px 15px rgba(102,126,234,0.4);">🚀 Schedule Post</button>
-                    </div>
+                <!-- Interactive Bot Interface -->
+                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
+                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
+                        This bot is currently under development. Interactive features will be available in a future update.
+                    </p>
+                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
+                        🐭 Pinky is working on it! Check back soon for world domination features.
+                    </p>
                 </div>
 
                 <div class="recent-activity" style="margin-top:25px;">
-                    <h3>📊 SocialBot Activity</h3>
+                    <h3>📊 BusinessBot Activity</h3>
                     <div id="business-activity" class="activity-feed">
                         <div class="activity-item">
                             <span class="activity-time">Waiting...</span>
@@ -920,246 +824,23 @@
                 <div id="wordpress-page-maker"></div>
             </div>
 
-            <!-- Export View -->
             <div id="export-view" class="view">
-                <h2>📦 Export & Backup</h2>
-                <p style="color:white;margin-bottom:25px;">
-                    Download your data, generate reports, and create backups.
-                </p>
-
-                <div class="stats-grid">
-                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('tasks', 'json')">
-                        <div class="stat-icon">📋</div>
-                        <div class="stat-content">
-                            <div class="stat-value">JSON</div>
-                            <div class="stat-label">Task History</div>
-                        </div>
-                    </div>
-                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('activity', 'csv')">
-                        <div class="stat-icon">📊</div>
-                        <div class="stat-content">
-                            <div class="stat-value">CSV</div>
-                            <div class="stat-label">Activity Logs</div>
-                        </div>
-                    </div>
-                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('usage', 'json')">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-content">
-                            <div class="stat-value">JSON</div>
-                            <div class="stat-label">Token Usage</div>
-                        </div>
-                    </div>
-                    <div class="stat-card" style="cursor:pointer;" onclick="exportData('screenshot', 'png')">
-                        <div class="stat-icon">📸</div>
-                        <div class="stat-content">
-                            <div class="stat-value">PNG</div>
-                            <div class="stat-label">Dashboard Screenshot</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>📁 Export Options</h3>
-                    <div class="activity-feed">
-                        <div class="activity-item" onclick="exportData('tasks', 'json')" style="cursor:pointer;">
-                            <span class="activity-time">📋 JSON</span>
-                            <span class="activity-bot">Task History</span>
-                            <span class="activity-message">Complete task database with status, notes, timestamps</span>
-                        </div>
-                        <div class="activity-item" onclick="exportData('activity', 'csv')" style="cursor:pointer;">
-                            <span class="activity-time">📊 CSV</span>
-                            <span class="activity-bot">Activity Logs</span>
-                            <span class="activity-message">Heartbeat data, execution times, token counts</span>
-                        </div>
-                        <div class="activity-item" onclick="exportData('usage', 'json')" style="cursor:pointer;">
-                            <span class="activity-time">💰 JSON</span>
-                            <span class="activity-bot">Token Usage</span>
-                            <span class="activity-message">Model-by-model breakdown, costs, input/output totals</span>
-                        </div>
-                        <div class="activity-item" onclick="exportData('memory', 'zip')" style="cursor:pointer;">
-                            <span class="activity-time">🧠 ZIP</span>
-                            <span class="activity-bot">Memory Files</span>
-                            <span class="activity-message">MEMORY.md + daily memory logs (memory/*.md)</span>
-                        </div>
-                        <div class="activity-item" onclick="exportData('all', 'zip')" style="cursor:pointer;">
-                            <span class="activity-time">📦 ZIP</span>
-                            <span class="activity-bot">Full Backup</span>
-                            <span class="activity-message">All data + screenshots + configuration</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
                 <h2>📦 Export & Distribute</h2>
                 <div id="export-package-container"></div>
             </div>
 
-            <!-- About View -->
             <div id="about-view" class="view">
                 <h2>ℹ️ About PinkyBot</h2>
-                <p style="color:white;margin-bottom:25px;">
-                    System information, architecture, and technical details.
-                </p>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">🔢</div>
-                        <div class="stat-content">
-                            <div class="stat-value">v3.0.0</div>
-                            <div class="stat-label">Version</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⏱️</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="system-uptime">--</div>
-                            <div class="stat-label">Uptime</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🏗️</div>
-                        <div class="stat-content">
-                            <div class="stat-value">Express + React</div>
-                            <div class="stat-label">Architecture</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🔌</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="api-count">40+</div>
-                            <div class="stat-label">API Endpoints</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>🛠️ Tech Stack</h3>
-                    <div class="activity-feed">
-                        <div class="activity-item">
-                            <span class="activity-time">Backend</span>
-                            <span class="activity-bot">Node.js + Express</span>
-                            <span class="activity-message">REST API server with PM2 process management</span>
-                        </div>
-                        <div class="activity-item">
-                            <span class="activity-time">Frontend</span>
-                            <span class="activity-bot">Vanilla JS + CSS Grid</span>
-                            <span class="activity-message">Responsive dashboard with real-time updates</span>
-                        </div>
-                        <div class="activity-item">
-                            <span class="activity-time">AI Models</span>
-                            <span class="activity-bot">Claude Sonnet 4.5 + Grok 4</span>
-                            <span class="activity-message">Multi-model support via OpenRouter/xAI APIs</span>
-                        </div>
-                        <div class="activity-item">
-                            <span class="activity-time">Database</span>
-                            <span class="activity-bot">JSON Files + Git</span>
-                            <span class="activity-message">Git-based persistence with version control</span>
-                        </div>
-                        <div class="activity-item">
-                            <span class="activity-time">Blockchain</span>
-                            <span class="activity-bot">Solana Web3.js</span>
-                            <span class="activity-message">Wallet integration for PINKY token payments</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recent-activity" style="margin-top:30px;">
-                    <h3>📡 API Endpoints</h3>
-                    <div class="activity-feed">
-                        <div class="activity-item">
-                            <span class="activity-time">GET</span>
-                            <span class="activity-bot">/api/tasks</span>
-                            <span class="activity-message">Task management system</span>
-                        </div>
-                        <div class="activity-item">
-                            <span class="activity-time">GET</span>
-                            <span class="activity-bot">/api/usage</span>
-                            <span class="activity-message">Token usage statistics</span>
-                        </div>
-                        <div class="activity-item">
-                            <span class="activity-time">GET</span>
-                            <span class="activity-bot">/api/activity</span>
-                            <span class="activity-message">Heartbeat and activity logs</span>
-                        </div>
-                        <div class="activity-item">
-                            <span class="activity-time">POST</span>
-                            <span class="activity-bot">/api/codebot/*</span>
-                            <span class="activity-message">Git commits, code stats, syntax errors</span>
-                        </div>
-                        <div class="activity-item">
-                            <span class="activity-time">POST</span>
-                            <span class="activity-bot">/api/stripe/checkout</span>
-                            <span class="activity-message">Subscription payments</span>
-                        </div>
-                    </div>
-                </div>
+                <div id="about-container"></div>
             </div>
 
             <div id="business-view" class="view">
                 <div class="view-header"><h2>🏢 BusinessBot</h2></div>
-                <div id="businessbot-container">
-                    <!-- Revenue Metrics -->
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
-                        <div style="background:linear-gradient(135deg,#667eea,#764ba2);padding:20px;border-radius:12px;color:white;">
-                            <div style="font-size:14px;opacity:0.9;margin-bottom:8px;">💰 Monthly Revenue</div>
-                            <div style="font-size:32px;font-weight:700;margin-bottom:4px;">$0</div>
-                            <div style="font-size:12px;opacity:0.8;">+0% vs last month</div>
-                        </div>
-                        <div style="background:linear-gradient(135deg,#f093fb,#f5576c);padding:20px;border-radius:12px;color:white;">
-                            <div style="font-size:14px;opacity:0.9;margin-bottom:8px;">📊 Active Projects</div>
-                            <div style="font-size:32px;font-weight:700;margin-bottom:4px;">0</div>
-                            <div style="font-size:12px;opacity:0.8;">0 pending invoices</div>
-                        </div>
-                        <div style="background:linear-gradient(135deg,#4facfe,#00f2fe);padding:20px;border-radius:12px;color:white;">
-                            <div style="font-size:14px;opacity:0.9;margin-bottom:8px;">👥 Total Clients</div>
-                            <div style="font-size:32px;font-weight:700;margin-bottom:4px;">0</div>
-                            <div style="font-size:12px;opacity:0.8;">0 active this month</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Client Management -->
-                    <div style="background:#1a1a2e;padding:20px;border-radius:12px;border:1px solid #2a2a3e;">
-                        <h3 style="color:#667eea;margin-bottom:16px;">Client Management</h3>
-                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
-                            <div style="background:linear-gradient(135deg,rgba(102,126,234,0.1),rgba(118,75,162,0.1));border:1px solid rgba(102,126,234,0.3);padding:16px;border-radius:8px;">
-                                <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-                                    <div style="width:48px;height:48px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;">👤</div>
-                                    <div>
-                                        <div style="color:#e0e0e0;font-weight:600;">Sample Client A</div>
-                                        <div style="color:#a0a0c0;font-size:12px;">Active</div>
-                                    </div>
-                                </div>
-                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
-                                    <div style="background:rgba(255,255,255,0.05);padding:8px;border-radius:4px;text-align:center;">
-                                        <div style="color:#a0a0c0;font-size:11px;">Projects</div>
-                                        <div style="color:#00d4ff;font-weight:600;">0</div>
-                                    </div>
-                                    <div style="background:rgba(255,255,255,0.05);padding:8px;border-radius:4px;text-align:center;">
-                                        <div style="color:#a0a0c0;font-size:11px;">Revenue</div>
-                                        <div style="color:#4ade80;font-weight:600;">$0</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="background:linear-gradient(135deg,rgba(102,126,234,0.1),rgba(118,75,162,0.1));border:1px solid rgba(102,126,234,0.3);padding:16px;border-radius:8px;">
-                                <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-                                    <div style="width:48px;height:48px;background:linear-gradient(135deg,#f093fb,#f5576c);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;">👤</div>
-                                    <div>
-                                        <div style="color:#e0e0e0;font-weight:600;">Sample Client B</div>
-                                        <div style="color:#a0a0c0;font-size:12px;">Pending</div>
-                                    </div>
-                                </div>
-                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
-                                    <div style="background:rgba(255,255,255,0.05);padding:8px;border-radius:4px;text-align:center;">
-                                        <div style="color:#a0a0c0;font-size:11px;">Projects</div>
-                                        <div style="color:#00d4ff;font-weight:600;">0</div>
-                                    </div>
-                                    <div style="background:rgba(255,255,255,0.05);padding:8px;border-radius:4px;text-align:center;">
-                                        <div style="color:#a0a0c0;font-size:11px;">Revenue</div>
-                                        <div style="color:#4ade80;font-weight:600;">$0</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button style="margin-top:16px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;padding:12px 24px;border-radius:8px;cursor:pointer;font-weight:600;">+ Add New Client</button>
+                <div id="businessbot-container" class="coming-soon-container">
+                    <div style="text-align:center;padding:60px 20px;color:#a0a0c0;">
+                        <div style="font-size:48px;margin-bottom:16px;">🏢</div>
+                        <h3 style="color:#667eea;margin-bottom:8px;">BusinessBot — Coming Soon</h3>
+                        <p>Business analytics, reporting, and automation tools.</p>
                     </div>
                 </div>
             </div>
@@ -1711,7 +1392,5 @@
     <script src="unified-wallet-manager.js"></script>
     <script src="cryptobot-controller.js"></script>
     <script src="cryptobot-view.js"></script>
-    <script src="export-handler.js"></script>
 </body>
 </html>
-test
