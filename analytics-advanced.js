@@ -324,7 +324,10 @@ class AnalyticsEngine {
       .reverse();
     hbs.forEach(hb => {
       const time = new Date(hb.timestamp).toLocaleTimeString();
-      const tokens = (hb.tokens && hb.tokens > 0) ? ('+' + hb.tokens.toLocaleString() + 't') : '—';
+      // Show actual token counts even if 0 (backend provides this data)
+      const tokens = (hb.tokens !== undefined && hb.tokens !== null) 
+        ? ('+' + hb.tokens.toLocaleString() + 't') 
+        : '—';
       html += '<div class="activity-row">';
       html += '<span class="activity-time">' + time + '</span>';
       html += '<span class="activity-desc">' + hb.activity + '</span>';
