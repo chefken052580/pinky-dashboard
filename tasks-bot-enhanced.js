@@ -587,23 +587,19 @@ class TasksBotEnhanced {
           html += '<input type="checkbox" onclick="event.stopPropagation();window.tasksBotEnhanced.toggleTaskSelection(\'' + task.id + '\')" ' + (isSelected ? 'checked' : '') + ' style="margin-right:8px;cursor:pointer;width:18px;height:18px;">';
         }
         html += '<span class="priority-badge" onclick="event.stopPropagation();window.tasksBotEnhanced.cyclePriority(\'' + this.escapeAttr(task.name).replace(/'/g, "\\\\'") + '\',\'' + (task.priority || 'P3') + '\');" style="cursor:pointer;" title="Click to change priority">' + (task.priority || 'P3') + '</span>';
+        html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.startTaskNow(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + task.id + '\');" title="Start this task now" style="background:#00d4ff;color:#0f0e1a;border:none;border-radius:4px;padding:3px 10px;cursor:pointer;font-size:0.8em;font-weight:bold;">▶ Start</button>';
+        html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.deleteTask(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + task.id + '\');" title="Delete task" style="background:#ff4444;color:#fff;border:none;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:0.8em;">✕</button>';
         html += '<span class="task-name" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;">' + this.escapeAttr(task.name) + '</span>';
-        html += '<div class="task-actions" style="display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0;">';
-        // Arrows removed — priority badge is now clickable
-        html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.startTaskNow(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + task.id + '\');" title="Start this task now" style="background:#00d4ff;color:#0f0e1a;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:4px;font-size:0.8em;font-weight:bold;position:relative;z-index:10;">▶ Start</button>';
-        html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.deleteTask(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + task.id + '\');" title="Delete task" style="background:#ff4444;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:4px;font-size:0.8em;position:relative;z-index:10;">✕</button>';
-        html += '</div>';
+        var taskAge = this.calculateTaskAge(task.updated || task.created || task.assigned);
+        var ageColor = taskAge.includes('w') ? '#ff6b6b' : taskAge.includes('d') && parseInt(taskAge) > 3 ? '#ffa500' : '#64748b';
+        html += '<span style="color:' + ageColor + ';font-size:0.75em;white-space:nowrap;padding:2px 8px;background:rgba(255,255,255,0.05);border-radius:3px;flex-shrink:0;" title="Task age">' + taskAge + '</span>';
         html += '</div>';
         
         if (task.notes) {
           html += '<div class="task-desc">' + this.escapeAttr(task.notes) + '</div>';
         }
         
-        html += '<div class="task-meta">';
-        const taskAge = this.calculateTaskAge(task.updated || task.created || task.assigned);
-        const ageColor = taskAge.includes('w') ? '#ff6b6b' : taskAge.includes('d') && parseInt(taskAge) > 3 ? '#ffa500' : '#999';
-        html += '<span class="assigned">Age: <span style="color:' + ageColor + ';font-weight:bold;">' + taskAge + '</span></span>';
-        html += '</div>';
+        // Age now inline in task-header
         html += '</div>';
       });
     }
