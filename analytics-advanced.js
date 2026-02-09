@@ -292,10 +292,11 @@ class AnalyticsEngine {
       .reverse();
     hbs.forEach(hb => {
       const time = new Date(hb.timestamp).toLocaleTimeString();
+      const tokens = (hb.tokens && hb.tokens > 0) ? ('+' + hb.tokens.toLocaleString() + 't') : '—';
       html += '<div class="activity-row">';
       html += '<span class="activity-time">' + time + '</span>';
       html += '<span class="activity-desc">' + hb.activity + '</span>';
-      html += '<span class="activity-tokens">+' + hb.tokens + 't</span>';
+      html += '<span class="activity-tokens">' + tokens + '</span>';
       html += '</div>';
     });
     html += '</div>';
