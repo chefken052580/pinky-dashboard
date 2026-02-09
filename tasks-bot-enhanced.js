@@ -761,6 +761,14 @@ class TasksBotEnhanced {
         if (commitHash) {
           html += '<div style="color:#00d4ff;font-family:monospace;font-size:0.75em;">commit: ' + commitHash + '</div>';
         }
+        // Show elapsed time if tracked
+        if (task.elapsed) {
+          var mins = Math.floor(task.elapsed / 60);
+          var secs = task.elapsed % 60;
+          var elapsedStr = mins > 0 ? mins + 'm ' + secs + 's' : secs + 's';
+          if (mins >= 60) { var hrs = Math.floor(mins / 60); mins = mins % 60; elapsedStr = hrs + 'h ' + mins + 'm'; }
+          html += '<div style="color:#fbbf24;font-size:0.75em;font-weight:600;">⏱️ ' + elapsedStr + '</div>';
+        }
         html += '</div>';
         // Timer elapsed
         if (typeof taskTimer !== 'undefined' && taskTimer) {
