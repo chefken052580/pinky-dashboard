@@ -8,8 +8,13 @@ class DashboardWalletConnect {
     this.wallet = null;
     this.walletAddress = null;
     this.tokenBalance = 0;
+    this.solBalance = 0;
     this.discountEligible = false;
-    this.TOKEN_MINT = 'PINKY_TOKEN_MINT_ADDRESS_HERE'; // TODO: Replace with actual $PINKY mint address
+    
+    // $PINKY Token Configuration
+    // TODO: Replace with actual $PINKY SPL token mint address once deployed
+    // Example format: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+    this.TOKEN_MINT = 'PINKY_TOKEN_MINT_ADDRESS_HERE';
     this.DISCOUNT_THRESHOLD = 10000; // 10K tokens required for 20% discount
     
     this.init();
@@ -57,6 +62,7 @@ class DashboardWalletConnect {
 
   async handleWalletChange(newAddress) {
     this.walletAddress = newAddress;
+    await this.checkSolBalance();
     await this.checkTokenBalance();
     this.updateUI();
   }
@@ -90,12 +96,14 @@ class DashboardWalletConnect {
       const response = await this.wallet.connect();
       this.walletAddress = response.publicKey.toString();
 
-      // Check token balance
+      // Check SOL and token balances
+      await this.checkSolBalance();
       await this.checkTokenBalance();
 
       // Save to localStorage
       localStorage.setItem('pinky_wallet_address', this.walletAddress);
       localStorage.setItem('pinky_token_balance', this.tokenBalance.toString());
+      localStorage.setItem('pinky_sol_balance', this.solBalance.toString());
       localStorage.setItem('pinky_wallet_name', wallet.name);
 
       // Update UI
@@ -113,48 +121,89 @@ class DashboardWalletConnect {
     }
   }
 
+  async checkSolBalance() {
+    try {
+      if (!window.solanaWeb3) {
+        console.warn('Solana Web3.js not loaded');
+        this.solBalance = 0;
+        return;
+      }
+
+      const connection = new window.solanaWeb3.Connection(
+        window.solanaWeb3.clusterApiUrl('mainnet-beta'),
+        'confirmed'
+      );
+
+      const publicKey = new window.solanaWeb3.PublicKey(this.walletAddress);
+      const balance = await connection.getBalance(publicKey);
+      
+      // Convert lamports to SOL (1 SOL = 1,000,000,000 lamports)
+      this.solBalance = balance / window.solanaWeb3.LAMPORTS_PER_SOL;
+      
+      console.log(`💰 SOL balance: ${this.solBalance.toFixed(4)} SOL`);
+      
+      // Save to localStorage
+      localStorage.setItem('pinky_sol_balance', this.solBalance.toString());
+
+    } catch (error) {
+      console.error('SOL balance check error:', error);
+      this.solBalance = 0;
+    }
+  }
+
   async checkTokenBalance() {
     try {
-      // TODO: Replace with actual Solana RPC call to check token balance
-      // For now, using mock data for testing
-      
-      // Mock implementation (replace with real RPC query)
-      const mockBalance = this.getMockBalance();
-      this.tokenBalance = mockBalance;
-      this.discountEligible = this.tokenBalance >= this.DISCOUNT_THRESHOLD;
+      // Real Solana RPC implementation
+      if (!window.solanaWeb3) {
+        console.warn('Solana Web3.js not loaded, using fallback balance check');
+        this.tokenBalance = 0;
+        this.discountEligible = false;
+        return;
+      }
 
-      // Real implementation would look like:
-      /*
+      // Connect to Solana mainnet
       const connection = new window.solanaWeb3.Connection(
-        window.solanaWeb3.clusterApiUrl('mainnet-beta')
+        window.solanaWeb3.clusterApiUrl('mainnet-beta'),
+        'confirmed'
       );
       
+      // Check if TOKEN_MINT is configured (not placeholder)
+      if (this.TOKEN_MINT === 'PINKY_TOKEN_MINT_ADDRESS_HERE' || !this.TOKEN_MINT) {
+        console.warn('$PINKY token mint address not configured. Set TOKEN_MINT in dashboard-wallet-connect.js');
+        this.tokenBalance = 0;
+        this.discountEligible = false;
+        return;
+      }
+
+      // Query token accounts for $PINKY token
       const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
         new window.solanaWeb3.PublicKey(this.walletAddress),
         { mint: new window.solanaWeb3.PublicKey(this.TOKEN_MINT) }
       );
 
       if (tokenAccounts.value.length > 0) {
+        // User has $PINKY tokens
         const balance = tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount;
         this.tokenBalance = Math.floor(balance);
         this.discountEligible = this.tokenBalance >= this.DISCOUNT_THRESHOLD;
+        
+        console.log(`✅ Token balance check: ${this.tokenBalance.toLocaleString()} $PINKY (discount: ${this.discountEligible ? 'YES' : 'NO'})`);
       } else {
+        // User has no $PINKY tokens
         this.tokenBalance = 0;
         this.discountEligible = false;
+        
+        console.log('⚠️ No $PINKY token account found for this wallet');
       }
-      */
+
+      // Save updated balance to localStorage
+      localStorage.setItem('pinky_token_balance', this.tokenBalance.toString());
 
     } catch (error) {
       console.error('Token balance check error:', error);
       this.tokenBalance = 0;
       this.discountEligible = false;
     }
-  }
-
-  getMockBalance() {
-    // Mock balance for testing (remove when real RPC is integrated)
-    const hash = this.walletAddress.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return hash % 2 === 0 ? 15000 : 5000; // Alternate between eligible and ineligible
   }
 
   disconnect() {
@@ -165,11 +214,13 @@ class DashboardWalletConnect {
     this.wallet = null;
     this.walletAddress = null;
     this.tokenBalance = 0;
+    this.solBalance = 0;
     this.discountEligible = false;
 
     // Clear localStorage
     localStorage.removeItem('pinky_wallet_address');
     localStorage.removeItem('pinky_token_balance');
+    localStorage.removeItem('pinky_sol_balance');
     localStorage.removeItem('pinky_wallet_name');
 
     // Update UI
@@ -279,6 +330,7 @@ class DashboardWalletConnect {
 
   async refreshBalance() {
     if (this.walletAddress) {
+      await this.checkSolBalance();
       await this.checkTokenBalance();
       this.updateUI();
     }
