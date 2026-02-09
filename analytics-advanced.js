@@ -37,14 +37,15 @@ class AnalyticsEngine {
           const today = new Date();
           return date.toDateString() === today.toDateString();
         }).length || 0,
-        heartbeatCount: activityResp?.activities?.filter(a => a.activity?.includes('Heartbeat')).length || 0,
+        heartbeatCount: activityResp?.heartbeats?.filter(a => a.activity?.includes('Heartbeat')).length || 0,
         tokensUsed: usageResp.totalTokens || 0,
         tokensInput: usageResp.input || 0,
         tokensOutput: usageResp.output || 0,
         tokensCacheRead: usageResp.cacheRead || 0,
         tokensCacheWrite: usageResp.cacheWrite || 0,
         totalCost: usageResp.totalCost || 0,
-        byModel: usageResp.byModel || {}
+        byModel: usageResp.byModel || {},
+        heartbeats: activityResp?.heartbeats || []
       };
     } catch (err) {
       console.log('[AnalyticsEngine] Error fetching metrics:', err.message);
@@ -60,9 +61,56 @@ class AnalyticsEngine {
         tokensCacheRead: 0,
         tokensCacheWrite: 0,
         totalCost: 0,
-        byModel: {}
+        byModel: {},
+        heartbeats: []
       };
     }
+  }
+
+  /**
+   * Get last active timestamp for a specific bot
+   */
+  getLastActiveForBot(botId, heartbeats) {
+    const keywords = {
+      'docs': ['doc', 'documentation', 'readme', 'memory'],
+      'research': ['research', 'search', 'web', 'fetch'],
+      'code': ['code', 'syntax', 'debug', 'commit', 'git'],
+      'social': ['social', 'post', 'tweet', 'linkedin'],
+      'business': ['business', 'revenue', 'client', 'metrics'],
+      'filesystem': ['file', 'read', 'write', 'directory'],
+      'tasks': ['task', 'pending', 'completed', 'running']
+    };
+
+    const botKeywords = keywords[botId] || [];
+    
+    // Find most recent heartbeat mentioning this bot's keywords
+    for (let i = heartbeats.length - 1; i >= 0; i--) {
+      const activity = (heartbeats[i].activity || '').toLowerCase();
+      if (botKeywords.some(kw => activity.includes(kw))) {
+        return heartbeats[i].timestamp;
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * Format timestamp as relative time
+   */
+  formatRelativeTime(timestamp) {
+    if (!timestamp) return 'Never';
+    
+    const now = Date.now();
+    const diff = now - timestamp;
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    
+    if (seconds < 60) return 'Just now';
+    if (minutes < 60) return minutes + 'm ago';
+    if (hours < 24) return hours + 'h ago';
+    return days + 'd ago';
   }
 
   /**
@@ -97,11 +145,13 @@ class AnalyticsEngine {
     html += '<thead><tr><th>Bot</th><th>Status</th><th>Calls</th><th>Last Active</th></tr></thead>';
     html += '<tbody>';
     this.bots.forEach(bot => {
+      const lastActive = this.getLastActiveForBot(bot.id, metrics.heartbeats);
+      const relativeTime = this.formatRelativeTime(lastActive);
       html += '<tr>';
       html += '<td>' + bot.icon + ' ' + bot.name + '</td>';
       html += '<td><span class="status-badge active">✓ ' + bot.status + '</span></td>';
       html += '<td>' + Math.floor(Math.random() * 50) + '</td>';
-      html += '<td>Just now</td>';
+      html += '<td>' + relativeTime + '</td>';
       html += '</tr>';
     });
     html += '</tbody></table>';
