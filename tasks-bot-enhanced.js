@@ -691,7 +691,7 @@ class TasksBotEnhanced {
         
         html += '<div class="task-item completed">';
         html += '<div class="task-header">';
-        html += '<span class="status-badge completed">✓ DONE</span>';
+        html += '<div class="verified-stamp"><div class="stamp-circle">VERIFIED</div><span class="stamp-text">✓ Done</span></div>';
         html += '<span class="task-name">' + this.escapeAttr(task.name) + '</span>';
         
         // Add revert button if commit hash found
