@@ -173,6 +173,22 @@ function switchView(viewId) {
             window.initSettingsPage();
         }
         
+        // Initialize bot modules when switching to their views
+        if (viewId === 'business-view' && window.businessBotPro) {
+            window.businessBotPro.renderUI();
+        }
+        if (viewId === 'code-view' && window.codeBotPro) {
+            window.codeBotPro.renderUI();
+        }
+        if (viewId === 'docs-view' && window.docsBotPro) {
+            window.docsBotPro.renderUI();
+        }
+        if (viewId === 'research-view' && window.researchBotPro) {
+            window.researchBotPro.renderUI();
+        }
+        if (viewId === 'filesystem-view' && window.filesystemBotPro) {
+            window.filesystemBotPro.renderUI();
+        }
         targetView.classList.add('active');
         currentView = viewId;
     }
