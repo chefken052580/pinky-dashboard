@@ -565,16 +565,43 @@
                     </div>
                 </div>
 
-                <!-- Interactive Bot Interface -->
-                <div class="bot-interface" style="text-align: center; padding: 40px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 2px dashed rgba(0, 212, 255, 0.3);">
-                    <div style="font-size: 64px; margin-bottom: 20px;">🚧</div>
-                    <h3 style="color: #00d4ff; font-size: 28px; margin-bottom: 15px;">Coming Soon</h3>
-                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 16px; max-width: 600px; margin: 0 auto;">
-                        This bot is currently under development. Interactive features will be available in a future update.
-                    </p>
-                    <p style="color: rgba(0, 212, 255, 0.5); font-size: 14px; margin-top: 20px;">
-                        🐭 Pinky is working on it! Check back soon for world domination features.
-                    </p>
+                <!-- CodeBot Real UI -->
+                <div class="codebot-container" style="margin-top:25px;">
+                    <!-- Code Statistics -->
+                    <div style="background:rgba(0,212,255,0.1);border:1px solid #00d4ff;border-radius:12px;padding:20px;margin-bottom:20px;">
+                        <h3 style="color:#00d4ff;margin-bottom:15px;">📊 Code Statistics (Last 10 Commits)</h3>
+                        <div id="code-stats-summary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-bottom:20px;">
+                            <div style="background:#1a1a2e;padding:12px;border-radius:8px;text-align:center;">
+                                <div style="color:#00d4ff;font-size:24px;font-weight:bold;" id="total-lines-added">0</div>
+                                <div style="color:#aaa;font-size:12px;">Lines Added</div>
+                            </div>
+                            <div style="background:#1a1a2e;padding:12px;border-radius:8px;text-align:center;">
+                                <div style="color:#ff6b6b;font-size:24px;font-weight:bold;" id="total-lines-removed">0</div>
+                                <div style="color:#aaa;font-size:12px;">Lines Removed</div>
+                            </div>
+                            <div style="background:#1a1a2e;padding:12px;border-radius:8px;text-align:center;">
+                                <div style="color:#f7b731;font-size:24px;font-weight:bold;" id="net-change">0</div>
+                                <div style="color:#aaa;font-size:12px;">Net Change</div>
+                            </div>
+                        </div>
+                        <div id="code-stats-list" style="max-height:400px;overflow-y:auto;"></div>
+                    </div>
+
+                    <!-- Recent Commits -->
+                    <div style="background:rgba(102,126,234,0.1);border:1px solid #667eea;border-radius:12px;padding:20px;margin-bottom:20px;">
+                        <h3 style="color:#667eea;margin-bottom:15px;">💻 Recent Commits</h3>
+                        <div id="recent-commits-list" style="max-height:400px;overflow-y:auto;">
+                            <div style="text-align:center;color:#aaa;padding:20px;">Loading commits...</div>
+                        </div>
+                    </div>
+
+                    <!-- Syntax Errors Log -->
+                    <div style="background:rgba(255,107,107,0.1);border:1px solid #ff6b6b;border-radius:12px;padding:20px;">
+                        <h3 style="color:#ff6b6b;margin-bottom:15px;">🐛 Syntax Error Log</h3>
+                        <div id="syntax-errors-list" style="max-height:300px;overflow-y:auto;">
+                            <div style="text-align:center;color:#aaa;padding:20px;">Loading error log...</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="recent-activity" style="margin-top:25px;">
@@ -1571,6 +1598,98 @@
         }
       } catch (error) {
         console.error('[ResearchBot] Error loading data:', error);
+      }
+    })();
+    
+    // Load CodeBot data
+    (async function loadCodeBotData() {
+      try {
+        // Load code statistics
+        const statsRes = await fetch('/api/code-stats/stats?limit=10');
+        const statsData = await statsRes.json();
+        
+        if (statsData.success) {
+          // Update summary
+          document.getElementById('total-lines-added').textContent = statsData.totals.linesAdded.toLocaleString();
+          document.getElementById('total-lines-removed').textContent = statsData.totals.linesRemoved.toLocaleString();
+          document.getElementById('net-change').textContent = (statsData.totals.netChange >= 0 ? '+' : '') + statsData.totals.netChange.toLocaleString();
+          
+          // Render stats list
+          const statsList = document.getElementById('code-stats-list');
+          if (statsList && statsData.stats.length > 0) {
+            let html = '';
+            statsData.stats.forEach(stat => {
+              const time = new Date(stat.timestamp);
+              html += '<div style="background:#1a1a2e;border:1px solid rgba(0,212,255,0.3);border-radius:8px;padding:12px;margin-bottom:10px;">';
+              html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">';
+              html += `<div style="color:#00d4ff;font-family:monospace;font-size:13px;">${stat.hash}</div>`;
+              html += `<div style="color:#aaa;font-size:11px;">${time.toLocaleDateString()}</div>`;
+              html += '</div>';
+              html += `<div style="color:#fff;margin-bottom:8px;font-size:13px;">${stat.message}</div>`;
+              html += '<div style="display:flex;gap:15px;font-size:12px;">';
+              html += `<span style="color:#00d4ff;">+${stat.linesAdded} added</span>`;
+              html += `<span style="color:#ff6b6b;">-${stat.linesRemoved} removed</span>`;
+              html += `<span style="color:#aaa;">${stat.filesChanged} files</span>`;
+              html += '</div>';
+              html += '</div>';
+            });
+            statsList.innerHTML = html;
+          }
+        }
+        
+        // Load recent commits
+        const commitsRes = await fetch('/api/code-stats/commits?limit=20');
+        const commitsData = await commitsRes.json();
+        
+        if (commitsData.success && commitsData.commits.length > 0) {
+          const commitsList = document.getElementById('recent-commits-list');
+          let html = '';
+          commitsData.commits.forEach(commit => {
+            const time = new Date(commit.timestamp);
+            const relTime = Math.round((Date.now() - commit.timestamp) / (1000*60*60));
+            const timeStr = relTime < 1 ? 'just now' : relTime < 24 ? `${relTime}h ago` : `${Math.round(relTime/24)}d ago`;
+            
+            html += '<div style="background:#1a1a2e;border:1px solid rgba(102,126,234,0.3);border-radius:8px;padding:12px;margin-bottom:10px;">';
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">';
+            html += `<div style="color:#667eea;font-family:monospace;font-size:13px;font-weight:bold;">${commit.hash}</div>`;
+            html += `<div style="color:#aaa;font-size:11px;">${timeStr}</div>`;
+            html += '</div>';
+            html += `<div style="color:#fff;margin-bottom:6px;font-size:13px;">${commit.message}</div>`;
+            html += `<div style="color:#aaa;font-size:11px;">👤 ${commit.author}</div>`;
+            html += '</div>';
+          });
+          commitsList.innerHTML = html;
+        }
+        
+        // Load syntax errors
+        const errorsRes = await fetch('/api/code-stats/errors');
+        const errorsData = await errorsRes.json();
+        
+        if (errorsData.success) {
+          const errorsList = document.getElementById('syntax-errors-list');
+          if (errorsData.errors.length === 0) {
+            errorsList.innerHTML = '<div style="text-align:center;color:#00d4ff;padding:20px;">✅ No syntax errors! Clean code.</div>';
+          } else {
+            let html = '';
+            errorsData.errors.forEach(err => {
+              const time = new Date(err.timestamp);
+              const statusColor = err.resolved ? '#00d4ff' : '#ff6b6b';
+              const statusText = err.resolved ? 'RESOLVED' : 'UNRESOLVED';
+              
+              html += '<div style="background:#1a1a2e;border:1px solid rgba(255,107,107,0.3);border-radius:8px;padding:12px;margin-bottom:10px;">';
+              html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">';
+              html += `<div style="color:#ff6b6b;font-weight:bold;">${err.file}:${err.line}</div>`;
+              html += `<div style="color:${statusColor};font-size:11px;font-weight:bold;">${statusText}</div>`;
+              html += '</div>';
+              html += `<div style="color:#fff;margin-bottom:6px;font-size:13px;font-family:monospace;">${err.error}</div>`;
+              html += `<div style="color:#aaa;font-size:11px;">${time.toLocaleDateString()} ${time.toLocaleTimeString()}</div>`;
+              html += '</div>';
+            });
+            errorsList.innerHTML = html;
+          }
+        }
+      } catch (error) {
+        console.error('[CodeBot] Error loading data:', error);
       }
     })();
     </script>
