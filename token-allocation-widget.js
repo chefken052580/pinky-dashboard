@@ -275,28 +275,40 @@ class TokenAllocationWidget {
 
   renderModelBreakdown() {
     const container = document.getElementById('model-allocation-bars');
-    if (!container || !this.usage || !this.usage.byModel) {
+    if (!container || !this.usage) {
       return;
     }
 
-    const byModel = this.usage.byModel;
+    const byModel = this.usage.byModel || {};
     const totalTokens = this.usage.totalTokens || 1;
     
     // Clear existing content
     container.innerHTML = '';
 
-    // If no models, show message
-    if (Object.keys(byModel).length === 0) {
-      container.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">No model usage data available</div>';
-      return;
-    }
+    // Define expected models (show these even if 0 usage)
+    const expectedModels = [
+      'claude-sonnet-4-5-20250929',
+      'grok-4-latest',
+      'xai/grok-4-latest'
+    ];
 
-    // Create bars for each model
-    Object.entries(byModel).forEach(([modelName, modelData]) => {
+    // Merge actual usage with expected models (show all configured models)
+    const allModels = new Set([...expectedModels, ...Object.keys(byModel)]);
+    
+    // Create bars for each model (sorted by usage descending)
+    const modelEntries = Array.from(allModels).map(modelName => {
+      const modelData = byModel[modelName] || { tokens: 0, input: 0, output: 0, cost: 0, messages: 0 };
       const tokens = modelData.tokens || 0;
       const percentage = totalTokens > 0 ? Math.round((tokens / totalTokens) * 100) : 0;
       
-      // Get short model name
+      return { modelName, modelData, tokens, percentage };
+    });
+
+    // Sort by tokens descending (most-used models first)
+    modelEntries.sort((a, b) => b.tokens - a.tokens);
+
+    // Render each model bar
+    modelEntries.forEach(({ modelName, modelData, tokens, percentage }) => {
       const shortName = this.getShortModelName(modelName);
       const emoji = this.getModelEmoji(modelName);
 
@@ -322,7 +334,7 @@ class TokenAllocationWidget {
     // Convert full model names to short readable versions
     if (fullName.includes('claude-sonnet')) return 'Claude Sonnet 4.5';
     if (fullName.includes('claude-haiku')) return 'Claude Haiku 4.5';
-    if (fullName.includes('grok')) return 'Grok (xAI)';
+    if (fullName.includes('grok') || fullName.includes('xai')) return 'Grok 4 (xAI)';
     if (fullName.includes('gpt-4')) return 'GPT-4';
     if (fullName.includes('gpt-3.5')) return 'GPT-3.5';
     return fullName.substring(0, 20); // Fallback: truncate long names
@@ -331,7 +343,7 @@ class TokenAllocationWidget {
   getModelEmoji(modelName) {
     if (modelName.includes('claude-sonnet')) return '🧠';
     if (modelName.includes('claude-haiku')) return '⚡';
-    if (modelName.includes('grok')) return '🤖';
+    if (modelName.includes('grok') || modelName.includes('xai')) return '🤖';
     if (modelName.includes('gpt-4')) return '🔷';
     if (modelName.includes('gpt-3.5')) return '🔹';
     return '🤖';
