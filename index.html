@@ -400,6 +400,7 @@
                 <p style="color:white;margin-bottom:25px;">
                     Generates daily logs, memory updates, and comprehensive documentation.
                 </p>
+                <div id="docsbot-container"></div>
                 
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -437,6 +438,7 @@
                 <p style="color:white;margin-bottom:25px;">
                     Conducts market research, competitor analysis, and trend discovery.
                 </p>
+                <div id="researchbot-container"></div>
                 
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -474,6 +476,7 @@
                 <p style="color:white;margin-bottom:25px;">
                     Generates code, debugs issues, and provides technical solutions.
                 </p>
+                <div id="codebot-container"></div>
                 
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -1305,5 +1308,20 @@
     <script src="unified-wallet-manager.js"></script>
     <!-- DISABLED: broken fetch syntax <script src="cryptobot-controller.js"></script> -->
     <!-- DISABLED: broken fetch syntax <script src="cryptobot-view.js"></script> -->
+
+    <script>
+    // Force render all bot modules after everything loads
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            console.log('[BotInit] Force rendering all bot modules...');
+            ['docsBotPro','researchBotPro','codeBotPro','businessBotPro','filesystemBotPro','tasksBotPro'].forEach(name => {
+                if (window[name] && typeof window[name].renderUI === 'function') {
+                    window[name].renderUI();
+                    console.log('[BotInit] Rendered:', name);
+                }
+            });
+        }, 2000);
+    });
+    </script>
 </body>
 </html>
