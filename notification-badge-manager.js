@@ -28,8 +28,8 @@ class NotificationBadgeManager {
         
         // Set up periodic updates (every 30 seconds)
         // DISABLED this.updateInterval = setInterval(() => {
-            this.updateAllBadges();
-        }, 30000);
+        //     this.updateAllBadges();
+        // }, 30000);
         
         this.initialized = true;
         console.log('[NotificationBadges] Initialized');

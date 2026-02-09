@@ -306,27 +306,23 @@ class SubscriptionTierResolver {
    */
   startPeriodicChecks() {
     // DISABLED setInterval(async () => {
-      console.log('[Tier Resolver] Performing periodic tier check...');
-      const tierData = await this.resolveTier();
-      
-      // If tier changed, update feature gating
-      if (tierData && this.tierCache && tierData.tier !== this.tierCache.tier) {
-        console.warn(`[Tier Resolver] Tier changed from ${this.tierCache.tier} to ${tierData.tier}`);
-        if (window.featureGating) {
-          window.featureGating.setTier(tierData.tier);
-        }
-        this.tierCache = tierData;
-        localStorage.setItem('pinky_tier_data', JSON.stringify(tierData));
-        
-        // Show notification
-        this.showTierChangeNotification(tierData);
-      }
-      
-      // Check for new warnings
-      this.warningShown = false; // Reset to allow new warnings
-      this.showTierWarnings(tierData);
-      
-    }, this.checkInterval);
+    // console.log('[Tier Resolver] Performing periodic tier check...');
+    // const tierData = await this.resolveTier();
+    //       // If tier changed, update feature gating
+    // if (tierData && this.tierCache && tierData.tier !== this.tierCache.tier) {
+    // console.warn(`[Tier Resolver] Tier changed from ${this.tierCache.tier} to ${tierData.tier}`);
+    // if (window.featureGating) {
+    // window.featureGating.setTier(tierData.tier);
+    // }
+    // this.tierCache = tierData;
+    // localStorage.setItem('pinky_tier_data', JSON.stringify(tierData));
+    //         // Show notification
+    // this.showTierChangeNotification(tierData);
+    // }
+    //       // Check for new warnings
+    // this.warningShown = false; // Reset to allow new warnings
+    // this.showTierWarnings(tierData);
+    //     // }, this.checkInterval);
     
     console.log(`[Tier Resolver] Periodic checks started (every ${this.checkInterval / 60000} minutes)`);
   }

@@ -14,12 +14,12 @@ class HeaderLiveDataManager {
         console.log('[HeaderLiveData] Initializing...');
         
         // Do first update immediately
-        await this.updateTasksToday();
-        
         // Set up periodic updates
         // DISABLED this.updateInterval = setInterval(() => {
-            this.updateTasksToday();
-        }, this.refreshRate);
+        //     this.updateTasksToday();
+        // }, this.refreshRate);
+        //     this.updateTasksToday();
+        // }, this.refreshRate);
         
         this.initialized = true;
         console.log('[HeaderLiveData] Initialized and ready');
