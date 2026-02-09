@@ -548,7 +548,7 @@ function renderHeaderStats() {
         tasks = tasks || [];
         activity = activity || {};
         const tokensUsed = usage.totalTokens || 0;
-        const apiCost = usage.totalCost || 0;
+        const apiCost = (usage.totalCost || (usage.costInput || 0) + (usage.costOutput || 0) + (usage.costCacheRead || 0) + (usage.costCacheWrite || 0)) || 0;
         const messages = usage.messages || 0;
         
         // Get stats from /api/tasks/stats
@@ -559,16 +559,18 @@ function renderHeaderStats() {
         
         // Get heartbeat count from /api/activity
         const heartbeatsArray = activity.heartbeats || [];
-        // Use heartbeat state baseline + live activity count
-        let heartbeatBaseline = 0;
-        try {
-            const stateResp = await fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/heartbeat/state');
-            if (stateResp.ok) {
-                const stateData = await stateResp.json();
-                heartbeatBaseline = (stateData.heartbeatCount || 0) || 0;
-            }
-        } catch(e) {}
-        const heartbeatCount = Math.max(heartbeatsArray.length, heartbeatBaseline);
+        const heartbeatCount = heartbeatsArray.length;
+        // Also fetch baseline from state file (non-blocking)
+        fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/heartbeat/state')
+          .then(r => r.json())
+          .then(stateData => {
+            const baseline = stateData.heartbeatCount || 0;
+            const realCount = Math.max(heartbeatsArray.length, baseline);
+            const wakeupEl = document.getElementById("total-wakeups");
+            if (wakeupEl) wakeupEl.textContent = realCount;
+            const hbEl = container.querySelector('.stat-value');
+            if (hbEl) hbEl.textContent = realCount;
+          }).catch(() => {});
         
         // Calculate tasks completed today (for header only)
         const now = new Date();
