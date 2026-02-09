@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WalletConnect v2 - CryptoBot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+    }
+    h1 { color: #a78bfa; }
+    .connect-container {
+      max-width: 500px;
+      margin: 30px auto;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+    }
+    .wc-logo {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+    .connect-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border: none;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 10px 0;
+    }
+    .connect-btn:hover {
+      transform: scale(1.02);
+    }
+    .chain-selector {
+      margin: 20px 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .chain-btn {
+      padding: 12px;
+      background: #334155;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .chain-btn:hover {
+      border-color: #3b82f6;
+    }
+    .chain-btn.active {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+    .connected-info {
+      background: rgba(16, 185, 129, 0.1);
+      border: 2px solid #10b981;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .wallet-address {
+      font-family: monospace;
+      font-size: 14px;
+      word-break: break-all;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔗 WalletConnect v2</h1>
+  <p style="color:#94a3b8; margin-bottom:30px;">Connect any wallet across multiple blockchains</p>
+
+  <div class="connect-container">
+    <div class="wc-logo">🔗</div>
+    <h2>Multi-Chain Wallet</h2>
+    <p style="color:#94a3b8; margin-bottom:30px;">Connect with MetaMask, Coinbase, Trust, Rainbow, and 300+ wallets</p>
+
+    <div id="connectSection">
+      <button class="connect-btn" onclick="connectWallet()">Connect Wallet</button>
+      
+      <div class="chain-selector">
+        <div class="chain-btn active" data-chain="1">
+          <div>🔷 Ethereum</div>
+          <div style="font-size:12px; color:#94a3b8;">Mainnet</div>
+        </div>
+        <div class="chain-btn" data-chain="137">
+          <div>🟣 Polygon</div>
+          <div style="font-size:12px; color:#94a3b8;">MATIC</div>
+        </div>
+        <div class="chain-btn" data-chain="56">
+          <div>🟡 BSC</div>
+          <div style="font-size:12px; color:#94a3b8;">Binance</div>
+        </div>
+        <div class="chain-btn" data-chain="43114">
+          <div>🔴 Avalanche</div>
+          <div style="font-size:12px; color:#94a3b8;">AVAX</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="connectedSection" style="display:none;">
+      <div class="connected-info">
+        <div style="font-size:48px;">✅</div>
+        <div style="font-weight:bold; margin:10px 0;">Connected</div>
+        <div class="wallet-address" id="walletAddress"></div>
+        <div style="margin-top:15px;">
+          <strong>Chain:</strong> <span id="chainName">Ethereum Mainnet</span>
+        </div>
+        <div style="margin-top:10px;">
+          <strong>Balance:</strong> <span id="balance">0 ETH</span>
+        </div>
+      </div>
+      <button class="connect-btn" onclick="disconnectWallet()" style="background:#ef4444; margin-top:20px;">Disconnect</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedChain = 1; // Default Ethereum
+    let connectedAddress = null;
+
+    // Chain selection
+    document.querySelectorAll('.chain-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.chain-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedChain = btn.getAttribute('data-chain');
+      });
+    });
+
+    async function connectWallet() {
+      try {
+        // Mock WalletConnect v2 connection
+        // In production, use: import { EthereumProvider } from '@walletconnect/ethereum-provider'
+        
+        // Check if injected provider exists (MetaMask, Coinbase, etc.)
+        if (typeof window.ethereum !== 'undefined') {
+          const accounts = await window.ethereum.request({ 
+            method: 'eth_requestAccounts' 
+          });
+          
+          // Request chain switch
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: `0x${parseInt(selectedChain).toString(16)}` }]
+            });
+          } catch (switchError) {
+            console.log('Chain switch error:', switchError);
+          }
+          
+          connectedAddress = accounts[0];
+          
+          // Mock balance
+          const mockBalance = (Math.random() * 5).toFixed(4);
+          
+          // Update UI
+          document.getElementById('connectSection').style.display = 'none';
+          document.getElementById('connectedSection').style.display = 'block';
+          document.getElementById('walletAddress').textContent = connectedAddress;
+          document.getElementById('balance').textContent = `${mockBalance} ETH`;
+          
+          const chainNames = {
+            '1': 'Ethereum Mainnet',
+            '137': 'Polygon',
+            '56': 'BSC',
+            '43114': 'Avalanche'
+          };
+          document.getElementById('chainName').textContent = chainNames[selectedChain] || 'Unknown';
+          
+          // Store connection
+          localStorage.setItem('wc_connected', 'true');
+          localStorage.setItem('wc_address', connectedAddress);
+          localStorage.setItem('wc_chain', selectedChain);
+          
+        } else {
+          alert('No wallet detected. Please install MetaMask, Coinbase Wallet, or use WalletConnect QR code.');
+        }
+      } catch (error) {
+        console.error('Connection error:', error);
+        alert('Connection failed: ' + error.message);
+      }
+    }
+
+    function disconnectWallet() {
+      connectedAddress = null;
+      localStorage.removeItem('wc_connected');
+      localStorage.removeItem('wc_address');
+      localStorage.removeItem('wc_chain');
+      
+      document.getElementById('connectSection').style.display = 'block';
+      document.getElementById('connectedSection').style.display = 'none';
+    }
+
+    // Check for existing connection on load
+    window.addEventListener('load', () => {
+      const connected = localStorage.getItem('wc_connected');
+      if (connected === 'true') {
+        connectedAddress = localStorage.getItem('wc_address');
+        selectedChain = localStorage.getItem('wc_chain') || '1';
+        
+        if (connectedAddress) {
+          document.getElementById('connectSection').style.display = 'none';
+          document.getElementById('connectedSection').style.display = 'block';
+          document.getElementById('walletAddress').textContent = connectedAddress;
+          
+          const chainNames = {
+            '1': 'Ethereum Mainnet',
+            '137': 'Polygon',
+            '56': 'BSC',
+            '43114': 'Avalanche'
+          };
+          document.getElementById('chainName').textContent = chainNames[selectedChain];
+        }
+      }
+    });
+  </script>
+</body>
+</html>
