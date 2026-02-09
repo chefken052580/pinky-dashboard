@@ -760,7 +760,7 @@ class SettingsPageUI {
         
         // Validate license key with backend
         try {
-            const response = await fetch(`${API_BASE}/licenses/validate`, {
+            const response = await fetch(`${API_BASE}/license/validate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ licenseKey })
@@ -806,7 +806,7 @@ class SettingsPageUI {
         activateBtn.textContent = '🔄 Validating...';
         
         try {
-            const response = await fetch(`${API_BASE}/licenses/validate`, {
+            const response = await fetch(`${API_BASE}/license/validate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ licenseKey })
