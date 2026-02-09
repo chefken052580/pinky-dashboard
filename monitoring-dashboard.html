@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PinkyBot - Real-Time Monitoring</title>
+  <link rel="stylesheet" href="monitoring-dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="monitoring-container">
+    <header class="monitoring-header">
+      <h1>🔍 Real-Time System Monitoring</h1>
+      <div class="status-indicator">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Connecting...</span>
+      </div>
+    </header>
+
+    <!-- System Metrics -->
+    <section class="metrics-section">
+      <h2>System Metrics</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon">⚡</div>
+          <div class="metric-label">CPU Usage</div>
+          <div class="metric-value" id="cpuUsage">--</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">💾</div>
+          <div class="metric-label">Memory</div>
+          <div class="metric-value" id="memoryUsage">--</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">⏱️</div>
+          <div class="metric-label">Uptime</div>
+          <div class="metric-value" id="uptime">--</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon">🔄</div>
+          <div class="metric-label">Requests/min</div>
+          <div class="metric-value" id="requestRate">--</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- API Performance -->
+    <section class="metrics-section">
+      <h2>API Performance</h2>
+      <div class="chart-container">
+        <canvas id="apiChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Task Status -->
+    <section class="metrics-section">
+      <h2>Task Status</h2>
+      <div class="task-stats">
+        <div class="task-stat">
+          <span class="task-count" id="runningTasks">0</span>
+          <span class="task-label">Running</span>
+        </div>
+        <div class="task-stat">
+          <span class="task-count" id="pendingTasks">0</span>
+          <span class="task-label">Pending</span>
+        </div>
+        <div class="task-stat">
+          <span class="task-count" id="completedTasks">0</span>
+          <span class="task-label">Completed</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Activity -->
+    <section class="metrics-section">
+      <h2>Recent Activity</h2>
+      <div class="activity-log" id="activityLog">
+        <div class="activity-item">No recent activity</div>
+      </div>
+    </section>
+
+    <!-- System Health -->
+    <section class="metrics-section">
+      <h2>System Health</h2>
+      <div class="health-checks">
+        <div class="health-check">
+          <span class="health-icon" id="apiHealth">⚪</span>
+          <span>API Server</span>
+          <span class="health-status" id="apiHealthStatus">Checking...</span>
+        </div>
+        <div class="health-check">
+          <span class="health-icon" id="dbHealth">⚪</span>
+          <span>Database</span>
+          <span class="health-status" id="dbHealthStatus">Checking...</span>
+        </div>
+        <div class="health-check">
+          <span class="health-icon" id="wsHealth">⚪</span>
+          <span>WebSocket</span>
+          <span class="health-status" id="wsHealthStatus">Checking...</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="monitoring-dashboard.js"></script>
+</body>
+</html>
