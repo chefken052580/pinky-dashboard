@@ -1,6 +1,41 @@
 /* Pinky Bot Dashboard - Unified Styles */
 :root {
-    --bg-body: linear-gradient(135deg, #7b8eef 0%, #9b6fc2 50%, #7b8eef 100%);
+--bg-body: linear-gradient(135deg, #0a0a1a 0%, #12122e 50%, #0a0a1a 100%);
+    --bg-sidebar: #0d0d24;
+    --bg-card: rgba(15, 15, 40, 0.85);
+    --bg-card-hover: rgba(20, 20, 55, 0.9);
+    --bg-subtle: rgba(15, 15, 40, 0.6);
+    --bg-input: rgba(255, 255, 255, 0.05);
+    --text-primary: #e0e0ff;
+    --text-secondary: #a0a0c0;
+    --text-muted: #667a8a;
+    --text-heading: #00d4ff;
+    --text-on-accent: #ffffff;
+    --accent-primary: #00d4ff;
+    --accent-secondary: #764ba2;
+    --accent-green: #00ff88;
+    --accent-pink: #ff66aa;
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-blue: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    --gradient-green: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+    --border-default: rgba(102, 126, 234, 0.25);
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-card-hover: 0 8px 30px rgba(102, 126, 234, 0.15);
+    --shadow-header: 0 2px 15px rgba(0, 0, 0, 0.4);
+    --activity-bg: rgba(15, 15, 40, 0.5);
+    --activity-border: #00d4ff;
+    --activity-item-bg: rgba(20, 20, 55, 0.5);
+    --scrollbar-track: rgba(15, 15, 40, 0.5);
+    --scrollbar-thumb: #667eea;
+    --scrollbar-hover: #00d4ff;
+    --btn-border: #667eea;
+    --btn-text: #00d4ff;
+    --btn-hover-bg: #667eea;
+    --btn-hover-text: #ffffff;
+}
+html.light-mode {
+--bg-body: linear-gradient(135deg, #7b8eef 0%, #9b6fc2 50%, #7b8eef 100%);
     --bg-sidebar: #ffffff;
     --bg-card: #ffffff;
     --bg-card-hover: #fafbff;
@@ -38,41 +73,8 @@
     --btn-hover-bg: #667eea;
     --btn-hover-text: #ffffff;
 }
-html[data-theme="dark"], html.dark-mode {
-    --bg-body: linear-gradient(135deg, #0a0a1a 0%, #12122e 50%, #0a0a1a 100%);
-    --bg-sidebar: #0d0d24;
-    --bg-card: rgba(15, 15, 40, 0.85);
-    --bg-card-hover: rgba(20, 20, 55, 0.9);
-    --bg-subtle: rgba(15, 15, 40, 0.6);
-    --bg-input: rgba(255, 255, 255, 0.05);
-    --text-primary: #e0e0ff;
-    --text-secondary: #a0a0c0;
-    --text-muted: #667a8a;
-    --text-heading: #00d4ff;
-    --text-on-accent: #ffffff;
-    --accent-primary: #00d4ff;
-    --accent-secondary: #764ba2;
-    --accent-green: #00ff88;
-    --accent-pink: #ff66aa;
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-blue: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-    --gradient-green: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
-    --border-default: rgba(102, 126, 234, 0.25);
-    --border-subtle: rgba(255, 255, 255, 0.06);
-    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
-    --shadow-card-hover: 0 8px 30px rgba(102, 126, 234, 0.15);
-    --shadow-header: 0 2px 15px rgba(0, 0, 0, 0.4);
-    --activity-bg: rgba(15, 15, 40, 0.5);
-    --activity-border: #00d4ff;
-    --activity-item-bg: rgba(20, 20, 55, 0.5);
-    --scrollbar-track: rgba(15, 15, 40, 0.5);
-    --scrollbar-thumb: #667eea;
-    --scrollbar-hover: #00d4ff;
-    --btn-border: #667eea;
-    --btn-text: #00d4ff;
-    --btn-hover-bg: #667eea;
-    --btn-hover-text: #ffffff;
-}
+
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-body); color: var(--text-primary); overflow-x: hidden; min-height: 100vh; }
 
