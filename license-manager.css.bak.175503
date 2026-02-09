@@ -247,7 +247,7 @@ html.dark-mode .license-info-box p {
 /* License Status Widget (for settings page) */
 .license-status-widget {
   background: var(--bg-card);
-  border: 1px solid var(--border-default);
+  border: 1px solid #e0e0e0;
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 24px;

@@ -110,7 +110,7 @@
 .add-task-button {
   background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
   border: none;
-  color: var(--text-primary);
+  color: #000;
   padding: 12px 20px;
   border-radius: 6px;
   font-weight: bold;

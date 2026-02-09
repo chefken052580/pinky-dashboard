@@ -397,7 +397,7 @@ input:focus, select:focus, textarea:focus {
 /* Notifications */
 .notification-badge {
     background: var(--error) !important;
-    color: var(--text-primary) !important;
+    color: #000 !important;
 }
 
 /* Light mode specific overrides */

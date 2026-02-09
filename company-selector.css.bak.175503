@@ -17,7 +17,7 @@
 }
 
 .company-selector:hover {
-  border-color: var(--text-heading);
+  border-color: #667eea;
 }
 
 .selector-label {
@@ -52,12 +52,12 @@
 }
 
 .company-dropdown:hover {
-  border-color: var(--text-heading);
+  border-color: #667eea;
 }
 
 .company-dropdown:focus {
   outline: none;
-  border-color: var(--text-heading);
+  border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -75,7 +75,7 @@
 .manage-companies-btn:hover,
 .add-company-btn:hover {
   background: #667eea;
-  border-color: var(--text-heading);
+  border-color: #667eea;
   transform: scale(1.05);
 }
 
@@ -111,7 +111,7 @@
 .stat-value {
   font-size: 20px;
   font-weight: bold;
-  color: var(--text-heading);
+  color: #667eea;
 }
 
 .stat-label {
@@ -236,7 +236,7 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: var(--text-heading);
+  border-color: #667eea;
 }
 
 .color-picker-row {
@@ -310,7 +310,7 @@
 }
 
 .company-item:hover {
-  border-color: var(--text-heading);
+  border-color: #667eea;
 }
 
 .company-info {

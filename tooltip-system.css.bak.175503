@@ -92,7 +92,7 @@
 }
 
 .pinky-tooltip.light-mode .tooltip-arrow {
-  border-top-color: var(--text-heading);
+  border-top-color: #667eea;
 }
 
 .pinky-tooltip.dark-mode .tooltip-arrow {

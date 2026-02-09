@@ -374,7 +374,7 @@
     .setting-input,
     .setting-input-small {
         background: var(--surface-2);
-        border-color: var(--border-default);
+        border-color: #ddd;
         color: #222;
     }
     
@@ -396,7 +396,7 @@
     .btn-secondary {
         background: var(--surface-2);
         color: #222;
-        border-color: var(--border-default);
+        border-color: #ddd;
     }
     
     .btn-secondary:hover {
@@ -516,12 +516,12 @@
 @media (prefers-color-scheme: light) {
     .license-key-section {
         background: var(--surface-2);
-        border-color: var(--border-default);
+        border-color: #ddd;
     }
     
     .license-details {
         background: var(--bg-card);
-        border-color: var(--border-default);
+        border-color: #ddd;
     }
     
     .license-detail-row {
@@ -603,7 +603,7 @@
 
 .tier-badge.tier-pro {
     background: rgba(102, 126, 234, 0.15);
-    color: var(--text-heading);
+    color: #667eea;
     border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
@@ -617,7 +617,7 @@
 @media (prefers-color-scheme: light) {
     .subscription-info {
         background: var(--surface-2);
-        border-color: var(--border-default);
+        border-color: #ddd;
     }
     
     .info-row {

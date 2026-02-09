@@ -122,7 +122,7 @@
 .task-complete-btn {
   background: #00d464;
   border: none;
-  color: var(--text-primary);
+  color: #000;
   padding: 4px 8px;
   border-radius: 4px;
   cursor: pointer;
@@ -402,7 +402,7 @@
 
 .connected-badge {
   background: #00d464;
-  color: var(--text-primary);
+  color: #000;
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 0.75em;
@@ -431,7 +431,7 @@
   width: 100%;
   background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
   border: none;
-  color: var(--text-primary);
+  color: #000;
   padding: 8px;
   border-radius: 6px;
   cursor: pointer;

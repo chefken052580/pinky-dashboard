@@ -44,7 +44,7 @@
 
 .locked-content h3 {
   font-size: 32px;
-  color: var(--text-heading);
+  color: #667eea;
   margin: 0 0 12px 0;
   text-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
 }
@@ -253,7 +253,7 @@
 
 .modal-header h2 {
   font-size: 36px;
-  color: var(--text-heading);
+  color: #667eea;
   margin: 20px 0 12px 0;
   text-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
 }
@@ -290,7 +290,7 @@
 }
 
 .pro-tier {
-  border-color: var(--text-heading);
+  border-color: #667eea;
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
 }
 
@@ -395,7 +395,7 @@
 }
 
 .modal-footer a:hover {
-  color: var(--text-heading);
+  color: #667eea;
   text-decoration: underline;
 }
 

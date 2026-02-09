@@ -138,7 +138,7 @@ input:checked + .toggle-slider:before {
 .api-test-btn {
   background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
   border: none;
-  color: var(--text-primary);
+  color: #000;
   padding: 10px;
   border-radius: 6px;
   cursor: pointer;
@@ -325,7 +325,7 @@ input:checked + .toggle-slider:before {
 .action-btn {
   background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
   border: none;
-  color: var(--text-primary);
+  color: #000;
   padding: 10px 15px;
   border-radius: 6px;
   cursor: pointer;

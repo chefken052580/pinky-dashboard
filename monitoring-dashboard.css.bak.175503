@@ -39,7 +39,7 @@ body {
   align-items: center;
   gap: 10px;
   font-size: 16px;
-  color: var(--text-secondary);
+  color: #555;
 }
 
 .status-dot {
@@ -140,7 +140,7 @@ body {
 .task-count {
   font-size: 48px;
   font-weight: bold;
-  color: var(--text-heading);
+  color: #667eea;
 }
 
 .task-label {
@@ -162,7 +162,7 @@ body {
   margin-bottom: 10px;
   border-radius: 4px;
   font-size: 14px;
-  color: var(--text-secondary);
+  color: #555;
 }
 
 .activity-item:hover {

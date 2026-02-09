@@ -210,7 +210,7 @@ class PostCalendar {
    * Render post badge (small, for month view)
    */
   renderPostBadge(post) {
-    const platform = this.platforms[post.platform] || { icon: '📝', color: 'var(--text-secondary)' };
+    const platform = this.platforms[post.platform] || { icon: '📝', color: '#666' };
     return `<div class="post-badge" style="background: ${platform.color}" title="${post.content.substring(0, 50)}...">${platform.icon}</div>`;
   }
 
@@ -218,7 +218,7 @@ class PostCalendar {
    * Render post card (medium, for week view)
    */
   renderPostCard(post) {
-    const platform = this.platforms[post.platform] || { name: 'Unknown', icon: '📝', color: 'var(--text-secondary)' };
+    const platform = this.platforms[post.platform] || { name: 'Unknown', icon: '📝', color: '#666' };
     const time = new Date(post.scheduledTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     const statusClass = post.status === 'scheduled' ? 'scheduled' : post.status === 'posted' ? 'posted' : 'failed';
 
@@ -235,7 +235,7 @@ class PostCalendar {
    * Render post detail card (large, for day view)
    */
   renderPostDetailCard(post) {
-    const platform = this.platforms[post.platform] || { name: 'Unknown', icon: '📝', color: 'var(--text-secondary)' };
+    const platform = this.platforms[post.platform] || { name: 'Unknown', icon: '📝', color: '#666' };
     const time = new Date(post.scheduledTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     const statusBadge = post.status === 'scheduled' ? '🟢 Scheduled' : post.status === 'posted' ? '✅ Posted' : '❌ Failed';
 

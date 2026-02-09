@@ -54,7 +54,7 @@
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
     border-bottom-color: transparent;
     color: #00d4ff;
-    border-color: var(--text-heading);
+    border-color: #667eea;
 }
 
 /* Social tab content containers */
@@ -81,7 +81,7 @@
 }
 
 .social-company-selector-section h3 {
-    color: var(--text-heading) !important;
+    color: #667eea !important;
     margin-bottom: 15px !important;
 }
 
@@ -180,7 +180,7 @@
 
 .action-btn:hover {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
-    border-color: var(--text-heading);
+    border-color: #667eea;
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }

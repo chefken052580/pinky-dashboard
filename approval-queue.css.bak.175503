@@ -85,7 +85,7 @@
   font-size: 1em;
 }
 .approval-item .file {
-  color: var(--text-heading);
+  color: #667eea;
   font-size: 0.85em;
   margin-bottom: 6px;
   font-family: 'Monaco', 'Courier New', monospace;
@@ -112,7 +112,7 @@
 }
 .approval-item textarea:focus {
   outline: none;
-  border-color: var(--text-heading);
+  border-color: #667eea;
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
 }
 .approval-item textarea::placeholder {

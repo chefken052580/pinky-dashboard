@@ -77,7 +77,7 @@
 
 .bug-close-btn:hover {
   transform: scale(1.2) rotate(90deg);
-  color: var(--text-heading);
+  color: #667eea;
 }
 
 /* Form Styles */
