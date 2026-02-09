@@ -730,13 +730,13 @@ class TasksBotEnhanced {
         html += '<div class="task-header">';
         // Choose stamp based on task type
         if (task.notes && task.notes.includes('ADMIN FIX')) {
-          html += '<div class="verified-stamp admin-stamp"><div class="stamp-circle admin">ADMIN</div><span class="stamp-text admin-text">⚡ Brain Fix</span></div>';
-        } else if (task.name && task.name.includes('DENIED')) {
-          html += '<div class="verified-stamp failed-stamp"><div class="stamp-circle failed">DENIED</div><span class="stamp-text failed-text">✗ Failed</span></div>';
-        } else if (task.notes && (task.notes.includes('Brain') || task.notes.includes('--no-verify'))) {
-          html += '<div class="verified-stamp admin-stamp"><div class="stamp-circle admin">ADMIN</div><span class="stamp-text admin-text">⚡ Brain</span></div>';
+          html += '<div class="verified-stamp admin-stamp"><div class="stamp-circle admin">ADMIN</div><span class="stamp-text admin-text" style="font-size:1.1em;">⚡ Brain Fix</span></div>';
+        } else if (task.notes && (task.notes.includes('Handled by Brain') || task.notes.includes('Brain') || task.notes.includes('--no-verify'))) {
+          html += '<div class="verified-stamp admin-stamp"><div class="stamp-circle admin">ADMIN</div><span class="stamp-text admin-text" style="font-size:1.1em;">⚡ Brain</span></div>';
+        } else if (task.name && task.name.includes('DENIED') && !(task.notes && task.notes.includes('Handled'))) {
+          html += '<div class="verified-stamp failed-stamp"><div class="stamp-circle failed">DENIED</div><span class="stamp-text failed-text" style="font-size:1.1em;">✗ Failed</span></div>';
         } else {
-          html += '<div class="verified-stamp"><div class="stamp-circle">VERIFIED</div><span class="stamp-text">✓ Done</span></div>';
+          html += '<div class="verified-stamp"><div class="stamp-circle">VERIFIED</div><span class="stamp-text" style="font-size:1.1em;">✓ Done</span></div>';
         }
         html += '<span class="task-name">' + this.escapeAttr(task.name) + '</span>';
         
