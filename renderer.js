@@ -559,18 +559,14 @@ function renderHeaderStats() {
         
         // Get heartbeat count from /api/activity
         const heartbeatsArray = activity.heartbeats || [];
-        const heartbeatCount = heartbeatsArray.length;
-        // Also fetch baseline from state file (non-blocking)
+        let heartbeatCount = heartbeatsArray.length;
+        // Fetch baseline from state file BEFORE rendering
         fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/heartbeat/state')
           .then(r => r.json())
           .then(stateData => {
             const baseline = stateData.heartbeatCount || 0;
-            const realCount = Math.max(heartbeatsArray.length, baseline);
-            const wakeupEl = document.getElementById("total-wakeups");
-            if (wakeupEl) wakeupEl.textContent = realCount;
-            const hbEl = container.querySelector('.stat-value');
-            if (hbEl) hbEl.textContent = realCount;
-          }).catch(() => {});
+            heartbeatCount = Math.max(heartbeatCount, baseline);
+          }).catch(() => {}).finally(() => {
         
         // Calculate tasks completed today (for header only)
         const now = new Date();
@@ -608,6 +604,7 @@ function renderHeaderStats() {
         if (wakeupEl) wakeupEl.textContent = heartbeatCount;
         
         console.log('[HeaderStats] Updated: ' + heartbeatCount + ' heartbeats, ' + allCompleted + ' tasks, $' + apiCost.toFixed(2) + ' cost, ' + messages + ' messages, ' + completionRate + ' success rate');
+          }); // end finally
     });
 }
 document.addEventListener('DOMContentLoaded', function() {
