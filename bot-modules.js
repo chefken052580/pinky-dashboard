@@ -31,15 +31,15 @@ class DocsBotPro {
     const container = document.getElementById('docsbot-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div class="module-header">📚 DocsBotPro - Auto Documentation Generator</div>';
+    let html = '<div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.3);border-radius:12px;padding:20px;margin-bottom:20px;"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">📚 DocsBotPro - Auto Documentation Generator</div>';
     
-    html += '<div class="feature-grid">';
-    html += '<div class="feature-card"><div class="feature-title">📄 Auto-Generation</div><div class="feature-desc">Generate READMEs, API docs, changelogs from code</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🔗 Version Control</div><div class="feature-desc">Track doc versions, diffs, and rollback changes</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📥 Multiple Formats</div><div class="feature-desc">Export as Markdown, PDF, HTML, DOCX</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🔄 Live Sync</div><div class="feature-desc">Auto-update docs when code changes</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🔍 Code Comment AI</div><div class="feature-desc">Generate comprehensive code comments & docstrings</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📊 Analytics</div><div class="feature-desc">Track docs coverage, quality scores, outdate notifications</div></div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📄 Auto-Generation</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Generate READMEs, API docs, changelogs from code</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔗 Version Control</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Track doc versions, diffs, and rollback changes</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📥 Multiple Formats</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Export as Markdown, PDF, HTML, DOCX</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔄 Live Sync</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Auto-update docs when code changes</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔍 Code Comment AI</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Generate comprehensive code comments & docstrings</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📊 Analytics</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Track docs coverage, quality scores, outdate notifications</div></div>';
     html += '</div>';
 
     html += '<div style="margin-top: 15px;">';
@@ -92,15 +92,15 @@ class ResearchBotPro {
     const container = document.getElementById('researchbot-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div class="module-header">🔬 ResearchBotPro - Intelligence Gatherer</div>';
+    let html = '<div class="bot-module"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">🔬 ResearchBotPro - Intelligence Gatherer</div>';
     
-    html += '<div class="feature-grid">';
-    html += '<div class="feature-card"><div class="feature-title">🌐 Multi-Source Aggregation</div><div class="feature-desc">Pull data from 50+ sources: news, social, academic, gov</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">✅ Fact-Checking Engine</div><div class="feature-desc">Verify claims against known sources, rate confidence</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📎 Citation Management</div><div class="feature-desc">Auto-format citations (APA, Chicago, MLA), track sources</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📈 Competitor Analysis</div><div class="feature-desc">Track competitors: pricing, features, marketing, funding</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🎯 Trend Detection</div><div class="feature-desc">Identify emerging trends, predict market shifts</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">💾 Report Export</div><div class="feature-desc">Generate executive summaries, detailed reports, visualizations</div></div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🌐 Multi-Source Aggregation</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Pull data from 50+ sources: news, social, academic, gov</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">✅ Fact-Checking Engine</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Verify claims against known sources, rate confidence</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📎 Citation Management</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Auto-format citations (APA, Chicago, MLA), track sources</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📈 Competitor Analysis</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Track competitors: pricing, features, marketing, funding</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🎯 Trend Detection</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Identify emerging trends, predict market shifts</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">💾 Report Export</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Generate executive summaries, detailed reports, visualizations</div></div>';
     html += '</div>';
 
     html += '<div style="margin-top: 15px;">';
@@ -167,15 +167,15 @@ class CodeBotPro {
     const container = document.getElementById('codebot-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div class="module-header">💻 CodeBotPro - Development Assistant</div>';
+    let html = '<div class="bot-module"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">💻 CodeBotPro - Development Assistant</div>';
     
-    html += '<div class="feature-grid">';
-    html += '<div class="feature-card"><div class="feature-title">🔍 Code Review AI</div><div class="feature-desc">Auto-review code: style, patterns, best practices</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🛡️ Security Scanning</div><div class="feature-desc">Detect vulnerabilities, SQL injection, XSS, crypto issues</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">⚡ Performance Analysis</div><div class="feature-desc">Profile code, find bottlenecks, optimize algorithms</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📚 Auto-Test Generator</div><div class="feature-desc">Generate unit, integration, E2E tests from code</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🔧 Refactoring Engine</div><div class="feature-desc">Suggest refactors, extract methods, reduce complexity</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📖 Doc Generator</div><div class="feature-desc">Auto-generate JSDoc, docstrings, API documentation</div></div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔍 Code Review AI</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Auto-review code: style, patterns, best practices</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🛡️ Security Scanning</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Detect vulnerabilities, SQL injection, XSS, crypto issues</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">⚡ Performance Analysis</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Profile code, find bottlenecks, optimize algorithms</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📚 Auto-Test Generator</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Generate unit, integration, E2E tests from code</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔧 Refactoring Engine</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Suggest refactors, extract methods, reduce complexity</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📖 Doc Generator</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Auto-generate JSDoc, docstrings, API documentation</div></div>';
     html += '</div>';
 
     html += '<div style="margin-top: 15px;">';
@@ -236,15 +236,15 @@ class BusinessBotPro {
     const container = document.getElementById('businessbot-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div class="module-header">💼 BusinessBotPro - Growth Intelligence</div>';
+    let html = '<div class="bot-module"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">💼 BusinessBotPro - Growth Intelligence</div>';
     
-    html += '<div class="feature-grid">';
-    html += '<div class="feature-card"><div class="feature-title">🎯 Opportunity Finder</div><div class="feature-desc">Identify market gaps, emerging niches, untapped segments</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">💰 ROI Calculator</div><div class="feature-desc">Predict returns, payback period, break-even analysis</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📊 Financial Modeling</div><div class="feature-desc">5-year projections, scenario planning, variance analysis</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🔭 Market Intelligence</div><div class="feature-desc">Industry trends, consumer behavior, pricing dynamics</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🏢 Competitor Tracker</div><div class="feature-desc">Monitor competitors: moves, funding, product launches</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📈 KPI Dashboard</div><div class="feature-desc">Real-time metrics: MRR, churn, CAC, LTV, runway</div></div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🎯 Opportunity Finder</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Identify market gaps, emerging niches, untapped segments</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">💰 ROI Calculator</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Predict returns, payback period, break-even analysis</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📊 Financial Modeling</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">5-year projections, scenario planning, variance analysis</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔭 Market Intelligence</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Industry trends, consumer behavior, pricing dynamics</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🏢 Competitor Tracker</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Monitor competitors: moves, funding, product launches</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📈 KPI Dashboard</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Real-time metrics: MRR, churn, CAC, LTV, runway</div></div>';
     html += '</div>';
 
     html += '<div style="margin-top: 15px;">';
@@ -279,15 +279,15 @@ class FileSystemBotPro {
     const container = document.getElementById('filesystembot-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div class="module-header">📁 FileSystemBotPro - Smart File Manager</div>';
+    let html = '<div class="bot-module"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">📁 FileSystemBotPro - Smart File Manager</div>';
     
-    html += '<div class="feature-grid">';
-    html += '<div class="feature-card"><div class="feature-title">🏷️ Smart Tagging</div><div class="feature-desc">Auto-tag files by type, content, project, date</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🔎 Advanced Search</div><div class="feature-desc">Full-text search, tags, metadata, fuzzy matching</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🗑️ Smart Cleanup</div><div class="feature-desc">Find duplicates, unused files, orphaned data</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📊 File Analytics</div><div class="feature-desc">Storage usage, file type breakdown, growth trends</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🔄 Auto-Org</div><div class="feature-desc">Organize by type/date/project, create structure</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🔐 Safe Cleanup</div><div class="feature-desc">Archive old files, secure deletion, version restore</div></div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🏷️ Smart Tagging</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Auto-tag files by type, content, project, date</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔎 Advanced Search</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Full-text search, tags, metadata, fuzzy matching</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🗑️ Smart Cleanup</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Find duplicates, unused files, orphaned data</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📊 File Analytics</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Storage usage, file type breakdown, growth trends</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔄 Auto-Org</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Organize by type/date/project, create structure</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔐 Safe Cleanup</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Archive old files, secure deletion, version restore</div></div>';
     html += '</div>';
 
     html += '<div style="margin-top: 15px;">';
@@ -329,15 +329,15 @@ class TasksBotPro {
     const container = document.getElementById('tasksbot-pro-container');
     if (!container) return;
 
-    let html = '<div class="bot-module"><div class="module-header">🎯 TasksBotPro - Advanced PM</div>';
+    let html = '<div class="bot-module"><div style="color:#00d4ff;font-size:1.2em;font-weight:bold;margin-bottom:15px;">🎯 TasksBotPro - Advanced PM</div>';
     
-    html += '<div class="feature-grid">';
-    html += '<div class="feature-card"><div class="feature-title">📊 Burndown Charts</div><div class="feature-desc">Track sprint progress, velocity, burndown/burnup</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">🔗 Dependencies</div><div class="feature-desc">Block/depend tasks, critical path analysis, Gantt view</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">⏱️ Time Tracking</div><div class="feature-desc">Estimate vs actual, effort tracking, productivity insights</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">👥 Team Sync</div><div class="feature-desc">Assign, @mention, comments, update notifications</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📱 Subtasks</div><div class="feature-desc">Break down tasks, nested organization, auto-rollup</div></div>';
-    html += '<div class="feature-card"><div class="feature-title">📈 Metrics</div><div class="feature-desc">Completion rate, velocity, cycle time, quality metrics</div></div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:20px;">';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📊 Burndown Charts</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Track sprint progress, velocity, burndown/burnup</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">🔗 Dependencies</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Block/depend tasks, critical path analysis, Gantt view</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">⏱️ Time Tracking</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Estimate vs actual, effort tracking, productivity insights</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">👥 Team Sync</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Assign, @mention, comments, update notifications</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📱 Subtasks</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Break down tasks, nested organization, auto-rollup</div></div>';
+    html += '<div style="background:rgba(10,10,20,0.5);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:15px;"><div style="color:#fff;font-weight:bold;margin-bottom:8px;">📈 Metrics</div><div style="color:#aaa;font-size:0.9em;line-height:1.4;">Completion rate, velocity, cycle time, quality metrics</div></div>';
     html += '</div>';
 
     html += '</div>';

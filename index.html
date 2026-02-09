@@ -400,7 +400,7 @@
                 <p style="color:white;margin-bottom:25px;">
                     Generates daily logs, memory updates, and comprehensive documentation.
                 </p>
-                <div id="docsbot-container" style="border:3px solid red;min-height:100px;padding:10px;"><h1 style="color:red;font-size:40px;">IF YOU CAN SEE THIS, CONTAINER WORKS</h1></div>
+                <div id="docsbot-container"></div>
                 
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -1066,7 +1066,7 @@
             setTimeout(() => {
                 // Inject container divs for bot modules
                 const containers = {
-                    'docs-view': '<div id="docsbot-container" style="border:3px solid red;min-height:100px;padding:10px;"><h1 style="color:red;font-size:40px;">IF YOU CAN SEE THIS, CONTAINER WORKS</h1></div>',
+                    'docs-view': '<div id="docsbot-container"></div>',
                     'research-view': '<div id="researchbot-container"></div>',
                     'code-view': '<div id="codebot-container"></div>',
                     'business-view': '<div id="businessbot-container"></div>',
