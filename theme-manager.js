@@ -5,6 +5,7 @@ class ThemeManager {
     constructor() {
         this.storageKey = 'pinkybot-theme-preference';
         this.themeElement = document.documentElement; // html element
+        // Ensure data-theme attribute is set
         this.init();
     }
 
