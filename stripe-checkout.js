@@ -342,7 +342,7 @@ class StripeCheckout {
     // Check subscription status every 5 minutes
     // DISABLED setInterval(() => {
       this.verifySubscription();
-    }, 5 * 60 * 1000);
+    // }, 5 * 60 * 1000);
   }
 
   async checkPinkyTokenBalance() {

@@ -60,3 +60,23 @@ class GlobalRefresh {
 }
 
 window.GlobalRefresh = new GlobalRefresh();
+
+// === LIVE PUSH: Instant dashboard updates via WebSocket ===
+(function() {
+  var script = document.createElement('script');
+  script.src = '/socket.io/socket.io.js';
+  script.onload = function() {
+    var socket = io();
+    socket.on('connect', function() {
+      console.log('[LivePush] Connected to WebSocket');
+    });
+    socket.on('task-update', function() {
+      console.log('[LivePush] Task changed — refreshing NOW');
+      window.GlobalRefresh.fetchAll();
+    });
+    socket.on('disconnect', function() {
+      console.log('[LivePush] Disconnected, polling fallback active');
+    });
+  };
+  document.head.appendChild(script);
+})();

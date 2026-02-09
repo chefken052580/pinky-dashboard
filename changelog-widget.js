@@ -267,7 +267,7 @@ class ChangelogWidget {
         // Refresh every 5 minutes
         // DISABLED setInterval(() => {
             this.refresh();
-        }, 5 * 60 * 1000);
+        // }, 5 * 60 * 1000);
     }
 
     async refresh() {

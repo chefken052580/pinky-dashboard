@@ -283,7 +283,7 @@ class SystemHealthWidget {
         
         // DISABLED this.refreshInterval = setInterval(() => {
             this.updateMetrics();
-        }, this.updateInterval);
+        // }, this.updateInterval);
     }
 
     /**

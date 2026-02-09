@@ -26,7 +26,7 @@ class SystemMonitorUI {
       if (this.isEnabled) {
         this.loadMetrics();
       }
-    }, this.updateInterval);
+    // }, this.updateInterval);
   }
 
   /**
