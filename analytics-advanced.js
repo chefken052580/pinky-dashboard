@@ -310,11 +310,15 @@ class AnalyticsEngine {
     html += '<div class="activity-table">';
     const hbs = (activityData?.heartbeats || [])
       .filter(hb => {
-        const activity = (hb.activity || '').toLowerCase();
-        return !activity.includes('heartbeat') && 
-               !activity.includes('work') && 
-               !activity.includes('seed') &&
-               !activity.includes('heartbeat_ok');
+        const activity = (hb.activity || '');
+        const activityLower = activity.toLowerCase();
+        // Filter out system messages: HEARTBEAT:, WORK:, heartbeat_ok, etc.
+        return !activity.startsWith('HEARTBEAT:') && 
+               !activity.startsWith('WORK:') &&
+               !activityLower.startsWith('heartbeat_ok') &&
+               !activityLower.includes('seed') &&
+               !activityLower.includes('system:') &&
+               activity.trim().length > 0;
       })
       .slice(-5)
       .reverse();
