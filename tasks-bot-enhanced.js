@@ -320,17 +320,19 @@ class TasksBotEnhanced {
             var fromIndex = tasksInZone.findIndex(t => t.id === taskData.id);
             
             if (newIndex !== -1 && fromIndex !== -1) {
-              // Update sort_order via API
+              // Update sort_order via API — reorder all tasks in this zone
               console.log('[TasksBot] Reordering task: ' + taskData.name + ' from index ' + fromIndex + ' to ' + newIndex);
+              // Build new order: remove dragged task, insert at new position
+              var reordered = tasksInZone.filter(t => t.id !== taskData.id);
+              reordered.splice(newIndex, 0, taskData);
+              // Send full updated sort_order array to API
+              var updates = reordered.map(function(t, i) { return { id: t.id, name: t.name, sort_order: i }; });
               await fetch(this.apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   action: 'update_sort_order',
-                  taskId: taskData.id,
-                  taskName: taskData.name,
-                  newIndex: newIndex,
-                  fromIndex: fromIndex
+                  updates: updates
                 })
               });
               this.loadTasks();
@@ -584,11 +586,10 @@ class TasksBotEnhanced {
           const isSelected = this.selectedTasks.has(task.id);
           html += '<input type="checkbox" onclick="event.stopPropagation();window.tasksBotEnhanced.toggleTaskSelection(\'' + task.id + '\')" ' + (isSelected ? 'checked' : '') + ' style="margin-right:8px;cursor:pointer;width:18px;height:18px;">';
         }
-        html += '<span class="priority-badge">' + (task.priority || 'P3') + '</span>';
-        html += '<span class="task-name">' + this.escapeAttr(task.name) + '</span>';
-        html += '<div class="task-actions">';
-        html += '<button class="btn-priority-up" data-task-name="' + this.escapeAttr(task.name) + '" data-direction="up" title="Higher priority">↑</button>';
-        html += '<button class="btn-priority-down" data-task-name="' + this.escapeAttr(task.name) + '" data-direction="down" title="Lower priority">↓</button>';
+        html += '<span class="priority-badge" onclick="event.stopPropagation();window.tasksBotEnhanced.cyclePriority(\'' + this.escapeAttr(task.name).replace(/'/g, "\\\\'") + '\',\'' + (task.priority || 'P3') + '\');" style="cursor:pointer;" title="Click to change priority">' + (task.priority || 'P3') + '</span>';
+        html += '<span class="task-name" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;">' + this.escapeAttr(task.name) + '</span>';
+        html += '<div class="task-actions" style="display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0;">';
+        // Arrows removed — priority badge is now clickable
         html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.startTaskNow(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + task.id + '\');" title="Start this task now" style="background:#00d4ff;color:#0f0e1a;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:4px;font-size:0.8em;font-weight:bold;position:relative;z-index:10;">▶ Start</button>';
         html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.deleteTask(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + task.id + '\');" title="Delete task" style="background:#ff4444;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:4px;font-size:0.8em;position:relative;z-index:10;">✕</button>';
         html += '</div>';
@@ -599,7 +600,7 @@ class TasksBotEnhanced {
         }
         
         html += '<div class="task-meta">';
-        const taskAge = this.calculateTaskAge(task.assigned);
+        const taskAge = this.calculateTaskAge(task.updated || task.created || task.assigned);
         const ageColor = taskAge.includes('w') ? '#ff6b6b' : taskAge.includes('d') && parseInt(taskAge) > 3 ? '#ffa500' : '#999';
         html += '<span class="assigned">Age: <span style="color:' + ageColor + ';font-weight:bold;">' + taskAge + '</span></span>';
         html += '</div>';
@@ -868,10 +869,11 @@ class TasksBotEnhanced {
    */
   calculateTaskAge(timestamp) {
     try {
-      if (!timestamp) return 'unknown age';
-      // Handle non-date values like "Pinky" or "Brain"
+      if (!timestamp) return 'new';
+      // Handle non-date values like "Pinky" or "Brain" (assigned field)
+      if (typeof timestamp === 'string' && /^[A-Za-z]/.test(timestamp) && !timestamp.includes('-') && !timestamp.includes('/')) return 'new';
       if (typeof timestamp === 'string' && !/\d{4}/.test(timestamp)) {
-        return 'no date';
+        return 'new';
       }
       const assignedDate = new Date(timestamp);
       if (isNaN(assignedDate.getTime())) return 'unknown age';
