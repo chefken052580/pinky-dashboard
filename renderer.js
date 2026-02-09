@@ -608,6 +608,7 @@ function renderHeaderStats() {
         if (wakeupEl) wakeupEl.textContent = heartbeatCount;
         
         console.log('[HeaderStats] Updated: ' + heartbeatCount + ' heartbeats, ' + allCompleted + ' tasks, $' + apiCost.toFixed(2) + ' cost, ' + messages + ' messages, ' + completionRate + ' success rate');
+          }); // end finally
     });
 }
 document.addEventListener('DOMContentLoaded', function() {
