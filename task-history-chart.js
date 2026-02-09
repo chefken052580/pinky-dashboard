@@ -119,16 +119,24 @@ class TaskHistoryChart {
     // Count completed tasks by date (convert UTC to EST)
     let processedCount = 0;
     completedTasks.forEach(task => {
-      // Convert UTC timestamp to EST date
-      const taskDateUTC = new Date(task.updated);
-      const taskDateEST = taskDateUTC.toLocaleDateString('en-US', { 
-        timeZone: 'America/New_York',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      });
-      const [m, d, y] = taskDateEST.split('/');
-      const taskDate = `${y}-${m}-${d}`;
+      // Smart date extraction: notes > assigned > updated
+      var taskDate = null;
+      var notes = task.notes || "";
+      var notesMatch = notes.match(/(?:Completed|COMPLETED)[:\s]+(\d{4}-\d{2}-\d{2})/);
+      if (notesMatch === null) notesMatch = notes.match(/\[(\d{4}-\d{2}-\d{2})/);
+      var assignedDate = (task.assigned || "").match(/^(\d{4}-\d{2}-\d{2})$/);
+      if (notesMatch) {
+        taskDate = notesMatch[1];
+      } else if (assignedDate) {
+        taskDate = assignedDate[1];
+      } else {
+        var taskDateUTC = new Date(task.updated);
+        var taskDateEST = taskDateUTC.toLocaleDateString("en-US", {
+          timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit"
+        });
+        var parts = taskDateEST.split("/");
+        taskDate = parts[2] + "-" + parts[0] + "-" + parts[1];
+      }
       
       // Check if this date is in our range
       if (dailyCounts.hasOwnProperty(taskDate)) {
