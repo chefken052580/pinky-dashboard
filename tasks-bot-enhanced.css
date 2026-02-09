@@ -159,8 +159,23 @@
 }
 
 .task-item.dragging {
-  opacity: 0.5;
+  opacity: 0.4;
   transform: scale(0.95);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  z-index: 100;
+}
+.task-item {
+  transition: transform 0.2s ease, margin 0.2s ease, box-shadow 0.15s ease;
+}
+.drag-placeholder {
+  transition: height 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+}
+.task-list.drag-over {
+  min-height: 60px;
+}
+[data-drop-zone] {
+  transition: background 0.2s ease;
 }
 
 /* Priority badges */
