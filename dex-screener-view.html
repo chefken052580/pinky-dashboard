@@ -1,0 +1,404 @@
+<!-- DEX Screener View - Real-time DeFi monitoring -->
+<div class="dex-screener-container">
+  <div class="dex-header">
+    <h2 style="margin: 0; font-size: 24px;">🔥 Live DEX Screener</h2>
+    <div class="dex-controls">
+      <span style="font-size: 13px; color: #999;">Last refresh: <span id="dex-last-refresh">--:--:--</span></span>
+      <button class="dex-refresh-btn" onclick="window.DEXScreener && window.DEXScreener.refreshData()" title="Refresh data">
+        🔄 Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Chain Selector -->
+  <div class="chain-selector">
+    <button class="chain-selector-btn active" data-chain="solana" onclick="window.DEXScreener && window.DEXScreener.switchChain('solana')">
+      <span class="chain-icon">◎</span>
+      <span class="chain-name">Solana</span>
+    </button>
+    <button class="chain-selector-btn" data-chain="ethereum" onclick="window.DEXScreener && window.DEXScreener.switchChain('ethereum')">
+      <span class="chain-icon">Ξ</span>
+      <span class="chain-name">Ethereum</span>
+    </button>
+    <button class="chain-selector-btn" data-chain="bsc" onclick="window.DEXScreener && window.DEXScreener.switchChain('bsc')">
+      <span class="chain-icon">🔶</span>
+      <span class="chain-name">BSC</span>
+    </button>
+    <button class="chain-selector-btn" data-chain="polygon" onclick="window.DEXScreener && window.DEXScreener.switchChain('polygon')">
+      <span class="chain-icon">🟣</span>
+      <span class="chain-name">Polygon</span>
+    </button>
+    <button class="chain-selector-btn" data-chain="arbitrum" onclick="window.DEXScreener && window.DEXScreener.switchChain('arbitrum')">
+      <span class="chain-icon">🔷</span>
+      <span class="chain-name">Arbitrum</span>
+    </button>
+    <button class="chain-selector-btn" data-chain="base" onclick="window.DEXScreener && window.DEXScreener.switchChain('base')">
+      <span class="chain-icon">🔵</span>
+      <span class="chain-name">Base</span>
+    </button>
+  </div>
+
+  <!-- Trending Tokens Section -->
+  <div class="dex-section">
+    <div class="section-header">
+      <h3>📈 Trending Tokens (Top 10 by Volume)</h3>
+      <span class="section-badge">Live Data</span>
+    </div>
+    <div id="dex-trending-container" class="dex-content">
+      <div class="dex-loading">Loading trending tokens...</div>
+    </div>
+  </div>
+
+  <!-- New Pairs Section -->
+  <div class="dex-section">
+    <div class="section-header">
+      <h3>🆕 New Pairs (Last 24 Hours)</h3>
+      <span class="section-badge">Recent</span>
+    </div>
+    <div id="dex-newpairs-container" class="dex-content">
+      <div class="dex-loading">Loading new pairs...</div>
+    </div>
+  </div>
+
+  <!-- Info Footer -->
+  <div class="dex-footer">
+    <p style="font-size: 12px; color: #666; margin: 0;">
+      Data provided by <a href="https://dexscreener.com" target="_blank" style="color: #00d4ff;">DEXScreener</a> • Auto-refreshes every 30 seconds • Click token to view chart
+    </p>
+  </div>
+</div>
+
+<style>
+.dex-screener-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dex-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(0, 212, 255, 0.2);
+}
+
+.dex-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.dex-refresh-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #ff00ff, #00d4ff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dex-refresh-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+}
+
+.chain-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.chain-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #999;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.chain-selector-btn:hover {
+  border-color: #00d4ff;
+  color: #00d4ff;
+  transform: translateY(-2px);
+}
+
+.chain-selector-btn.active {
+  border-color: #00d4ff;
+  background: rgba(0, 212, 255, 0.1);
+  color: #00d4ff;
+}
+
+.chain-icon {
+  font-size: 18px;
+}
+
+.chain-name {
+  font-size: 13px;
+}
+
+.dex-section {
+  margin-bottom: 40px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+}
+
+.section-badge {
+  padding: 4px 12px;
+  background: rgba(0, 212, 255, 0.2);
+  border: 1px solid #00d4ff;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #00d4ff;
+}
+
+.dex-content {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.dex-loading {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-style: italic;
+}
+
+.dex-empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.dex-table {
+  width: 100%;
+}
+
+.dex-table-header,
+.dex-table-row {
+  display: grid;
+  grid-template-columns: 50px 2fr 1fr 1fr 1fr 1fr 100px;
+  gap: 15px;
+  padding: 12px 15px;
+  align-items: center;
+}
+
+.dex-table-header {
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #999;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dex-table-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s;
+}
+
+.dex-table-row:hover {
+  background: rgba(0, 212, 255, 0.05);
+}
+
+.token-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.token-name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.token-pair {
+  font-size: 11px;
+  color: #999;
+}
+
+.dex-col-change.positive {
+  color: #00ff88;
+}
+
+.dex-col-change.negative {
+  color: #ff4444;
+}
+
+.dex-col-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.dex-action-btn {
+  padding: 6px 10px;
+  background: rgba(0, 212, 255, 0.2);
+  border: 1px solid #00d4ff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.dex-action-btn:hover {
+  background: rgba(0, 212, 255, 0.4);
+  transform: scale(1.1);
+}
+
+.dex-pairs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.dex-pair-card {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.3s;
+}
+
+.dex-pair-card:hover {
+  border-color: #00d4ff;
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
+}
+
+.pair-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pair-tokens {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.pair-age {
+  font-size: 11px;
+  color: #999;
+}
+
+.pair-card-body {
+  margin-bottom: 12px;
+}
+
+.pair-metric {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.metric-label {
+  color: #999;
+}
+
+.metric-value {
+  font-weight: bold;
+}
+
+.metric-value.positive {
+  color: #00ff88;
+}
+
+.metric-value.negative {
+  color: #ff4444;
+}
+
+.pair-card-footer {
+  display: flex;
+  gap: 8px;
+}
+
+.dex-pair-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #ff00ff, #00d4ff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dex-pair-btn.secondary {
+  background: transparent;
+  border: 1px solid #00d4ff;
+  color: #00d4ff;
+}
+
+.dex-pair-btn:hover {
+  transform: translateY(-2px);
+}
+
+.dex-footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 1024px) {
+  .dex-table-header,
+  .dex-table-row {
+    grid-template-columns: 40px 1.5fr 1fr 1fr 80px;
+    gap: 10px;
+  }
+  
+  .dex-col-volume,
+  .dex-col-liquidity {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .chain-selector {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .dex-pairs-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .dex-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+}
+</style>
+
+<script src="dex-screener.js"></script>
