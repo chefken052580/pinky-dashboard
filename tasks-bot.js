@@ -60,10 +60,12 @@ class TasksBot {
     }
 
     // Drag and drop
-    document.addEventListener('dragstart', (e) => this.onDragStart(e));
-    document.addEventListener('dragover', (e) => this.onDragOver(e));
-    document.addEventListener('drop', (e) => this.onDrop(e));
-    document.addEventListener('dragend', (e) => this.onDragEnd(e));
+    // DISABLED: Document-level drag handlers conflict with tasks-bot-enhanced.js
+    // tasks-bot-enhanced.js uses container-scoped handlers instead
+    // document.addEventListener('dragstart', (e) => this.onDragStart(e));
+    // document.addEventListener('dragover', (e) => this.onDragOver(e));
+    // document.addEventListener('drop', (e) => this.onDrop(e));
+    // document.addEventListener('dragend', (e) => this.onDragEnd(e));
   }
 
   /**
