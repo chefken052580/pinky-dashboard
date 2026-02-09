@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Solflare Wallet Connect</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #0f172a;
+      color: white;
+    }
+    .wallet-section {
+      border: 2px solid #f97316;
+      border-radius: 12px;
+      padding: 30px;
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: white;
+    }
+    button {
+      background: white;
+      color: #f97316;
+      border: none;
+      padding: 15px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px 0;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.2);
+    }
+    .success { background: rgba(34,197,94,0.3); }
+    .error { background: rgba(239,68,68,0.3); }
+  </style>
+</head>
+<body>
+  <div class="wallet-section">
+    <h1>🔥 Connect Solflare</h1>
+    <p>Connect your Solana wallet to verify token holdings and access DeFi features.</p>
+    
+    <button id="connectBtn" onclick="connectWallet()">Connect Solflare</button>
+    
+    <div id="status" class="status" style="display:none;"></div>
+  </div>
+
+  <script>
+    async function connectWallet() {
+      const statusEl = document.getElementById('status');
+      const connectBtn = document.getElementById('connectBtn');
+      
+      // Check if Solflare is installed
+      if (!window.solflare || !window.solflare.isSolflare) {
+        statusEl.className = 'status error';
+        statusEl.innerHTML = '❌ Solflare wallet not detected. <a href="https://solflare.com/" target="_blank" style="color:white;">Install Solflare</a>';
+        statusEl.style.display = 'block';
+        return;
+      }
+      
+      try {
+        connectBtn.disabled = true;
+        connectBtn.textContent = 'Connecting...';
+        
+        // Connect to Solflare
+        await window.solflare.connect();
+        const publicKey = window.solflare.publicKey.toString();
+        
+        statusEl.innerHTML = `✅ Connected: ${publicKey.slice(0,8)}...${publicKey.slice(-8)}<br>Checking balance...`;
+        statusEl.className = 'status';
+        statusEl.style.display = 'block';
+        
+        // Mock balance check (replace with real API call)
+        const mockBalance = Math.floor(Math.random() * 5000);
+        
+        localStorage.setItem('solflare_wallet_address', publicKey);
+        localStorage.setItem('solflare_balance', mockBalance);
+        
+        statusEl.className = 'status success';
+        statusEl.innerHTML = `
+          🎉 <strong>Wallet Connected!</strong><br>
+          Address: ${publicKey.slice(0,10)}...${publicKey.slice(-10)}<br>
+          Balance: ${mockBalance.toLocaleString()} PINKY<br>
+        `;
+        
+        connectBtn.textContent = 'Reconnect Wallet';
+        connectBtn.disabled = false;
+        
+      } catch (err) {
+        console.error('Wallet connection error:', err);
+        statusEl.className = 'status error';
+        statusEl.innerHTML = '❌ Connection failed. User rejected request.';
+        statusEl.style.display = 'block';
+        connectBtn.textContent = 'Connect Solflare';
+        connectBtn.disabled = false;
+      }
+    }
+    
+    // Check if wallet already connected
+    window.addEventListener('load', async () => {
+      const savedAddress = localStorage.getItem('solflare_wallet_address');
+      if (savedAddress) {
+        document.getElementById('status').className = 'status success';
+        document.getElementById('status').innerHTML = `✅ Wallet connected:<br>${savedAddress.slice(0,10)}...${savedAddress.slice(-10)}`;
+        document.getElementById('status').style.display = 'block';
+        document.getElementById('connectBtn').textContent = 'Reconnect Wallet';
+      }
+    });
+  </script>
+</body>
+</html>
