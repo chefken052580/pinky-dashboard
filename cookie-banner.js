@@ -1,374 +1,383 @@
 /**
- * Cookie Consent Banner - EU GDPR Compliance
- * PinkyBot.io
+ * PinkyBot Cookie Consent Banner - GDPR Compliant
+ * Manages cookie consent preferences with granular control
  */
 
 (function() {
   'use strict';
 
-  const STORAGE_KEY = 'pinky_cookie_consent';
-  const CONSENT_VERSION = '1.0';
+  // Cookie preferences key in localStorage
+  const STORAGE_KEY = 'pinkybot_cookie_consent';
 
   // Cookie categories
   const COOKIE_CATEGORIES = {
     necessary: {
-      name: 'Necessary Cookies',
-      description: 'Essential for the website to function. Cannot be disabled.',
+      name: 'Essential Cookies',
+      description: 'Required for the website to function. Cannot be disabled.',
       required: true,
-      default: true
+      examples: 'session_token, csrf_token, cookie_consent'
     },
     analytics: {
       name: 'Analytics Cookies',
-      description: 'Help us understand how visitors interact with our website by collecting anonymous data.',
+      description: 'Help us understand how visitors interact with the platform by collecting and reporting information anonymously.',
       required: false,
-      default: false
+      examples: '_ga, _gid (Google Analytics)'
     },
     marketing: {
       name: 'Marketing Cookies',
-      description: 'Used to track visitors across websites to display relevant ads.',
+      description: 'Used to track visitors across websites to display relevant ads and measure campaign effectiveness.',
       required: false,
-      default: false
+      examples: 'fbp (Facebook Pixel), _gcl_au (Google Ads)'
+    },
+    preferences: {
+      name: 'Preference Cookies',
+      description: 'Remember your settings and preferences for a personalized experience.',
+      required: false,
+      examples: 'theme, language, active_company'
     }
   };
 
-  /**
-   * Initialize cookie banner
-   */
-  function initCookieBanner() {
-    // Check if consent already given
-    const consent = getStoredConsent();
-    if (consent && consent.version === CONSENT_VERSION) {
-      // Consent already given, apply preferences
-      applyConsent(consent);
-      return;
-    }
-
-    // Show banner
-    showBanner();
+  // Check if consent has been given
+  function hasConsent() {
+    const consent = localStorage.getItem(STORAGE_KEY);
+    return consent !== null;
   }
 
-  /**
-   * Show cookie consent banner
-   */
-  function showBanner() {
-    const banner = document.getElementById('cookie-banner');
-    if (banner) {
-      banner.classList.add('show');
+  // Get current consent preferences
+  function getConsent() {
+    const consent = localStorage.getItem(STORAGE_KEY);
+    if (!consent) {
+      return null;
     }
-  }
-
-  /**
-   * Hide cookie consent banner
-   */
-  function hideBanner() {
-    const banner = document.getElementById('cookie-banner');
-    if (banner) {
-      banner.classList.remove('show');
-    }
-  }
-
-  /**
-   * Get stored consent from localStorage
-   */
-  function getStoredConsent() {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : null;
+      return JSON.parse(consent);
     } catch (e) {
-      console.error('Failed to read cookie consent:', e);
+      console.error('Failed to parse cookie consent:', e);
       return null;
     }
   }
 
-  /**
-   * Save consent to localStorage
-   */
+  // Save consent preferences
   function saveConsent(preferences) {
     const consent = {
-      version: CONSENT_VERSION,
       timestamp: new Date().toISOString(),
       preferences: preferences
     };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
 
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
-      applyConsent(consent);
-    } catch (e) {
-      console.error('Failed to save cookie consent:', e);
-    }
+    // Apply consent (enable/disable tracking scripts)
+    applyConsent(preferences);
+
+    // Hide banner
+    hideBanner();
   }
 
-  /**
-   * Apply consent preferences
-   */
-  function applyConsent(consent) {
-    const prefs = consent.preferences;
-
-    // Always enable necessary cookies
-    enableNecessaryCookies();
-
-    // Apply analytics
-    if (prefs.analytics) {
-      enableAnalyticsCookies();
+  // Apply consent by enabling/disabling tracking scripts
+  function applyConsent(preferences) {
+    // Google Analytics
+    if (preferences.analytics) {
+      enableGoogleAnalytics();
     } else {
-      disableAnalyticsCookies();
+      disableGoogleAnalytics();
     }
 
-    // Apply marketing
-    if (prefs.marketing) {
-      enableMarketingCookies();
+    // Facebook Pixel
+    if (preferences.marketing) {
+      enableFacebookPixel();
     } else {
-      disableMarketingCookies();
+      disableFacebookPixel();
     }
 
-    console.log('Cookie preferences applied:', prefs);
+    // Preferences (always enabled if any consent given)
+    // These are essential for user experience
   }
 
-  /**
-   * Enable necessary cookies (always on)
-   */
-  function enableNecessaryCookies() {
-    // Necessary cookies are always enabled
-    // These include session management, authentication, etc.
-  }
-
-  /**
-   * Enable analytics cookies
-   */
-  function enableAnalyticsCookies() {
-    // Enable Google Analytics, Plausible, etc.
-    // Example: Initialize GA if consent given
+  // Enable Google Analytics
+  function enableGoogleAnalytics() {
+    // Check if GA is already loaded
     if (window.gtag) {
-      window.gtag('consent', 'update', {
-        'analytics_storage': 'granted'
-      });
+      console.log('[CookieBanner] Google Analytics already loaded');
+      return;
+    }
+
+    // Load GA script
+    const gaScript = document.createElement('script');
+    gaScript.async = true;
+    gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX'; // Replace with actual GA ID
+    document.head.appendChild(gaScript);
+
+    // Initialize GA
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX'); // Replace with actual GA ID
+
+    console.log('[CookieBanner] Google Analytics enabled');
+  }
+
+  // Disable Google Analytics
+  function disableGoogleAnalytics() {
+    // Set GA opt-out flag
+    window['ga-disable-G-XXXXXXXXXX'] = true; // Replace with actual GA ID
+    console.log('[CookieBanner] Google Analytics disabled');
+  }
+
+  // Enable Facebook Pixel
+  function enableFacebookPixel() {
+    // Check if FB Pixel is already loaded
+    if (window.fbq) {
+      console.log('[CookieBanner] Facebook Pixel already loaded');
+      return;
+    }
+
+    // Load FB Pixel script
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'XXXXXXXXX'); // Replace with actual FB Pixel ID
+    fbq('track', 'PageView');
+
+    console.log('[CookieBanner] Facebook Pixel enabled');
+  }
+
+  // Disable Facebook Pixel
+  function disableFacebookPixel() {
+    // Remove FB Pixel (can't fully disable after loaded, but we won't track new events)
+    if (window.fbq) {
+      // Stub fbq to prevent further tracking
+      window.fbq = function() { console.log('[CookieBanner] FB Pixel tracking blocked'); };
+    }
+    console.log('[CookieBanner] Facebook Pixel disabled');
+  }
+
+  // Show banner
+  function showBanner() {
+    const banner = document.getElementById('cookie-banner');
+    if (banner) {
+      banner.classList.add('visible');
     }
   }
 
-  /**
-   * Disable analytics cookies
-   */
-  function disableAnalyticsCookies() {
-    // Disable analytics tracking
-    if (window.gtag) {
-      window.gtag('consent', 'update', {
-        'analytics_storage': 'denied'
-      });
+  // Hide banner
+  function hideBanner() {
+    const banner = document.getElementById('cookie-banner');
+    if (banner) {
+      banner.classList.remove('visible');
     }
   }
 
-  /**
-   * Enable marketing cookies
-   */
-  function enableMarketingCookies() {
-    // Enable marketing pixels, ad tracking, etc.
-    if (window.gtag) {
-      window.gtag('consent', 'update', {
-        'ad_storage': 'granted'
-      });
+  // Show settings modal
+  function showSettings() {
+    const modal = document.getElementById('cookie-settings-modal');
+    if (modal) {
+      modal.classList.add('visible');
+      populateSettingsForm();
     }
   }
 
-  /**
-   * Disable marketing cookies
-   */
-  function disableMarketingCookies() {
-    // Disable marketing tracking
-    if (window.gtag) {
-      window.gtag('consent', 'update', {
-        'ad_storage': 'denied'
-      });
+  // Hide settings modal
+  function hideSettings() {
+    const modal = document.getElementById('cookie-settings-modal');
+    if (modal) {
+      modal.classList.remove('visible');
     }
   }
 
-  /**
-   * Accept all cookies
-   */
+  // Populate settings form with current preferences
+  function populateSettingsForm() {
+    const consent = getConsent();
+    const preferences = consent ? consent.preferences : {
+      necessary: true,
+      analytics: false,
+      marketing: false,
+      preferences: false
+    };
+
+    // Set toggle states
+    Object.keys(COOKIE_CATEGORIES).forEach(category => {
+      const toggle = document.getElementById(`cookie-toggle-${category}`);
+      if (toggle) {
+        toggle.checked = preferences[category] || false;
+      }
+    });
+  }
+
+  // Get preferences from settings form
+  function getSettingsFormPreferences() {
+    const preferences = {};
+    Object.keys(COOKIE_CATEGORIES).forEach(category => {
+      const toggle = document.getElementById(`cookie-toggle-${category}`);
+      preferences[category] = toggle ? toggle.checked : COOKIE_CATEGORIES[category].required;
+    });
+    return preferences;
+  }
+
+  // Accept all cookies
   function acceptAll() {
     const preferences = {
       necessary: true,
       analytics: true,
-      marketing: true
+      marketing: true,
+      preferences: true
     };
     saveConsent(preferences);
-    hideBanner();
   }
 
-  /**
-   * Reject optional cookies
-   */
+  // Reject all (except necessary)
   function rejectAll() {
     const preferences = {
       necessary: true,
       analytics: false,
-      marketing: false
+      marketing: false,
+      preferences: false
     };
     saveConsent(preferences);
-    hideBanner();
   }
 
-  /**
-   * Show settings modal
-   */
-  function showSettings() {
-    const modal = document.getElementById('cookie-settings-modal');
-    if (modal) {
-      // Pre-fill current preferences
-      const consent = getStoredConsent();
-      if (consent) {
-        document.getElementById('cookie-analytics').checked = consent.preferences.analytics;
-        document.getElementById('cookie-marketing').checked = consent.preferences.marketing;
-      } else {
-        // Default values
-        document.getElementById('cookie-analytics').checked = false;
-        document.getElementById('cookie-marketing').checked = false;
-      }
-      
-      modal.classList.add('show');
-    }
-  }
-
-  /**
-   * Hide settings modal
-   */
-  function hideSettings() {
-    const modal = document.getElementById('cookie-settings-modal');
-    if (modal) {
-      modal.classList.remove('show');
-    }
-  }
-
-  /**
-   * Save custom preferences from settings modal
-   */
-  function saveCustomPreferences() {
-    const preferences = {
-      necessary: true, // Always true
-      analytics: document.getElementById('cookie-analytics').checked,
-      marketing: document.getElementById('cookie-marketing').checked
-    };
+  // Save settings from modal
+  function saveSettings() {
+    const preferences = getSettingsFormPreferences();
     saveConsent(preferences);
     hideSettings();
-    hideBanner();
   }
 
-  /**
-   * Render cookie banner HTML
-   */
-  function renderBanner() {
-    const bannerHTML = `
-      <div id="cookie-banner">
-        <div class="cookie-banner-content">
-          <div class="cookie-banner-text">
-            <h3>🍪 We Value Your Privacy</h3>
-            <p>
-              We use cookies to enhance your experience, analyze site traffic, and provide personalized content. 
-              You can customize your preferences or accept all cookies.
-            </p>
-          </div>
-          <div class="cookie-banner-actions">
-            <button class="cookie-btn cookie-btn-accept" onclick="window.cookieBanner.acceptAll()">
-              Accept All
-            </button>
-            <button class="cookie-btn cookie-btn-reject" onclick="window.cookieBanner.rejectAll()">
-              Reject Optional
-            </button>
-            <button class="cookie-btn cookie-btn-settings" onclick="window.cookieBanner.showSettings()">
-              Customize
-            </button>
-          </div>
+  // Create banner HTML
+  function createBannerHTML() {
+    return `
+      <div class="cookie-banner-content">
+        <div class="cookie-banner-text">
+          <h3>🍪 We use cookies</h3>
+          <p>
+            We use cookies to enhance your experience, analyze site usage, and personalize content. 
+            By clicking "Accept All", you consent to our use of cookies. 
+            <a href="/docs/PRIVACY-POLICY.md" target="_blank">Learn more</a>
+          </p>
+        </div>
+        <div class="cookie-banner-actions">
+          <button class="cookie-btn cookie-btn-accept" id="cookie-accept-all">Accept All</button>
+          <button class="cookie-btn cookie-btn-reject" id="cookie-reject-all">Reject All</button>
+          <button class="cookie-btn cookie-btn-settings" id="cookie-settings">Settings</button>
         </div>
       </div>
     `;
-
-    document.body.insertAdjacentHTML('beforeend', bannerHTML);
   }
 
-  /**
-   * Render settings modal HTML
-   */
-  function renderSettingsModal() {
-    const modalHTML = `
-      <div id="cookie-settings-modal">
-        <div class="cookie-settings-content">
-          <h2>Cookie Preferences</h2>
-          
-          <div class="cookie-category">
-            <div class="cookie-category-header">
-              <h3>🔒 ${COOKIE_CATEGORIES.necessary.name}</h3>
-              <label class="cookie-toggle">
-                <input type="checkbox" checked disabled>
-                <span class="cookie-toggle-slider"></span>
-              </label>
-            </div>
-            <p class="cookie-category-description">${COOKIE_CATEGORIES.necessary.description}</p>
+  // Create settings modal HTML
+  function createSettingsHTML() {
+    let categoriesHTML = '';
+    Object.keys(COOKIE_CATEGORIES).forEach(category => {
+      const cat = COOKIE_CATEGORIES[category];
+      categoriesHTML += `
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <h3>${cat.name}</h3>
+            <label class="cookie-toggle">
+              <input 
+                type="checkbox" 
+                id="cookie-toggle-${category}"
+                ${cat.required ? 'checked disabled' : ''}
+              >
+              <span class="cookie-toggle-slider"></span>
+            </label>
           </div>
+          <div class="cookie-category-description">${cat.description}</div>
+          <div class="cookie-category-examples">Examples: ${cat.examples}</div>
+        </div>
+      `;
+    });
 
-          <div class="cookie-category">
-            <div class="cookie-category-header">
-              <h3>📊 ${COOKIE_CATEGORIES.analytics.name}</h3>
-              <label class="cookie-toggle">
-                <input type="checkbox" id="cookie-analytics">
-                <span class="cookie-toggle-slider"></span>
-              </label>
-            </div>
-            <p class="cookie-category-description">${COOKIE_CATEGORIES.analytics.description}</p>
-          </div>
-
-          <div class="cookie-category">
-            <div class="cookie-category-header">
-              <h3>📢 ${COOKIE_CATEGORIES.marketing.name}</h3>
-              <label class="cookie-toggle">
-                <input type="checkbox" id="cookie-marketing">
-                <span class="cookie-toggle-slider"></span>
-              </label>
-            </div>
-            <p class="cookie-category-description">${COOKIE_CATEGORIES.marketing.description}</p>
-          </div>
-
-          <div class="cookie-settings-actions">
-            <button class="cookie-settings-btn cookie-settings-btn-cancel" onclick="window.cookieBanner.hideSettings()">
-              Cancel
-            </button>
-            <button class="cookie-settings-btn cookie-settings-btn-save" onclick="window.cookieBanner.saveCustomPreferences()">
-              Save Preferences
-            </button>
-          </div>
+    return `
+      <div class="cookie-modal-content">
+        <div class="cookie-modal-header">
+          <h2>Cookie Settings</h2>
+          <button class="cookie-modal-close" id="cookie-modal-close">&times;</button>
+        </div>
+        <div class="cookie-modal-body">
+          ${categoriesHTML}
+        </div>
+        <div class="cookie-modal-footer">
+          <button class="cookie-modal-btn cookie-modal-btn-reject-all" id="cookie-modal-reject-all">Reject All</button>
+          <button class="cookie-modal-btn cookie-modal-btn-accept-all" id="cookie-modal-accept-all">Accept All</button>
+          <button class="cookie-modal-btn cookie-modal-btn-save" id="cookie-modal-save">Save Preferences</button>
         </div>
       </div>
     `;
-
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
   }
 
-  /**
-   * Initialize on DOM ready
-   */
+  // Initialize banner
   function init() {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        renderBanner();
-        renderSettingsModal();
-        initCookieBanner();
-      });
-    } else {
-      renderBanner();
-      renderSettingsModal();
-      initCookieBanner();
+    // Check if consent already given
+    if (hasConsent()) {
+      const consent = getConsent();
+      if (consent && consent.preferences) {
+        applyConsent(consent.preferences);
+      }
+      return;
     }
+
+    // Create banner element
+    const banner = document.createElement('div');
+    banner.id = 'cookie-banner';
+    banner.innerHTML = createBannerHTML();
+    document.body.appendChild(banner);
+
+    // Create settings modal
+    const modal = document.createElement('div');
+    modal.id = 'cookie-settings-modal';
+    modal.innerHTML = createSettingsHTML();
+    document.body.appendChild(modal);
+
+    // Show banner after short delay (for better UX)
+    setTimeout(() => {
+      showBanner();
+    }, 500);
+
+    // Attach event listeners
+    document.getElementById('cookie-accept-all').addEventListener('click', acceptAll);
+    document.getElementById('cookie-reject-all').addEventListener('click', rejectAll);
+    document.getElementById('cookie-settings').addEventListener('click', showSettings);
+
+    // Modal event listeners
+    document.getElementById('cookie-modal-close').addEventListener('click', hideSettings);
+    document.getElementById('cookie-modal-accept-all').addEventListener('click', () => {
+      acceptAll();
+      hideSettings();
+    });
+    document.getElementById('cookie-modal-reject-all').addEventListener('click', () => {
+      rejectAll();
+      hideSettings();
+    });
+    document.getElementById('cookie-modal-save').addEventListener('click', saveSettings);
+
+    // Close modal on backdrop click
+    document.getElementById('cookie-settings-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'cookie-settings-modal') {
+        hideSettings();
+      }
+    });
   }
 
-  // Expose public API
-  window.cookieBanner = {
-    acceptAll,
-    rejectAll,
-    showSettings,
-    hideSettings,
-    saveCustomPreferences,
-    getStoredConsent
+  // Public API for programmatic access
+  window.PinkybotCookies = {
+    hasConsent: hasConsent,
+    getConsent: getConsent,
+    acceptAll: acceptAll,
+    rejectAll: rejectAll,
+    showSettings: showSettings,
+    showBanner: showBanner
   };
 
-  // Auto-initialize
-  init();
+  // Auto-initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 
 })();
