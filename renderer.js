@@ -28,6 +28,18 @@ function formatTimeEST(timestamp) {
     });
 }
 
+// Format large numbers with K/M/B suffixes to prevent overflow
+function formatNumber(num) {
+    if (num >= 1000000000) {
+        return (num / 1000000000).toFixed(1) + 'B';
+    } else if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+}
+
 // State
 let currentView = 'dashboard';
 let currentMonitorView = 'heartbeat';
@@ -331,7 +343,7 @@ function updateMonitorStats() {
     }
     
     // Update usage stats
-    const tokensEl = document.getElementById('tokens-used'); if (tokensEl) tokensEl.textContent = activityData.usage.tokens.toLocaleString();
+    const tokensEl = document.getElementById('tokens-used'); if (tokensEl) tokensEl.textContent = formatNumber(activityData.usage.tokens);
     const execEl = document.getElementById('exec-calls'); if (execEl) execEl.textContent = activityData.usage.exec;
     const fileEl = document.getElementById('file-ops'); if (fileEl) fileEl.textContent = activityData.usage.files;
     
