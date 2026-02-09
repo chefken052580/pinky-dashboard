@@ -41,8 +41,15 @@ class TasksBotEnhanced {
     // Setup drag-drop handlers (ONLY on init, not on every render)
     this.setupDragDrop();
     
-    // Auto-refresh every 3 seconds
-    // DISABLED - use GlobalRefresh
+    // Subscribe to GlobalRefresh for auto-updates
+    if (window.GlobalRefresh) {
+      window.GlobalRefresh.on('tasks', (data) => {
+        this.tasks = data;
+        this.render();
+        console.log('[TasksBot] Auto-refreshed via GlobalRefresh');
+      });
+      console.log('[TasksBot] Subscribed to GlobalRefresh');
+    }
     
     // Register timer update listener (HB#115 - Task Timer Integration)
     if (typeof taskTimer !== 'undefined' && taskTimer && taskTimer.onChange) {
