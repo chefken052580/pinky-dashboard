@@ -726,8 +726,9 @@ class TasksBotEnhanced {
           }
         }
         
+        var taskUniqueId = 'completed-' + (task.id || '').replace(/[^a-zA-Z0-9]/g, '-');
         html += '<div class="task-item completed">';
-        html += '<div class="task-header">';
+        html += '<div class="task-header" style="display:flex;align-items:center;gap:8px;">';
         // Choose stamp based on task type
         if (task.notes && task.notes.includes('ADMIN FIX')) {
           html += '<div class="verified-stamp admin-stamp"><div class="stamp-circle admin">ADMIN</div><span class="stamp-text admin-text" style="font-size:1.1em;">⚡ Brain Fix</span></div>';
@@ -738,32 +739,38 @@ class TasksBotEnhanced {
         } else {
           html += '<div class="verified-stamp"><div class="stamp-circle">VERIFIED</div><span class="stamp-text" style="font-size:1.1em;">✓ Done</span></div>';
         }
-        html += '<span class="task-name">' + this.escapeAttr(task.name) + '</span>';
-        
-        // Add revert button if commit hash found
+        // Revert button right after stamp
         if (commitHash) {
-          html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.revertTask(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + commitHash + '\');" title="Revert this commit" style="background:linear-gradient(135deg,#ff9500,#ff6b6b);color:#fff;border:none;border-radius:4px;padding:3px 10px;cursor:pointer;margin-left:auto;font-size:0.8em;font-weight:500;box-shadow:0 2px 4px rgba(0,0,0,0.2);">↩️ Revert</button>';
+          html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.revertTask(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + commitHash + '\');" title="Revert this commit" style="background:linear-gradient(135deg,#ff9500,#ff6b6b);color:#fff;border:none;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:0.75em;font-weight:500;flex-shrink:0;">↩ Revert</button>';
         }
-        html += '</div>';
-        
+        html += '<span class="task-name" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + this.escapeAttr(task.name) + '</span>';
+        // View Log toggle
         if (task.notes) {
-          html += '<div class="task-desc" title="' + this.escapeAttr(task.notes) + '" style="font-size:0.75em;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;">' + (this.escapeAttr(task.notes).length > 80 ? this.escapeAttr(task.notes).substring(0, 80) + '...' : this.escapeAttr(task.notes)) + '</div>';
+          html += '<span onclick="event.stopPropagation();var el=document.getElementById(\'' + taskUniqueId + '-log\');if(el){el.style.display=el.style.display===\'none\'?\'block\':\'none\';}" style="color:#00d4ff;cursor:pointer;font-size:0.75em;flex-shrink:0;white-space:nowrap;text-decoration:underline;">📋 View Log</span>';
         }
-        
-        html += '<div class="task-meta">';
-        html += '<span>Completed: ' + this.formatTime(task.updated) + '</span>';
-        // Show elapsed time from timer
+        // Completed time + commit far right
+        html += '<span style="color:#64748b;font-size:0.75em;flex-shrink:0;white-space:nowrap;text-align:right;">';
+        html += 'Completed: ' + this.formatTime(task.updated);
+        if (commitHash) {
+          html += '<br><span style="color:#555;font-family:monospace;font-size:0.9em;">commit: ' + commitHash + '</span>';
+        }
+        html += '</span>';
+        // Timer elapsed
         if (typeof taskTimer !== 'undefined' && taskTimer) {
           var elapsed = taskTimer.getElapsed(task.id);
           if (elapsed > 0) {
-            html += '<span style="margin-left:12px;color:#4496ff;">⏱️ ' + taskTimer.formatElapsed(elapsed) + '</span>';
+            html += '<span style="color:#4496ff;font-size:0.75em;flex-shrink:0;">⏱️ ' + taskTimer.formatElapsed(elapsed) + '</span>';
           }
         }
-        if (commitHash) {
-          html += '<span style="margin-left:12px;color:#888;font-family:monospace;font-size:0.85em;">commit: ' + commitHash + '</span>';
+        html += '</div>';
+        // Collapsible log accordion (hidden by default)
+        if (task.notes) {
+          html += '<div id="' + taskUniqueId + '-log" style="display:none;padding:8px 12px;margin-top:4px;background:rgba(0,0,0,0.3);border-radius:4px;border-left:3px solid #00d4ff;">';
+          html += '<div style="font-size:0.8em;color:#ccc;line-height:1.5;word-break:break-word;white-space:pre-wrap;">' + this.escapeAttr(task.notes) + '</div>';
+          html += '</div>';
         }
         html += '</div>';
-        html += '</div>';
+
       });
     }
     
