@@ -52,29 +52,46 @@ class FeatureGating {
   
   async checkSubscriptionStatus() {
     try {
-      console.log('[Feature Gating] Checking subscription status...');
+      console.log('[Feature Gating] Checking subscription status via tier API...');
       
-      // Priority 1: Check Stripe subscription status
-      const stripeStatus = await this.checkStripeSubscription();
-      if (stripeStatus && stripeStatus.active) {
-        console.log('[Feature Gating] Active Stripe subscription found');
-        this.setTier('pro');
-        this.showSubscriptionInfo(stripeStatus);
-        return;
+      // Call unified tier resolution API
+      const email = localStorage.getItem('pinky_user_email');
+      const licenseKey = localStorage.getItem('pinky_license_key');
+      const instanceId = localStorage.getItem('pinky_instance_id');
+      
+      const params = new URLSearchParams();
+      if (email) params.append('email', email);
+      if (licenseKey) params.append('licenseKey', licenseKey);
+      if (instanceId) params.append('instanceId', instanceId);
+      
+      const response = await fetch(`http://192.168.254.4:3030/api/tier/status?${params}`);
+      
+      if (!response.ok) {
+        throw new Error(`Tier API returned ${response.status}`);
       }
       
-      // Priority 2: Check license key validity (self-hosted)
-      const licenseStatus = await this.checkLicenseKey();
-      if (licenseStatus && licenseStatus.valid) {
-        console.log('[Feature Gating] Valid license key found');
-        this.setTier('pro');
-        this.showSubscriptionInfo(licenseStatus);
-        return;
+      const data = await response.json();
+      
+      console.log('[Feature Gating] Tier resolved:', data.tier, 'from', data.source);
+      
+      // Store tier in localStorage
+      localStorage.setItem('pinky_tier', data.tier);
+      localStorage.setItem('pinky_tier_source', data.source);
+      
+      this.setTier(data.tier);
+      
+      // Check for expiry warnings (14 days)
+      if (data.expiresAt) {
+        const expiryDate = new Date(data.expiresAt);
+        const daysRemaining = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+        
+        if (daysRemaining > 0 && daysRemaining <= 14) {
+          this.showExpiryWarning(data.expiresAt);
+        }
       }
       
-      // Priority 3: Default to Free tier
-      console.log('[Feature Gating] No active subscription found - defaulting to Free tier');
-      this.setTier('free');
+      // Show subscription info
+      this.showSubscriptionInfo(data);
       
     } catch (error) {
       console.error('[Feature Gating] Error checking subscription:', error);
