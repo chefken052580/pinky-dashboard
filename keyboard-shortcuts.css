@@ -173,7 +173,7 @@ html.light-mode .shortcut-item span {
 }
 
 html.light-mode .shortcuts-hint {
-    color: #999;
+    color: var(--text-muted);
     background: rgba(68, 150, 255, 0.02);
 }
 

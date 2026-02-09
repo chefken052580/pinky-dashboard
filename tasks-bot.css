@@ -104,7 +104,7 @@
 }
 
 .task-input::placeholder {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .add-task-button {
@@ -175,7 +175,7 @@
 }
 
 .task-drag-handle {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9em;
   flex-shrink: 0;
   cursor: grab;
@@ -314,14 +314,14 @@
 }
 
 .completed-meta {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.85em;
   margin-top: 5px;
 }
 
 /* Empty State */
 .empty-state {
-  color: #666;
+  color: var(--text-secondary);
   text-align: center;
   padding: 20px;
   font-style: italic;

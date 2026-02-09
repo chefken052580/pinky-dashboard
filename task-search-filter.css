@@ -184,14 +184,14 @@ html.light-mode .search-filter-header {
 
 html.light-mode .search-control label,
 html.light-mode .filter-control label {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 html.light-mode .task-search-input,
 html.light-mode .task-filter-select {
   background: rgba(200, 220, 255, 0.2);
   border-color: rgba(100, 150, 255, 0.4);
-  color: #333;
+  color: var(--text-primary);
 }
 
 html.light-mode .task-search-input::placeholder {
@@ -206,8 +206,8 @@ html.light-mode .task-filter-select:focus {
 }
 
 html.light-mode .task-filter-select option {
-  background: #f5f5f5;
-  color: #333;
+  background: var(--surface-2);
+  color: var(--text-primary);
 }
 
 html.light-mode .search-hint {
@@ -228,7 +228,7 @@ html.light-mode .clear-filters-btn:hover {
 
 html.light-mode .task-filter-status {
   background: rgba(200, 220, 255, 0.1);
-  color: #666;
+  color: var(--text-secondary);
 }
 
 html.light-mode .task-filter-status.active {

@@ -568,7 +568,7 @@
 
 .renew-btn:hover,
 .update-payment-btn:hover {
-  background: white;
+  background: var(--bg-card);
   color: #e67e22;
   transform: scale(1.05);
 }

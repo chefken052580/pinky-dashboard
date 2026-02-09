@@ -192,7 +192,7 @@
 
 .preview-content {
   position: relative;
-  background-color: white;
+  background-color: var(--bg-card);
   border-radius: 8px;
   padding: 20px;
   max-width: 80vw;

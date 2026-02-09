@@ -306,7 +306,7 @@
 
 .chart-label {
   font-size: 0.7em;
-  color: #999;
+  color: var(--text-muted);
   margin-top: 4px;
   white-space: nowrap;
   transform: rotate(-45deg);
@@ -477,7 +477,7 @@ html.light-mode .history-stat.highlight {
 }
 
 html.light-mode .history-stat .stat-label {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 html.light-mode .history-stat .stat-value {
@@ -498,11 +498,11 @@ html.light-mode .today-hourly-chart {
 
 html.light-mode .chart-label,
 html.light-mode .hourly-label {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 html.light-mode .chart-value {
-  color: #333;
+  color: var(--text-primary);
   text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
 }
 
@@ -512,5 +512,5 @@ html.light-mode .hourly-legend {
 }
 
 html.light-mode .legend-item {
-  color: #666;
+  color: var(--text-secondary);
 }

@@ -85,7 +85,7 @@ html.dark-mode .period-select {
 }
 
 .analytics-card {
-    background: white;
+    background: var(--bg-card);
     border-radius: 10px;
     padding: 15px;
     border: 1px solid var(--border-color, #e9ecef);
@@ -216,7 +216,7 @@ html.dark-mode .analytics-section h4 {
 
 .priority-badge.p3 {
     background: linear-gradient(135deg, #ffc107, #e0a800);
-    color: #333;
+    color: var(--text-primary);
 }
 
 .priority-badge.unset {
@@ -282,7 +282,7 @@ html.dark-mode .priority-count {
 }
 
 .status-card {
-    background: white;
+    background: var(--bg-card);
     border-radius: 8px;
     padding: 12px;
     border: 1px solid var(--border-color, #e9ecef);

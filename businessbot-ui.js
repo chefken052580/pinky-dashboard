@@ -19,10 +19,10 @@ class BusinessBotUI {
     container.classList.remove('coming-soon-container');
 
     container.innerHTML = `
-      <div class="business-panel" style="max-width:1000px;margin:0 auto;">
+      <div class="business-panel" style="max-width:1000px;margin:0 auto;color:var(--text-primary);">
         
         <!-- Business Metrics Overview -->
-        <div class="stats-grid" style="margin-bottom:30px;">
+        <div class="stats-grid" style="margin-bottom:30px;background:var(--surface-1);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:20px;">
           <div class="stat-card">
             <div class="stat-icon">💰</div>
             <div class="stat-content">
@@ -61,7 +61,7 @@ class BusinessBotUI {
         </div>
 
         <!-- Revenue Tracking -->
-        <div class="recent-activity" style="margin-bottom:30px;">
+        <div class="recent-activity" style="margin-bottom:30px;background:var(--surface-1);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:20px;">
           <h3>💵 Revenue Tracking</h3>
           <div style="background:var(--surface-1);border:1px solid rgba(102,126,234,0.3);border-radius:12px;padding:25px;margin-top:15px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
@@ -85,7 +85,7 @@ class BusinessBotUI {
         </div>
 
         <!-- Client Management -->
-        <div class="recent-activity" style="margin-bottom:30px;">
+        <div class="recent-activity" style="margin-bottom:30px;background:var(--surface-1);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:20px;">
           <h3>👥 Client Management</h3>
           <div class="stats-grid" style="margin-top:15px;">
             <div class="stat-card" style="cursor:pointer;" onclick="businessBot.showClientModal('add')">

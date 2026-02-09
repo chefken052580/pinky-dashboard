@@ -266,8 +266,8 @@
 /* Dark Mode (already applied by default) */
 @media (prefers-color-scheme: light) {
     .export-package-container {
-        background: #f5f5f5;
-        color: #333;
+        background: var(--surface-2);
+        color: var(--text-primary);
     }
 
     .export-package-header {
@@ -275,31 +275,31 @@
     }
 
     .export-package-header h3 {
-        color: #333;
+        color: var(--text-primary);
     }
 
     .export-package-header p {
-        color: #666;
+        color: var(--text-secondary);
     }
 
     .import-area {
-        background: #fafafa;
+        background: var(--surface-2);
         border-color: #ddd;
     }
 
     .package-info {
-        background: #fafafa;
+        background: var(--surface-2);
         border-color: #ddd;
     }
 
     .summary-details p,
     .import-success p {
-        color: #333;
+        color: var(--text-primary);
     }
 
     .export-notification {
-        background: #fff;
-        color: #333;
+        background: var(--bg-card);
+        color: var(--text-primary);
         border-left-color: #667eea;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }

@@ -167,7 +167,7 @@ body {
     padding: 15px;
     margin-bottom: 12px;
     border: none;
-    background: #f8f9fa;
+    background: var(--surface-2);
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -184,7 +184,7 @@ body {
 }
 
 .bot-button:hover, .view-button:hover {
-    background: #e9ecef;
+    background: var(--surface-3);
     transform: translateX(5px);
 }
 
@@ -352,7 +352,7 @@ body {
 .activity-item {
     padding: 15px;
     border-left: 4px solid #667eea;
-    background: #f8f9fa;
+    background: transparent;
     margin-bottom: 10px;
     border-radius: 5px;
     display: grid;
@@ -452,7 +452,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--surface-2);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -726,7 +726,7 @@ body {
 }
 
 .output-panel {
-    background: #f8f9fa;
+    background: var(--surface-2);
     border-radius: 10px;
     padding: 20px;
 }

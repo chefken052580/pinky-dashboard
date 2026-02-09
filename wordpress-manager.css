@@ -380,7 +380,7 @@
 }
 
 .wp-content-card {
-  background: white;
+  background: var(--bg-card);
   border: 2px solid rgba(102, 126, 234, 0.2);
   border-radius: 12px;
   padding: 20px;
@@ -465,7 +465,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   max-width: 600px;
   width: 90%;

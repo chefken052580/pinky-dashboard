@@ -65,7 +65,7 @@
         display: block;
         width: 25px;
         height: 3px;
-        background: #fff;
+        background: var(--bg-card);
         margin: 5px auto;
         border-radius: 2px;
         transition: all 0.3s ease;
@@ -363,7 +363,7 @@
         display: block;
         width: 25px;
         height: 3px;
-        background: #fff;
+        background: var(--bg-card);
         margin: 5px auto;
         border-radius: 2px;
         transition: all 0.3s ease;

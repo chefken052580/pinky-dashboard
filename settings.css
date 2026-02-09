@@ -336,7 +336,7 @@
 /* Light theme support */
 @media (prefers-color-scheme: light) {
     .settings-container {
-        background: #f5f5f5;
+        background: var(--surface-2);
         color: #222;
     }
     
@@ -349,7 +349,7 @@
     }
     
     .settings-header p {
-        color: #666;
+        color: var(--text-secondary);
     }
     
     .settings-tabs {
@@ -357,7 +357,7 @@
     }
     
     .settings-tab-btn {
-        color: #666;
+        color: var(--text-secondary);
     }
     
     .settings-tab-btn.active {
@@ -366,14 +366,14 @@
     }
     
     .settings-group {
-        background: #fff;
+        background: var(--bg-card);
         border-left-color: #0096ff;
-        border: 1px solid #ddd;
+        border: 1px solid var(--border-default);
     }
     
     .setting-input,
     .setting-input-small {
-        background: #f9f9f9;
+        background: var(--surface-2);
         border-color: #ddd;
         color: #222;
     }
@@ -385,16 +385,16 @@
     }
     
     .setting-hint {
-        color: #999;
+        color: var(--text-muted);
     }
     
     .info-box {
-        background: #f9f9f9;
+        background: var(--surface-2);
         border-left-color: #ff6b6b;
     }
     
     .btn-secondary {
-        background: #f5f5f5;
+        background: var(--surface-2);
         color: #222;
         border-color: #ddd;
     }
@@ -515,12 +515,12 @@
 /* Light mode adjustments for license section */
 @media (prefers-color-scheme: light) {
     .license-key-section {
-        background: #fafafa;
+        background: var(--surface-2);
         border-color: #ddd;
     }
     
     .license-details {
-        background: #fff;
+        background: var(--bg-card);
         border-color: #ddd;
     }
     
@@ -616,7 +616,7 @@
 /* Light mode adjustments */
 @media (prefers-color-scheme: light) {
     .subscription-info {
-        background: #fafafa;
+        background: var(--surface-2);
         border-color: #ddd;
     }
     

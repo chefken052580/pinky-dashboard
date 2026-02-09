@@ -165,7 +165,7 @@
 }
 
 .empty {
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
   padding: 10px;
 }

@@ -344,7 +344,7 @@
 
 /* Help Text */
 .wallet-help-text {
-  color: #999;
+  color: var(--text-muted);
   font-size: 0.9em;
   margin-top: 15px;
   padding: 10px;

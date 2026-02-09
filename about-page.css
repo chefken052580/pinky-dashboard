@@ -32,12 +32,12 @@
 .about-tagline {
     margin: 0;
     font-size: 1.1rem;
-    color: #666;
+    color: var(--text-secondary);
     font-style: italic;
 }
 
 html.light-mode .about-tagline {
-    color: #999;
+    color: var(--text-muted);
 }
 
 /* Grid Layout */
@@ -113,7 +113,7 @@ html.light-mode .about-card h2 {
 }
 
 html.light-mode .info-label {
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .info-value {
@@ -124,7 +124,7 @@ html.light-mode .info-label {
 }
 
 html.light-mode .info-value {
-    color: #333;
+    color: var(--text-primary);
 }
 
 /* Status Badge */
@@ -334,7 +334,7 @@ html.light-mode .about-link:hover {
 
 html.light-mode .about-footer {
     border-top-color: rgba(68, 150, 255, 0.1);
-    color: #999;
+    color: var(--text-muted);
 }
 
 /* Mobile Responsive */

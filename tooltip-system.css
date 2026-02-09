@@ -186,7 +186,7 @@
 }
 
 .welcome-content {
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 40px;
   max-width: 500px;
@@ -202,7 +202,7 @@ html.dark-mode .welcome-content {
 .welcome-content h2 {
   margin: 0 0 16px 0;
   font-size: 1.8em;
-  color: #333;
+  color: var(--text-primary);
 }
 
 html.dark-mode .welcome-content h2 {
@@ -210,7 +210,7 @@ html.dark-mode .welcome-content h2 {
 }
 
 .welcome-content p {
-  color: #666;
+  color: var(--text-secondary);
   margin: 0 0 24px 0;
   line-height: 1.6;
 }
@@ -231,7 +231,7 @@ html.dark-mode .welcome-content p {
   flex-direction: column;
   align-items: center;
   padding: 16px;
-  background: #f5f5f5;
+  background: var(--surface-2);
   border-radius: 8px;
 }
 
@@ -247,7 +247,7 @@ html.dark-mode .feature {
 .feature-name {
   font-size: 0.9em;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
 }
 
 html.dark-mode .feature-name {
@@ -281,9 +281,9 @@ html.dark-mode .feature-name {
 }
 
 .btn-secondary {
-  background: #f0f0f0;
-  color: #333;
-  border: 1px solid #ddd;
+  background: var(--surface-3);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 html.dark-mode .btn-secondary {
