@@ -23,39 +23,29 @@ class AnalyticsEngine {
    */
   async getMetrics() {
     try {
-      const usageResp = await fetch('/api/usage').then(r => r.json());
-      const tasksResp = await fetch('/api/tasks').then(r => r.json());
-      const activityResp = await fetch('/api/activity').then(r => r.json());
+      const statsResp = await fetch('http://192.168.254.4:3030/api/tasks/stats').then(r => r.json());
+      const activityResp = await fetch('http://192.168.254.4:3030/api/activity').then(r => r.json());
 
-      const completedCount = tasksResp.filter(t => t.status === 'completed').length;
-      const pendingCount = tasksResp.filter(t => t.status !== 'completed').length;
+      // Parse completion rate percentage string
+      const completionRate = statsResp.stats?.completionRate || '0%';
+      const completedCount = statsResp.stats?.completed || 0;
+      const pendingCount = statsResp.stats?.pending || 0;
 
       return {
         botsActive: this.bots.length,
         tasksCompleted: completedCount,
         tasksPending: pendingCount,
-        tasksToday: activityResp?.activities?.filter(a => {
-          const date = new Date(a.timestampEST || a.timestamp);
-          const today = new Date();
-          return date.toDateString() === today.toDateString();
-        }).length || 0,
-        heartbeatCount: 0, // updated async from heartbeat-state below
-        tokensUsed: usageResp.totalTokens || 0,
-        tokensInput: usageResp.input || 0,
-        tokensOutput: usageResp.output || 0,
-        tokensCacheRead: usageResp.cacheRead || 0,
-        tokensCacheWrite: usageResp.cacheWrite || 0,
-        totalCost: usageResp.totalCost || 0,
-        byModel: usageResp.byModel || {},
-        heartbeats: activityResp?.heartbeats || []
+        tasksToday: activityResp?.activityCount || 0,
+        heartbeatCount: activityResp?.heartbeatCount || 0,
+        tokensUsed: activityResp?.totalTokens || 0,
+        tokensInput: 0,
+        tokensOutput: 0,
+        tokensCacheRead: 0,
+        tokensCacheWrite: 0,
+        totalCost: 0,
+        byModel: {},
+        heartbeats: activityResp?.activities || []
       };
-
-      // Fetch real heartbeat count from state file
-      try {
-        const hbStateResp = await fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/heartbeat/state');
-        const hbState = await hbStateResp.json();
-        metrics.heartbeatCount = hbState.heartbeatCount || 0;
-      } catch(e) { console.log('[Analytics] heartbeat-state fetch failed'); }
 
     } catch (err) {
       console.log('[AnalyticsEngine] Error fetching metrics:', err.message);
