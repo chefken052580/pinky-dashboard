@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Mouse body -->
+  <ellipse cx="50" cy="55" rx="28" ry="25" fill="#ff69b4" opacity="0.9"/>
+  <!-- Ears -->
+  <circle cx="32" cy="30" r="16" fill="#ff69b4"/>
+  <circle cx="32" cy="30" r="10" fill="#ffb6d9"/>
+  <circle cx="68" cy="30" r="16" fill="#ff69b4"/>
+  <circle cx="68" cy="30" r="10" fill="#ffb6d9"/>
+  <!-- Eyes (closed/sad) -->
+  <path d="M38 48 Q42 53 46 48" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M54 48 Q58 53 62 48" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Nose -->
+  <circle cx="50" cy="57" r="3.5" fill="#ff1493"/>
+  <!-- Whiskers -->
+  <line x1="20" y1="54" x2="40" y2="56" stroke="#333" stroke-width="1.2"/>
+  <line x1="20" y1="60" x2="40" y2="60" stroke="#333" stroke-width="1.2"/>
+  <line x1="60" y1="56" x2="80" y2="54" stroke="#333" stroke-width="1.2"/>
+  <line x1="60" y1="60" x2="80" y2="60" stroke="#333" stroke-width="1.2"/>
+  <!-- Sad mouth -->
+  <path d="M44 65 Q50 62 56 65" stroke="#333" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+</svg>

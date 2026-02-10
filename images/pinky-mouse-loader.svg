@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 22" fill="none">
+  <!-- Body -->
+  <ellipse cx="14" cy="13" rx="9" ry="7" fill="#ff69b4"/>
+  <!-- Head -->
+  <circle cx="23" cy="10" r="5.5" fill="#ff69b4"/>
+  <!-- Ear -->
+  <circle cx="25.5" cy="5.5" r="3" fill="#ff69b4"/>
+  <circle cx="25.5" cy="5.5" r="1.8" fill="#ffb6d9"/>
+  <!-- Eye -->
+  <circle cx="25" cy="9" r="1.2" fill="#333"/>
+  <circle cx="25.8" cy="8.5" r="0.4" fill="#fff"/>
+  <!-- Nose -->
+  <circle cx="28" cy="11" r="1.2" fill="#ff1493"/>
+  <!-- Tail -->
+  <path d="M4 12 Q1 7 3 3" stroke="#ff69b4" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Whiskers -->
+  <line x1="27" y1="9.5" x2="30" y2="8.5" stroke="#333" stroke-width="0.6"/>
+  <line x1="27" y1="11.5" x2="30" y2="12.5" stroke="#333" stroke-width="0.6"/>
+</svg>
