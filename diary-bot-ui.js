@@ -6,7 +6,7 @@
 (function() {
   'use strict';
 
-  const API = window.PINKY_API || 'https://pinky-api.crackerbot.io';
+  const API = window.PINKY_API || 'http://192.168.254.4:3030';
   let currentTab = 'feed';
   let refreshTimer = null;
 
