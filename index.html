@@ -48,6 +48,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="core-files-ui.css">
     <link rel="stylesheet" href="pinky-control.css">
+    <link rel="stylesheet" href="social-command-center.css">
 </head>
 <body>
     <!-- Onboarding Screen -->
@@ -858,69 +859,7 @@
 
             <!-- Social Media View -->
             <div id="social-media-view" class="view">
-                <h2>🌐 SocialBot - Social Media Manager</h2>
-                <p style="color:var(--text-secondary);margin-bottom:25px;">
-                    Manage all your social media companies and content in one place.
-                </p>
-                
-                <!-- Company Selector -->
-                <div class="social-company-selector-section">
-                    <h3>Select Company</h3>
-                    <div id="social-company-selector" class="company-selector-container">
-                        <!-- Companies loaded by JS -->
-                    </div>
-                </div>
-                
-                <!-- Tab Navigation -->
-                <div class="social-tab-nav" style="margin-top:25px;margin-bottom:25px;border-bottom:2px solid #ddd;">
-                    <button class="social-tab-button active" data-social-tab="companies" onclick="switchSocialTab('companies')">
-                        🏢 Companies
-                    </button>
-                    <button class="social-tab-button" data-social-tab="create" onclick="switchSocialTab('create')">
-                        ✍️ Create Post
-                    </button>
-                    <button class="social-tab-button" data-social-tab="scheduled" onclick="switchSocialTab('scheduled')">
-                        📅 Scheduled
-                    </button>
-                    <button class="social-tab-button" data-social-tab="history" onclick="switchSocialTab('history')">
-                        📊 History
-                    </button>
-                    <button class="social-tab-button" data-social-tab="wordpress" onclick="switchSocialTab('wordpress')">
-                        📝 WordPress
-                    </button>
-                    <button class="social-tab-button" data-social-tab="settings" onclick="switchSocialTab('settings')">
-                        Settings
-                    </button>
-                </div>
-                
-                <!-- Tab Content -->
-                <div id="social-tab-companies" class="social-tab-content" style="display:block;">
-                    <h3>📱 Your Companies</h3>
-                    <div id="social-tab-companies-content">
-                        <!-- Companies grid loaded by JS -->
-                    </div>
-                </div>
-                
-                <div id="social-tab-create" class="social-tab-content" style="display:none;">
-                    <h3>✍️ Create New Post</h3>
-                    <!-- Form loaded by JS -->
-                </div>
-                
-                <div id="social-tab-scheduled" class="social-tab-content" style="display:none;">
-                    <h3>📅 Scheduled Posts</h3>
-                    <!-- Posts loaded by JS -->
-                </div>
-                
-                <div id="social-tab-history" class="social-tab-content" style="display:none;">
-                    <h3>📊 Post History</h3>
-                    <!-- Posts loaded by JS -->
-                </div>
-                
-                <div id="social-tab-wordpress" class="social-tab-content" style="display:none;">
-                    <h3>📝 WordPress Page Maker</h3>
-                    <p style="color:#aaa;margin-bottom:20px;">Create SEO-optimized WordPress pages using Research Bot</p>
-                    <div id="wordpress-page-maker-social"></div>
-                </div>
+                <!-- SocialBot Command Center — rendered by JS -->
             </div>
 
             <!-- Settings View -->
@@ -1386,7 +1325,7 @@
     <!-- System Monitor UI - Real-time resource monitoring -->
     <script src="system-monitor-ui.js"></script>
     <!-- SocialBot UI - Company management and post creation -->
-    <script src="social-bot-ui.js"></script>
+    <script src="social-command-center.js"></script>
     
     <!-- Metrics Persistence Layer - API health tracking (HB#111) -->
     <script src="metrics-persistence.js"></script>
