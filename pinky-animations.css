@@ -181,6 +181,7 @@
   100% { opacity: 0; transform: scale(0) translate(15px, -15px); }
 }
 .wheel-label {
+  width: 100%;
   text-align: center; margin-top: 8px;
   color: #00ffc8; font-weight: 700;
   font-size: 0.85em; letter-spacing: 1px; text-transform: uppercase;
