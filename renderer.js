@@ -279,7 +279,7 @@ function updateTaskCount() {
         countEl.textContent = current + 1;
     }
     
-    const todayEl = document.getElementById('tasks-today');
+    // const todayEl = document.getElementById('tasks-today'); // DISABLED — use real API data
     if (todayEl) {
         const current = parseInt(todayEl.textContent.match(/\d+/)?.[0]) || 0;
         todayEl.textContent = `ðŸ“Š ${current + 1} Tasks Today`;

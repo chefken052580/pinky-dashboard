@@ -6,7 +6,7 @@
 (function() {
   'use strict';
 
-  const API = window.PINKY_API || 'http://192.168.254.4:3030';
+  const API = (typeof API_BASE !== 'undefined' ? API_BASE : '') || window.PINKY_API || '';
   let currentTab = 'feed';
   let refreshTimer = null;
 
