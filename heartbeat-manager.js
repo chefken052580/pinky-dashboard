@@ -155,6 +155,9 @@ class HeartbeatManager {
    */
   renderUI() {
     const container = document.getElementById('heartbeat-status-container');
+    // DISABLED — renderHeaderStats in renderer.js is the sole owner of this container
+    // heartbeat-manager was overwriting with stale pinky-activity.json data
+    if (container) { console.log('[HeartbeatManager] Skipping render — renderer.js owns heartbeat-status-container'); return; }
     if (!container) return;
 
     const taskStatus = this.checkTasks();

@@ -573,13 +573,13 @@ function renderHeaderStats() {
         apiFetch('/api/usage', {}, container),
         apiFetch('/api/tasks/stats', {}, container),
         apiFetch('/api/tasks'),
-        apiFetch('/api/activity')
-    ]).then(([usage, statsResponse, tasks, activity]) => {
+        apiFetch('/api/heartbeat/state')
+    ]).then(([usage, statsResponse, tasks, hbState]) => {
         // Handle null responses from failed API calls
         usage = usage || {};
         statsResponse = statsResponse || {};
         tasks = tasks || [];
-        activity = activity || {};
+        hbState = hbState || {};
         const tokensUsed = usage.totalTokens || 0;
         const apiCost = (usage.totalCost || (usage.costInput || 0) + (usage.costOutput || 0) + (usage.costCacheRead || 0) + (usage.costCacheWrite || 0)) || 0;
         const messages = usage.messages || 0;
@@ -590,16 +590,10 @@ function renderHeaderStats() {
         const completionRate = stats.completionRate || '0%';
         const pending = stats.pending || 0;
         
-        // Get heartbeat count from /api/activity
-        const heartbeatsArray = activity.heartbeats || [];
-        let heartbeatCount = heartbeatsArray.length;
-        // Also fetch baseline from state file (non-blocking)
-        fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/heartbeat/state')
-          .then(r => r.json())
-          .then(stateData => {
-            const baseline = stateData.heartbeatCount || 0;
-            heartbeatCount = Math.max(heartbeatsArray.length, baseline);
-          }).catch(() => {}).finally(() => {
+        // Heartbeats — SINGLE SOURCE: /api/heartbeat/state
+        const heartbeatCount = hbState.heartbeatCount || 0;
+
+        {
         
         // Calculate tasks completed today (for header only)
         const now = new Date();
@@ -637,7 +631,7 @@ function renderHeaderStats() {
         if (wakeupEl) wakeupEl.textContent = heartbeatCount;
         
         console.log('[HeaderStats] Updated: ' + heartbeatCount + ' heartbeats, ' + allCompleted + ' tasks, $' + apiCost.toFixed(2) + ' cost, ' + messages + ' messages, ' + completionRate + ' success rate');
-        }); // end finally
+        } // end stats render
     });
 }
 document.addEventListener('DOMContentLoaded', function() {
