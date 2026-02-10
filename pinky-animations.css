@@ -186,6 +186,8 @@
   color: #00ffc8; font-weight: 700;
   font-size: 0.85em; letter-spacing: 1px; text-transform: uppercase;
   text-shadow: 0 0 10px rgba(0,255,200,0.3);
+  position: relative;
+  left: 20px;
 }
 
 /* ─── LOADING SPINNERS ─── */
