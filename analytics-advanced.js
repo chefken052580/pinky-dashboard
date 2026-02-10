@@ -12,7 +12,9 @@ class AnalyticsEngine {
       { id: 'social', name: 'SocialBot', icon: '📱', status: 'active' },
       { id: 'business', name: 'BusinessBot', icon: '💼', status: 'active' },
       { id: 'filesystem', name: 'FileSystemBot', icon: '📁', status: 'active' },
-      { id: 'tasks', name: 'TasksBot', icon: '🎯', status: 'active' }
+      { id: 'tasks', name: 'TasksBot', icon: '🎯', status: 'active' },
+      { id: 'crypto', name: 'CryptoBot', icon: '💰', status: 'active' },
+      { id: 'diary', name: 'DiaryBot', icon: '📔', status: 'active' }
     ];
   }
 
