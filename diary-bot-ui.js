@@ -260,6 +260,15 @@
     if (btn) { btn.textContent = '📊 Generate Summary'; btn.disabled = false; }
   };
 
+  // Expose reload function for switchView handler
+  window.diaryReloadData = function() {
+    console.log('[DiaryBot UI] Reloading data on view switch');
+    loadDiaryFeed();
+    loadEscalationStatus();
+    loadMemoryTiers();
+    loadKnowledge();
+  };
+
   // Boot
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
