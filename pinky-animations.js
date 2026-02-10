@@ -68,7 +68,7 @@
         '<img src="' + IMG_PATH + 'wheel-stand.svg" width="80" height="25" alt="">' +
       '</div>' +
     '</div>' +
-    '<div class="wheel-label" style="margin-left:20px">\u26A1 Running on His Wheel!</div>';
+    '<div class="wheel-label" style="margin-left:45px">\u26A1 Running on His Wheel!</div>';
 
   // ─── Loader HTML (any size: sm, md, lg) ───
   function loaderHTML(size) {
