@@ -174,6 +174,22 @@ function switchView(viewId) {
         if (viewId === "settings-view" && window.initSettingsPage) {
             window.initSettingsPage();
         }
+        if (viewId === "wordpress-view" && typeof WordPressPageMaker !== 'undefined') {
+            if (!window.wordPressPageMaker) {
+                window.wordPressPageMaker = new WordPressPageMaker();
+                window.wordPressPageMaker.initialize();
+            }
+        }
+        
+        // Reload DiaryBot data when switching to diary view
+        if (viewId === "diary-view") {
+            // Signal diary-bot-ui to reload data
+            if (window.diaryReloadData) {
+                window.diaryReloadData();
+            } else {
+                console.log('[Renderer] DiaryBot reload triggered, but window.diaryReloadData not available yet');
+            }
+        }
         
         // Initialize bot modules when switching to their views
         // Init -ui.js scripts when their views activate
