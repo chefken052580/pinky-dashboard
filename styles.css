@@ -35,42 +35,49 @@
     --btn-hover-text: #ffffff;
 }
 html.light-mode {
---bg-body: linear-gradient(135deg, #7b8eef 0%, #9b6fc2 50%, #7b8eef 100%);
-    --bg-sidebar: #ffffff;
-    --bg-card: #ffffff;
-    --bg-card-hover: #fafbff;
-    --bg-subtle: #f4f5fb;
-    --bg-input: #f8f9fc;
-    --text-primary: #0a0a18;
-    --text-secondary: #2a2a3e;
-    --text-muted: #555;
-    --text-heading: #4a5cd4;
+    /* Neon purple gradient body */
+    --bg-body: linear-gradient(135deg, #8b5cf6 0%, #a855f7 30%, #c084fc 60%, #8b5cf6 100%);
+    --bg-sidebar: rgba(255, 255, 255, 0.92);
+    --bg-card: rgba(255, 255, 255, 0.88);
+    --bg-card-hover: rgba(245, 240, 255, 0.95);
+    --bg-subtle: rgba(243, 237, 255, 0.7);
+    --bg-input: rgba(250, 248, 255, 0.9);
+    /* Crisp dark text for readability */
+    --text-primary: #1a1035;
+    --text-secondary: #3d2e5c;
+    --text-muted: #6b5a8a;
+    /* Neon blue headings */
+    --text-heading: #2563ff;
     --text-on-accent: #ffffff;
-    --accent-primary: #667eea;
-    --accent-secondary: #764ba2;
-    --accent-green: #00c853;
-    --accent-pink: #f093fb;
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-blue: linear-gradient(135deg, #667eea 0%, #5a6fd6 100%);
-    --gradient-green: linear-gradient(135deg, #00c853 0%, #00a040 100%);
-    --border-default: rgba(102, 126, 234, 0.15);
-    --border-subtle: rgba(0, 0, 0, 0.06);
-    --shadow-card: 0 4px 20px rgba(102, 126, 234, 0.12);
-    --shadow-card-hover: 0 8px 30px rgba(102, 126, 234, 0.2);
-    --shadow-header: 0 2px 15px rgba(0, 0, 0, 0.08);
+    /* Vibrant neon accents */
+    --accent-primary: #6d28d9;
+    --accent-secondary: #a855f7;
+    --accent-green: #10b981;
+    --accent-pink: #ec4899;
+    /* Neon gradients */
+    --gradient-primary: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #2563ff 100%);
+    --gradient-green: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    /* Glowing purple borders */
+    --border-default: rgba(139, 92, 246, 0.25);
+    --border-subtle: rgba(139, 92, 246, 0.1);
+    /* Purple glow shadows */
+    --shadow-card: 0 4px 20px rgba(139, 92, 246, 0.15), 0 0 40px rgba(139, 92, 246, 0.05);
+    --shadow-card-hover: 0 8px 30px rgba(139, 92, 246, 0.25), 0 0 60px rgba(139, 92, 246, 0.1);
+    --shadow-header: 0 2px 15px rgba(139, 92, 246, 0.12);
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 20px;
-    --activity-bg: #f4f5fb;
-    --activity-border: #667eea;
-    --activity-item-bg: #ffffff;
-    --scrollbar-track: #f1f1f1;
-    --scrollbar-thumb: #667eea;
-    --scrollbar-hover: #764ba2;
-    --btn-border: #667eea;
-    --btn-text: #667eea;
-    --btn-hover-bg: #667eea;
+    --activity-bg: rgba(243, 237, 255, 0.7);
+    --activity-border: #7c3aed;
+    --activity-item-bg: rgba(255, 255, 255, 0.9);
+    --scrollbar-track: rgba(243, 237, 255, 0.5);
+    --scrollbar-thumb: #7c3aed;
+    --scrollbar-hover: #a855f7;
+    --btn-border: #7c3aed;
+    --btn-text: #6d28d9;
+    --btn-hover-bg: #7c3aed;
     --btn-hover-text: #ffffff;
 }
 
@@ -421,4 +428,92 @@ html:not([data-theme="dark"]):not(.dark-mode) .view h2 { color: #ffffff; text-sh
   .bot-interface { padding: 15px; }
   .output-actions { flex-wrap: wrap; }
   .btn-small { flex: 1; min-width: 120px; }
+}
+
+/* === LIGHT MODE: Neon Task Statistics === */
+html.light-mode #task-statistics-container {
+  background: linear-gradient(135deg, rgba(255, 120, 50, 0.08), rgba(255, 160, 60, 0.05));
+  border: 1px solid rgba(255, 120, 50, 0.25);
+  box-shadow: 0 4px 20px rgba(255, 120, 50, 0.1), 0 0 40px rgba(255, 120, 50, 0.03);
+}
+html.light-mode .task-stats-header h3 {
+  color: #ea580c;
+}
+html.light-mode .task-stat-box {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 120, 50, 0.2);
+  box-shadow: 0 2px 12px rgba(255, 120, 50, 0.08);
+}
+html.light-mode .task-stat-box:hover {
+  border-color: #f97316;
+  box-shadow: 0 4px 20px rgba(255, 120, 50, 0.2);
+}
+html.light-mode .task-stat-box.large {
+  border-color: #f97316;
+  box-shadow: 0 4px 20px rgba(255, 120, 50, 0.15);
+}
+html.light-mode .task-stats-summary {
+  background: rgba(255, 120, 50, 0.05);
+  border-color: rgba(255, 120, 50, 0.2);
+}
+html.light-mode .summary-line strong {
+  color: #ea580c;
+}
+
+/* === LIGHT MODE: Neon blue stat values === */
+html.light-mode .stat-value {
+  color: #2563ff;
+  text-shadow: 0 0 20px rgba(37, 99, 255, 0.15);
+}
+html.light-mode .stat-card {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(139, 92, 246, 0.2);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
+}
+html.light-mode .stat-card:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 6px 25px rgba(139, 92, 246, 0.2);
+}
+
+/* === LIGHT MODE: Heartbeat neon blue === */
+html.light-mode .heartbeat-status {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(37, 99, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(37, 99, 255, 0.08);
+}
+html.light-mode .heartbeat-stat {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(37, 99, 255, 0.15);
+}
+html.light-mode .heartbeat-stat .stat-value {
+  color: #2563ff;
+  text-shadow: 0 0 15px rgba(37, 99, 255, 0.2);
+}
+
+/* === LIGHT MODE: System Health glow === */
+html.light-mode .system-health-widget {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+html.light-mode .system-health-widget .metric-card {
+  background: rgba(250, 245, 255, 0.9);
+  border-color: rgba(139, 92, 246, 0.15);
+}
+html.light-mode .system-health-widget .metric-card:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+}
+
+/* === LIGHT MODE: Header glow === */
+html.light-mode .dashboard-header {
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom-color: rgba(139, 92, 246, 0.15);
+  box-shadow: 0 2px 20px rgba(139, 92, 246, 0.1);
+}
+
+/* === LIGHT MODE: Sidebar frosted glass === */
+html.light-mode .sidebar {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-right-color: rgba(139, 92, 246, 0.15);
 }
