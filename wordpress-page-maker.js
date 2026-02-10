@@ -25,12 +25,19 @@ class WordPressPageMaker {
   }
 
   async initialize() {
-    this.createUI();
-    this.setupEventListeners();
-    this.loadSettings();
+    try {
+      console.log('[WordPressMaker] Initializing...');
+      this.createUI();
+      this.setupEventListeners();
+      this.loadSettings();
+      console.log('[WordPressMaker] Initialization complete');
+    } catch (error) {
+      console.error('[WordPressMaker] Initialization error:', error.message);
+    }
   }
 
   createUI() {
+    console.log('[WordPressMaker] Creating UI...');
     const container = document.createElement('div');
     container.id = this.containerId;
     container.className = 'wordpress-page-maker';
@@ -177,9 +184,13 @@ class WordPressPageMaker {
     `;
 
     const target = document.getElementById('wordpress-page-maker');
+    console.log('[WordPressMaker] Container found:', !!target);
     if (target) {
       target.innerHTML = '';
       target.appendChild(container);
+      console.log('[WordPressMaker] UI rendered successfully');
+    } else {
+      console.warn('[WordPressMaker] ERROR: wordpress-page-maker container not found in DOM');
     }
   }
 
@@ -431,13 +442,25 @@ class WordPressPageMaker {
   }
 }
 
-// Initialize when DOM is ready
+// Initialize when DOM is ready (renderer.js will call this on view switch)
+console.log('[WordPressMaker] Script loaded');
+// Only auto-initialize if container exists AND DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    window.wordPressPageMaker = new WordPressPageMaker();
-    window.wordPressPageMaker.initialize();
+    const container = document.getElementById('wordpress-page-maker');
+    if (container) {
+      console.log('[WordPressMaker] Auto-initializing on DOMContentLoaded');
+      window.wordPressPageMaker = new WordPressPageMaker();
+      window.wordPressPageMaker.initialize();
+    }
   });
 } else {
-  window.wordPressPageMaker = new WordPressPageMaker();
-  window.wordPressPageMaker.initialize();
+  const container = document.getElementById('wordpress-page-maker');
+  if (container) {
+    console.log('[WordPressMaker] Auto-initializing (DOM already ready)');
+    window.wordPressPageMaker = new WordPressPageMaker();
+    window.wordPressPageMaker.initialize();
+  } else {
+    console.log('[WordPressMaker] Container not ready yet, deferring initialization');
+  }
 }
