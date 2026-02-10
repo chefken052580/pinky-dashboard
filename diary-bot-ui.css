@@ -1,0 +1,260 @@
+/* DiaryBot UI — Theme-Aware Dashboard View */
+
+/* ── Live Feed ── */
+.diary-feed {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  padding: 0;
+}
+.diary-entry {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.2s ease;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.diary-entry:hover { background: var(--bg-card-hover); }
+.diary-entry:last-child { border-bottom: none; }
+.diary-entry-time {
+  font-size: 0.75em;
+  color: var(--accent-primary);
+  font-weight: 700;
+  white-space: nowrap;
+  min-width: 90px;
+  padding-top: 2px;
+  font-family: 'Courier New', monospace;
+}
+.diary-entry-source {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 60px;
+  text-align: center;
+}
+.diary-source-brain { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+.diary-source-pinky { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+.diary-source-task { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.diary-source-escalation { background: rgba(251, 146, 60, 0.2); color: #fb923c; }
+.diary-source-knowledge { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+.diary-source-system { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
+.diary-entry-content { flex: 1; color: var(--text-primary); font-size: 0.9em; line-height: 1.5; }
+.diary-entry-action { font-weight: 600; color: var(--text-heading); }
+.diary-entry-details { color: var(--text-muted); font-size: 0.85em; margin-top: 2px; }
+
+/* ── Knowledge Cards ── */
+.knowledge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+.knowledge-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.knowledge-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.knowledge-card:hover {
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+.knowledge-card:hover::before { opacity: 1; }
+.knowledge-card-title { font-weight: 700; color: var(--text-heading); margin-bottom: 6px; font-size: 0.95em; }
+.knowledge-card-snippet {
+  color: var(--text-muted); font-size: 0.8em; line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.knowledge-card-meta { display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.7em; color: var(--text-muted); }
+
+/* ── Escalation Pipeline Visualizer ── */
+.escalation-pipeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 20px 0;
+  padding: 20px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+  overflow-x: auto;
+}
+.tier-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 110px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 2px solid var(--border-default);
+  transition: all 0.3s ease;
+}
+.tier-node.active { border-color: var(--accent-primary); box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+.tier-node.exhausted { opacity: 0.5; border-color: #f5576c; }
+.tier-node.completed { border-color: var(--accent-green); }
+.tier-arrow { font-size: 1.4em; color: var(--text-muted); margin: 0 6px; flex-shrink: 0; }
+.tier-icon { font-size: 1.6em; margin-bottom: 4px; }
+.tier-name { font-weight: 700; font-size: 0.75em; color: var(--text-heading); text-align: center; }
+.tier-cost { font-size: 0.65em; color: var(--text-muted); margin-top: 2px; }
+.tier-shots { font-size: 0.6em; color: var(--accent-primary); font-weight: 600; margin-top: 3px; }
+.tier-divider {
+  width: 2px; height: 60px;
+  background: var(--border-default);
+  margin: 0 10px; flex-shrink: 0;
+  position: relative;
+}
+.tier-divider::after {
+  content: 'HANDOFF';
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  font-size: 0.5em; font-weight: 700;
+  color: var(--text-muted); white-space: nowrap; letter-spacing: 1px;
+}
+
+/* ── Memory Tier Cards ── */
+.memory-tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 15px 0;
+}
+.memory-tier-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  transition: all 0.3s ease;
+}
+.memory-tier-card:hover { border-color: var(--accent-primary); box-shadow: var(--shadow-card-hover); }
+.memory-tier-card.always-loaded { border-left: 3px solid var(--accent-green); }
+.memory-tier-card.on-demand { border-left: 3px solid var(--accent-primary); }
+.memory-tier-card.archived { border-left: 3px solid var(--text-muted); opacity: 0.7; }
+.memory-tier-name { font-weight: 700; font-size: 0.9em; color: var(--text-heading); display: flex; justify-content: space-between; align-items: center; }
+.memory-tier-desc { font-size: 0.8em; color: var(--text-secondary); margin-top: 6px; line-height: 1.4; }
+.memory-tier-badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 0.65em; font-weight: 700; }
+.memory-badge-always { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+.memory-badge-demand { background: rgba(139, 92, 246, 0.15); color: var(--accent-primary); }
+.memory-badge-archive { background: rgba(148, 163, 184, 0.15); color: var(--text-muted); }
+
+/* ── Cost Savings Widget ── */
+.cost-savings-bar {
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid var(--border-default);
+  margin: 15px 0;
+}
+.savings-comparison { display: flex; gap: 20px; align-items: center; margin-bottom: 12px; }
+.savings-old, .savings-new { flex: 1; text-align: center; }
+.savings-label { font-size: 0.7em; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.savings-amount { font-size: 1.8em; font-weight: 800; }
+.savings-old .savings-amount { color: #f5576c; text-decoration: line-through; opacity: 0.6; }
+.savings-new .savings-amount { color: var(--accent-green); }
+.savings-arrow { font-size: 2em; color: var(--accent-green); }
+.savings-percent { text-align: center; font-size: 2.5em; font-weight: 900; color: var(--accent-green); text-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
+
+/* ── Inputs ── */
+.diary-input-area { margin-top: 15px; display: flex; gap: 10px; }
+.diary-input-area textarea {
+  flex: 1; padding: 12px;
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-family: inherit; font-size: 0.9em;
+  resize: vertical; min-height: 60px;
+  transition: border-color 0.3s ease;
+}
+.diary-input-area textarea:focus { outline: none; border-color: var(--accent-primary); }
+.diary-input-area textarea::placeholder { color: var(--text-muted); }
+.diary-send-btn {
+  padding: 12px 20px;
+  background: var(--gradient-primary);
+  color: white; border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700; cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-end;
+}
+.diary-send-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
+
+/* ── Search ── */
+.diary-search { display: flex; gap: 10px; margin-bottom: 15px; }
+.diary-search input {
+  flex: 1; padding: 10px 16px;
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-input); color: var(--text-primary);
+  font-size: 0.9em; transition: border-color 0.3s ease;
+}
+.diary-search input:focus { outline: none; border-color: var(--accent-primary); }
+.diary-search input::placeholder { color: var(--text-muted); }
+.diary-search-btn {
+  padding: 10px 18px;
+  background: var(--gradient-blue);
+  color: white; border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600; cursor: pointer;
+  transition: all 0.2s ease;
+}
+.diary-search-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3); }
+
+/* ── Tabs ── */
+.diary-tabs {
+  display: flex; gap: 4px; margin-bottom: 20px;
+  background: var(--bg-subtle); padding: 4px;
+  border-radius: var(--radius-md); border: 1px solid var(--border-subtle);
+}
+.diary-tab {
+  flex: 1; padding: 10px 16px; border: none;
+  background: transparent; color: var(--text-muted);
+  font-weight: 600; font-size: 0.85em;
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: all 0.2s ease; text-align: center;
+}
+.diary-tab:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+.diary-tab.active { background: var(--bg-card); color: var(--text-heading); box-shadow: var(--shadow-card); }
+
+/* ── Panels ── */
+.diary-panel { display: none; }
+.diary-panel.active { display: block; animation: diaryFadeIn 0.3s ease; }
+@keyframes diaryFadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Empty State ── */
+.diary-empty { text-align: center; padding: 40px; color: var(--text-muted); }
+.diary-empty-icon { font-size: 3em; margin-bottom: 10px; opacity: 0.5; }
+.diary-empty-text { font-size: 0.9em; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .escalation-pipeline { flex-direction: column; align-items: stretch; }
+  .tier-arrow { transform: rotate(90deg); text-align: center; margin: 4px 0; }
+  .tier-divider { width: 100%; height: 1px; margin: 8px 0; }
+  .tier-divider::after { transform: translate(-50%, -50%) rotate(0deg); }
+  .memory-tiers { grid-template-columns: 1fr; }
+  .knowledge-grid { grid-template-columns: 1fr; }
+  .savings-comparison { flex-direction: column; gap: 10px; }
+  .diary-input-area { flex-direction: column; }
+}
