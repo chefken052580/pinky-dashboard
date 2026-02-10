@@ -193,8 +193,21 @@ class SettingsPageUI {
     init() {
         this.container = document.getElementById('settings-content');
         if (!this.container) {
-            console.error('[SettingsPage] Container not found');
-            return;
+            console.error('[SettingsPage] Container not found - attempting fallback...');
+            // Fallback: try to find or create container
+            const settingsView = document.getElementById('settings-view');
+            if (settingsView) {
+                let content = settingsView.querySelector('#settings-content');
+                if (!content) {
+                    content = document.createElement('div');
+                    content.id = 'settings-content';
+                    settingsView.appendChild(content);
+                }
+                this.container = content;
+            } else {
+                console.error('[SettingsPage] Settings view container not found');
+                return;
+            }
         }
         
         this.render();
@@ -562,12 +575,12 @@ class SettingsPageUI {
         });
         
         // Save button
-        document.getElementById('save-settings-btn').addEventListener('click', () => {
+        document.getElementById('save-settings-btn')?.addEventListener('click', () => {
             this.saveAllSettings();
         });
         
         // Reset button
-        document.getElementById('reset-settings-btn').addEventListener('click', () => {
+        document.getElementById('reset-settings-btn')?.addEventListener('click', () => {
             if (confirm('Are you sure? This will reset ALL settings to defaults.')) {
                 this.settings.resetToDefaults();
                 this.init();
