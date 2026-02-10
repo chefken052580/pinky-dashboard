@@ -25,26 +25,42 @@ class AnalyticsEngine {
     try {
       const statsResp = await fetch('http://192.168.254.4:3030/api/tasks/stats').then(r => r.json());
       const activityResp = await fetch('http://192.168.254.4:3030/api/activity').then(r => r.json());
+      const usageResp = await fetch('http://192.168.254.4:3030/api/usage').then(r => r.json());
 
       // Parse completion rate percentage string
       const completionRate = statsResp.stats?.completionRate || '0%';
       const completedCount = statsResp.stats?.completed || 0;
       const pendingCount = statsResp.stats?.pending || 0;
+      
+      // Get token data from /api/usage (more reliable than /api/activity)
+      const totalTokens = usageResp?.totalTokens || 0;
+      const totalCost = usageResp?.totalCost || 0;
+      const byModel = {};
+      
+      // Convert byModel object to expected format
+      if (usageResp?.byModel) {
+        Object.entries(usageResp.byModel).forEach(([modelName, modelData]) => {
+          byModel[modelName] = {
+            tokens: modelData.tokens || 0,
+            cost: modelData.cost || 0
+          };
+        });
+      }
 
       return {
         botsActive: this.bots.length,
         tasksCompleted: completedCount,
         tasksPending: pendingCount,
-        tasksToday: activityResp?.activityCount || 0,
+        tasksToday: activityResp?.heartbeats?.length || 0,
         heartbeatCount: activityResp?.heartbeatCount || 0,
-        tokensUsed: activityResp?.totalTokens || 0,
-        tokensInput: 0,
-        tokensOutput: 0,
-        tokensCacheRead: 0,
-        tokensCacheWrite: 0,
-        totalCost: 0,
-        byModel: {},
-        heartbeats: activityResp?.activities || []
+        tokensUsed: totalTokens,
+        tokensInput: usageResp?.input || 0,
+        tokensOutput: usageResp?.output || 0,
+        tokensCacheRead: usageResp?.cacheRead || 0,
+        tokensCacheWrite: usageResp?.cacheWrite || 0,
+        totalCost: totalCost,
+        byModel: byModel,
+        heartbeats: activityResp?.heartbeats || []
       };
 
     } catch (err) {
