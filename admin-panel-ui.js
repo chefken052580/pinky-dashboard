@@ -486,7 +486,7 @@
     const newRole = prompt('Enter new role (admin/member/viewer):');
     if (newRole) {
       try {
-        const res = await fetch(\`/api/admin/users/\${userId}\`, {
+        const res = await fetch('/api/admin/users/' + userId, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ role: newRole })
@@ -504,7 +504,7 @@
   async function deleteUser(userId) {
     if (confirm('Are you sure you want to delete this user?')) {
       try {
-        const res = await fetch(\`/api/admin/users/\${userId}\`, { method: 'DELETE' });
+        const res = await fetch('/api/admin/users/' + userId, { method: 'DELETE' });
         if (res.ok) loadUsers();
       } catch (err) {
         alert('Failed to delete user');
@@ -519,7 +519,7 @@
   async function deleteWorkspace(workspaceId) {
     if (confirm('Delete this workspace? This cannot be undone.')) {
       try {
-        const res = await fetch(\`/api/admin/workspaces/\${workspaceId}\`, { method: 'DELETE' });
+        const res = await fetch('/api/admin/workspaces/' + workspaceId, { method: 'DELETE' });
         if (res.ok) loadWorkspaces();
       } catch (err) {
         alert('Failed to delete workspace');

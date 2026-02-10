@@ -70,9 +70,31 @@
             <h1>Pinky Bot Dashboard</h1>
         </div>
         <div class="status-indicators">
-            <div class="indicator" id="system-status">
-                <span class="dot online"></span>
-                <span>System Online</span>
+            <div class="indicator pinky-control" id="system-status" onclick="PinkyControl.toggle()">
+                <span class="dot online" id="pinky-status-dot"></span>
+                <span id="pinky-status-text">System Online</span>
+                <span class="pinky-control-arrow">▾</span>
+                <div class="pinky-control-dropdown" id="pinky-control-dropdown">
+                    <div class="pinky-control-header">
+                        <span class="pinky-control-icon">🐭</span>
+                        <div>
+                            <strong>Pinky Autonomous Agent</strong>
+                            <span class="pinky-control-status running" id="pinky-control-status">Running</span>
+                        </div>
+                    </div>
+                    <div class="pinky-control-info" id="pinky-control-info">
+                        <span>Heartbeats: <strong id="pinky-hb-count">—</strong></span>
+                        <span>Last: <strong id="pinky-last-hb">—</strong></span>
+                    </div>
+                    <div class="pinky-control-actions">
+                        <button class="pinky-ctrl-btn pinky-ctrl-stop" id="pinky-stop-btn" onclick="PinkyControl.stop(event)">⏹ Stop Pinky</button>
+                        <button class="pinky-ctrl-btn pinky-ctrl-start" id="pinky-start-btn" onclick="PinkyControl.start(event)" style="display:none">▶ Start Pinky</button>
+                        <button class="pinky-ctrl-btn pinky-ctrl-restart" onclick="PinkyControl.restart(event)">🔄 Restart</button>
+                    </div>
+                    <div class="pinky-control-footer">
+                        <small>Pinky cannot override this control</small>
+                    </div>
+                </div>
             </div>
             <div class="indicator" id="bot-count">
                 <span>🤖 <span id="bots-active-count">7</span> Bots Active</span>
