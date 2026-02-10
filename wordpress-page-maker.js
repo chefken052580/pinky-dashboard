@@ -38,10 +38,15 @@ class WordPressPageMaker {
 
   createUI() {
     console.log('[WordPressMaker] Creating UI...');
-    const container = document.createElement('div');
-    container.id = this.containerId;
-    container.className = 'wordpress-page-maker';
-    container.innerHTML = `
+    const target = document.getElementById('wordpress-page-maker');
+    console.log('[WordPressMaker] Container found:', !!target);
+    if (!target) {
+      console.warn('[WordPressMaker] ERROR: wordpress-page-maker container not found in DOM');
+      return;
+    }
+
+    target.className = 'wordpress-page-maker';
+    target.innerHTML = `
       <div class="wp-maker-header">
         <h3>📝 WordPress Page Maker</h3>
         <p class="subtitle">Create SEO-optimized pages with Research Bot</p>
@@ -182,16 +187,7 @@ class WordPressPageMaker {
         </div>
       </div>
     `;
-
-    const target = document.getElementById('wordpress-page-maker');
-    console.log('[WordPressMaker] Container found:', !!target);
-    if (target) {
-      target.innerHTML = '';
-      target.appendChild(container);
-      console.log('[WordPressMaker] UI rendered successfully');
-    } else {
-      console.warn('[WordPressMaker] ERROR: wordpress-page-maker container not found in DOM');
-    }
+    console.log('[WordPressMaker] UI rendered successfully');
   }
 
   setupEventListeners() {
