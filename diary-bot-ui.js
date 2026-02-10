@@ -186,10 +186,12 @@
     codebotTiers.forEach(function(t, i) {
       if (i > 0) html += '<span class="tier-arrow">→</span>';
       var isFree = t.includes('FREE');
+      var label = t.split(':')[1] ? t.split(':')[1].trim().replace(' (FREE)', '').replace(/\(.*\)/, '').trim() : t;
+      var cost = isFree ? 'FREE' : (t.includes('$5') ? '$5 cap' : '');
       html += '<div class="tier-node ' + (isFree ? 'completed' : '') + '">' +
         '<span class="tier-icon">' + icons[pinkyTiers.length + i] + '</span>' +
-        '<span class="tier-name">' + t.split(':')[0].replace('Tier ', 'T') + '</span>' +
-        '<span class="tier-cost">' + (isFree ? 'FREE' : '') + '</span></div>';
+        '<span class="tier-name">' + label + '</span>' +
+        '<span class="tier-cost">' + cost + '</span></div>';
     });
 
     container.innerHTML = html;
