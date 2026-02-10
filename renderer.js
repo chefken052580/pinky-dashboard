@@ -1,6 +1,17 @@
 // Pinky Bot Dashboard - Renderer
 console.log('[Dashboard] Initializing...');
 
+// Dynamically load bot-loader.js if not already loaded
+(function() {
+    if (!window.BotLoader && !window.botLoader) {
+        const script = document.createElement('script');
+        script.src = './bot-loader.js';
+        script.onload = () => console.log('[Dashboard] Bot loader loaded');
+        script.onerror = () => console.error('[Dashboard] Failed to load bot-loader.js');
+        document.head.appendChild(script);
+    }
+})();
+
 // Utility: Format date/time in EST timezone
 function formatDateEST(timestamp) {
     if (!timestamp) return '--:--';
@@ -614,11 +625,16 @@ function renderHeaderStats() {
         // Calculate tasks completed today (for header only)
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        // Use EST timezone for "today" comparison
+        const estNow = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+        const todayEST = estNow.getFullYear() + '-' + String(estNow.getMonth()+1).padStart(2,'0') + '-' + String(estNow.getDate()).padStart(2,'0');
         const tasksToday = Array.isArray(tasks) ? tasks.filter(t => {
             if (t.status !== 'completed') return false;
-            const updated = new Date(t.updated || t.assigned);
-            const taskDate = new Date(updated.getFullYear(), updated.getMonth(), updated.getDate());
-            return taskDate.getTime() === today.getTime();
+            // Convert task timestamp to EST date string
+            const taskDate = new Date(t.updated || t.assigned);
+            const taskEST = new Date(taskDate.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            const taskDateStr = taskEST.getFullYear() + '-' + String(taskEST.getMonth()+1).padStart(2,'0') + '-' + String(taskEST.getDate()).padStart(2,'0');
+            return taskDateStr === todayEST;
         }).length : 0;
         
         // Render header stats
@@ -654,6 +670,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     renderHeaderStats(); // Run immediately
     // DISABLED - use GlobalRefresh // // DISABLED - use GlobalRefresh // setInterval(renderHeaderStats, 30000); // Then refresh every 30s
+    
+    // Initialize Dynamic Bot Loader
+    if (window.botLoader) {
+        console.log('[Renderer] Initializing dynamic bot loader...');
+        window.botLoader.init().then(success => {
+            if (success) {
+                console.log('[Renderer] ✅ Bot list loaded dynamically');
+            } else {
+                console.warn('[Renderer] Bot loader initialization incomplete');
+            }
+        }).catch(error => {
+            console.error('[Renderer] Bot loader error:', error);
+        });
+    } else {
+        console.warn('[Renderer] BotLoader module not loaded. Make sure bot-loader.js is included.');
+    }
+    
     // Wire up GlobalRefresh subscriptions
     if (window.GlobalRefresh) {
         window.GlobalRefresh.on("tasks", function() { renderHeaderStats(); });

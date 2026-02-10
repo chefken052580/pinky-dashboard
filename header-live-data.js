@@ -46,8 +46,10 @@ class HeaderLiveDataManager {
             const todayCompletedTasks = tasks.filter(task => {
                 if (!task.updated || task.status !== 'completed') return false;
                 
-                // Extract date part from updated timestamp
-                const taskDate = task.updated.split('T')[0];
+                // Convert task timestamp to EST for comparison
+                const taskUTC = new Date(task.updated);
+                const taskEST = new Date(taskUTC.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+                const taskDate = taskEST.getFullYear() + '-' + String(taskEST.getMonth()+1).padStart(2,'0') + '-' + String(taskEST.getDate()).padStart(2,'0');
                 return taskDate === todayString;
             });
 
