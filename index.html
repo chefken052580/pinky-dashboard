@@ -202,9 +202,7 @@
             </nav>
             <nav class="view-nav">
                 <h3>📱 Views</h3>
-                <button class="view-button" data-view="social-media">
-                    <span>🌐 Social Media</span>
-                </button>
+                <!-- Social Media merged into SocialBot -->
                 <button class="view-button" data-view="wordpress">
                     <span>📝 WordPress</span>
                 </button>
@@ -890,6 +888,9 @@
                     <button class="social-tab-button" data-social-tab="wordpress" onclick="switchSocialTab('wordpress')">
                         📝 WordPress
                     </button>
+                    <button class="social-tab-button" data-social-tab="settings" onclick="switchSocialTab('settings')">
+                        Settings
+                    </button>
                 </div>
                 
                 <!-- Tab Content -->
@@ -1374,7 +1375,7 @@
     <script src="data-export-ui.js"></script>
     <script src="about-pinkybot-ui.js"></script>
     <script src="businessbot-ui.js"></script>
-    <script src="settings-fixed.js"></script>
+    <!-- <script src="settings-fixed.js"></script> DISABLED: replaced by settings-page.js -->
     <script src="theme-manager.js"></script>
     <script src="task-queue-integration.js"></script>
     <script src="filesystem-bot-llm.js"></script>
@@ -1429,10 +1430,7 @@
                 console.log('[Dashboard] Bot containers ready in HTML');
                 
                 // Initialize Fixed Settings (replaces old broken version)
-                if (window.settingsManagerFixed) {
-                    window.settingsManagerFixed.renderUI();
-                    console.log('[Dashboard] Settings UI rendered (FIXED version)');
-                }
+                // settingsManagerFixed disabled
                 
                 // Initialize Social Media Bot Pro
                 if (window.socialBot) {

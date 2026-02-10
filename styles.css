@@ -557,3 +557,77 @@ html.light-mode .sidebar {
     background: rgba(0, 0, 0, 0.5);
     z-index: -1;
 }
+
+/* Social API Settings Cards */
+.social-api-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.social-api-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(120, 80, 255, 0.12);
+    border-radius: 12px;
+    padding: 18px;
+    transition: all 0.2s ease;
+    border-left: 3px solid rgba(255, 255, 255, 0.1);
+}
+.social-api-card.connected { border-left-color: #22c55e; }
+.social-api-card:hover { border-color: rgba(120, 80, 255, 0.3); }
+
+.social-api-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.social-api-icon { font-size: 1.4em; }
+.social-api-card-header strong { flex: 1; color: var(--text-primary, #e0e0f0); font-size: 0.95em; }
+.social-api-status { font-size: 0.75em; color: var(--text-secondary, rgba(255,255,255,0.4)); }
+
+.social-api-input {
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(120, 80, 255, 0.15);
+    border-radius: 6px;
+    color: var(--text-primary, #e0e0f0);
+    font-size: 0.88em;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+}
+.social-api-input:focus {
+    outline: none;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+}
+.social-api-input::placeholder { color: rgba(255, 255, 255, 0.2); }
+
+.social-api-test-btn {
+    width: 100%;
+    padding: 8px;
+    background: rgba(0, 212, 255, 0.08);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: 6px;
+    color: #00d4ff;
+    font-size: 0.85em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+}
+.social-api-test-btn:hover { background: rgba(0, 212, 255, 0.15); }
+
+.social-api-save-btn {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.92em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.social-api-save-btn:hover { box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3); }

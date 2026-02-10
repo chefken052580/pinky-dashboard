@@ -336,3 +336,80 @@ function injectSocialStyles() {
     s.textContent = '.btn-add-company{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:14px;transition:transform 0.2s;}.btn-add-company:hover{transform:scale(1.05);}.companies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}.company-card{background:rgba(255,255,255,0.06);border-radius:12px;padding:20px;transition:transform 0.2s,box-shadow 0.2s;}.company-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,0.3);}.btn-icon{background:none;border:none;cursor:pointer;font-size:16px;padding:4px 8px;border-radius:4px;}.btn-icon:hover{background:rgba(255,255,255,0.1);}.btn-small-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:bold;}.btn-small-secondary{background:rgba(255,255,255,0.08);color:#aaa;border:1px solid rgba(255,255,255,0.15);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;}.empty-state{text-align:center;padding:60px 20px;color:#888;}.form-input,.form-select{width:100%;padding:10px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:14px;box-sizing:border-box;}.form-input:focus,.form-select:focus{outline:none;border-color:#667eea;}.company-selector-btn{display:inline-flex;flex-direction:column;align-items:center;gap:4px;padding:8px 16px;background:rgba(255,255,255,0.06);border:2px solid transparent;border-radius:8px;color:#ccc;cursor:pointer;transition:all 0.2s;margin:4px;}.company-selector-btn:hover{background:rgba(255,255,255,0.1);}.company-selector-btn.selected{border-color:#667eea;background:rgba(102,126,234,0.15);color:#fff;}';
     document.head.appendChild(s);
 }
+
+
+// Social API Settings Tab
+function renderSocialSettingsTab() {
+    var container = document.getElementById('social-tab-settings');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'social-tab-settings';
+        container.className = 'social-tab-content';
+        container.style.display = 'none';
+        var parent = document.querySelector('#social-media-view .social-tab-nav');
+        if (parent && parent.parentNode) parent.parentNode.appendChild(container);
+    }
+    
+    var platforms = [
+        { id:'twitter', icon:'\ud835\udd4f', name:'Twitter/X', fields:[{k:'key',l:'API Key'},{k:'secret',l:'API Secret'}] },
+        { id:'instagram', icon:'\ud83d\udcf8', name:'Instagram', fields:[{k:'token',l:'Business Token'}] },
+        { id:'tiktok', icon:'\ud83c\udfb5', name:'TikTok', fields:[{k:'token',l:'Creator Token'}] },
+        { id:'linkedin', icon:'\ud83d\udcbc', name:'LinkedIn', fields:[{k:'token',l:'Access Token'}] },
+        { id:'bluesky', icon:'\ud83c\udf0a', name:'Bluesky', fields:[{k:'key',l:'API Key'},{k:'handle',l:'Handle'}] },
+        { id:'mastodon', icon:'\ud83d\udc18', name:'Mastodon', fields:[{k:'token',l:'Access Token'},{k:'instance',l:'Instance URL'}] },
+        { id:'discord', icon:'\ud83d\udcac', name:'Discord', fields:[{k:'webhook',l:'Webhook URL'}] },
+        { id:'telegram', icon:'\u2708\ufe0f', name:'Telegram', fields:[{k:'token',l:'Bot Token'},{k:'chatId',l:'Chat ID'}] }
+    ];
+    
+    var stored = {};
+    try { stored = JSON.parse(localStorage.getItem('pinky-social-apis') || '{}'); } catch(e) {}
+    
+    var html = '<h3 style="color:var(--text-primary);margin-bottom:20px;">\ud83d\udd11 Platform API Keys</h3>';
+    html += '<p style="color:var(--text-secondary);margin-bottom:20px;font-size:0.9em;">Connect your social platforms to enable automated posting.</p>';
+    html += '<div class="social-api-grid">';
+    
+    platforms.forEach(function(p) {
+        var pData = stored[p.id] || {};
+        var connected = pData.connected || false;
+        html += '<div class="social-api-card ' + (connected ? 'connected' : '') + '">';
+        html += '<div class="social-api-card-header"><span class="social-api-icon">' + p.icon + '</span><strong>' + p.name + '</strong>';
+        html += '<span class="social-api-status">' + (connected ? '\u2705 Connected' : '\u26aa Not connected') + '</span></div>';
+        p.fields.forEach(function(f) {
+            var val = pData[f.k] || '';
+            html += '<input type="password" class="social-api-input" data-platform="' + p.id + '" data-field="' + f.k + '" placeholder="' + f.l + '" value="' + val + '" />';
+        });
+        html += '<button class="social-api-test-btn" onclick="testSocialAPI(\'' + p.id + '\')">Test Connection</button>';
+        html += '</div>';
+    });
+    
+    html += '</div>';
+    html += '<div style="margin-top:20px;text-align:right;"><button class="social-api-save-btn" onclick="saveSocialAPIs()">\ud83d\udcbe Save All API Keys</button></div>';
+    container.innerHTML = html;
+}
+
+window.saveSocialAPIs = function() {
+    var stored = {};
+    document.querySelectorAll('.social-api-input').forEach(function(el) {
+        var p = el.dataset.platform;
+        var f = el.dataset.field;
+        if (!stored[p]) stored[p] = {};
+        stored[p][f] = el.value;
+        if (el.value) stored[p].connected = true;
+    });
+    localStorage.setItem('pinky-social-apis', JSON.stringify(stored));
+    alert('\u2705 API keys saved!');
+    renderSocialSettingsTab();
+};
+
+window.testSocialAPI = function(platform) {
+    alert('\ud83e\uddea Testing ' + platform + ' connection...\n(API testing coming soon)');
+};
+
+// Hook into tab switching
+var origSwitch = window.switchSocialTab;
+window.switchSocialTab = function(tabName) {
+    origSwitch(tabName);
+    var settingsTab = document.getElementById('social-tab-settings');
+    if (settingsTab) settingsTab.style.display = tabName === 'settings' ? 'block' : 'none';
+    if (tabName === 'settings') renderSocialSettingsTab();
+};
