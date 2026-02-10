@@ -37,7 +37,7 @@ class AnalyticsEngine {
           const today = new Date();
           return date.toDateString() === today.toDateString();
         }).length || 0,
-        heartbeatCount: activityResp?.heartbeats?.filter(a => a.activity?.includes('Heartbeat')).length || 0,
+        heartbeatCount: 0, // updated async from heartbeat-state below
         tokensUsed: usageResp.totalTokens || 0,
         tokensInput: usageResp.input || 0,
         tokensOutput: usageResp.output || 0,
@@ -47,6 +47,14 @@ class AnalyticsEngine {
         byModel: usageResp.byModel || {},
         heartbeats: activityResp?.heartbeats || []
       };
+
+      // Fetch real heartbeat count from state file
+      try {
+        const hbStateResp = await fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/heartbeat/state');
+        const hbState = await hbStateResp.json();
+        metrics.heartbeatCount = hbState.heartbeatCount || 0;
+      } catch(e) { console.log('[Analytics] heartbeat-state fetch failed'); }
+
     } catch (err) {
       console.log('[AnalyticsEngine] Error fetching metrics:', err.message);
       return {
@@ -264,7 +272,10 @@ class AnalyticsEngine {
     html += '<div class="analytics-section">';
     html += '<h3>⏱️ Response Times (Last 10)</h3>';
     html += '<div class="timeline">';
-    const responses = (activityData?.usage?.responses || []).slice(-10);
+    const responses = (activityData?.heartbeats || [])
+      .filter(h => h.lagMs || h.exec)
+      .slice(-10)
+      .map(h => h.lagMs || (h.exec * 1000) || 0);
     if (responses.length === 0) {
       html += '<p style="color:var(--text-secondary);">No data yet</p>';
     } else {
