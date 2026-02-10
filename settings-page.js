@@ -191,6 +191,7 @@ class SettingsPageUI {
      * Initialize the settings page
      */
     init() {
+        console.log('[SettingsPage] init() called');
         this.container = document.getElementById('settings-content');
         if (!this.container) {
             console.error('[SettingsPage] Container not found - attempting fallback...');
@@ -210,15 +211,30 @@ class SettingsPageUI {
             }
         }
         
-        this.render();
-        this.attachEventListeners();
+        console.log('[SettingsPage] Container found:', this.container);
+        try {
+            this.render();
+            console.log('[SettingsPage] render() completed, innerHTML length:', this.container.innerHTML.length);
+        } catch (e) {
+            console.error('[SettingsPage] render() failed:', e.message, e);
+            this.container.innerHTML = '<p style="color:red;">Error rendering settings: ' + e.message + '</p>';
+        }
+        
+        try {
+            this.attachEventListeners();
+            console.log('[SettingsPage] attachEventListeners() completed');
+        } catch (e) {
+            console.error('[SettingsPage] attachEventListeners() failed:', e.message);
+        }
     }
 
     /**
      * Main render function
      */
     render() {
-        this.container.innerHTML = `
+        console.log('[SettingsPage.render] Starting render...');
+        try {
+            this.container.innerHTML = `
             <div class="settings-container">
                 <div class="settings-header">
                     <h2>⚙️ Dashboard Settings</h2>
@@ -273,6 +289,11 @@ class SettingsPageUI {
                 <div id="settings-message" class="settings-message hidden"></div>
             </div>
         `;
+            console.log('[SettingsPage.render] Template rendered successfully, length:', this.container.innerHTML.length);
+        } catch (e) {
+            console.error('[SettingsPage.render] Error during render:', e.message, e);
+            this.container.innerHTML = '<div style="color:red;padding:20px;"><p>Error rendering settings page:</p><p>' + e.message + '</p></div>';
+        }
     }
 
     /**
