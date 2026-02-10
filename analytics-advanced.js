@@ -5,6 +5,28 @@
 
 class AnalyticsEngine {
   constructor() {
+    this.bots = [];
+    this.initialized = false;
+  }
+
+  async initialize() {
+    if (this.initialized) return;
+    try {
+      const response = await fetch('http://192.168.254.4:3030/api/bots');
+      if (response.ok) {
+        this.bots = await response.json();
+        this.initialized = true;
+        console.log('[AnalyticsEngine] Bots loaded dynamically:', this.bots.length);
+      } else {
+        this.loadDefaultBots();
+      }
+    } catch (error) {
+      console.warn('[AnalyticsEngine] Failed to load bots from API:', error.message);
+      this.loadDefaultBots();
+    }
+  }
+
+  loadDefaultBots() {
     this.bots = [
       { id: 'docs', name: 'DocsBot', icon: '📝', status: 'active' },
       { id: 'research', name: 'ResearchBot', icon: '🔍', status: 'active' },
@@ -16,6 +38,8 @@ class AnalyticsEngine {
       { id: 'crypto', name: 'CryptoBot', icon: '💰', status: 'active' },
       { id: 'diary', name: 'DiaryBot', icon: '📔', status: 'active' }
     ];
+    this.initialized = true;
+    console.log('[AnalyticsEngine] Using default bots list');
   }
 
   /**
@@ -371,7 +395,12 @@ class AnalyticsEngine {
 // Initialize globally
 try {
   window.analyticsEngine = new AnalyticsEngine();
-  console.log('[Analytics] Engine initialized');
+  window.analyticsEngine.initialize().then(() => {
+    console.log('[Analytics] Engine initialized with dynamic bots');
+  }).catch((e) => {
+    console.warn('[Analytics] Error loading dynamic bots, using fallback:', e.message);
+  });
+  console.log('[Analytics] Engine initialization started');
 } catch (e) {
   console.error('[Analytics] Error:', e);
 }
