@@ -1,0 +1,405 @@
+/**
+ * Tier Selector Component CSS
+ * Purple/blue gradient theme matching PinkyBot dashboard
+ */
+
+.tier-selector-wrapper {
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #0f0e1a 0%, #16213e 100%);
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.tier-selector-header {
+  text-align: center;
+  margin-bottom: 50px;
+  color: #fff;
+}
+
+.tier-selector-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  background: linear-gradient(90deg, #667eea 0%, #00d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tier-selector-header p {
+  font-size: 16px;
+  color: #b0b0b0;
+  margin: 0;
+}
+
+/* TIER CARDS GRID */
+.tier-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tier-card {
+  position: relative;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 16px;
+  padding: 30px;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.tier-card:hover {
+  border-color: rgba(0, 212, 255, 0.6);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+}
+
+.tier-card.active {
+  border-color: #00d4ff;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), inset 0 0 30px rgba(102, 126, 234, 0.1);
+}
+
+.tier-card.featured {
+  transform: scale(1.05);
+  border-color: #667eea;
+}
+
+.tier-card.featured:hover {
+  border-color: #00d4ff;
+  box-shadow: 0 30px 60px rgba(102, 126, 234, 0.3);
+}
+
+/* TIER BADGE */
+.tier-badge {
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.tier-badge.featured-badge {
+  background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* TIER PRICE */
+.tier-price {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.tier-price .amount {
+  font-size: 42px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #667eea 0%, #00d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tier-price .period {
+  color: #b0b0b0;
+  font-size: 14px;
+  margin-left: 5px;
+}
+
+/* RESPONSE TIME */
+.tier-response-time {
+  display: flex;
+  align-items: center;
+  background: rgba(102, 126, 234, 0.1);
+  border-left: 3px solid #667eea;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.response-icon {
+  font-size: 32px;
+  margin-right: 15px;
+}
+
+.response-text .response-time {
+  color: #00d4ff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.response-text .channels {
+  color: #b0b0b0;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* TIER FEATURES */
+.tier-features {
+  flex-grow: 1;
+  margin-bottom: 20px;
+}
+
+.tier-features h3 {
+  color: #00d4ff;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 15px 0;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  padding-bottom: 10px;
+}
+
+.tier-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tier-features li {
+  color: #d0d0d0;
+  font-size: 13px;
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+}
+
+.tier-features li:before {
+  content: '✓';
+  color: #00d4ff;
+  font-weight: 700;
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+/* TIER BUTTONS */
+.tier-button {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.bronze-button {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.bronze-button:hover:not(:disabled) {
+  background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+  transform: translateY(-2px);
+}
+
+.silver-button {
+  background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.silver-button:hover:not(:disabled) {
+  background: linear-gradient(90deg, #f5576c 0%, #f093fb 100%);
+  box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);
+  transform: translateY(-2px);
+}
+
+.gold-button {
+  background: linear-gradient(90deg, #ffd89b 0%, #19547b 100%);
+  color: white;
+}
+
+.gold-button:hover:not(:disabled) {
+  background: linear-gradient(90deg, #19547b 0%, #ffd89b 100%);
+  box-shadow: 0 10px 25px rgba(255, 216, 155, 0.4);
+  transform: translateY(-2px);
+}
+
+.tier-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* SLA INFO SECTION */
+.sla-info-section {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.sla-info-section h3 {
+  color: #00d4ff;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.sla-comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(26, 26, 46, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sla-comparison-table thead {
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.2) 0%, rgba(0, 212, 255, 0.2) 100%);
+}
+
+.sla-comparison-table th {
+  color: #00d4ff;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+}
+
+.sla-comparison-table td {
+  color: #d0d0d0;
+  padding: 15px;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.sla-comparison-table tbody tr:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.sla-comparison-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* CURRENT TIER STATUS */
+.current-tier-status {
+  margin-top: 60px;
+  padding: 30px;
+  background: rgba(102, 126, 234, 0.1);
+  border-left: 4px solid #00d4ff;
+  border-radius: 8px;
+}
+
+.current-tier-status h3 {
+  color: #00d4ff;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+}
+
+.status-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.status-card {
+  background: rgba(26, 26, 46, 0.8);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.status-label {
+  color: #b0b0b0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.status-value {
+  color: #00d4ff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  .tier-selector-wrapper {
+    padding: 20px 10px;
+  }
+
+  .tier-cards-grid {
+    gap: 15px;
+  }
+
+  .tier-card.featured {
+    transform: scale(1);
+  }
+
+  .tier-selector-header h2 {
+    font-size: 24px;
+  }
+
+  .tier-price .amount {
+    font-size: 32px;
+  }
+
+  .sla-comparison-table {
+    font-size: 13px;
+  }
+
+  .sla-comparison-table th,
+  .sla-comparison-table td {
+    padding: 10px;
+  }
+
+  .status-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .tier-selector-header {
+    margin-bottom: 30px;
+  }
+
+  .tier-selector-header h2 {
+    font-size: 20px;
+  }
+
+  .tier-selector-header p {
+    font-size: 14px;
+  }
+
+  .tier-price .amount {
+    font-size: 28px;
+  }
+
+  .tier-response-time {
+    flex-direction: column;
+    border-left: none;
+    border-top: 3px solid #667eea;
+  }
+
+  .response-icon {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .tier-features h3 {
+    font-size: 12px;
+  }
+
+  .tier-features li {
+    font-size: 12px;
+  }
+
+  .status-cards {
+    grid-template-columns: 1fr;
+  }
+}

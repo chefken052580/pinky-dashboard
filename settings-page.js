@@ -218,6 +218,7 @@ class SettingsPageUI {
                     <button class="settings-tab-btn" data-tab="notifications">Notifications</button>
                     <button class="settings-tab-btn" data-tab="dashboard">Dashboard</button>
                     <button class="settings-tab-btn" data-tab="data">Data</button>
+                    <button class="settings-tab-btn" data-tab="corefiles">🧬 Core Files</button>
                 </div>
                 
                 <div class="settings-content">
@@ -242,6 +243,10 @@ class SettingsPageUI {
                     </div>
                     
                     <!-- Data Tab -->
+                    <div class="settings-tab" id="corefiles-tab">
+                        <div id="settings-core-files-container"></div>
+                    </div>
+
                     <div class="settings-tab" id="data-tab">
                         ${this.renderDataTab()}
                     </div>

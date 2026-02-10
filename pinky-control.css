@@ -1,0 +1,135 @@
+/* Pinky Start/Stop Control Dropdown */
+.pinky-control {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pinky-control-arrow {
+  font-size: 0.7em;
+  margin-left: 4px;
+  opacity: 0.5;
+  transition: transform 0.2s;
+}
+
+.pinky-control:hover .pinky-control-arrow { opacity: 1; }
+
+.pinky-control-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  background: rgba(15, 20, 40, 0.98);
+  border: 1px solid rgba(120, 80, 255, 0.3);
+  border-radius: 12px;
+  padding: 0;
+  z-index: 9999;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(120, 80, 255, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(-8px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.pinky-control-dropdown.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: all;
+}
+
+.pinky-control-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(120, 80, 255, 0.15);
+}
+
+.pinky-control-icon { font-size: 1.8em; }
+.pinky-control-header strong { display: block; font-size: 0.88em; color: #e0e0f0; }
+
+.pinky-control-status {
+  display: inline-block;
+  font-size: 0.72em;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.pinky-control-status.running { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+.pinky-control-status.stopped { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+.pinky-control-info {
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(120, 80, 255, 0.1);
+}
+.pinky-control-info strong { color: #e0e0f0; }
+
+.pinky-control-actions {
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.pinky-ctrl-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.82em;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.pinky-ctrl-stop {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+.pinky-ctrl-stop:hover { background: rgba(239, 68, 68, 0.25); }
+
+.pinky-ctrl-start {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.25);
+}
+.pinky-ctrl-start:hover { background: rgba(34, 197, 94, 0.25); }
+
+.pinky-ctrl-restart {
+  background: rgba(120, 80, 255, 0.1);
+  color: #a78bfa;
+  border-color: rgba(120, 80, 255, 0.2);
+}
+.pinky-ctrl-restart:hover { background: rgba(120, 80, 255, 0.2); }
+
+.pinky-control-footer {
+  padding: 8px 16px;
+  border-top: 1px solid rgba(120, 80, 255, 0.1);
+  text-align: center;
+}
+.pinky-control-footer small {
+  font-size: 0.7em;
+  color: rgba(255, 255, 255, 0.25);
+  font-style: italic;
+}
+
+.dot.offline { background: #ef4444 !important; box-shadow: 0 0 6px rgba(239, 68, 68, 0.5); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pinky-control-dropdown {
+    width: 260px;
+    left: auto;
+    right: -20px;
+    transform: none;
+  }
+  .pinky-control-dropdown.visible { transform: translateY(0); }
+}

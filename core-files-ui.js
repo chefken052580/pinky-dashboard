@@ -315,14 +315,16 @@
     closeEditor: function() { var m=document.getElementById('core-file-editor-modal'); if(m){m.classList.remove('visible');setTimeout(function(){m.remove();},300);var c=document.getElementById('settings-core-files-container');if(c)renderSettings(c);} },
     rerunOnboarding: function() { localStorage.removeItem('pinky_onboarded'); this.startOnboarding(); },
     init: function() {
-      var sc = document.getElementById('settings-content');
-      if (sc) {
-        var section = document.createElement('div');
-        section.id = 'settings-core-files-container';
-        section.style.marginBottom = '20px';
-        if (sc.firstChild) sc.insertBefore(section, sc.firstChild); else sc.appendChild(section);
-        renderSettings(section);
-      }
+      // Watch for Core Files tab activation
+      var self = this;
+      document.addEventListener('click', function(e) {
+        if (e.target.matches('[data-tab="corefiles"]')) {
+          setTimeout(function() {
+            var c = document.getElementById('settings-core-files-container');
+            if (c && !c.dataset.loaded) { renderSettings(c); c.dataset.loaded = '1'; }
+          }, 100);
+        }
+      });
       if (localStorage.getItem('pinky_onboarded') !== 'true') {
         var self = this;
         fetch(API + '/api/core-files').then(function(r){return r.json();}).then(function(data) {
