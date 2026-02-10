@@ -129,6 +129,8 @@ function initBotButtons() {
             console.log('[Nav] Switching to bot:', bot);
             
             // Switch to bot view
+            // Social bot merged into social-media-view
+            if (bot === 'social') { switchView('social-media-view'); return; }
             switchView(bot + '-view');
             
             // Update active state

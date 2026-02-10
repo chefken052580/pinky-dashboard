@@ -191,7 +191,7 @@ class SettingsPageUI {
      * Initialize the settings page
      */
     init() {
-        this.container = document.getElementById('settings-view');
+        this.container = document.getElementById('settings-content');
         if (!this.container) {
             console.error('[SettingsPage] Container not found');
             return;
