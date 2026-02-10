@@ -41,7 +41,7 @@ class NotificationBadgeManager {
     async updateAllBadges() {
         try {
             // Fetch pending tasks for Tasks badge
-            const response = await fetch('/api/tasks');
+            const response = await fetch((typeof API_BASE !== 'undefined' ? API_BASE : '') + '/api/tasks');
             if (response.ok) {
                 const tasks = await response.json();
                 if (Array.isArray(tasks)) {
@@ -136,6 +136,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!notificationBadgeManager) {
         notificationBadgeManager = new NotificationBadgeManager();
         notificationBadgeManager.init();
+    }
+    // Hook into GlobalRefresh for live updates
+    if (window.GlobalRefresh) {
+        window.GlobalRefresh.on('tasks', function() {
+            if (notificationBadgeManager) notificationBadgeManager.updateAllBadges();
+        });
+    } else {
+        // Fallback: poll every 15 seconds
+        setInterval(() => {
+            if (notificationBadgeManager) notificationBadgeManager.updateAllBadges();
+        }, 15000);
     }
 });
 
