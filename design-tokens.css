@@ -97,9 +97,9 @@
     --focus-ring: 0 0 0 2px rgba(0, 212, 255, 0.5);
     
     /* Stat Cards */
-    --stat-card-bg: rgba(15, 15, 40, 0.7);
-    --stat-card-border: rgba(102, 126, 234, 0.2);
-    --stat-card-hover: rgba(0, 212, 255, 0.05);
+    --stat-card-bg: var(--bg-card);
+    --stat-card-border: var(--border-default);
+    --stat-card-hover: var(--bg-card-hover);
     
     /* Activity Feed */
     --feed-bg: rgba(10, 10, 30, 0.5);
@@ -170,9 +170,9 @@
     --focus-ring: 0 0 0 2px rgba(102, 126, 234, 0.4);
     
     /* Stat Cards */
-    --stat-card-bg: rgba(255, 255, 255, 0.9);
-    --stat-card-border: rgba(102, 126, 234, 0.15);
-    --stat-card-hover: rgba(102, 126, 234, 0.05);
+    --stat-card-bg: var(--bg-card);
+    --stat-card-border: var(--border-default);
+    --stat-card-hover: var(--bg-card-hover);
     
     /* Activity Feed */
     --feed-bg: rgba(245, 245, 255, 0.8);
@@ -231,14 +231,14 @@
 
 /* Stat Cards - universal */
 .stat-card {
-    background: var(--stat-card-bg) !important;
-    border: 1px solid var(--stat-card-border) !important;
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
     border-radius: var(--radius-lg) !important;
     padding: 20px !important;
     transition: var(--transition-normal) !important;
 }
 .stat-card:hover {
-    background: var(--stat-card-hover) !important;
+    background: var(--bg-card-hover);
     border-color: var(--border-strong) !important;
     box-shadow: var(--shadow-glow-blue) !important;
     transform: translateY(-2px);

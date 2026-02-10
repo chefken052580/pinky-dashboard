@@ -115,9 +115,9 @@
 #analytics-dashboard-section {
     margin-top: 2rem !important;
     padding: 1.5rem !important;
-    background: rgba(20, 40, 80, 0.3) !important;
+    background: var(--bg-card) !important;
     border-radius: 8px !important;
-    border: 1px solid rgba(68, 150, 255, 0.2) !important;
+    border: 1px solid var(--border-default) !important;
 }
 
 #analytics-dashboard-section h3 {
@@ -129,18 +129,18 @@
 #task-statistics-container {
     margin-top: 2rem !important;
     padding: 1.5rem !important;
-    background: rgba(20, 40, 80, 0.3) !important;
+    background: var(--bg-card) !important;
     border-radius: 8px !important;
-    border: 1px solid rgba(68, 150, 255, 0.2) !important;
+    border: 1px solid var(--border-default) !important;
 }
 
 /* Task History Chart Container */
 #task-history-chart-container {
     margin-top: 2rem !important;
     padding: 1.5rem !important;
-    background: rgba(20, 40, 80, 0.3) !important;
+    background: var(--bg-card) !important;
     border-radius: 8px !important;
-    border: 1px solid rgba(68, 150, 255, 0.2) !important;
+    border: 1px solid var(--border-default) !important;
 }
 
 /* ===== QUICK ACTIONS FIXES ===== */
