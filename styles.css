@@ -152,9 +152,16 @@ html:not([data-theme="dark"]):not(.dark-mode) .view h2 { color: #ffffff; text-sh
 .theme-toggle { background: var(--bg-subtle); border: 1px solid var(--border-default); border-radius: 20px; padding: 7px 14px; cursor: pointer; font-size: 1.1em; transition: all 0.2s; display: flex; align-items: center; gap: 6px; color: var(--text-secondary); }
 .theme-toggle:hover { border-color: var(--accent-primary); background: var(--bg-card-hover); }
 
-/* Emoji icons should not be tinted by text color */
-.stat-icon {
-    color: initial;
-    -webkit-text-fill-color: initial;
-    filter: none;
+
+/* Force emoji icons to render naturally — prevent color tinting */
+.stat-icon,
+.stat-card .stat-icon,
+.stats-grid .stat-icon,
+.task-stat-box .stat-number {
+    color: initial !important;
+    -webkit-text-fill-color: initial !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    filter: none !important;
+    opacity: 1 !important;
 }
