@@ -44,6 +44,7 @@
     <link rel="stylesheet" href="company-selector.css">
         <link rel="stylesheet" href="bug-submission.css">
     <link rel="stylesheet" href="cryptobot-view.css?v=999">
+    <link rel="stylesheet" href="diary-bot-ui.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -938,6 +939,125 @@
                 </div>
             </div>
         </div>
+
+            <!-- DiaryBot View -->
+            <div id="diary-view" class="view">
+                <h2>📝 DiaryBot — Pinky's Personal Scribe</h2>
+                <p style="color:var(--text-secondary);margin-bottom:20px;">
+                    Watches everything, logs activities, stores knowledge, tracks escalation costs.
+                    <em>"Every great world domination scheme needs a historian."</em>
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="diary-entry-count">0</div>
+                            <div class="stat-label">Today's Entries</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="knowledge-count">0</div>
+                            <div class="stat-label">Knowledge Items</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⬆️</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="escalation-escalations">0</div>
+                            <div class="stat-label">Escalations</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🛡️</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="escalation-self-debug-saves">0</div>
+                            <div class="stat-label">Self-Debug Saves</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="diary-tabs">
+                    <button class="diary-tab active" data-tab="feed">📝 Live Feed</button>
+                    <button class="diary-tab" data-tab="knowledge">📚 Knowledge</button>
+                    <button class="diary-tab" data-tab="escalation">🔧 Escalation</button>
+                    <button class="diary-tab" data-tab="memory">🧠 Memory Map</button>
+                </div>
+
+                <div id="diary-panel-feed" class="diary-panel active">
+                    <div class="diary-feed" id="diary-feed-list">
+                        <div class="diary-empty">
+                            <div class="diary-empty-icon">📝</div>
+                            <div class="diary-empty-text">Loading diary...</div>
+                        </div>
+                    </div>
+                    <div class="diary-input-area">
+                        <textarea id="diary-note-input" placeholder="Quick note for the diary... (Brain or Pinky can write here)" rows="2"></textarea>
+                        <button class="diary-send-btn" onclick="diaryQuickNote()">📝 Log</button>
+                    </div>
+                    <div style="margin-top:10px;text-align:right;">
+                        <button id="diary-summary-btn" class="diary-search-btn" onclick="diaryGenerateSummary()">📊 Generate Summary</button>
+                    </div>
+                </div>
+
+                <div id="diary-panel-knowledge" class="diary-panel">
+                    <div class="diary-search">
+                        <input type="text" id="knowledge-search-input" placeholder="Search knowledge base..." onkeydown="if(event.key==='Enter')diarySearchKnowledge()">
+                        <button class="diary-search-btn" onclick="diarySearchKnowledge()">🔍 Search</button>
+                    </div>
+                    <div class="knowledge-grid" id="knowledge-grid">
+                        <div class="diary-empty" style="grid-column:1/-1;">
+                            <div class="diary-empty-icon">📚</div>
+                            <div class="diary-empty-text">Click to load knowledge base</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:20px;">
+                        <h3 style="color:var(--text-heading);margin-bottom:12px;">💾 Store New Knowledge</h3>
+                        <input type="text" id="knowledge-topic-input" placeholder="Topic (e.g. Solana wallet integration)" style="width:100%;padding:10px;margin-bottom:8px;border:2px solid var(--border-default);border-radius:var(--radius-md);background:var(--bg-input);color:var(--text-primary);font-size:0.9em;box-sizing:border-box;">
+                        <textarea id="knowledge-content-input" placeholder="Content / research notes..." rows="4" style="width:100%;padding:10px;border:2px solid var(--border-default);border-radius:var(--radius-md);background:var(--bg-input);color:var(--text-primary);font-size:0.9em;resize:vertical;box-sizing:border-box;"></textarea>
+                        <button class="diary-send-btn" onclick="diaryStoreKnowledge()" style="margin-top:8px;">💾 Store Knowledge</button>
+                    </div>
+                </div>
+
+                <div id="diary-panel-escalation" class="diary-panel">
+                    <h3 style="color:var(--text-heading);margin-bottom:5px;">🔧 Escalation Pipeline</h3>
+                    <p style="color:var(--text-muted);font-size:0.85em;margin-bottom:15px;">Build → Self-Debug → Handoff → Next Tier → CodeBot → Brain</p>
+                    <div class="escalation-pipeline" id="escalation-pipeline">
+                        <div class="diary-empty"><div class="diary-empty-text">Loading pipeline...</div></div>
+                    </div>
+                    <div class="stats-grid" style="margin-top:20px;">
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="escalation-total-tasks">0</div>
+                                <div class="stat-label">Tasks Routed</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="escalation-active">0</div>
+                                <div class="stat-label">Active Now</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 style="color:var(--text-heading);margin-top:25px;margin-bottom:10px;">💰 Cost Savings</h3>
+                    <div class="cost-savings-bar" id="cost-savings-widget">
+                        <div class="diary-empty"><div class="diary-empty-text">Loading costs...</div></div>
+                    </div>
+                </div>
+
+                <div id="diary-panel-memory" class="diary-panel">
+                    <h3 style="color:var(--text-heading);margin-bottom:5px;">🧠 Pinky's Memory Architecture</h3>
+                    <p style="color:var(--text-muted);font-size:0.85em;margin-bottom:15px;">Tiered system: Always-loaded core + on-demand context = 99% token savings</p>
+                    <div class="memory-tiers" id="memory-tiers-grid">
+                        <div class="diary-empty"><div class="diary-empty-text">Loading memory map...</div></div>
+                    </div>
+                </div>
+            </div>
+
             <div id="settings-view" class="view"><div id="settings-content"></div></div>
 
             <div id="wordpress-view" class="view">
@@ -1222,6 +1342,7 @@
     <script src="bot-upgrades.js"></script>
     <script src="bot-modules.js"></script>
     <script src="codebot-ui.js"></script>
+    <script src="perplexity-search.js"></script>
     <script src="data-export-ui.js"></script>
     <script src="about-pinkybot-ui.js"></script>
     <script src="businessbot-ui.js"></script>
@@ -1530,5 +1651,6 @@
         setTimeout(initAllBotUIs, 1500);
     })();
     </script>
+    <script src="diary-bot-ui.js"></script>
 </body>
 </html>
