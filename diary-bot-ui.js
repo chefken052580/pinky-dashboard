@@ -145,8 +145,64 @@
     var input = document.getElementById('knowledge-search-input');
     if (input) loadKnowledge(input.value);
   };
-  window.diaryViewKnowledge = function(filename) {
-    console.log('[DiaryBot UI] View:', filename);
+  window.diaryViewKnowledge = async function(filename) {
+    try {
+      var res = await fetch(API + '/api/diary/knowledge/file/' + encodeURIComponent(filename));
+      if (!res.ok) throw new Error('Failed to load');
+      var data = await res.json();
+      showKnowledgeReader(data.file, data.content);
+    } catch (err) {
+      console.error('[DiaryBot] Error loading knowledge:', err);
+      alert('Could not load: ' + filename);
+    }
+  };
+
+  function showKnowledgeReader(filename, content) {
+    var existing = document.getElementById('knowledge-reader-overlay');
+    if (existing) existing.remove();
+
+    var title = filename.replace('.md', '').replace(/-/g, ' ');
+    
+    // Convert markdown to simple HTML
+    var html = content
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/^### (.+)$/gm, '<h3 style="color:var(--accent-cyan);margin:16px 0 8px;">$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2 style="color:var(--accent-purple);margin:20px 0 10px;font-size:1.2em;">$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1 style="color:var(--text-primary);margin:0 0 16px;font-size:1.4em;">$1</h1>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--text-primary);">$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^- (.+)$/gm, '<div style="padding-left:16px;margin:4px 0;">• $1</div>')
+      .replace(/^\d+\. (.+)$/gm, '<div style="padding-left:16px;margin:4px 0;">$1</div>')
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/\n/g, '<br>');
+
+    var overlay = document.createElement('div');
+    overlay.id = 'knowledge-reader-overlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+
+    overlay.innerHTML = '<div style="background:var(--bg-secondary,#1a1a2e);border:1px solid var(--border-color,#333);border-radius:12px;max-width:800px;width:100%;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.5);">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border-color,#333);">' +
+        '<div style="font-size:1.1em;font-weight:600;color:var(--text-primary,#eee);">📄 ' + title + '</div>' +
+        '<div style="display:flex;gap:8px;">' +
+          '<button onclick="copyKnowledge()" style="background:var(--accent-cyan,#0ff);color:#000;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:0.8em;">📋 Copy</button>' +
+          '<button onclick="document.getElementById(\'knowledge-reader-overlay\').remove()" style="background:#ff4757;color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:0.8em;">✕ Close</button>' +
+        '</div>' +
+      '</div>' +
+      '<div id="knowledge-reader-body" style="padding:20px;overflow-y:auto;line-height:1.7;color:var(--text-secondary,#ccc);font-size:0.95em;">' + html + '</div>' +
+    '</div>';
+
+    document.body.appendChild(overlay);
+    window._knowledgeRawContent = content;
+  }
+
+  window.copyKnowledge = function() {
+    if (window._knowledgeRawContent) {
+      navigator.clipboard.writeText(window._knowledgeRawContent).then(function() {
+        var btn = document.querySelector('#knowledge-reader-overlay button');
+        if (btn) { btn.textContent = '✅ Copied!'; setTimeout(function() { btn.textContent = '📋 Copy'; }, 2000); }
+      });
+    }
   };
 
   // ── Escalation Engine ──
