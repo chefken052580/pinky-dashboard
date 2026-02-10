@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="task-history-chart.css">
     <link rel="stylesheet" href="task-timer.css">
     <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="bot-manager.css">
     <link rel="stylesheet" href="export-package.css">
     <link rel="stylesheet" href="system-health-widget.css">
     <link rel="stylesheet" href="changelog-widget.css">
@@ -45,6 +46,7 @@
         <link rel="stylesheet" href="bug-submission.css">
     <link rel="stylesheet" href="cryptobot-view.css?v=999">
     <link rel="stylesheet" href="diary-bot-ui.css">
+    <link rel="stylesheet" href="research-bot-ui.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="core-files-ui.css">
     <link rel="stylesheet" href="pinky-control.css">
@@ -114,7 +116,7 @@
                 </div>
             </div>
             <div class="indicator" id="bot-count">
-                <span>🤖 <span id="bots-active-count">7</span> Bots Active</span>
+                <span>🤖 <span id="bots-active-count">9</span> Bots Active</span>
             </div>
             <div class="indicator" id="tasks-today">
                 <span>📊 <span id="tasks-today-count">0</span> Tasks Today</span>
@@ -217,9 +219,7 @@
                 <button class="view-button" data-view="export">
                     <span>📦 Export</span>
                 </button>
-                <button class="view-button" id="settings-nav" data-view="settings">
-                    <span>⚙️ Settings</span>
-                </button>
+                <button class="view-button" id="settings-nav" data-view="settings">🤖 Bot Manager</button>
                 <button class="view-button" id="about-nav" data-view="about">
                     <span>ℹ️ About</span>
                 </button>
@@ -551,11 +551,24 @@
             </div>
 
             <div id="research-view" class="view">
-                <h2>🔍 ResearchBot - Intelligence Gatherer</h2>
+                <h2>🔍 ResearchBot - Strategic Research Engine</h2>
                 <p style="color:var(--text-secondary);margin-bottom:25px;">
-                    AI-powered market research, competitor analysis, and trend discovery engine.
+                    Autonomous market research, competitor analysis, and opportunity identification for PinkyBot.io.
                 </p>
-                <div id="researchbot-container"></div>
+                
+                <div class="research-container">
+                    <div id="research-sidebar" style="background: var(--surface-1, #1a1a2e); border: 1px solid var(--border-subtle, #2a2a3e); border-radius: 8px; padding: 15px; max-height: 100vh; overflow-y: auto;">
+                        <!-- Sidebar loaded by JavaScript -->
+                    </div>
+                    <div id="research-content" style="background: var(--surface-1, #1a1a2e); border: 1px solid var(--border-subtle, #2a2a3e); border-radius: 8px; padding: 20px; overflow-y: auto;">
+                        <div class="research-loading">
+                            <div class="spinner"></div>
+                            <p>🔬 ResearchBot initialized and ready</p>
+                            <p class="subtitle">Select a research topic from the left sidebar to get started</p>
+                            <button id="research-auto-gen-btn" style="margin-top: 20px; padding: 10px 20px; background: linear-gradient(135deg, #00d4ff, #667eea); border: none; color: #0f0e1a; border-radius: 6px; cursor: pointer; font-weight: 600;">🚀 Auto-Generate All Reports</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Research Stats -->
                 <div class="stats-grid">
@@ -1321,6 +1334,7 @@
     <link rel="stylesheet" href="tasks-bot-enhanced.css">
     <!-- Load settings page manager BEFORE renderer (renderer calls window.initSettingsPage) -->
     <script src="settings-page.js"></script>
+    <script src="bot-manager.js"></script>
     <!-- Then load renderer which depends on TasksBot -->
     <script src="renderer.js"></script>
     
@@ -1641,6 +1655,7 @@
     })();
     </script>
     <script src="diary-bot-ui.js"></script>
+    <script src="research-bot-ui.js"></script>
     <script src="core-files-ui.js"></script>
     <script src="pinky-animations.js"></script>
 
