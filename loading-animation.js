@@ -103,12 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Start the single global refresh cycle
+// Start the single global refresh cycle (10s for responsive task auto-refresh - HB#278)
 if (window.GlobalRefresh) {
-  window.GlobalRefresh.start(30000);
+  window.GlobalRefresh.start(15000);
 }
 
-// Start the single global refresh cycle
+// Start the single global refresh cycle (10s for responsive task auto-refresh - HB#278)
 if (window.GlobalRefresh) {
-  window.GlobalRefresh.start(30000);
+  window.GlobalRefresh.start(15000);
 }

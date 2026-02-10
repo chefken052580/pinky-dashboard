@@ -6,7 +6,7 @@ class GlobalRefresh {
   constructor() {
     this.listeners = {};
     this.cache = {};
-    this.interval = 30000; // 30s default
+    this.interval = 15000; // 10s default (reduced from 30s for HB#278 task auto-refresh)
     this.endpoints = [
       { key: 'tasks', url: '/api/tasks' },
       { key: 'stats', url: '/api/tasks/stats' },
