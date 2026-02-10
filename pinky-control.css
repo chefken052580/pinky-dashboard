@@ -6,7 +6,7 @@
 }
 
 .pinky-control-arrow {
-  font-size: 0.7em;
+  font-size: 0.78em;
   margin-left: 4px;
   opacity: 0.5;
   transition: transform 0.2s;
@@ -49,11 +49,11 @@
 }
 
 .pinky-control-icon { font-size: 1.8em; }
-.pinky-control-header strong { display: block; font-size: 0.88em; color: #e0e0f0; }
+.pinky-control-header strong { display: block; font-size: 1em; color: #e0e0f0; }
 
 .pinky-control-status {
   display: inline-block;
-  font-size: 0.72em;
+  font-size: 0.92em;
   padding: 2px 8px;
   border-radius: 10px;
   font-weight: 600;
@@ -66,7 +66,7 @@
   padding: 10px 16px;
   display: flex;
   justify-content: space-between;
-  font-size: 0.8em;
+  font-size: 0.9em;
   color: rgba(255, 255, 255, 0.5);
   border-bottom: 1px solid rgba(120, 80, 255, 0.1);
 }
@@ -82,7 +82,7 @@
   flex: 1;
   padding: 8px 12px;
   border-radius: 8px;
-  font-size: 0.82em;
+  font-size: 0.92em;
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
@@ -116,7 +116,7 @@
   text-align: center;
 }
 .pinky-control-footer small {
-  font-size: 0.7em;
+  font-size: 0.78em;
   color: rgba(255, 255, 255, 0.25);
   font-style: italic;
 }
