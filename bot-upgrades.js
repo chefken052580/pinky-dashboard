@@ -80,8 +80,8 @@ class SettingsManager {
   }
 
   renderSettingsUI() {
-    const container = document.getElementById('settings-content');
-    if (!container) return;
+    // DISABLED: settings-page.js now handles this
+    return;
 
     let html = '<div class="settings-tabs">';
     

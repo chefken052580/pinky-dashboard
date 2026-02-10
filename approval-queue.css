@@ -1,27 +1,26 @@
 /* Brain's Approval Queue */
 .approval-dropdown {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 520px;
-  max-height: 85vh;
-  background: rgba(15, 25, 55, 0.97);
-  border: 1px solid rgba(102, 126, 234, 0.3);
-  border-radius: 15px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 30px rgba(102, 126, 234, 0.1);
-  z-index: 1000;
-  overflow-y: auto;
-  backdrop-filter: blur(20px);
-  animation: dropdownSlide 0.2s ease-out;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 520px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: rgba(12, 15, 35, 0.98);
+    border: 1px solid rgba(120, 80, 255, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(120, 80, 255, 0.12);
+    z-index: 10000;
+    padding: 0;
 }
 .approval-dropdown.hidden {
   display: none;
 }
 @keyframes dropdownSlide {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 .approval-header {
   padding: 18px 20px 14px;
@@ -175,9 +174,9 @@
   background: rgba(102, 126, 234, 0.15);
 }
 .notification-badge {
-  position: absolute;
+  position: fixed;
   top: 0;
-  right: 0;
+  left: 50%;
   background: #ef5350;
   color: var(--text-primary);
   font-size: 0.55em;
