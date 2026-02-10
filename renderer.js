@@ -659,17 +659,11 @@ let approvalsOpen = false;
 
 function toggleApprovals() {
     const dropdown = document.getElementById('approval-dropdown');
+    const backdrop = document.getElementById('approval-backdrop');
     approvalsOpen = !approvalsOpen;
     dropdown.classList.toggle('hidden', !approvalsOpen);
-    if (approvalsOpen) {
-        // Force center — inline styles beat everything
-        dropdown.style.position = 'fixed';
-        dropdown.style.top = '50%';
-        dropdown.style.left = '50%';
-        dropdown.style.transform = 'translate(-50%, -50%)';
-        dropdown.style.zIndex = '10000';
-        loadApprovals();
-    }
+    if (backdrop) backdrop.classList.toggle('hidden', !approvalsOpen);
+    if (approvalsOpen) loadApprovals();
 }
 
 function loadApprovals() {

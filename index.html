@@ -120,20 +120,11 @@
                 <span>📊 <span id="tasks-today-count">0</span> Tasks Today</span>
             </div>
             <!-- Approval Notifications -->
-            <div class="approval-notification">
+            <div class="approval-notification" style="position:relative;">
                 <button class="notification-bell" onclick="window.dashboard.toggleApprovals()" title="Pending Approvals">
                     🔔
                     <span id="approval-badge" class="notification-badge hidden">0</span>
                 </button>
-                <div id="approval-dropdown" class="approval-dropdown hidden">
-                    <div class="approval-header">
-                        <h3>🐭 Brain's Approval Queue</h3>
-                        <button class="approval-close-btn" onclick="toggleApprovals()">✕ Close</button>
-                    </div>
-                    <div id="approval-list" class="approval-list">
-                        <p class="no-approvals">No pending approvals</p>
-                    </div>
-                </div>
             </div>
             <button id="theme-toggle-header" class="theme-toggle-btn" onclick="window.themeManager && window.themeManager.toggleTheme()" title="Toggle Dark/Light Mode">
                 ☀️
@@ -1634,5 +1625,18 @@
     </script>
     <script src="diary-bot-ui.js"></script>
     <script src="core-files-ui.js"></script>
+
+<!-- Approval Modal — positioned outside header to avoid transform issues -->
+<div id="approval-dropdown" class="approval-dropdown hidden" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10000;">
+    <div class="approval-header">
+        <h3>🐭 Brain's Approval Queue</h3>
+        <button class="approval-close-btn" onclick="toggleApprovals()">✕ Close</button>
+    </div>
+    <div id="approval-list" class="approval-list">
+        <p class="no-approvals">No pending approvals</p>
+    </div>
+</div>
+<div id="approval-backdrop" class="approval-backdrop hidden" onclick="toggleApprovals()"></div>
+
 </body>
 </html>

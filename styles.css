@@ -637,3 +637,32 @@ html.light-mode .sidebar {
 .approval-dropdown.visible ~ .approval-overlay {
     display: block;
 }
+
+/* Approval backdrop overlay */
+.approval-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    backdrop-filter: blur(2px);
+}
+.approval-backdrop.hidden { display: none; }
+
+/* Badge fix — position relative to bell */
+.approval-notification .notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+.approval-notification .notification-badge.hidden { display: none; }
