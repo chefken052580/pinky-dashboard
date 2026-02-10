@@ -22,7 +22,7 @@
 }
 
 .tasksbot-section h3 {
-  color: #a8e6cf;
+  color: var(--text-heading);
   margin: 20px 0 15px 0;
   font-size: 1.2em;
 }
@@ -138,7 +138,7 @@
   flex-direction: column;
   gap: 10px;
   min-height: 60px;
-  background: rgba(10, 10, 20, 0.3);
+  background: var(--bg-subtle);
   padding: 15px;
   border-radius: 8px;
   border: 1px dashed rgba(0, 212, 255, 0.2);
@@ -154,7 +154,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(168, 230, 207, 0.05));
+  background: var(--bg-card);
   border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 12px 15px;
@@ -163,7 +163,7 @@
 }
 
 .task-item:hover {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(168, 230, 207, 0.1));
+  background: var(--bg-card-hover);
   border-color: rgba(0, 212, 255, 0.4);
   transform: translateX(5px);
 }
@@ -221,11 +221,11 @@
 }
 
 .task-notes {
-  color: #aaa;
+  color: var(--text-muted);
   font-size: 0.9em;
   margin-top: 8px;
   padding-left: 10px;
-  border-left: 2px solid rgba(0, 212, 255, 0.3);
+  border-left: 2px solid var(--border-default);
   font-style: italic;
 }
 
@@ -257,9 +257,9 @@
 }
 
 .complete-btn:hover {
-  background: rgba(0, 212, 100, 0.2);
-  border-color: #00d464;
-  color: #00d464;
+  background: var(--bg-card-hover);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
 }
 
 .delete-btn:hover {
@@ -270,10 +270,10 @@
 
 /* Completed Tasks Section */
 .tasksbot-completed-section {
-  background: rgba(10, 10, 20, 0.3);
+  background: var(--bg-subtle);
   padding: 15px;
   border-radius: 8px;
-  border: 1px solid rgba(168, 230, 207, 0.2);
+  border: 1px solid var(--border-default);
 }
 
 .completed-list {
@@ -289,15 +289,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  background: rgba(0, 212, 100, 0.05);
-  border-left: 3px solid #00d464;
+  background: var(--bg-subtle);
+  border-left: 3px solid var(--accent-green);
   padding: 12px 15px;
   border-radius: 6px;
   transition: all 0.3s ease;
 }
 
 .completed-item:hover {
-  background: rgba(0, 212, 100, 0.1);
+  background: var(--bg-card-hover);
 }
 
 .completed-content {
@@ -306,7 +306,7 @@
 }
 
 .completed-title {
-  color: #a8e6cf;
+  color: var(--text-heading);
   font-weight: 500;
   text-decoration: line-through;
   opacity: 0.9;
