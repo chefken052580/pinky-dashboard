@@ -49,6 +49,22 @@
     <link rel="stylesheet" href="core-files-ui.css">
     <link rel="stylesheet" href="pinky-control.css">
     <link rel="stylesheet" href="social-command-center.css">
+
+<style id="approval-dropdown-fix">
+.approval-dropdown:not(.hidden) {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 10000 !important;
+    width: 520px !important;
+    max-width: 90vw !important;
+}
+.approval-notification {
+    position: static !important;
+}
+</style>
+
 </head>
 <body>
     <!-- Onboarding Screen -->

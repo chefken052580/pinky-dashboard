@@ -23,7 +23,15 @@
       { id:'bluesky', icon:'\ud83e\udd4b', name:'Bluesky', charLimit: 300, color:'#0085ff' },
       { id:'mastodon', icon:'\ud83d\udc18', name:'Mastodon', charLimit: 500, color:'#6364ff' },
       { id:'discord', icon:'\ud83d\udcac', name:'Discord', charLimit: 2000, color:'#5865f2' },
-      { id:'telegram', icon:'\u2708\ufe0f', name:'Telegram', charLimit: 4096, color:'#26a5e4' }
+      { id:'telegram', icon:'\u2708\ufe0f', name:'Telegram', charLimit: 4096, color:'#26a5e4' },
+      { id:'youtube', icon:'\u25b6\ufe0f', name:'YouTube', charLimit: 5000, color:'#ff0000' },
+      { id:'pinterest', icon:'\ud83d\udccc', name:'Pinterest', charLimit: 500, color:'#e60023' },
+      { id:'reddit', icon:'\ud83e\udd16', name:'Reddit', charLimit: 40000, color:'#ff4500' },
+      { id:'threads', icon:'\ud83e\uddf5', name:'Threads', charLimit: 500, color:'#000000' },
+      { id:'facebook', icon:'\ud83d\udcd8', name:'Facebook', charLimit: 63206, color:'#1877f2' },
+      { id:'whatsapp', icon:'\ud83d\udcf1', name:'WhatsApp Business', charLimit: 4096, color:'#25d366' },
+      { id:'snapchat', icon:'\ud83d\udc7b', name:'Snapchat', charLimit: 250, color:'#fffc00' },
+      { id:'twitch', icon:'\ud83d\udfea', name:'Twitch', charLimit: 500, color:'#9146ff' }
     ],
     selectedPlatforms: ['twitter', 'linkedin'],
     analytics: { posts: 0, engagement: 0, reach: 0, clicks: 0, followers: 0 }
@@ -71,7 +79,7 @@
           heroStat('\ud83c\udfe2', companyCount, 'Companies') +
           heroStat('\ud83d\udcdd', postCount, 'Posts Created') +
           heroStat('\ud83d\udcc5', scheduledCount, 'Scheduled') +
-          heroStat('\ud83d\udd17', connectedCount + '/8', 'Platforms') +
+          heroStat('\ud83d\udd17', connectedCount + '/16', 'Platforms') +
           heroStat('\ud83d\udcc8', state.analytics.engagement + '%', 'Engagement') +
         '</div>' +
 
@@ -133,8 +141,24 @@
   // ══════════════════════════════════════════
   function renderDashboard(c) {
     var recentPosts = state.posts.slice(-5).reverse();
-    var html = '' +
-      '<div class="social-section-header"><h3>\ud83d\udcca Quick Overview</h3></div>' +
+    var html = '';
+
+    // Recent Posts FIRST
+    html += '<div class="social-section-header"><h3>\ud83d\udcdd Recent Posts</h3><button class="header-action" onclick="SocialCmd.switchTo(\'create\')">+ New Post</button></div>';
+
+    if (recentPosts.length > 0) {
+      html += '<table class="history-table"><thead><tr><th>Platform</th><th>Content</th><th>Date</th><th>Status</th></tr></thead><tbody>';
+      recentPosts.forEach(function(p) {
+        var status = p.status || 'published';
+        html += '<tr><td>' + (p.platform || 'Multi') + '</td><td>' + truncate(p.content || p.text || '', 60) + '</td><td>' + formatDate(p.createdAt || p.date) + '</td><td><span class="post-status-badge ' + status + '">' + status + '</span></td></tr>';
+      });
+      html += '</tbody></table>';
+    } else {
+      html += emptyState('\ud83d\udcdd', 'No posts yet', 'Create your first post to start building your social presence');
+    }
+
+    // Quick Overview SECOND
+    html += '<div class="social-section-header" style="margin-top:28px;"><h3>\ud83d\udcca Quick Overview</h3></div>' +
 
       '<div class="analytics-grid">' +
         // Platform Performance
@@ -163,20 +187,7 @@
           analyticsBar('Clicks', 67, '2.8K') +
           analyticsBar('Saves', 31, '520') +
         '</div>' +
-      '</div>' +
-
-      '<div class="social-section-header"><h3>\ud83d\udcdd Recent Posts</h3><button class="header-action" onclick="SocialCmd.switchTo(\'create\')">+ New Post</button></div>';
-
-    if (recentPosts.length > 0) {
-      html += '<table class="history-table"><thead><tr><th>Platform</th><th>Content</th><th>Date</th><th>Status</th></tr></thead><tbody>';
-      recentPosts.forEach(function(p) {
-        var status = p.status || 'published';
-        html += '<tr><td>' + (p.platform || 'Multi') + '</td><td>' + truncate(p.content || p.text || '', 60) + '</td><td>' + formatDate(p.createdAt || p.date) + '</td><td><span class="post-status-badge ' + status + '">' + status + '</span></td></tr>';
-      });
-      html += '</tbody></table>';
-    } else {
-      html += emptyState('\ud83d\udcdd', 'No posts yet', 'Create your first post to start building your social presence');
-    }
+      '</div>';
 
     c.innerHTML = html;
   }
@@ -456,14 +467,22 @@
 
   function getAPIFields(platformId) {
     var fieldMap = {
-      twitter: [{k:'key',l:'API Key'},{k:'secret',l:'API Secret'}],
-      instagram: [{k:'token',l:'Business Account Token'}],
-      tiktok: [{k:'token',l:'Creator Token'}],
-      linkedin: [{k:'token',l:'Access Token'}],
-      bluesky: [{k:'key',l:'API Key'},{k:'handle',l:'Handle (e.g. @user.bsky.social)'}],
-      mastodon: [{k:'token',l:'Access Token'},{k:'instance',l:'Instance URL'}],
-      discord: [{k:'webhook',l:'Webhook URL'}],
-      telegram: [{k:'token',l:'Bot Token'},{k:'chatId',l:'Chat ID'}]
+      twitter: [{k:'key',l:'API Key'},{k:'secret',l:'API Secret'},{k:'bearer',l:'Bearer Token'}],
+      instagram: [{k:'token',l:'Business Account Token'},{k:'appId',l:'App ID'}],
+      tiktok: [{k:'token',l:'Creator Token'},{k:'clientKey',l:'Client Key'}],
+      linkedin: [{k:'token',l:'Access Token'},{k:'orgId',l:'Organization ID'}],
+      bluesky: [{k:'handle',l:'Handle (e.g. @user.bsky.social)'},{k:'appPassword',l:'App Password'}],
+      mastodon: [{k:'token',l:'Access Token'},{k:'instance',l:'Instance URL (e.g. mastodon.social)'}],
+      discord: [{k:'webhook',l:'Webhook URL'},{k:'botToken',l:'Bot Token (optional)'}],
+      telegram: [{k:'token',l:'Bot Token'},{k:'chatId',l:'Chat ID'}],
+      youtube: [{k:'apiKey',l:'YouTube API Key'},{k:'channelId',l:'Channel ID'},{k:'oauth',l:'OAuth2 Refresh Token'}],
+      pinterest: [{k:'token',l:'Access Token'},{k:'boardId',l:'Default Board ID'}],
+      reddit: [{k:'clientId',l:'Client ID'},{k:'clientSecret',l:'Client Secret'},{k:'username',l:'Reddit Username'}],
+      threads: [{k:'token',l:'Threads API Token'},{k:'userId',l:'User ID'}],
+      facebook: [{k:'pageToken',l:'Page Access Token'},{k:'pageId',l:'Page ID'},{k:'appId',l:'App ID'}],
+      whatsapp: [{k:'token',l:'WhatsApp Business API Token'},{k:'phoneId',l:'Phone Number ID'}],
+      snapchat: [{k:'token',l:'Snap Kit Token'},{k:'orgId',l:'Organization ID'}],
+      twitch: [{k:'clientId',l:'Client ID'},{k:'clientSecret',l:'Client Secret'},{k:'channel',l:'Channel Name'}]
     };
     return fieldMap[platformId] || [{k:'token',l:'API Token'}];
   }

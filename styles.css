@@ -521,18 +521,18 @@ html.light-mode .sidebar {
 
 /* Approval Modal — Centered */
 .approval-dropdown {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 500px;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 520px;
     max-width: 90vw;
     max-height: 80vh;
     overflow-y: auto;
-    background: rgba(15, 20, 40, 0.98);
+    background: rgba(12, 15, 35, 0.98);
     border: 1px solid rgba(120, 80, 255, 0.3);
     border-radius: 16px;
-    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(120, 80, 255, 0.1);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(120, 80, 255, 0.1);
     z-index: 10000;
     padding: 0;
 }
@@ -631,3 +631,9 @@ html.light-mode .sidebar {
     transition: all 0.2s;
 }
 .social-api-save-btn:hover { box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3); }
+
+
+.approval-dropdown:not(.hidden) ~ .approval-overlay,
+.approval-dropdown.visible ~ .approval-overlay {
+    display: block;
+}
