@@ -848,6 +848,19 @@
                 <!-- TasksBotEnhanced - Primary renderer with full CRUD -->
                 <div id="tasksbot-container"></div>
                 
+                <!-- Real-time Task Activity Feed -->
+                <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
+                    <h3 style="margin: 0 0 12px 0; font-size: 15px; color: #94a3b8;">📡 Live Activity Feed</h3>
+                    <div id="task-activity-feed" style="max-height: 300px; overflow-y: auto;"></div>
+                </div>
+
+                <style>
+                @keyframes activityPulse {
+                    0% { background: rgba(59, 130, 246, 0.2); }
+                    100% { background: rgba(255,255,255,0.03); }
+                }
+                </style>
+                
                 <!-- Collapsible Analytics Section -->
                 <div class="tasks-analytics-section" style="margin-top: 30px;">
                     <button class="analytics-accordion-btn" onclick="toggleTasksAnalytics()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.3s ease;">
@@ -1303,8 +1316,11 @@
     <script src="file-attachment-module.js"></script>
     <!-- Load TasksBot (now FileAttachmentManager is available) -->
     <script src="tasks-bot-enhanced.js"></script>
+    <script src="task-activity-feed.js"></script>
     <link rel="stylesheet" href="tasks-bot.css">
     <link rel="stylesheet" href="tasks-bot-enhanced.css">
+    <!-- Load settings page manager BEFORE renderer (renderer calls window.initSettingsPage) -->
+    <script src="settings-page.js"></script>
     <!-- Then load renderer which depends on TasksBot -->
     <script src="renderer.js"></script>
     
@@ -1470,7 +1486,6 @@
     </script>
     
     <script src="pinky-chat.js"></script>
-    <script src="settings-page.js"></script>
     
     <script src="export-package-ui.js"></script>
     <script src="system-health-widget.js"></script>
@@ -1602,6 +1617,7 @@
     <script src="company-analytics.js"></script>
     <script src="post-calendar.js"></script>
     <script src="socialbot-demo.js"></script>
+    <script src="wordpress-page-maker.js"></script>
     <script src="bug-report-ui.js"></script>
     <script src="bug-reporter.js"></script>
     <script src="bug-screenshot-uploader.js"></script>
