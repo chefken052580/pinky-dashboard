@@ -360,7 +360,14 @@
 }
 
 #approval-dropdown {
-    z-index: 10000;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 520px !important;
+    max-width: 90vw !important;
+    max-height: 80vh !important;
+    z-index: 10000 !important;
 }
 
 /* ===== END VISUAL POLISH ===== */
