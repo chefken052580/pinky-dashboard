@@ -248,6 +248,7 @@ class SettingsPageUI {
                     <button class="settings-tab-btn" data-tab="dashboard">Dashboard</button>
                     <button class="settings-tab-btn" data-tab="data">Data</button>
                     <button class="settings-tab-btn" data-tab="corefiles">🧬 Core Files</button>
+                    <button class="settings-tab-btn" data-tab="botmanager">🤖 Bot Manager</button>
                 </div>
                 
                 <div class="settings-content">
@@ -278,6 +279,10 @@ class SettingsPageUI {
 
                     <div class="settings-tab" id="data-tab">
                         ${this.renderDataTab()}
+                    </div>
+                    <!-- Bot Manager Tab -->
+                    <div class="settings-tab" id="botmanager-tab">
+                        <div id="bot-manager-container"></div>
                     </div>
                 </div>
                 
@@ -687,6 +692,11 @@ class SettingsPageUI {
         // Show selected tab
         document.getElementById(tabName + '-tab')?.classList.add('active');
         document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+
+        // Init Bot Manager when its tab is shown
+        if (tabName === "botmanager" && window.initBotManager) {
+            window.initBotManager();
+        }
     }
 
     /**

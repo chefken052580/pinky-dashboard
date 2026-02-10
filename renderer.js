@@ -182,9 +182,8 @@ function switchView(viewId) {
         if (viewId === "social-media-view" && window.initSocialBotUI) {
             window.initSocialBotUI();
         }
-        if (viewId === "settings-view") {
-            if (window.initBotManager) { window.initBotManager(); }
-            else if (window.initSettingsPage) { window.initSettingsPage();
+        if (viewId === "settings-view" && window.initSettingsPage) {
+            window.initSettingsPage();
         }
         if (viewId === "wordpress-view" && typeof WordPressPageMaker !== 'undefined') {
             if (!window.wordPressPageMaker) {

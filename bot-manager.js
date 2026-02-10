@@ -22,7 +22,7 @@
   };
 
   window.initBotManager = async function() {
-    var container = document.getElementById('settings-content');
+    var container = document.getElementById('bot-manager-container');
     if (!container) return;
     container.innerHTML = renderManagerShell();
     await loadAllBotData();
