@@ -11,6 +11,10 @@
     var isWaiting = false;
     var chatInitialized = false;
     var scrollFab = null;
+    var currentChannel = 'all';
+    var allMessages = [];
+    var pinnedMessages = [];
+    var messageMetadata = {}; // Track reactions, replies, etc.
 
     // ─── Init ───
     function init() {
@@ -29,6 +33,7 @@
         var textarea = document.getElementById('chat-input');
         var newBtn = document.getElementById('chat-new-session');
         var searchInput = document.getElementById('chat-search');
+        var messageSearch = document.getElementById('chat-message-search');
 
         if (sendBtn) sendBtn.addEventListener('click', sendMessage);
         
@@ -60,6 +65,23 @@
                         loadSessions();
                     }
                 }, 300);
+            });
+        }
+
+        // Message search within current chat
+        if (messageSearch) {
+            var searchDebounce = null;
+            messageSearch.addEventListener('input', function() {
+                clearTimeout(searchDebounce);
+                var q = this.value.trim();
+                searchDebounce = setTimeout(function() {
+                    searchMessages(q);
+                }, 300);
+            });
+            messageSearch.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeSearch();
+                }
             });
         }
 
@@ -279,20 +301,48 @@
         });
     }
 
-    // ─── Render Messages ───
-    function renderMessages(messages) {
+    // ─── Channel Management ───
+    function switchChannel(channel) {
+        currentChannel = channel;
+        document.querySelectorAll('.chat-tab').forEach(function(tab) {
+            tab.classList.toggle('active', tab.dataset.channel === channel);
+        });
+        filterAndRenderMessages();
+    }
+
+    function detectMessageChannel(content) {
+        // Auto-detect message channel based on content
+        if (content.includes('task') || content.includes('TODO') || content.includes('#task')) return 'tasks';
+        if (content.includes('error') || content.includes('warning') || content.includes('status')) return 'system';
+        return 'general';
+    }
+
+    function filterAndRenderMessages() {
         var container = document.getElementById('chat-messages');
         if (!container) return;
 
-        if (!messages || messages.length === 0) {
+        if (!allMessages || allMessages.length === 0) {
             container.innerHTML = getEmptyState();
+            return;
+        }
+
+        var filtered = allMessages.filter(function(msg) {
+            if (currentChannel === 'all') return true;
+            var channel = msg.channel || detectMessageChannel(msg.content);
+            return channel === currentChannel;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<div class="chat-empty-state" style="padding:40px;">' +
+                '<p>No messages in this channel yet.</p>' +
+                '</div>';
             return;
         }
 
         container.innerHTML = '';
         var lastDate = '';
         
-        messages.forEach(function(msg) {
+        filtered.forEach(function(msg) {
             // Date divider
             var msgDate = new Date(msg.timestamp || Date.now());
             var dateStr = msgDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -307,6 +357,32 @@
             appendMessage(msg.role, msg.content, msg.timestamp, false);
         });
         scrollToBottom();
+    }
+
+    // ─── Render Messages ───
+    function renderMessages(messages) {
+        var container = document.getElementById('chat-messages');
+        if (!container) return;
+
+        if (!messages || messages.length === 0) {
+            container.innerHTML = getEmptyState();
+            return;
+        }
+
+        // Store all messages for filtering
+        allMessages = messages.map(function(msg) {
+            return Object.assign({}, msg, {
+                channel: msg.channel || detectMessageChannel(msg.content)
+            });
+        });
+
+        // Show all by default
+        currentChannel = 'all';
+        document.querySelectorAll('.chat-tab').forEach(function(tab) {
+            tab.classList.toggle('active', tab.dataset.channel === 'all');
+        });
+
+        filterAndRenderMessages();
     }
 
     function appendMessage(role, content, timestamp, scroll) {
@@ -547,6 +623,116 @@
         });
     }
 
+    // ─── Search & Advanced Features ───
+    function toggleSearch() {
+        var searchBar = document.getElementById('chat-search-bar');
+        if (searchBar) {
+            searchBar.classList.toggle('hidden');
+            if (!searchBar.classList.contains('hidden')) {
+                document.getElementById('chat-message-search').focus();
+            }
+        }
+    }
+
+    function closeSearch() {
+        var searchBar = document.getElementById('chat-search-bar');
+        if (searchBar) {
+            searchBar.classList.add('hidden');
+            document.getElementById('chat-message-search').value = '';
+        }
+    }
+
+    function searchMessages(query) {
+        var container = document.getElementById('chat-messages');
+        if (!container || !query) {
+            filterAndRenderMessages();
+            return;
+        }
+
+        var q = query.toLowerCase();
+        var results = allMessages.filter(function(msg) {
+            return msg.content.toLowerCase().includes(q) && 
+                   (currentChannel === 'all' || msg.channel === currentChannel);
+        });
+
+        container.innerHTML = '';
+        if (results.length === 0) {
+            container.innerHTML = '<div class="chat-empty-state"><p>No messages match "' + escapeHtml(query) + '"</p></div>';
+            return;
+        }
+
+        results.forEach(function(msg) {
+            var msgDiv = createMessageElement(msg.role, msg.content, msg.timestamp);
+            container.appendChild(msgDiv);
+        });
+    }
+
+    function createMessageElement(role, content, timestamp) {
+        var time = timestamp ? new Date(timestamp) : new Date();
+        var timeStr = time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/New_York' }) + ' EST';
+        var avatar = role === 'user' ? '👤' : '🐭';
+        var name = role === 'user' ? 'LORD_CRACKER' : 'PINKY';
+        var rendered = renderMarkdown(content);
+        var msgId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+
+        var div = document.createElement('div');
+        div.className = 'chat-msg ' + role;
+        div.id = msgId;
+        div.innerHTML = '<div class="chat-msg-avatar">' + avatar + '</div>' +
+            '<div class="chat-msg-body">' +
+            '<div class="chat-msg-name">' + name + '</div>' +
+            '<div class="chat-msg-content">' + rendered +
+            '<div class="chat-msg-actions">' +
+            '<button class="chat-msg-action-btn" onclick="PinkyChat.copyMessage(\'' + msgId + '\')" title="Copy">📋</button>' +
+            '<button class="chat-msg-action-btn" onclick="PinkyChat.pinMessage(\'' + msgId + '\')" title="Pin">📌</button>' +
+            '</div>' +
+            '</div>' +
+            '<div class="chat-msg-time">' + timeStr + '</div>' +
+            '</div>';
+
+        return div;
+    }
+
+    function showPinned() {
+        var container = document.getElementById('chat-messages');
+        if (!container) return;
+
+        if (pinnedMessages.length === 0) {
+            alert('No pinned messages yet. Click the 📌 icon on any message to pin it.');
+            return;
+        }
+
+        container.innerHTML = '<div style="padding:20px;"><h3 style="color:var(--text-heading);margin-bottom:16px;">📌 Pinned Messages</h3>';
+        pinnedMessages.forEach(function(msgId) {
+            var msg = allMessages.find(function(m) { return m.id === msgId; });
+            if (msg) {
+                container.innerHTML += '<div style="padding:12px;background:var(--bg-subtle);border-radius:8px;margin-bottom:8px;cursor:pointer;" onclick="alert(\'' + escapeHtml(msg.content.substring(0,100)) + '...\')">' +
+                    '<strong>' + (msg.role === 'user' ? '👤' : '🐭') + ' ' + (msg.role === 'user' ? 'You' : 'Pinky') + ':</strong> ' +
+                    escapeHtml(msg.content.substring(0, 100)) + '...' +
+                    '</div>';
+            }
+        });
+        container.innerHTML += '</div>';
+    }
+
+    function pinMessage(msgId) {
+        if (!pinnedMessages.includes(msgId)) {
+            pinnedMessages.push(msgId);
+            alert('Message pinned! View all pinned messages with the 📌 button.');
+        } else {
+            pinnedMessages = pinnedMessages.filter(function(id) { return id !== msgId; });
+            alert('Message unpinned.');
+        }
+    }
+
+    function clearChat() {
+        if (!confirm('Clear all messages? This cannot be undone.')) return;
+        allMessages = [];
+        pinnedMessages = [];
+        newSession();
+        loadSessions();
+    }
+
     // ─── Public API ───
     window.PinkyChat = {
         init: init,
@@ -554,7 +740,13 @@
         deleteSession: deleteSession,
         newSession: newSession,
         quickSend: quickSend,
-        copyMessage: copyMessage
+        copyMessage: copyMessage,
+        switchChannel: switchChannel,
+        toggleSearch: toggleSearch,
+        closeSearch: closeSearch,
+        showPinned: showPinned,
+        pinMessage: pinMessage,
+        clearChat: clearChat
     };
 
     // Auto-init when chat view becomes visible
