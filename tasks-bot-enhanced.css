@@ -194,8 +194,9 @@
 }
 
 .task-item.completed {
-  border-left-color: #10b981;
-  opacity: 0.7;
+  border-left-color: #00ff88;
+  opacity: 1;
+  background: rgba(0, 255, 136, 0.05);
 }
 
 .completed-section .task-item {
@@ -276,8 +277,18 @@
 }
 
 .status-badge.completed {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
+  background: rgba(0, 255, 136, 0.2);
+  color: #00ff88;
+}
+
+.completed-task-name {
+  color: #00ff88 !important;
+  text-shadow: 0 0 12px rgba(0, 255, 136, 0.6), 0 0 6px rgba(0, 255, 136, 0.3) !important;
+  filter: brightness(1.2) !important;
+}
+
+.task-item.completed:hover .completed-task-name {
+  text-shadow: 0 0 18px rgba(0, 255, 136, 0.8), 0 0 10px rgba(0, 255, 136, 0.5) !important;
 }
 
 @keyframes pulse {
