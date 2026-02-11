@@ -646,6 +646,23 @@ class TasksBotEnhanced {
           html += '<div class="task-desc" title="' + this.escapeAttr(task.notes) + '" style="font-size:0.75em;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;">' + (this.escapeAttr(task.notes).length > 80 ? this.escapeAttr(task.notes).substring(0, 80) + '...' : this.escapeAttr(task.notes)) + '</div>';
         }
         
+        // Display attachments if any are assigned to this task (HB#129)
+        if (typeof window.fileAttachmentManager !== 'undefined' && window.fileAttachmentManager) {
+          const taskAttachments = window.fileAttachmentManager.getTaskAttachments && window.fileAttachmentManager.getTaskAttachments(task.id);
+          if (taskAttachments && taskAttachments.length > 0) {
+            html += '<div class="task-attachments" style="margin-top:8px;padding:6px 8px;background:rgba(0,212,255,0.1);border-radius:4px;border-left:2px solid #00d4ff;">';
+            html += '<div style="font-size:0.75em;color:#00d4ff;font-weight:600;margin-bottom:4px;">📎 ' + taskAttachments.length + ' Attachment' + (taskAttachments.length > 1 ? 's' : '') + '</div>';
+            taskAttachments.forEach((attachment) => {
+              const sizeStr = window.fileAttachmentManager.formatFileSize && window.fileAttachmentManager.formatFileSize(attachment.size) || Math.round(attachment.size / 1024) + ' KB';
+              html += '<div style="font-size:0.7em;color:#aaa;margin:2px 0;cursor:pointer;display:flex;align-items:center;gap:6px;" title="Download: ' + (attachment.filename || 'file') + '" onclick="event.stopPropagation();if(window.fileAttachmentManager && window.fileAttachmentManager.downloadAttachment) window.fileAttachmentManager.downloadAttachment(\'' + (attachment.id || '').replace(/'/g, "\\\\'") + '\');">';
+              html += '<span style="color:#00d4ff;">📄</span>';
+              html += '<span>' + (attachment.filename || 'attachment') + ' (' + sizeStr + ')</span>';
+              html += '</div>';
+            });
+            html += '</div>';
+          }
+        }
+        
         // Age now inline in task-header
         html += '</div>';
       });

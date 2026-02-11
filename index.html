@@ -905,7 +905,21 @@
             <div class="chat-container">
                 <div class="chat-sidebar">
                     <div class="chat-sidebar-header">
-                        <h3>💬 CONVERSATIONS</h3>
+                        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:10px;">
+                            <h3 style="margin:0;">💬 CONVERSATIONS</h3>
+                            <button class="chat-action-menu-btn" onclick="PinkyChat.toggleSidebarMenu()" title="More options">⋮</button>
+                        </div>
+                        <div class="chat-sidebar-menu" id="chat-sidebar-menu" style="display:none;background:var(--surface-2);border:1px solid var(--border-default);border-radius:6px;margin-bottom:10px;overflow:hidden;">
+                            <button onclick="PinkyChat.clearAllMessages()" style="width:100%;text-align:left;background:none;border:none;color:var(--text-primary);padding:10px 12px;cursor:pointer;font-size:0.9em;border-bottom:1px solid var(--border-subtle);" onmouseover="this.style.background='var(--surface-3)'" onmouseout="this.style.background='none'">
+                                🗑️ Clear All Messages
+                            </button>
+                            <button onclick="PinkyChat.archiveAllChats()" style="width:100%;text-align:left;background:none;border:none;color:var(--text-primary);padding:10px 12px;cursor:pointer;font-size:0.9em;border-bottom:1px solid var(--border-subtle);" onmouseover="this.style.background='var(--surface-3)'" onmouseout="this.style.background='none'">
+                                📦 Archive All Chats
+                            </button>
+                            <button onclick="PinkyChat.toggleSidebarMenu()" style="width:100%;text-align:left;background:none;border:none;color:var(--text-secondary);padding:10px 12px;cursor:pointer;font-size:0.9em;" onmouseover="this.style.background='var(--surface-3)'" onmouseout="this.style.background='none'">
+                                ✕ Close Menu
+                            </button>
+                        </div>
                         <button class="chat-new-btn" id="chat-new-session">+ NEW CHAT</button>
                         <div class="chat-search-box">
                             <input type="text" id="chat-search" placeholder="Search chats...">
