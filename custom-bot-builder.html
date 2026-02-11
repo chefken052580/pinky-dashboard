@@ -1,0 +1,364 @@
+<!-- Custom Bot Builder for Enterprise Clients -->
+<div id="custom-bot-builder" class="custom-bot-builder-container" style="display: none;">
+  <div class="builder-header">
+    <h2>🤖 Custom Bot Builder</h2>
+    <p class="builder-subtitle">Create enterprise-grade AI bots without coding</p>
+  </div>
+
+  <div class="builder-layout">
+    <!-- Sidebar Navigation -->
+    <div class="builder-sidebar">
+      <div class="section-nav">
+        <button class="nav-btn active" data-section="basic" onclick="switchBuilderSection('basic')">
+          📋 Basic Info
+        </button>
+        <button class="nav-btn" data-section="personality" onclick="switchBuilderSection('personality')">
+          🎭 Personality
+        </button>
+        <button class="nav-btn" data-section="capabilities" onclick="switchBuilderSection('capabilities')">
+          ⚙️ Capabilities
+        </button>
+        <button class="nav-btn" data-section="advanced" onclick="switchBuilderSection('advanced')">
+          🔧 Advanced
+        </button>
+        <button class="nav-btn" data-section="preview" onclick="switchBuilderSection('preview')">
+          👁️ Preview
+        </button>
+      </div>
+      <div class="builder-actions">
+        <button class="btn-save" onclick="saveBotConfig()">💾 Save</button>
+        <button class="btn-test" onclick="testBotConfig()">🧪 Test</button>
+        <button class="btn-deploy" onclick="deployBotConfig()">🚀 Deploy</button>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="builder-content">
+      <!-- Basic Info Section -->
+      <div class="section-content" id="basic-section" style="display: block;">
+        <h3>Basic Bot Information</h3>
+        
+        <div class="form-group">
+          <label>Bot Name *</label>
+          <input type="text" id="botName" placeholder="e.g., CustomerSupport Bot" class="form-input">
+          <span class="help-text">Public name for your bot (2-50 characters)</span>
+        </div>
+
+        <div class="form-group">
+          <label>Bot ID *</label>
+          <input type="text" id="botId" placeholder="e.g., customer_support" class="form-input" readonly>
+          <span class="help-text">Auto-generated unique identifier</span>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="botDescription" placeholder="What does this bot do?" class="form-textarea" rows="3"></textarea>
+          <span class="help-text">A brief description of your bot's purpose</span>
+        </div>
+
+        <div class="form-group">
+          <label>Bot Icon Emoji</label>
+          <input type="text" id="botIcon" placeholder="🤖" class="form-input" maxlength="2" value="🤖">
+          <span class="help-text">Choose a single emoji to represent your bot</span>
+        </div>
+
+        <div class="form-group">
+          <label>Default Model</label>
+          <select id="defaultModel" class="form-input">
+            <option value="haiku">Haiku (Fast, Cheap)</option>
+            <option value="sonnet" selected>Sonnet (Balanced)</option>
+            <option value="opus">Opus (Powerful)</option>
+            <option value="grok">Grok (Fast, Sarcastic)</option>
+          </select>
+          <span class="help-text">Default LLM for this bot</span>
+        </div>
+
+        <div class="form-group">
+          <label>Bot Role</label>
+          <select id="botRole" class="form-input">
+            <option value="assistant">Assistant</option>
+            <option value="analyst">Analyst</option>
+            <option value="researcher">Researcher</option>
+            <option value="developer">Developer</option>
+            <option value="consultant">Consultant</option>
+            <option value="creative">Creative</option>
+            <option value="custom">Custom</option>
+          </select>
+          <span class="help-text">Primary role of your bot</span>
+        </div>
+      </div>
+
+      <!-- Personality Section -->
+      <div class="section-content" id="personality-section" style="display: none;">
+        <h3>Bot Personality & Tone</h3>
+
+        <div class="form-group">
+          <label>System Prompt *</label>
+          <textarea id="systemPrompt" class="form-textarea" rows="6" placeholder="You are a helpful customer service bot..."></textarea>
+          <span class="help-text">Define how the bot behaves, its personality, and response style</span>
+        </div>
+
+        <div class="form-group">
+          <label>Tone of Voice</label>
+          <div class="tone-selector">
+            <button class="tone-option" data-tone="professional" onclick="selectTone('professional')">
+              <span>Professional</span>
+            </button>
+            <button class="tone-option" data-tone="friendly" onclick="selectTone('friendly')">
+              <span>Friendly</span>
+            </button>
+            <button class="tone-option" data-tone="casual" onclick="selectTone('casual')">
+              <span>Casual</span>
+            </button>
+            <button class="tone-option" data-tone="technical" onclick="selectTone('technical')">
+              <span>Technical</span>
+            </button>
+            <button class="tone-option" data-tone="creative" onclick="selectTone('creative')">
+              <span>Creative</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Response Length</label>
+          <select id="responseLength" class="form-input">
+            <option value="concise">Concise (1-2 sentences)</option>
+            <option value="balanced" selected>Balanced (2-4 sentences)</option>
+            <option value="detailed">Detailed (4+ sentences)</option>
+            <option value="comprehensive">Comprehensive (Full paragraphs)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Special Instructions</label>
+          <textarea id="specialInstructions" class="form-textarea" rows="4" placeholder="e.g., Always be polite, ask for clarification when needed, etc."></textarea>
+          <span class="help-text">Additional behavior guidelines</span>
+        </div>
+      </div>
+
+      <!-- Capabilities Section -->
+      <div class="section-content" id="capabilities-section" style="display: none;">
+        <h3>Bot Capabilities & Integrations</h3>
+
+        <div class="form-group">
+          <label>Core Capabilities</label>
+          <div class="capability-grid">
+            <label class="capability-checkbox">
+              <input type="checkbox" id="cap-text" class="capability-input">
+              <span class="capability-label">📝 Text Analysis</span>
+            </label>
+            <label class="capability-checkbox">
+              <input type="checkbox" id="cap-code" class="capability-input">
+              <span class="capability-label">💻 Code Generation</span>
+            </label>
+            <label class="capability-checkbox">
+              <input type="checkbox" id="cap-research" class="capability-input">
+              <span class="capability-label">🔍 Research</span>
+            </label>
+            <label class="capability-checkbox">
+              <input type="checkbox" id="cap-writing" class="capability-input">
+              <span class="capability-label">✍️ Writing & Editing</span>
+            </label>
+            <label class="capability-checkbox">
+              <input type="checkbox" id="cap-math" class="capability-input">
+              <span class="capability-label">🧮 Math & Logic</span>
+            </label>
+            <label class="capability-checkbox">
+              <input type="checkbox" id="cap-image" class="capability-input">
+              <span class="capability-label">🖼️ Image Analysis</span>
+            </label>
+            <label class="capability-checkbox">
+              <input type="checkbox" id="cap-data" class="capability-input">
+              <span class="capability-label">📊 Data Analysis</span>
+            </label>
+            <label class="capability-checkbox">
+              <input type="checkbox" id="cap-web" class="capability-input">
+              <span class="capability-label">🌐 Web Search</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>API Integrations</label>
+          <div class="integration-grid">
+            <label class="integration-checkbox">
+              <input type="checkbox" id="int-slack" class="integration-input">
+              <span>Slack</span>
+            </label>
+            <label class="integration-checkbox">
+              <input type="checkbox" id="int-discord" class="integration-input">
+              <span>Discord</span>
+            </label>
+            <label class="integration-checkbox">
+              <input type="checkbox" id="int-teams" class="integration-input">
+              <span>Microsoft Teams</span>
+            </label>
+            <label class="integration-checkbox">
+              <input type="checkbox" id="int-webhook" class="integration-input">
+              <span>Webhooks</span>
+            </label>
+            <label class="integration-checkbox">
+              <input type="checkbox" id="int-api" class="integration-input">
+              <span>REST API</span>
+            </label>
+            <label class="integration-checkbox">
+              <input type="checkbox" id="int-email" class="integration-input">
+              <span>Email</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Knowledge Base</label>
+          <textarea id="knowledgeBase" class="form-textarea" rows="4" placeholder="Paste company docs, FAQs, or knowledge snippets here..."></textarea>
+          <span class="help-text">Context the bot should know about (max 10KB)</span>
+        </div>
+      </div>
+
+      <!-- Advanced Settings Section -->
+      <div class="section-content" id="advanced-section" style="display: none;">
+        <h3>Advanced Configuration</h3>
+
+        <div class="form-group">
+          <label>Temperature (Creativity)</label>
+          <div class="slider-group">
+            <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7" class="form-slider" oninput="updateSliderValue('temperature')">
+            <span id="temperature-value">0.7</span>
+          </div>
+          <span class="help-text">0 = Precise, 2 = Creative. Default 0.7</span>
+        </div>
+
+        <div class="form-group">
+          <label>Max Tokens per Response</label>
+          <input type="number" id="maxTokens" min="100" max="4000" step="100" value="2000" class="form-input">
+          <span class="help-text">Limit response length (100-4000)</span>
+        </div>
+
+        <div class="form-group">
+          <label>Timeout (seconds)</label>
+          <input type="number" id="timeout" min="5" max="300" step="5" value="30" class="form-input">
+          <span class="help-text">Max wait time for response</span>
+        </div>
+
+        <div class="form-group">
+          <label>Rate Limiting</label>
+          <div class="rate-limit-group">
+            <div>
+              <label>Requests per minute:</label>
+              <input type="number" id="rateLimit" min="1" max="1000" value="60" class="form-input short">
+            </div>
+            <div>
+              <label>Concurrent users:</label>
+              <input type="number" id="maxConcurrent" min="1" max="100" value="10" class="form-input short">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Error Handling</label>
+          <select id="errorBehavior" class="form-input">
+            <option value="retry">Auto-retry (3x)</option>
+            <option value="fallback">Use fallback response</option>
+            <option value="escalate">Escalate to human</option>
+            <option value="fail">Return error message</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox">
+          <input type="checkbox" id="enableLogging">
+          <label for="enableLogging">Enable detailed logging</label>
+        </div>
+
+        <div class="form-group checkbox">
+          <input type="checkbox" id="enableAnalytics">
+          <label for="enableAnalytics">Collect analytics</label>
+        </div>
+      </div>
+
+      <!-- Preview Section -->
+      <div class="section-content" id="preview-section" style="display: none;">
+        <h3>Bot Preview & Testing</h3>
+
+        <div class="preview-card">
+          <div class="bot-preview-header">
+            <span id="previewIcon">🤖</span>
+            <span id="previewName">Your Bot</span>
+          </div>
+          <div class="preview-description" id="previewDescription">
+            A helpful AI bot built with Custom Bot Builder
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Test Message</label>
+          <div class="test-input-group">
+            <input type="text" id="testMessage" placeholder="Type a message to test the bot..." class="form-input">
+            <button onclick="sendTestMessage()" class="btn-test-send">Send</button>
+          </div>
+        </div>
+
+        <div class="test-response-area" id="testResponseArea" style="display: none;">
+          <div class="response-header">🤖 Bot Response:</div>
+          <div class="response-content" id="testResponse"></div>
+          <div class="response-time" id="responseTime"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Configuration Summary</label>
+          <div class="config-summary" id="configSummary"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deploy Modal -->
+  <div id="deploy-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Deploy Bot</h3>
+        <button class="btn-close" onclick="closeModal('deploy-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Your bot is ready to deploy! Choose a deployment option:</p>
+        
+        <div class="deploy-options">
+          <button class="deploy-option" onclick="deployToCloud()">
+            <span class="deploy-icon">☁️</span>
+            <span class="deploy-title">Cloud Deployment</span>
+            <span class="deploy-desc">Hosted on PinkyBot servers</span>
+          </button>
+          
+          <button class="deploy-option" onclick="deployToSelf()">
+            <span class="deploy-icon">🖥️</span>
+            <span class="deploy-title">Self-Hosted</span>
+            <span class="deploy-desc">Run on your own servers</span>
+          </button>
+          
+          <button class="deploy-option" onclick="deployToSlack()">
+            <span class="deploy-icon">💬</span>
+            <span class="deploy-title">Slack Bot</span>
+            <span class="deploy-desc">Deploy directly to Slack</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Confirmation Modal -->
+  <div id="save-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>✅ Bot Saved</h3>
+        <button class="btn-close" onclick="closeModal('save-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Your bot configuration has been saved successfully!</p>
+        <div class="save-details">
+          <p><strong>Bot ID:</strong> <span id="savedBotId"></span></p>
+          <p><strong>Saved at:</strong> <span id="savedTime"></span></p>
+        </div>
+        <button class="btn-primary" onclick="closeModal('save-modal')">Continue</button>
+      </div>
+    </div>
+  </div>
+</div>
