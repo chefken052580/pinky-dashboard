@@ -13,14 +13,91 @@ class ResearchBotUI {
     this.currentReport = null;
     this.reports = [];
     this.autoRefreshInterval = null;
+    this.businessClients = [];
+    this.companyReports = {};
     this.init();
   }
 
   init() {
     console.log('[ResearchBot UI] Initializing...');
     this.loadReports();
+    this.loadBusinessClients();
     this.setupEventListeners();
     this.setupAutoRefresh();
+  }
+
+  /**
+   * Load clients from BusinessBot API
+   */
+  async loadBusinessClients() {
+    try {
+      const response = await fetch('/api/business/clients');
+      const data = await response.json();
+      
+      if (data.success && data.clients) {
+        this.businessClients = data.clients;
+        console.log('[ResearchBot] Loaded', this.businessClients.length, 'clients from BusinessBot');
+        this.renderCompanyResearchSection();
+      }
+    } catch (error) {
+      console.error('[ResearchBot] Error loading business clients:', error);
+    }
+  }
+
+  /**
+   * Render company research section showing BusinessBot clients
+   */
+  renderCompanyResearchSection() {
+    const container = document.getElementById('research-content');
+    if (!container || this.businessClients.length === 0) return;
+
+    let companyHtml = `
+      <div class="research-companies-section" style="margin-bottom:30px;background:var(--bg-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);padding:20px;">
+        <h3 style="color:var(--text-primary);margin-bottom:15px;">🏢 Research Your Clients</h3>
+        <p style="color:var(--text-secondary);margin-bottom:20px;">Select a client from your BusinessBot portfolio to generate detailed company research and market insights.</p>
+        
+        <div class="company-research-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:15px;">
+    `;
+
+    this.businessClients.forEach(client => {
+      const reportKey = `report_${client.id}`;
+      const hasReport = this.companyReports[reportKey];
+      
+      companyHtml += `
+        <div class="company-card" style="background:var(--surface-2);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:15px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='var(--surface-3)'" onmouseout="this.style.background='var(--surface-2)'">
+          <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+            <div>
+              <h4 style="color:var(--text-primary);margin:0;font-size:1em;">${client.name}</h4>
+              <p style="color:var(--text-secondary);margin:5px 0 0 0;font-size:0.85em;">${client.company || 'N/A'}</p>
+            </div>
+            <span style="background:var(--success);color:#000;padding:4px 8px;border-radius:4px;font-size:0.75em;font-weight:600;">${client.status.toUpperCase()}</span>
+          </div>
+          
+          <div style="font-size:0.9em;color:var(--text-secondary);margin-bottom:10px;">
+            📧 ${client.email}
+          </div>
+          
+          <button onclick="researchBot.researchCompany('${client.id}', '${client.name}', '${client.company}')" style="width:100%;background:var(--gradient-primary);color:#fff;border:none;padding:8px;border-radius:4px;cursor:pointer;font-weight:600;margin-top:10px;">
+            ${hasReport ? '✓ Refresh Report' : '🔬 Research Company'}
+          </button>
+          
+          ${hasReport ? `<div style="margin-top:8px;font-size:0.75em;color:var(--text-secondary);">Report generated</div>` : ''}
+        </div>
+      `;
+    });
+
+    companyHtml += `
+        </div>
+      </div>
+    `;
+
+    // Insert before existing reports section
+    const reportsSection = container.querySelector('.research-report, .research-loading, .error, .research-empty-state');
+    if (reportsSection) {
+      reportsSection.insertAdjacentHTML('beforebegin', companyHtml);
+    } else if (container.innerHTML.length === 0) {
+      container.innerHTML = companyHtml + container.innerHTML;
+    }
   }
 
   /**
@@ -80,6 +157,82 @@ class ResearchBotUI {
       }
     } catch (error) {
       console.error('[ResearchBot] Error:', error);
+      const container = document.getElementById('research-content');
+      if (container) {
+        container.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+      }
+    }
+  }
+
+  /**
+   * Research a specific company from BusinessBot clients
+   */
+  async researchCompany(clientId, clientName, companyName) {
+    try {
+      const container = document.getElementById('research-content');
+      if (!container) return;
+
+      const searchTerm = companyName || clientName;
+
+      // Show loading state
+      container.innerHTML = `
+        <div class="research-loading">
+          <div class="spinner"></div>
+          <p>🔬 ResearchBot analyzing: <strong>${searchTerm}</strong></p>
+          <p class="subtitle">Gathering company data, financials, competitors, market position, and strategic insights...</p>
+        </div>
+      `;
+
+      // Generate comprehensive company research
+      const response = await fetch('/api/research/v2/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          topic: `${searchTerm} - Company Profile, Market Position, Financial Health, Competitors, Growth Opportunities`,
+          companyResearch: true,
+          clientId: clientId
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.report) {
+        // Enhance report with company-specific details
+        const enhancedReport = {
+          ...data.report,
+          companyName: searchTerm,
+          clientId: clientId,
+          sections: {
+            overview: 'Company Profile & Key Metrics',
+            financials: 'Financial Performance & Trends',
+            competitors: 'Competitive Landscape',
+            market: 'Market Position & Opportunities',
+            risks: 'Risk Assessment & Mitigation',
+            recommendations: 'Strategic Recommendations'
+          }
+        };
+
+        this.currentReport = enhancedReport;
+        this.renderCompanyReport(enhancedReport);
+        
+        // Store in cache
+        this.companyReports[`report_${clientId}`] = enhancedReport;
+        
+        // Update reports list
+        this.reports.unshift({
+          id: data.report.id,
+          topic: `${searchTerm} (Company Research)`,
+          date: data.report.generatedAt,
+          status: data.report.status,
+          isCompanyReport: true,
+          clientId: clientId
+        });
+        this.renderReportsList();
+      } else {
+        container.innerHTML = `<div class="error">Error generating company research: ${data.error || 'Unknown error'}</div>`;
+      }
+    } catch (error) {
+      console.error('[ResearchBot] Company research error:', error);
       const container = document.getElementById('research-content');
       if (container) {
         container.innerHTML = `<div class="error">Error: ${error.message}</div>`;
@@ -401,6 +554,128 @@ class ResearchBotUI {
       .replace(/([A-Z])/g, ' $1')
       .replace(/^./, c => c.toUpperCase())
       .trim();
+  }
+
+  /**
+   * Render enhanced company research report
+   */
+  renderCompanyReport(report) {
+    const container = document.getElementById('research-content');
+    if (!container) return;
+
+    let html = `
+      <div class="research-report">
+        <div class="report-header" style="border-bottom:2px solid var(--gradient-primary);padding-bottom:15px;">
+          <h2 style="color:var(--text-primary);margin:0;">🏢 Company Research Report: ${report.companyName}</h2>
+          <div style="margin-top:10px;display:flex;gap:15px;flex-wrap:wrap;">
+            <span style="background:var(--success);color:#000;padding:5px 12px;border-radius:6px;font-size:0.85em;font-weight:600;">📊 Comprehensive Analysis</span>
+            <span style="background:var(--info);color:#000;padding:5px 12px;border-radius:6px;font-size:0.85em;font-weight:600;">Confidence: ${report.confidence}%</span>
+            <span style="color:var(--text-secondary);font-size:0.9em;padding-top:3px;">Generated: ${new Date(report.generatedAt).toLocaleDateString()}</span>
+          </div>
+        </div>
+
+        <div class="report-sections" style="margin-top:20px;">
+    `;
+
+    // Report sections with rich details
+    const sections = [
+      {
+        title: '📋 Executive Summary',
+        key: 'executive_summary',
+        icon: '📋'
+      },
+      {
+        title: '💰 Financial Overview',
+        key: 'financial_health',
+        icon: '💰'
+      },
+      {
+        title: '🎯 Market Position',
+        key: 'market_position',
+        icon: '🎯'
+      },
+      {
+        title: '🏆 Competitive Advantage',
+        key: 'competitive_edge',
+        icon: '🏆'
+      },
+      {
+        title: '⚠️ Risk Assessment',
+        key: 'risks',
+        icon: '⚠️'
+      },
+      {
+        title: '🚀 Growth Opportunities',
+        key: 'opportunities',
+        icon: '🚀'
+      },
+      {
+        title: '💡 Strategic Recommendations',
+        key: 'recommendations',
+        icon: '💡'
+      }
+    ];
+
+    sections.forEach((section, idx) => {
+      const content = report.sections && report.sections[section.key] 
+        ? report.sections[section.key]
+        : report.content || 'Analysis in progress...';
+
+      html += `
+        <div class="report-section" style="margin-bottom:20px;background:var(--surface-2);border-left:4px solid var(--gradient-primary);padding:15px;border-radius:4px;">
+          <h3 style="color:var(--text-primary);margin:0 0 10px 0;font-size:1.1em;">
+            <span>${section.title}</span>
+          </h3>
+          <div style="color:var(--text-secondary);line-height:1.6;">
+            ${content.substring ? content.substring(0, 500) + '...' : JSON.stringify(content).substring(0, 500) + '...'}
+          </div>
+          <button onclick="alert('Full section view coming soon!')" style="margin-top:10px;background:var(--border-default);border:none;color:var(--text-primary);padding:6px 12px;border-radius:4px;cursor:pointer;font-size:0.85em;">
+            View Full Details →
+          </button>
+        </div>
+      `;
+    });
+
+    // Bottom action buttons
+    html += `
+        </div>
+
+        <div style="margin-top:30px;padding-top:20px;border-top:1px solid var(--border-default);display:flex;gap:10px;flex-wrap:wrap;">
+          <button onclick="researchBot.exportReport('${report.companyName}')" style="background:var(--gradient-primary);color:#fff;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;font-weight:600;">
+            📥 Export Report
+          </button>
+          <button onclick="researchBot.shareReport('${report.companyName}')" style="background:var(--border-default);color:var(--text-primary);border:none;padding:10px 20px;border-radius:6px;cursor:pointer;font-weight:600;">
+            🔗 Share Report
+          </button>
+          <button onclick="researchBot.refineResearch('${report.companyName}')" style="background:var(--border-default);color:var(--text-primary);border:none;padding:10px 20px;border-radius:6px;cursor:pointer;font-weight:600;">
+            🔄 Refine Analysis
+          </button>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML = html;
+  }
+
+  /**
+   * Export report (placeholder)
+   */
+  exportReport(companyName) {
+    alert(`📥 Exporting ${companyName} report as PDF... (Coming soon)`);
+  }
+
+  /**
+   * Share report (placeholder)
+   */
+  shareReport(companyName) {
+    alert(`🔗 Sharing ${companyName} report... (Coming soon)`);
+  }
+
+  /**
+   * Refine research (placeholder)
+   */
+  refineResearch(companyName) {
+    alert(`🔄 Refining analysis for ${companyName}... (Coming soon)`);
   }
 
   /**
