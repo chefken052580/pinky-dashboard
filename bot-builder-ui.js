@@ -313,11 +313,43 @@
           <label class="form-label">
             AI Model
             <select id="input-model" class="form-input">
-              <option value="haiku" ${botConfig.model === 'haiku' ? 'selected' : ''}>Haiku - Fast & Cheap (Best for simple tasks)</option>
-              <option value="sonnet" ${botConfig.model === 'sonnet' ? 'selected' : ''}>Sonnet - Balanced (Recommended)</option>
-              <option value="opus" ${botConfig.model === 'opus' ? 'selected' : ''}>Opus - Powerful (Complex reasoning)</option>
+              <!-- Claude Models (Anthropic) -->
+              <optgroup label="🔵 Claude (Anthropic)">
+                <option value="claude-opus-4-6" ${botConfig.model === 'claude-opus-4-6' ? 'selected' : ''}>Claude Opus 4.6 - Most powerful (Complex reasoning)</option>
+                <option value="claude-sonnet-4-5" ${botConfig.model === 'claude-sonnet-4-5' ? 'selected' : ''}>Claude Sonnet 4.5 - Balanced (Recommended)</option>
+                <option value="claude-haiku-4-5" ${botConfig.model === 'claude-haiku-4-5' ? 'selected' : ''}>Claude Haiku 4.5 - Fast & cheap (Simple tasks)</option>
+                <option value="opus" ${botConfig.model === 'opus' ? 'selected' : ''}>Opus (Legacy)</option>
+                <option value="sonnet" ${botConfig.model === 'sonnet' ? 'selected' : ''}>Sonnet (Legacy)</option>
+                <option value="haiku" ${botConfig.model === 'haiku' ? 'selected' : ''}>Haiku (Legacy)</option>
+              </optgroup>
+              
+              <!-- OpenAI Models -->
+              <optgroup label="⚪ OpenAI (ChatGPT)">
+                <option value="gpt-4-turbo" ${botConfig.model === 'gpt-4-turbo' ? 'selected' : ''}>GPT-4 Turbo - Advanced reasoning</option>
+                <option value="gpt-4" ${botConfig.model === 'gpt-4' ? 'selected' : ''}>GPT-4 - Most capable</option>
+                <option value="gpt-4o" ${botConfig.model === 'gpt-4o' ? 'selected' : ''}>GPT-4o - Optimized for speed</option>
+                <option value="gpt-4o-mini" ${botConfig.model === 'gpt-4o-mini' ? 'selected' : ''}>GPT-4o Mini - Lightweight</option>
+                <option value="gpt-3.5-turbo" ${botConfig.model === 'gpt-3.5-turbo' ? 'selected' : ''}>GPT-3.5 Turbo - Fast & cheap</option>
+              </optgroup>
+              
+              <!-- Grok Models -->
+              <optgroup label="💫 Grok (xAI)">
+                <option value="grok-2" ${botConfig.model === 'grok-2' ? 'selected' : ''}>Grok-2 - Latest & most capable</option>
+                <option value="grok-2-vision" ${botConfig.model === 'grok-2-vision' ? 'selected' : ''}>Grok-2 Vision - With image understanding</option>
+                <option value="grok-1" ${botConfig.model === 'grok-1' ? 'selected' : ''}>Grok-1 - Previous version</option>
+              </optgroup>
+              
+              <!-- Other Popular Models -->
+              <optgroup label="🎯 Other Popular Models">
+                <option value="llama-2-70b" ${botConfig.model === 'llama-2-70b' ? 'selected' : ''}>Llama 2 70B - Meta's powerful open model</option>
+                <option value="llama-3-70b" ${botConfig.model === 'llama-3-70b' ? 'selected' : ''}>Llama 3 70B - Newer Meta model</option>
+                <option value="mixtral-8x7b" ${botConfig.model === 'mixtral-8x7b' ? 'selected' : ''}>Mixtral 8x7B - Efficient mixture</option>
+                <option value="mistral-large" ${botConfig.model === 'mistral-large' ? 'selected' : ''}>Mistral Large - Fast reasoning</option>
+                <option value="palm-2" ${botConfig.model === 'palm-2' ? 'selected' : ''}>PaLM 2 - Google's model</option>
+                <option value="gemini-pro" ${botConfig.model === 'gemini-pro' ? 'selected' : ''}>Gemini Pro - Google's advanced model</option>
+              </optgroup>
             </select>
-            <span class="form-hint">Choose based on task complexity and cost considerations</span>
+            <span class="form-hint">Choose based on task complexity, cost, and desired capabilities</span>
           </label>
         </div>
       </div>
