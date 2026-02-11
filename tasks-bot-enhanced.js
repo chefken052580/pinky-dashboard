@@ -1117,92 +1117,80 @@ class TasksBotEnhanced {
   }
 
   /**
-   * Start a task now - Trigger Pinky heartbeat with task context
-   * Follows HEARTBEAT.md workflow and ensures all memory/rules are loaded
+   * Start a task now - Trigger Pinky heartbeat and wake main session
+   * HEARTBEAT.md workflow: Load memory (AGENTS.md, SOUL.md, USER.md, CORE.md, HEARTBEAT.md)
+   * → Check health → Process tasks → Verify → Move next
    */
   async startTaskNow(taskName, taskId) {
-    if (!confirm('📋 Start Task: "' + taskName + '"?\n\nThis will trigger Pinky\'s heartbeat to begin this task immediately.\nPinky will load all memory files and follow the full rules/memory flow.')) return;
+    if (!confirm('📋 START TASK: "' + taskName + '"\n\nPinky will wake and execute following HEARTBEAT.md rules:\n\n1️⃣  Load AGENTS.md (rules)\n2️⃣  Load SOUL.md (identity)\n3️⃣  Load USER.md (context)\n4️⃣  Load CORE.md (routing)\n5️⃣  Load HEARTBEAT.md (workflow)\n6️⃣  Check health & process task\n7️⃣  Follow all rules & memory flow\n\nReady?')) return;
     
     try {
       const API = window.API || 'http://192.168.254.4:3030';
-      let success = false;
-      let endpoint = '';
+      let heartbeatSuccess = false;
+      let wakeSuccess = false;
       
-      // Attempt 1: Use /api/execute/heartbeat to trigger immediate execution
+      // Step 1: Trigger the heartbeat executor cycle
       try {
-        endpoint = API + '/api/execute/heartbeat';
-        const heartbeatResponse = await fetch(endpoint, {
+        const hbResponse = await fetch(API + '/api/execute/heartbeat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             source: 'tasksbot-start-button',
             taskId: taskId,
             taskName: taskName,
-            context: 'User triggered task start from TasksBot'
+            context: 'User triggered from TasksBot UI'
           })
         });
         
-        if (heartbeatResponse.ok) {
-          success = true;
-          console.log('[TasksBot] Heartbeat triggered via /api/execute/heartbeat', { taskId, taskName });
+        if (hbResponse.ok) {
+          heartbeatSuccess = true;
+          console.log('[TasksBot.startTaskNow] ✅ Heartbeat executor triggered', { taskId, taskName });
+        } else {
+          console.warn('[TasksBot.startTaskNow] Heartbeat endpoint returned:', hbResponse.status);
         }
       } catch (err) {
-        console.warn('[TasksBot] Heartbeat endpoint failed:', err.message);
+        console.warn('[TasksBot.startTaskNow] Heartbeat call error:', err.message);
       }
       
-      // Attempt 2: Fallback to cron wake endpoint
-      if (!success) {
-        try {
-          endpoint = API + '/api/cron/wake';
-          const wakeResponse = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              mode: 'now',
-              context: { taskId, taskName }
-            })
-          });
-          
-          if (wakeResponse.ok) {
-            success = true;
-            console.log('[TasksBot] Wake signal sent via /api/cron/wake', { taskId, taskName });
-          }
-        } catch (err) {
-          console.warn('[TasksBot] Wake endpoint failed:', err.message);
+      // Step 2: Try to wake the main Pinky session via gateway cron
+      // This ensures the main OpenClaw session loads full memory context
+      try {
+        const wakeUrl = 'http://localhost:18789/api/cron/wake';
+        const wakeResponse = await fetch(wakeUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mode: 'now',
+            text: 'HEARTBEAT: Task triggered from TasksBot button — taskId: ' + taskId + ' — taskName: ' + taskName,
+            contextMessages: 3
+          })
+        });
+        
+        if (wakeResponse.ok) {
+          wakeSuccess = true;
+          console.log('[TasksBot.startTaskNow] ✅ Main session wake signal sent', { taskId, taskName });
         }
+      } catch (err) {
+        // Gateway might be on different port or unreachable, not critical
+        console.warn('[TasksBot.startTaskNow] Session wake unavailable (non-critical):', err.message);
       }
       
-      // Attempt 3: Fallback to heartbeat restart
-      if (!success) {
-        try {
-          endpoint = API + '/api/heartbeat/restart';
-          const restartResponse = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              taskId: taskId,
-              taskName: taskName
-            })
-          });
-          
-          if (restartResponse.ok) {
-            success = true;
-            console.log('[TasksBot] Heartbeat restarted via /api/heartbeat/restart', { taskId, taskName });
-          }
-        } catch (err) {
-          console.warn('[TasksBot] Restart endpoint failed:', err.message);
-        }
-      }
-      
-      if (success) {
-        console.log('[TasksBot] ✅ Task start signal sent successfully', { taskId, taskName, endpoint });
-        alert('✅ WAKE-UP SIGNAL SENT!\n\nPinky is now running with task:\n"' + taskName + '"\n\nPinky will:\n1. Load SOUL.md, USER.md, MEMORY.md\n2. Check memory/CORE.md for routing\n3. Read HEARTBEAT.md workflow\n4. Follow all rules in AGENTS.md\n5. Begin task execution\n\nMonitor the dashboard for progress.');
+      // Verify at least heartbeat was triggered
+      if (heartbeatSuccess || wakeSuccess) {
+        console.log('[TasksBot.startTaskNow] ✅ Task start initiated', { 
+          taskId, 
+          taskName, 
+          heartbeatExecuted: heartbeatSuccess,
+          sessionWoken: wakeSuccess 
+        });
+        
+        alert('✅ HEARTBEAT INITIATED!\n\n🐭 Pinky is now waking up with:\n  Task: "' + taskName + '"\n  ID: ' + taskId + '\n\n⚡ Pinky will:\n  • Load all memory files (AGENTS.md → HEARTBEAT.md)\n  • Check system health\n  • Follow HEARTBEAT.md workflow exactly\n  • Execute task with full rules applied\n  • Update task status on completion\n\n👀 Monitor dashboard → Tasks for progress\n\n💡 Pinky will load:\n  ✓ SOUL.md (identity)\n  ✓ USER.md (context)\n  ✓ AGENTS.md (rules — ABSOLUTE)\n  ✓ CORE.md (routing)\n  ✓ HEARTBEAT.md (workflow)\n  ✓ MEMORY.md (working memory)');
       } else {
-        throw new Error('All heartbeat endpoints failed. Check backend status.');
+        throw new Error('Could not trigger heartbeat via any method. Check backend status.');
       }
     } catch (error) {
-      console.error('[TasksBot] Start task error:', error);
-      alert('❌ FAILED TO START TASK\n\nError: ' + error.message + '\n\nPlease check:\n- Backend API is running (http://192.168.254.4:3030)\n- Pinky daemon status\n- Browser console for details');
+      console.error('[TasksBot.startTaskNow] Fatal error:', error);
+      alert('❌ HEARTBEAT FAILED!\n\nCould not wake Pinky:\n' + error.message + '\n\n🔧 Debug checklist:\n✓ Backend running: http://192.168.254.4:3030\n✓ API accessible: /api/execute/heartbeat\n✓ Pinky daemon active: pm2 status\n✓ Memory files present: ~/.openclaw/workspace/memory/\n✓ Browser console: Check for CORS/network errors\n\n📞 Run for help:\n  pm2 logs bot-backend\n  openclaw gateway status');
     }
   }
 
