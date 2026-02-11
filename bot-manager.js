@@ -524,6 +524,62 @@
     alert(name+' Logs:\n\n'+(fb.length?fb.slice(-5).map(function(f){return (f.timestamp||'')+': '+(f.message||f.action||'');}).join('\n'):'No logs'));
   };
   window.resetBot = function(name) { if(confirm('Reset '+name+'?')) alert('Reset queued.'); };
+
+  window.editTask = function(taskName, priority, notes) {
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:10001;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);';
+    overlay.innerHTML = '<div style="background:var(--bg-primary,#0f0f23);border:1px solid rgba(139,92,246,0.3);border-radius:12px;padding:24px;width:450px;max-width:90vw;box-shadow:0 0 40px rgba(139,92,246,0.15);">' +
+      '<div style="font-size:1.1em;font-weight:600;color:var(--text-primary,#eee);margin-bottom:16px;">\u270f\ufe0f Edit Pending Task</div>' +
+      '<label class="neon-label">Task Name</label>' +
+      '<input id="edit-name" class="neon-input" value="' + taskName.replace(/"/g,'&quot;') + '" style="margin-bottom:12px;">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">' +
+      '<div><label class="neon-label">Priority</label>' +
+      '<select id="edit-priority" class="neon-input" style="cursor:pointer;">' +
+      '<option value="P1"' + (priority==='P1'?' selected':'') + '>P1 — Critical</option>' +
+      '<option value="P2"' + (priority==='P2'?' selected':'') + '>P2 — Normal</option>' +
+      '<option value="P3"' + (priority==='P3'?' selected':'') + '>P3 — Low</option></select></div>' +
+      '<div><label class="neon-label">Status</label>' +
+      '<select id="edit-status" class="neon-input" style="cursor:pointer;">' +
+      '<option value="pending">Pending</option><option value="running">Running</option>' +
+      '<option value="blocked">Blocked</option></select></div></div>' +
+      '<label class="neon-label">Notes</label>' +
+      '<textarea id="edit-notes" class="neon-input" rows="3" style="resize:vertical;">' + (notes||'').replace(/</g,'&lt;') + '</textarea>' +
+      '<div style="display:flex;gap:10px;margin-top:16px;">' +
+      '<button id="edit-save" style="flex:1;padding:12px;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.15);color:#34d399;cursor:pointer;font-weight:600;font-size:0.9em;">\u2705 Save Changes</button>' +
+      '<button id="edit-delete" style="flex:1;padding:12px;border-radius:8px;border:1px solid rgba(239,68,68,0.4);background:rgba(239,68,68,0.1);color:#f87171;cursor:pointer;font-weight:600;font-size:0.9em;">\ud83d\uddd1 Delete Task</button>' +
+      '<button id="edit-cancel" style="flex:1;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#ccc;cursor:pointer;font-size:0.9em;">Cancel</button>' +
+      '</div></div>';
+    document.body.appendChild(overlay);
+
+    overlay.querySelector('#edit-cancel').onclick = function() { document.body.removeChild(overlay); };
+    overlay.onclick = function(e) { if(e.target===overlay) document.body.removeChild(overlay); };
+
+    overlay.querySelector('#edit-save').onclick = async function() {
+      var newName = document.getElementById('edit-name').value.trim();
+      var newPriority = document.getElementById('edit-priority').value;
+      var newStatus = document.getElementById('edit-status').value;
+      var newNotes = document.getElementById('edit-notes').value;
+      if(!newName) { alert('Name required'); return; }
+      try {
+        var res = await fetch(API+'/api/tasks', {method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({action:'edit',taskName:taskName,newName:newName,newPriority:newPriority,newStatus:newStatus,notes:newNotes})});
+        var data = await res.json();
+        if(data.success) { document.body.removeChild(overlay); await loadAll(); showSection(currentTab); if(selectedBot) renderDetail(selectedBot); }
+        else alert('Error: '+(data.error||'unknown'));
+      } catch(e) { alert('Failed: '+e.message); }
+    };
+
+    overlay.querySelector('#edit-delete').onclick = async function() {
+      if(!confirm('Delete task: '+taskName+'?')) return;
+      try {
+        var res = await fetch(API+'/api/tasks', {method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({action:'delete',taskName:taskName,name:taskName})});
+        var data = await res.json();
+        if(data.success) { document.body.removeChild(overlay); await loadAll(); showSection(currentTab); if(selectedBot) renderDetail(selectedBot); }
+        else alert('Error: '+(data.error||'unknown'));
+      } catch(e) { alert('Failed: '+e.message); }
+    };
+  };
   window.deleteBot = async function(name,id) {
     if(!confirm('DELETE '+name+'? This removes it from the registry.')) return;
     var res=await fetch(API+'/api/bots/'+id,{method:'DELETE'});
@@ -731,7 +787,9 @@
   // ============================================
   function sec(t){return '<div class="bm-section-title">'+t+'</div>';}
   function mr(l,v){return '<div class="bot-metric-row"><span class="bot-metric-label">'+l+'</span><span class="bot-metric-value">'+v+'</span></div>';}
-  function ti(t,s){var n=(t.name||'Unnamed').substring(0,55),a=t.updated?ta(t.updated):'';return '<div class="bot-task-item '+s+'"><span class="bot-task-item-name">'+n+'</span><span class="bot-task-item-status '+s+'">'+s+'</span>'+(a?'<span style="font-size:0.7em;color:var(--text-muted,#888);">'+a+'</span>':'')+'</div>';}
+  function ti(t,s){var n=(t.name||'Unnamed').substring(0,55),a=t.updated?ta(t.updated):'';
+    var editBtn = (s==='pending') ? '<button onclick="event.stopPropagation();editTask(\'' + (t.name||'').replace(/'/g,"\\'") + '\',\'' + (t.priority||'P2') + '\',\'' + (t.notes||'').replace(/'/g,"\\'").replace(/\n/g,' ').substring(0,100) + '\')" style="padding:2px 8px;border-radius:4px;border:1px solid rgba(139,92,246,0.3);background:rgba(139,92,246,0.1);color:#a78bfa;cursor:pointer;font-size:0.7em;flex-shrink:0;">\u270f\ufe0f Edit</button>' : '';
+    return '<div class="bot-task-item '+s+'"><span class="bot-task-item-name">'+n+'</span>'+editBtn+'<span class="bot-task-item-status '+s+'">'+s+'</span>'+(a?'<span style="font-size:0.7em;color:var(--text-muted,#888);">'+a+'</span>':'')+'</div>';}
   function em(m){return '<div style="text-align:center;color:var(--text-muted,#888);padding:12px;font-size:0.82em;">'+m+'</div>';}
   function fs(v,l){return '<div class="fleet-stat"><span class="fleet-stat-value">'+v+'</span><span class="fleet-stat-label">'+l+'</span></div>';}
   function ta(d){var s=Math.floor((Date.now()-new Date(d).getTime())/1000);if(s<60)return 'now';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d';}
