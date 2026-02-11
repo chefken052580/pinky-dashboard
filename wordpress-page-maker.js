@@ -268,6 +268,9 @@ class WordPressPageMaker {
       const seoData = await this.optimizeSEO(content, topic);
       await new Promise(r => setTimeout(r, 1000));
 
+      // Display SEO metrics with dynamic styling
+      this.displaySEOMetrics(content, seoData, topic);
+
       // Step 5: Publish
       this.setStepStatus('seo', 'complete');
       this.setStepStatus('publish', 'running');
@@ -687,6 +690,90 @@ class WordPressPageMaker {
       schemaMarkup: schema,
       openGraphTags: ogTags
     };
+  }
+
+  /**
+   * Display SEO Metrics with Dynamic Styling
+   * Color-codes metrics based on performance scores
+   */
+  displaySEOMetrics(content, seoData, keyword) {
+    try {
+      const metricsDiv = document.getElementById('seo-metrics');
+      if (!metricsDiv) return;
+
+      // Show metrics panel
+      metricsDiv.style.display = 'block';
+
+      // Update word count
+      const wordCountEl = document.getElementById('word-count');
+      if (wordCountEl) {
+        wordCountEl.textContent = seoData.wordCount || 0;
+      }
+
+      // Update keyword density
+      const keywordEl = document.getElementById('keyword-density');
+      if (keywordEl) {
+        keywordEl.textContent = seoData.keywordDensity || '0%';
+      }
+
+      // Update readability score
+      const readabilityEl = document.getElementById('readability-score');
+      if (readabilityEl) {
+        readabilityEl.textContent = seoData.readabilityScore || 0;
+      }
+
+      // Update SEO score with dynamic color-coding
+      const seoScoreEl = document.getElementById('seo-score');
+      const seoScoreContainer = seoScoreEl?.parentElement;
+      if (seoScoreEl && seoScoreContainer) {
+        const score = Math.round(seoData.seoScore || 0);
+        seoScoreEl.textContent = score;
+
+        // Remove all previous score classes
+        seoScoreContainer.classList.remove('seo-score-excellent', 'seo-score-good', 'seo-score-fair', 'seo-score-poor');
+
+        // Apply color-coded class based on score
+        if (score >= 80) {
+          seoScoreContainer.classList.add('seo-score-excellent');
+          this.logProgress('🟢 Excellent SEO Score: ' + score + '/100');
+        } else if (score >= 60) {
+          seoScoreContainer.classList.add('seo-score-good');
+          this.logProgress('🟡 Good SEO Score: ' + score + '/100');
+        } else if (score >= 40) {
+          seoScoreContainer.classList.add('seo-score-fair');
+          this.logProgress('🟠 Fair SEO Score: ' + score + '/100');
+        } else {
+          seoScoreContainer.classList.add('seo-score-poor');
+          this.logProgress('🔴 Poor SEO Score: ' + score + '/100');
+        }
+
+        // Add animated progress bar
+        if (!seoScoreContainer.querySelector('.seo-score-bar')) {
+          const progressHTML = `
+            <div class="seo-score-bar">
+              <div class="seo-score-bar-fill">
+                <div class="seo-score-bar-progress" style="width: ${score}%;"></div>
+              </div>
+              <span style="font-size: 0.7em; opacity: 0.8;">${score}%</span>
+            </div>
+          `;
+          seoScoreEl.insertAdjacentHTML('afterend', progressHTML);
+        }
+      }
+
+      // Animate metrics entry
+      const metricsGrid = metricsDiv.querySelector('.metrics-grid');
+      if (metricsGrid) {
+        const metrics = metricsGrid.querySelectorAll('.metric');
+        metrics.forEach((metric, index) => {
+          metric.style.animation = `fadeInUp 0.5s ease-out ${index * 0.1}s both`;
+        });
+      }
+
+      console.log('[WordPressMaker] SEO metrics displayed with dynamic styling:', { score: seoData.seoScore, keyword });
+    } catch (err) {
+      console.error('[WordPressMaker] Error displaying metrics:', err.message);
+    }
   }
 }
 

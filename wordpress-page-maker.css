@@ -1,21 +1,23 @@
 /**
- * WordPress Page Maker Styles - Enhanced Dark Theme
- * Dynamic, Modern Design with Animations
+ * WordPress Page Maker Styles - Enhanced with Design System Integration
+ * Dynamic, Modern Design with Animations + Design Tokens from design-tokens.css
  */
 
+/* Fallback to custom vars if design-tokens not loaded, otherwise inherit from design-tokens.css */
 :root {
-  --wp-primary: #667eea;
-  --wp-secondary: #764ba2;
-  --wp-accent: #00d4ff;
-  --wp-success: #2eff85;
-  --wp-warning: #ffb800;
-  --wp-error: #ff4757;
-  --wp-bg-dark: rgba(10, 20, 50, 0.5);
-  --wp-bg-light: rgba(20, 40, 80, 0.4);
-  --wp-border: rgba(68, 150, 255, 0.2);
-  --wp-text-primary: #e0e8f0;
-  --wp-text-secondary: #a0b4d0;
-  --wp-text-muted: #7088a8;
+  /* Use design-tokens.css variables when available, fallback to custom vars */
+  --wp-primary: var(--text-accent, #667eea);
+  --wp-secondary: var(--text-accent, #764ba2);
+  --wp-accent: var(--text-accent, #00d4ff);
+  --wp-success: var(--success, #2eff85);
+  --wp-warning: var(--warning, #ffb800);
+  --wp-error: var(--error, #ff4757);
+  --wp-bg-dark: var(--surface-3, rgba(10, 20, 50, 0.5));
+  --wp-bg-light: var(--surface-2, rgba(20, 40, 80, 0.4));
+  --wp-border: var(--border-default, rgba(68, 150, 255, 0.2));
+  --wp-text-primary: var(--text-primary, #e0e8f0);
+  --wp-text-secondary: var(--text-secondary, #a0b4d0);
+  --wp-text-muted: var(--text-muted, #7088a8);
 }
 
 @keyframes fadeInUp {
@@ -635,12 +637,50 @@ select.form-input option,
   opacity: 1;
 }
 
+/* SEO Score Dynamic Color Coding */
+.metric.seo-score-excellent {
+  background: linear-gradient(135deg, var(--success, #2eff85) 0%, var(--success, #2eff85) 100%);
+  box-shadow: 0 8px 24px rgba(46, 255, 133, 0.3);
+}
+
+.metric.seo-score-excellent:hover {
+  box-shadow: 0 12px 32px rgba(46, 255, 133, 0.4);
+}
+
+.metric.seo-score-good {
+  background: linear-gradient(135deg, #00d4ff 0%, #667eea 100%);
+  box-shadow: 0 8px 24px rgba(0, 212, 255, 0.3);
+}
+
+.metric.seo-score-good:hover {
+  box-shadow: 0 12px 32px rgba(0, 212, 255, 0.4);
+}
+
+.metric.seo-score-fair {
+  background: linear-gradient(135deg, var(--warning, #ffb800) 0%, var(--warning, #ffb800) 100%);
+  box-shadow: 0 8px 24px rgba(255, 184, 0, 0.3);
+}
+
+.metric.seo-score-fair:hover {
+  box-shadow: 0 12px 32px rgba(255, 184, 0, 0.4);
+}
+
+.metric.seo-score-poor {
+  background: linear-gradient(135deg, var(--error, #ff4757) 0%, var(--error, #ff4757) 100%);
+  box-shadow: 0 8px 24px rgba(255, 71, 87, 0.3);
+}
+
+.metric.seo-score-poor:hover {
+  box-shadow: 0 12px 32px rgba(255, 71, 87, 0.4);
+}
+
 .metric-value {
   font-size: 2.2em;
   font-weight: 700;
   margin-bottom: 8px;
   position: relative;
   z-index: 2;
+  font-variant-numeric: tabular-nums; /* Align numbers consistently */
 }
 
 .metric-label {
@@ -651,6 +691,43 @@ select.form-input option,
   font-weight: 600;
   position: relative;
   z-index: 2;
+}
+
+/* SEO Score Status Indicator Bar */
+.seo-score-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  animation: slideInUp 0.4s ease-out;
+}
+
+.seo-score-bar-fill {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.seo-score-bar-progress {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.7));
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ==================== RESPONSIVE ==================== */
