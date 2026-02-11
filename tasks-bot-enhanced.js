@@ -764,7 +764,7 @@ class TasksBotEnhanced {
           if (timeMatch) { completedTime = timeMatch[1]; }
           // Try "Handled by Brain — Work already completed" style dates
           if (!completedTime) {
-            var dateMatch = task.notes.match(/(\d{4}-\d{2}-\d{2}\s+\d{1,2}:\d{2}[^—]*)/);
+            var dateMatch = task.notes.match(/(\d{4}-\d{2}-\d{2}\s+\d{1,2}:\d{2})/);
             if (dateMatch) completedTime = dateMatch[1].trim();
           }
         }
@@ -781,6 +781,26 @@ class TasksBotEnhanced {
               }
             }
           } catch(e) { completedTime = task.updated; }
+        }
+        // Clean up completedTime: remove any military time duplication and ensure standard time format only
+        if (completedTime && completedTime !== 'unknown') {
+          // If it's just a date and military time (HH:MM format), parse and convert to standard time
+          var dateTimeMatch = completedTime.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})/);
+          if (dateTimeMatch) {
+            var year = dateTimeMatch[1];
+            var month = dateTimeMatch[2];
+            var day = dateTimeMatch[3];
+            var hours = parseInt(dateTimeMatch[4]);
+            var mins = dateTimeMatch[5];
+            // Parse as EST time
+            var dateStr = year + '-' + month + '-' + day + 'T' + dateTimeMatch[4] + ':' + mins + ':00-05:00';
+            try {
+              var d = new Date(dateStr);
+              if (!isNaN(d.getTime())) {
+                completedTime = d.toLocaleString('en-US', {month:'2-digit',day:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'America/New_York'}) + ' EST';
+              }
+            } catch(e) {}
+          }
         }
         if (!completedTime) completedTime = 'unknown';
         html += '<div style="flex-shrink:0;text-align:right;line-height:1.4;">';
