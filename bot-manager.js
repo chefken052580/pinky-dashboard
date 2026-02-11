@@ -12,29 +12,13 @@
   var refreshTimer = null;
   var currentTab = 'fleet';
 
-  var BOT_META = {
-    DocsBot:       { icon: '\ud83d\udcdd', role: 'Documentation Writer', desc: 'Generates READMEs, guides, API docs, changelogs. Cross-refs CodeBot for accuracy.', color: '#60a5fa', schedule: 'On task + daily doc audit', capabilities: ['README generation','API docs','Changelog','Guide writing'] },
-    ResearchBot:   { icon: '\ud83d\udd0d', role: 'Intelligence Gatherer', desc: 'Web research, market analysis, competitive intel, trend reports. Feeds BusinessBot & SocialBot.', color: '#f59e0b', schedule: 'Standing orders + overnight missions', capabilities: ['Web search','Market analysis','Trend reports','Competitive intel'] },
-    CodeBot:       { icon: '\ud83d\udcbb', role: 'Code Engineer', desc: 'Writes, debugs, refactors code. Runs escalation pipeline (Haiku>Sonnet>Opus). Cross-refs DocsBot.', color: '#8b5cf6', schedule: 'On task + code review cycles', capabilities: ['Code writing','Bug fixing','Refactoring','Testing','Escalation pipeline'] },
-    SocialBot:     { icon: '\ud83d\udcf1', role: 'Social Media Manager', desc: 'Creates and schedules posts across 8 platforms. Uses ResearchBot intel for content.', color: '#ec4899', schedule: '3x daily posts + engagement', capabilities: ['Post scheduling','Content creation','Engagement tracking','Multi-platform'] },
-    BusinessBot:   { icon: '\ud83d\udcbc', role: 'Business Operations', desc: 'Invoicing, client management, analytics, financial reports. Integrates CryptoBot data.', color: '#10b981', schedule: 'Daily reports + on demand', capabilities: ['Invoicing','Client management','Analytics','Financial reports'] },
-    FileSystemBot: { icon: '\ud83d\udcc1', role: 'File Operations', desc: 'Organizes workspace, manages backups, cleans temp files, monitors disk usage.', color: '#6366f1', schedule: 'Hourly cleanup + on demand', capabilities: ['File organization','Backup management','Cleanup','Disk monitoring'] },
-    TasksBot:      { icon: '\ud83d\udccb', role: 'Task Manager', desc: 'Manages task queue, tracks completion, handles verification flow and approval queue.', color: '#06b6d4', schedule: '24/7 - every heartbeat', capabilities: ['Task queue','Verification','Approval queue','Priority routing'] },
-    CryptoBot:     { icon: '\ud83e\ude99', role: 'Wallet & DeFi Manager', desc: 'Solana wallet integration, DEX screening, token tracking, price alerts.', color: '#f97316', schedule: 'Real-time monitoring', capabilities: ['Wallet integration','DEX screening','Token tracking','Price alerts'] },
-    DiaryBot:      { icon: '\ud83d\udcd2', role: 'Personal Scribe', desc: 'Logs all activity, stores knowledge base, tracks escalation costs, builds memory map.', color: '#a855f7', schedule: '24/7 - passive logging', capabilities: ['Activity logging','Knowledge base','Escalation tracking','Memory map'] }
+    // Fallback metadata — API data from registry takes priority
+  var BOT_META_FALLBACK = {
+    DocsBot:'\ud83d\udcdd',ResearchBot:'\ud83d\udd0d',CodeBot:'\ud83d\udcbb',SocialBot:'\ud83d\udcf1',
+    BusinessBot:'\ud83d\udcbc',FileSystemBot:'\ud83d\udcc1',TasksBot:'\ud83d\udccb',CryptoBot:'\ud83e\ude99',DiaryBot:'\ud83d\udcd2'
   };
 
-  var CONNECTIONS = {
-    DocsBot:       { feeds: ['CodeBot'], fedBy: ['CodeBot','ResearchBot'], shares: 'Documentation & API specs' },
-    ResearchBot:   { feeds: ['BusinessBot','SocialBot','DiaryBot'], fedBy: [], shares: 'Market intel, trends, reports' },
-    CodeBot:       { feeds: ['DocsBot','TasksBot'], fedBy: ['DocsBot','DiaryBot'], shares: 'Code, commits, debug solutions' },
-    SocialBot:     { feeds: ['DiaryBot'], fedBy: ['ResearchBot','BusinessBot'], shares: 'Posts, engagement data' },
-    BusinessBot:   { feeds: ['SocialBot'], fedBy: ['ResearchBot','CryptoBot'], shares: 'Revenue, analytics, forecasts' },
-    FileSystemBot: { feeds: ['DiaryBot'], fedBy: ['CodeBot'], shares: 'File changes, backups, cleanup logs' },
-    TasksBot:      { feeds: ['DiaryBot'], fedBy: ['CodeBot'], shares: 'Task queue, completion data' },
-    CryptoBot:     { feeds: ['BusinessBot','SocialBot'], fedBy: ['ResearchBot'], shares: 'Wallet data, token prices, DEX alerts' },
-    DiaryBot:      { feeds: [], fedBy: ['TasksBot','CodeBot','SocialBot','FileSystemBot','ResearchBot'], shares: 'Activity logs, knowledge base, escalation data' }
-  };
+    // Connections now loaded from API (bot.feeds, bot.fedBy, bot.shares)
 
   // ============================================
   // INIT
@@ -74,15 +58,18 @@
 
     bots.forEach(function(bot) {
       var name = bot.name||bot.id;
-      var meta = BOT_META[name]||{icon:'\ud83e\udd16',role:'Bot',desc:'',color:'#888',schedule:'Unknown',capabilities:[]};
+      var fallbackIcon = BOT_META_FALLBACK[name] || '\ud83e\udd16';
       var perf = learning[name]||{level:'beginner',tasksCompleted:0,tasksFailed:0,consecutiveSuccesses:0,totalTokensUsed:0,avgTokensPerTask:0,commonErrors:[]};
       var bt = tasks.filter(function(t) {
         var a=(t.assignee||t.bot||'').toLowerCase(), n2=(t.name||'').toLowerCase();
         return a.includes(name.toLowerCase()) || n2.includes(name.toLowerCase().replace('bot',''));
       });
+      var colors = {'DocsBot':'#60a5fa','ResearchBot':'#f59e0b','CodeBot':'#8b5cf6','SocialBot':'#ec4899','BusinessBot':'#10b981','FileSystemBot':'#6366f1','TasksBot':'#06b6d4','CryptoBot':'#f97316','DiaryBot':'#a855f7'};
       botData[name] = {
-        id:bot.id, name:name, icon:meta.icon, role:meta.role, desc:meta.desc,
-        color:meta.color, schedule:meta.schedule, capabilities:meta.capabilities,
+        id:bot.id, name:name, icon:bot.icon||fallbackIcon, role:bot.role||'Bot', desc:bot.desc||bot.system||'',
+        color:colors[name]||'#888', schedule:bot.schedule||'Unknown', capabilities:bot.capabilities||[],
+        model:bot.model||'disabled', system:bot.system||'', feeds:bot.feeds||[], fedBy:bot.fedBy||[], shares:bot.shares||'',
+        botConfig:bot.config||{},
         status: bt.some(function(t){return t.status==='running';}) ? 'working' : (bot.status||'active'),
         performance: perf,
         tasks: { pending:bt.filter(function(t){return t.status==='pending';}), running:bt.filter(function(t){return t.status==='running';}), completed:bt.filter(function(t){return t.status==='completed';}), all:bt },
@@ -99,7 +86,7 @@
     return '<div style="display:flex;gap:4px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.15);flex-wrap:wrap;">' +
       navBtn('fleet','\ud83c\udf10 Fleet Overview') + navBtn('bots','\ud83e\udd16 Bot Grid') +
       navBtn('backend','\u2699\ufe0f Backend Controls') + navBtn('network','\ud83d\udd78\ufe0f Bot Network') +
-      navBtn('costs','\ud83d\udcb0 Cost Center') +
+      navBtn('costs','\ud83d\udcb0 Cost Center') + navBtn('addbot','\u2795 Add Bot') + navBtn('marketplace','\ud83d\udee0\ufe0f Modules') +
       '<div style="flex:1;"></div>' +
       '<button onclick="refreshBotManager()" style="padding:6px 14px;border:1px solid rgba(139,92,246,0.3);border-radius:8px;background:rgba(139,92,246,0.1);color:#eee;cursor:pointer;font-size:0.8em;">\ud83d\udd04 Refresh</button>' +
     '</div>';
@@ -125,6 +112,8 @@
     else if (section === 'backend') el.innerHTML = renderBackend();
     else if (section === 'network') el.innerHTML = renderNetwork();
     else if (section === 'costs') el.innerHTML = renderCosts();
+    else if (section === 'addbot') el.innerHTML = renderAddBot();
+    else if (section === 'marketplace') el.innerHTML = renderMarketplace();
   }
 
   // ============================================
@@ -275,7 +264,8 @@
         '<button class="bot-action-btn primary" onclick="assignTaskToBot(\''+name+'\')">\u2795 Task</button>' +
         '<button class="bot-action-btn" onclick="triggerBot(\''+name+'\')">\u26a1 Trigger</button>' +
         '<button class="bot-action-btn" onclick="viewBotLogs(\''+name+'\')">\ud83d\udcdc Logs</button>' +
-        '<button class="bot-action-btn danger" onclick="resetBot(\''+name+'\')">\ud83d\udd04 Reset</button></div>';
+        '<button class="bot-action-btn danger" onclick="resetBot(\''+name+'\')">\ud83d\udd04 Reset</button>' +
+        '<button class="bot-action-btn danger" onclick="deleteBot(\''+name+'\',\''+bot.id+'\')">\ud83d\uddd1 Delete</button></div>';
   }
   function dtab(id,label,active){return '<div class="bot-detail-tab'+(active?' active':'')+'" onclick="switchBotTab(this,\''+id+'\')">'+label+'</div>';}
 
@@ -338,7 +328,7 @@
   }
 
   function renderDetailConnections(bot) {
-    var c=CONNECTIONS[bot.name]||{feeds:[],fedBy:[],shares:'None'};
+    var c={feeds:bot.feeds||[],fedBy:bot.fedBy||[],shares:bot.shares||'None'};
     var h='<div class="bot-detail-section"><div class="bot-detail-section-title">\ud83d\udce1 Data Shared</div>' +
       '<div style="font-size:0.85em;color:var(--text-secondary,#ccc);padding:10px 12px;background:rgba(255,255,255,0.02);border-radius:8px;">'+c.shares+'</div></div>';
 
@@ -384,7 +374,7 @@
 
   function renderDetailConfig(bot) {
     var h='<div class="bot-detail-section"><div class="bot-detail-section-title">\u2699\ufe0f Configuration</div>' +
-      mr('Bot ID',bot.id||bot.name.toLowerCase())+mr('Status',bot.status)+mr('Level',(bot.performance||{}).level||'beginner') +
+      mr('Bot ID',bot.id||bot.name.toLowerCase())+mr('Model',bot.model||'disabled')+mr('Status',bot.status)+mr('Level',(bot.performance||{}).level||'beginner') +
       mr('Color','<span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:'+bot.color+';vertical-align:middle;"></span> '+bot.color)+'</div>';
 
     h+='<div class="bot-detail-section"><div class="bot-detail-section-title">\ud83c\udf9b\ufe0f Controls</div><div style="display:flex;flex-direction:column;gap:6px;">';
@@ -535,8 +525,208 @@
     alert(name+' Logs:\n\n'+(fb.length?fb.slice(-5).map(function(f){return (f.timestamp||'')+': '+(f.message||f.action||'');}).join('\n'):'No logs'));
   };
   window.resetBot = function(name) { if(confirm('Reset '+name+'?')) alert('Reset queued.'); };
+  window.deleteBot = async function(name,id) {
+    if(!confirm('DELETE '+name+'? This removes it from the registry.')) return;
+    var res=await fetch(API+'/api/bots/'+id,{method:'DELETE'});
+    var data=await res.json();
+    if(data.success){alert(name+' deleted. '+data.remaining+' bots remaining.');closeBotDetail();await loadAll();showSection('bots');}
+    else alert('Error: '+(data.error||'unknown'));
+  };
   window.refreshBotManager = async function() { await loadAll(); showSection(currentTab); };
 
+  // ============================================
+  // ADD BOT
+  // ============================================
+  function renderAddBot() {
+    var h='<div style="padding:20px 24px;">';
+    h+=sec('Register New Bot');
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">';
+    h+=formField('bot-id','Bot ID','e.g. mybot');
+    h+=formField('bot-name','Bot Name','e.g. MyBot');
+    h+=formField('bot-icon','Icon (emoji)','e.g. \ud83e\udd16');
+    h+=formField('bot-role','Role','e.g. Data Analyst');
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:20px;">';
+    h+=formField('bot-system','System Prompt','Describe what this bot does...');
+    h+=formField('bot-caps','Capabilities (comma separated)','e.g. analysis, reporting, charting');
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">';
+    h+='<div><label style="font-size:0.75em;color:var(--text-muted,#888);display:block;margin-bottom:4px;">Model</label>' +
+      '<select id="bot-model" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#eee;font-size:0.85em;">' +
+      '<option value="haiku">Haiku (Cheap)</option><option value="sonnet">Sonnet (Smart)</option>' +
+      '<option value="opus">Opus (Heavy)</option><option value="grok">Grok</option></select></div>';
+    h+='<div><label style="font-size:0.75em;color:var(--text-muted,#888);display:block;margin-bottom:4px;">Schedule</label>' +
+      '<select id="bot-schedule" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#eee;font-size:0.85em;">' +
+      '<option value="on_task">On Task</option><option value="heartbeat">Every Heartbeat</option>' +
+      '<option value="hourly">Hourly</option><option value="daily">Daily</option>' +
+      '<option value="scheduled">Scheduled</option><option value="realtime">Real-time</option>' +
+      '<option value="passive">Passive</option></select></div>';
+    h+='<div><label style="font-size:0.75em;color:var(--text-muted,#888);display:block;margin-bottom:4px;">Status</label>' +
+      '<select id="bot-status" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#eee;font-size:0.85em;">' +
+      '<option value="active">Active</option><option value="idle">Idle</option><option value="disabled">Disabled</option></select></div>';
+    h+='</div>';
+    
+    h+=sec('Cross-References');
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">';
+    h+=formField('bot-feeds','Feeds To (comma separated)','e.g. DiaryBot, BusinessBot');
+    h+=formField('bot-fedby','Fed By (comma separated)','e.g. ResearchBot, CodeBot');
+    h+='</div>';
+    h+=formField('bot-shares','Data Shared','e.g. Analysis results, reports');
+
+    h+='<div style="display:flex;gap:12px;margin-top:20px;">';
+    h+='<button onclick="registerNewBot()" style="flex:1;padding:14px;border-radius:10px;border:1px solid rgba(139,92,246,0.4);background:rgba(139,92,246,0.2);color:#a78bfa;font-size:0.95em;font-weight:600;cursor:pointer;">\ud83e\udd16 Register Bot</button>';
+    h+='<button onclick="importBotJSON()" style="flex:1;padding:14px;border-radius:10px;border:1px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.15);color:#22d3ee;font-size:0.95em;font-weight:600;cursor:pointer;">\ud83d\udce5 Import JSON</button>';
+    h+='</div>';
+
+    h+=sec('Import Bot Module');
+    h+='<div style="padding:16px;background:rgba(0,0,0,0.2);border-radius:10px;font-size:0.85em;color:var(--text-secondary,#ccc);line-height:1.6;">';
+    h+='<p>Drop a bot module JSON file or paste a config to instantly add a new bot to your fleet.</p>';
+    h+='<p>Bot modules work across all platforms — the registry is shared via the API.</p>';
+    h+='<textarea id="bot-json-import" rows="6" placeholder=\'{"id":"mybot","name":"MyBot","icon":"\ud83e\udd16","role":"...",\"model\":\"haiku\",...}\' style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.2);color:#eee;font-family:monospace;font-size:0.85em;resize:vertical;"></textarea>';
+    h+='<button onclick="importFromJSON()" style="margin-top:8px;padding:10px 20px;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.15);color:#34d399;cursor:pointer;font-size:0.85em;">\u2705 Import from JSON</button>';
+    h+='</div>';
+
+    // Export all bots
+    h+=sec('Export Fleet');
+    h+='<button onclick="exportFleet()" style="padding:10px 20px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:var(--text-secondary,#ccc);cursor:pointer;font-size:0.85em;">\ud83d\udce4 Export All Bots as JSON</button>';
+
+    h+='</div>';
+    return h;
+  }
+
+  function formField(id,label,placeholder) {
+    return '<div><label style="font-size:0.75em;color:var(--text-muted,#888);display:block;margin-bottom:4px;">'+label+'</label>' +
+      '<input id="'+id+'" placeholder="'+placeholder+'" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#eee;font-size:0.85em;box-sizing:border-box;"></div>';
+  }
+
+  window.registerNewBot = async function() {
+    var id=gv('bot-id'), name=gv('bot-name'), icon=gv('bot-icon')||'\ud83e\udd16';
+    if(!id||!name) { alert('ID and Name required'); return; }
+    var bot = {
+      id:id, name:name, icon:icon, status:gv('bot-status')||'active',
+      role:gv('bot-role')||name, model:gv('bot-model')||'haiku',
+      system:gv('bot-system')||'You are '+name+'. '+gv('bot-role'),
+      capabilities:(gv('bot-caps')||'').split(',').map(function(s){return s.trim();}).filter(Boolean),
+      feeds:(gv('bot-feeds')||'').split(',').map(function(s){return s.trim();}).filter(Boolean),
+      fedBy:(gv('bot-fedby')||'').split(',').map(function(s){return s.trim();}).filter(Boolean),
+      shares:gv('bot-shares')||'', schedule:gv('bot-schedule')||'on_task',
+      config:{autoAssign:true,'24x7':true,crossRef:true,createTasks:true,logToDiary:true}
+    };
+    var res = await fetch(API+'/api/bots/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bot)});
+    var data = await res.json();
+    if(data.success) { alert(name+' registered! Total: '+data.total+' bots'); await loadAll(); showSection('bots'); }
+    else alert('Error: '+(data.error||'unknown'));
+  };
+  function gv(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+
+  window.importFromJSON = async function() {
+    var ta=document.getElementById('bot-json-import');
+    if(!ta||!ta.value.trim()) { alert('Paste bot JSON first'); return; }
+    try {
+      var bot=JSON.parse(ta.value.trim());
+      if(!bot.id||!bot.name) { alert('JSON must have id and name'); return; }
+      var res=await fetch(API+'/api/bots/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bot)});
+      var data=await res.json();
+      if(data.success) { alert(bot.name+' imported!'); ta.value=''; await loadAll(); showSection('bots'); }
+      else alert('Error: '+(data.error||'unknown'));
+    } catch(e) { alert('Invalid JSON: '+e.message); }
+  };
+
+  window.importBotJSON = function() {
+    var input=document.createElement('input');input.type='file';input.accept='.json';
+    input.onchange=async function(e){
+      var file=e.target.files[0]; if(!file) return;
+      var text=await file.text();
+      try {
+        var bot=JSON.parse(text);
+        if(!bot.id||!bot.name) { alert('JSON must have id and name'); return; }
+        var res=await fetch(API+'/api/bots/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bot)});
+        var data=await res.json();
+        if(data.success) { alert(bot.name+' imported from file!'); await loadAll(); showSection('bots'); }
+        else alert('Error: '+(data.error||'unknown'));
+      } catch(err) { alert('Invalid JSON file: '+err.message); }
+    };
+    input.click();
+  };
+
+  window.exportFleet = function() {
+    var data=Object.values(botData).map(function(b){return {id:b.id,name:b.name,icon:b.icon,status:b.status,role:b.role,model:b.model,system:b.system,capabilities:b.capabilities,feeds:b.feeds,fedBy:b.fedBy,shares:b.shares,schedule:b.schedule,config:b.botConfig};});
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pinky-bot-fleet.json';a.click();
+  };
+
+  // ============================================
+  // MARKETPLACE / MODULES
+  // ============================================
+  function renderMarketplace() {
+    var h='<div style="padding:20px 24px;">';
+    h+=sec('Bot Module Marketplace');
+    h+='<div style="padding:16px;background:rgba(0,0,0,0.2);border-radius:10px;margin-bottom:20px;">';
+    h+='<div style="font-size:0.9em;color:var(--text-secondary,#ccc);line-height:1.6;">Browse and install community bot modules. Each module adds new capabilities to your fleet. Modules work across all platforms via the universal bot registry API.</div></div>';
+
+    h+='<div style="display:flex;gap:12px;margin-bottom:20px;">';
+    h+='<input id="mp-search" placeholder="Search modules..." style="flex:1;padding:10px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#eee;font-size:0.85em;" onkeyup="searchMarketplace()">';
+    h+='<button onclick="loadMarketplace()" style="padding:10px 16px;border-radius:8px;border:1px solid rgba(139,92,246,0.3);background:rgba(139,92,246,0.1);color:#a78bfa;cursor:pointer;font-size:0.85em;">\ud83d\udd04 Refresh</button>';
+    h+='</div>';
+
+    h+='<div id="mp-listings" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">';
+    h+=mpCard('SEOBot','\ud83d\udd17','SEO analysis, keyword research, meta tag generation, sitemap audits','seo','haiku',['SEO audit','Keyword research','Meta generation']);
+    h+=mpCard('EmailBot','\u2709\ufe0f','Draft, schedule, and manage email campaigns with AI-powered content','email','haiku',['Email drafting','Campaign scheduling','A/B testing']);
+    h+=mpCard('AnalyticsBot','\ud83d\udcc8','Data analysis, visualization, trend detection, anomaly alerts','analytics','sonnet',['Data analysis','Visualization','Trend detection']);
+    h+=mpCard('SecurityBot','\ud83d\udd12','Security scanning, vulnerability detection, compliance checks','security','sonnet',['Vuln scanning','Compliance','Incident response']);
+    h+=mpCard('TranslateBot','\ud83c\udf0d','Multi-language translation, localization, content adaptation','translate','haiku',['Translation','Localization','Content adaptation']);
+    h+=mpCard('DesignBot','\ud83c\udfa8','UI/UX suggestions, design system management, accessibility audits','design','sonnet',['UI suggestions','Design systems','Accessibility']);
+    h+='</div>';
+
+    h+=sec('Installed Plugins');
+    h+='<div id="mp-installed">Loading...</div>';
+    h+='</div>';
+    setTimeout(loadInstalledPlugins, 100);
+    return h;
+  }
+
+  function mpCard(name,icon,desc,id,model,caps) {
+    return '<div style="padding:16px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);transition:all 0.2s;" onmouseover="this.style.borderColor=\'rgba(139,92,246,0.3)\'" onmouseout="this.style.borderColor=\'rgba(255,255,255,0.06)\'">' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
+      '<span style="font-size:1.5em;">'+icon+'</span><div style="flex:1;">' +
+      '<div style="font-weight:600;color:var(--text-primary,#eee);">'+name+'</div>' +
+      '<div style="font-size:0.7em;color:var(--text-muted,#888);">Model: '+model+'</div></div></div>' +
+      '<div style="font-size:0.82em;color:var(--text-secondary,#ccc);margin-bottom:10px;line-height:1.4;">'+desc+'</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">'+caps.map(function(c){return '<span style="font-size:0.7em;padding:2px 8px;border-radius:4px;background:rgba(139,92,246,0.08);color:#a78bfa;">'+c+'</span>';}).join('')+'</div>' +
+      '<button onclick="installModule(\''+id+'\',\''+name+'\',\''+icon+'\',\''+model+'\',\''+desc.replace(/'/g,"")+'\',\''+caps.join(",")+'\' )" style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(16,185,129,0.3);background:rgba(16,185,129,0.1);color:#34d399;cursor:pointer;font-size:0.82em;">\u2795 Install</button></div>';
+  }
+
+  window.installModule = async function(id,name,icon,model,desc,capsStr) {
+    var caps=capsStr.split(',');
+    var bot={id:id,name:name,icon:icon,status:'active',role:desc.substring(0,50),model:model,
+      system:'You are '+name+'. '+desc,capabilities:caps,feeds:['DiaryBot'],fedBy:[],
+      shares:name+' outputs',schedule:'on_task',config:{autoAssign:true,'24x7':true,crossRef:true,createTasks:true,logToDiary:true}};
+    var res=await fetch(API+'/api/bots/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bot)});
+    var data=await res.json();
+    if(data.success){alert(name+' installed!');await loadAll();showSection('bots');}
+    else alert('Error: '+(data.error||'unknown'));
+  };
+
+  async function loadInstalledPlugins() {
+    var el=document.getElementById('mp-installed');if(!el)return;
+    try {
+      var res=await sf(API+'/api/plugins');
+      var plugins=Array.isArray(res)?res:(res.plugins||[]);
+      if(!plugins.length){el.innerHTML=em('No plugins installed');return;}
+      var h='';
+      plugins.forEach(function(p){h+=mr(p.name||p.id,p.status||'installed');});
+      el.innerHTML=h;
+    } catch(e){el.innerHTML=em('Could not load plugins');}
+  }
+
+  window.searchMarketplace = function() {
+    var q=(document.getElementById('mp-search')||{}).value||'';
+    var cards=document.querySelectorAll('#mp-listings > div');
+    cards.forEach(function(c){c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';});
+  };
+  window.loadMarketplace = function() { showSection('marketplace'); };
+
+  
   // ============================================
   // HELPERS
   // ============================================
