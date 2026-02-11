@@ -1117,32 +1117,92 @@ class TasksBotEnhanced {
   }
 
   /**
-   * Start a task now - Send wake-up call to Pinky
+   * Start a task now - Trigger Pinky heartbeat with task context
+   * Follows HEARTBEAT.md workflow and ensures all memory/rules are loaded
    */
   async startTaskNow(taskName, taskId) {
-    if (!confirm('Send wake-up call to start task: "' + taskName + '"?\n\nThis will notify Pinky to begin work immediately.')) return;
+    if (!confirm('📋 Start Task: "' + taskName + '"?\n\nThis will trigger Pinky\'s heartbeat to begin this task immediately.\nPinky will load all memory files and follow the full rules/memory flow.')) return;
     
     try {
-      // Send wake-up message via chat API
-      const wakeMessage = '🔔 START NOW: ' + taskName;
-      const response = await fetch('/api/chat/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: wakeMessage,
-          priority: 'high'
-        })
-      });
-
-      if (response.ok) {
-        alert('✅ Wake-up call sent! Pinky will start this task shortly.');
-        console.log('[TasksBot] Start Now triggered for:', taskName);
+      const API = window.API || 'http://192.168.254.4:3030';
+      let success = false;
+      let endpoint = '';
+      
+      // Attempt 1: Use /api/execute/heartbeat to trigger immediate execution
+      try {
+        endpoint = API + '/api/execute/heartbeat';
+        const heartbeatResponse = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            source: 'tasksbot-start-button',
+            taskId: taskId,
+            taskName: taskName,
+            context: 'User triggered task start from TasksBot'
+          })
+        });
+        
+        if (heartbeatResponse.ok) {
+          success = true;
+          console.log('[TasksBot] Heartbeat triggered via /api/execute/heartbeat', { taskId, taskName });
+        }
+      } catch (err) {
+        console.warn('[TasksBot] Heartbeat endpoint failed:', err.message);
+      }
+      
+      // Attempt 2: Fallback to cron wake endpoint
+      if (!success) {
+        try {
+          endpoint = API + '/api/cron/wake';
+          const wakeResponse = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              mode: 'now',
+              context: { taskId, taskName }
+            })
+          });
+          
+          if (wakeResponse.ok) {
+            success = true;
+            console.log('[TasksBot] Wake signal sent via /api/cron/wake', { taskId, taskName });
+          }
+        } catch (err) {
+          console.warn('[TasksBot] Wake endpoint failed:', err.message);
+        }
+      }
+      
+      // Attempt 3: Fallback to heartbeat restart
+      if (!success) {
+        try {
+          endpoint = API + '/api/heartbeat/restart';
+          const restartResponse = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              taskId: taskId,
+              taskName: taskName
+            })
+          });
+          
+          if (restartResponse.ok) {
+            success = true;
+            console.log('[TasksBot] Heartbeat restarted via /api/heartbeat/restart', { taskId, taskName });
+          }
+        } catch (err) {
+          console.warn('[TasksBot] Restart endpoint failed:', err.message);
+        }
+      }
+      
+      if (success) {
+        console.log('[TasksBot] ✅ Task start signal sent successfully', { taskId, taskName, endpoint });
+        alert('✅ WAKE-UP SIGNAL SENT!\n\nPinky is now running with task:\n"' + taskName + '"\n\nPinky will:\n1. Load SOUL.md, USER.md, MEMORY.md\n2. Check memory/CORE.md for routing\n3. Read HEARTBEAT.md workflow\n4. Follow all rules in AGENTS.md\n5. Begin task execution\n\nMonitor the dashboard for progress.');
       } else {
-        throw new Error('API returned status ' + response.status);
+        throw new Error('All heartbeat endpoints failed. Check backend status.');
       }
     } catch (error) {
-      console.error('[TasksBot] Start Now error:', error);
-      alert('❌ Failed to send wake-up call. Check console for details.');
+      console.error('[TasksBot] Start task error:', error);
+      alert('❌ FAILED TO START TASK\n\nError: ' + error.message + '\n\nPlease check:\n- Backend API is running (http://192.168.254.4:3030)\n- Pinky daemon status\n- Browser console for details');
     }
   }
 

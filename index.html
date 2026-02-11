@@ -210,15 +210,13 @@
                     <span class="bot-icon">📝</span>
                     <span class="bot-name">DiaryBot</span>
                 </button>
-                <button class="bot-button" data-bot="botbuilder">
-                    <span class="bot-icon">🔧</span>
-                    <span class="bot-name">Bot Builder</span>
-                    <span style="font-size:0.7em;opacity:0.7;">Create Custom Bots</span>
-                </button>
             </nav>
             <nav class="view-nav">
                 <h3>📱 Views</h3>
                 <!-- Social Media merged into SocialBot -->
+                <button class="view-button" data-view="botbuilder">
+                    <span>🔧 Bot Builder</span>
+                </button>
                 <button class="view-button" data-view="wordpress">
                     <span>📝 WordPress</span>
                 </button>
@@ -916,13 +914,42 @@
                     <div class="chat-session-list" id="chat-session-list"></div>
                 </div>
                 <div class="chat-main">
+                    <!-- Channel Tabs -->
+                    <div class="chat-tabs-container">
+                        <button class="chat-tab active" data-channel="all" onclick="PinkyChat.switchChannel('all')">
+                            <span>💬</span> All
+                        </button>
+                        <button class="chat-tab" data-channel="general" onclick="PinkyChat.switchChannel('general')">
+                            <span>🎯</span> General
+                        </button>
+                        <button class="chat-tab" data-channel="tasks" onclick="PinkyChat.switchChannel('tasks')">
+                            <span>📋</span> Tasks
+                        </button>
+                        <button class="chat-tab" data-channel="system" onclick="PinkyChat.switchChannel('system')">
+                            <span>⚙️</span> System
+                        </button>
+                    </div>
+                    
                     <div class="chat-header">
                         <div class="chat-header-title">
                             <span class="status-dot"></span>
                             <span id="chat-header-title-text">New Conversation</span>
                         </div>
                         <div class="chat-header-stats" id="chat-header-stats"></div>
+                        <!-- Chat Actions -->
+                        <div class="chat-header-actions">
+                            <button class="chat-action-btn" title="Search messages" onclick="PinkyChat.toggleSearch()">🔍</button>
+                            <button class="chat-action-btn" title="Show pinned messages" onclick="PinkyChat.showPinned()">📌</button>
+                            <button class="chat-action-btn" title="Clear chat" onclick="PinkyChat.clearChat()">🗑️</button>
+                        </div>
                     </div>
+                    
+                    <!-- Search Bar (Hidden by default) -->
+                    <div class="chat-search-bar hidden" id="chat-search-bar">
+                        <input type="text" id="chat-message-search" placeholder="Search messages..." />
+                        <button onclick="PinkyChat.closeSearch()">✕</button>
+                    </div>
+                    
                     <div class="chat-messages" id="chat-messages">
                             <div class="chat-empty-state">
                                 <div class="pinky-avatar-large">🐭</div>

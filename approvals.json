@@ -2,6 +2,46 @@
   "pending": [],
   "resolved": [
     {
+      "id": "1770797846983",
+      "title": "Dashboard Chat UI Enhancement - Add Tabs & Search",
+      "description": "Add channel tabs (All/General/Tasks/System), message search, pinned messages, and action buttons to pinky-chat UI. Changes to index.html add new markup for tabs and search bar. JS/CSS handle filtering and display.",
+      "file": "pinky-dashboard/index.html",
+      "status": "approved",
+      "createdAt": "2026-02-11T08:17:26.983Z",
+      "instructions": "Approved. Commit with descriptive message. Do NOT break existing functionality.",
+      "resolvedAt": "2026-02-11T08:22:03.970Z"
+    },
+    {
+      "id": "1770797028493",
+      "title": "Task 2: WordPress Page Maker Enhanced with SEO Features & Dynamic Styling",
+      "description": "COMPREHENSIVE ENHANCEMENT: Added advanced SEO features and modern dynamic UI styling.\n\nNEW SEO FEATURES ADDED:\n1. Flesch-Kincaid Readability Score Calculator\n   - Grade levels 1-16, letter grades A-F\n   - Syllable counting algorithm\n2. Schema.org Markup Generation\n   - Article schema with metadata\n   - BreadcrumbList for navigation\n3. Open Graph Meta Tags\n   - og:title, og:description, og:url, og:type\n   - twitter:card, twitter:image tags\n4. Advanced Content Quality Analysis\n   - Word count, sentence structure, paragraph analysis\n   - H-tag structure validation (proper H1/H2/H3 hierarchy)\n   - Image analysis with alt-text checking\n   - Internal/external link counting\n   - E-E-A-T compliance scoring\n5. Comprehensive SEO Score (0-100)\n   - Title optimization scoring\n   - Meta description optimization\n   - Content length scoring\n   - Keyword density analysis\n   - Heading structure validation\n   - Media optimization\n   - Readability scoring\n6. LSI Keyword & Keyword Variation Support\n\nFILES MODIFIED:\n- wordpress-page-maker.js: Added 8 new methods, 500+ lines of SEO logic\n- NEW: wordpress-page-maker.css created with modern animations and responsive design\n\nDYNAMIC UI IMPROVEMENTS:\n- Smooth fade-in and slide animations\n- Real-time loading spinners with pulse effects\n- Gradient backgrounds with depth\n- Hover effects on all interactive elements\n- Progress indicators with color-coded status\n- Responsive design (mobile-first)\n- Dark mode support using design tokens\n- CSS-only animations (no JS required)\n- Auto-injected CSS via JavaScript to avoid HTML modification\n\nFEATURE COMPATIBILITY:\n- All new methods are backward compatible\n- Existing optimizeSEO() method enhanced but still works as before\n- No external dependencies required\n- All calculations are local (no API calls)\n\nFILE SIZES:\n- wordpress-page-maker.js: 25.7 KB\n- wordpress-page-maker.css: 14.5 KB\n- Both under 50KB limit",
+      "file": "pinky-dashboard/wordpress-page-maker.js",
+      "status": "approved",
+      "createdAt": "2026-02-11T08:03:48.493Z",
+      "instructions": "Approved. Commit with descriptive message. Do NOT break existing functionality.",
+      "resolvedAt": "2026-02-11T08:22:03.962Z"
+    },
+    {
+      "id": "1770796936358",
+      "title": "Task 3: Fix Pinky Start Button to Follow Heartbeat Workflow",
+      "description": "IMPROVED: startTaskNow() function now uses proper heartbeat API endpoints instead of chat API. Changes:\n- Triggers /api/execute/heartbeat with task context (primary)\n- Fallback to /api/cron/wake endpoint\n- Fallback to /api/heartbeat/restart\n- Passes taskId and taskName to ensure Pinky picks up correct task\n- Enhanced user feedback showing what Pinky will do:\n  * Load SOUL.md, USER.md, MEMORY.md\n  * Check memory/CORE.md for routing\n  * Read HEARTBEAT.md workflow\n  * Follow all AGENTS.md rules\n  * Begin task execution\n- Better error handling and debug logging\n- Validates backend API is accessible",
+      "file": "pinky-dashboard/tasks-bot-enhanced.js",
+      "status": "approved",
+      "createdAt": "2026-02-11T08:02:16.358Z",
+      "instructions": "Approved. Commit with descriptive message. Do NOT break existing functionality.",
+      "resolvedAt": "2026-02-11T08:22:03.953Z"
+    },
+    {
+      "id": "1770796842595",
+      "title": "Task 1: Move Bot Builder to Views Section",
+      "description": "Moved Bot Builder button from Bot Army nav section to Views section. Changed data-bot attribute to data-view. Verified renderer.js click handler supports both attributes. Bot Builder is now correctly classified as a view, not a bot.",
+      "file": "pinky-dashboard/index.html",
+      "status": "approved",
+      "createdAt": "2026-02-11T08:00:42.595Z",
+      "instructions": "Approved. Commit with descriptive message. Do NOT break existing functionality.",
+      "resolvedAt": "2026-02-11T08:22:03.944Z"
+    },
+    {
       "id": "1770792480224",
       "title": "P7.3-2: Add custom-bot-builder-api.js to bot-backend",
       "description": "New API module for Custom Bot Builder. 514 lines, 9 endpoints for bot creation/testing/deployment. Part of P7.3-2 task. Requires: Add app.use('/api/bots/custom', require(./custom-bot-builder-api)) to server.js",

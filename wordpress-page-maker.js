@@ -436,16 +436,282 @@ class WordPressPageMaker {
       statusEl.className = 'status-indicator ' + type;
     }
   }
+
+  /**
+   * ADVANCED SEO: Calculate Flesch-Kincaid Readability Score
+   * Returns grade level (6-16) and letter grade (A-F)
+   */
+  calculateReadabilityScore(text) {
+    const sentences = (text.match(/[.!?]+/g) || []).length || 1;
+    const words = text.split(/\s+/).length;
+    const syllables = this.countSyllables(text);
+    
+    if (words === 0) return { score: 0, grade: 'N/A', letterGrade: 'N/A' };
+    
+    const score = (0.39 * (words / sentences)) + (11.8 * (syllables / words)) - 15.59;
+    const grade = Math.max(1, Math.min(16, Math.round(score)));
+    const gradeMap = ['F', 'F', 'D', 'D', 'C', 'C', 'B', 'B', 'A', 'A', 'A+', 'A+', 'A+', 'A+', 'A+', 'A+'];
+    
+    return {
+      score: Math.max(0, Math.min(100, (16 - score) * 6.25)),
+      grade: grade,
+      letterGrade: gradeMap[Math.max(0, Math.min(15, grade))]
+    };
+  }
+
+  /**
+   * Helper: Count syllables in text
+   */
+  countSyllables(text) {
+    const words = text.toLowerCase().split(/\s+/);
+    let syllableCount = 0;
+    const vowels = 'aeiouy';
+    
+    words.forEach(word => {
+      let syllables = 0;
+      let previousWasVowel = false;
+      
+      for (let i = 0; i < word.length; i++) {
+        const isVowel = vowels.includes(word[i]);
+        if (isVowel && !previousWasVowel) {
+          syllables++;
+        }
+        previousWasVowel = isVowel;
+      }
+      
+      if (word.endsWith('e')) syllables--;
+      if (word.endsWith('le') && !word.endsWith('ble')) syllables++;
+      
+      syllableCount += Math.max(1, syllables);
+    });
+    
+    return syllableCount;
+  }
+
+  /**
+   * ADVANCED SEO: Generate Schema.org Markup
+   * Returns JSON-LD for Article and BreadcrumbList
+   */
+  generateSchemaMarkup(title, content, url, author = 'Author') {
+    const wordCount = content.split(/\s+/).length;
+    const excerpt = content.replace(/<[^>]*>/g, '').substring(0, 160);
+    const now = new Date().toISOString();
+    
+    const articleSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      'headline': title,
+      'description': excerpt,
+      'articleBody': content,
+      'wordCount': wordCount,
+      'datePublished': now,
+      'dateModified': now,
+      'author': {
+        '@type': 'Person',
+        'name': author
+      }
+    };
+    
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      'itemListElement': [
+        {
+          '@type': 'ListItem',
+          'position': 1,
+          'name': 'Home',
+          'item': url.split('/').slice(0, 3).join('/')
+        },
+        {
+          '@type': 'ListItem',
+          'position': 2,
+          'name': title,
+          'item': url
+        }
+      ]
+    };
+    
+    return {
+      article: articleSchema,
+      breadcrumb: breadcrumbSchema
+    };
+  }
+
+  /**
+   * ADVANCED SEO: Generate Open Graph Meta Tags
+   */
+  generateOpenGraphTags(title, description, url, imageUrl = '') {
+    return {
+      'og:title': title,
+      'og:description': description.substring(0, 160),
+      'og:url': url,
+      'og:type': 'article',
+      'og:image': imageUrl || url + '/og-image.jpg',
+      'og:site_name': 'Website',
+      'article:published_time': new Date().toISOString(),
+      'article:author': 'Author',
+      'twitter:card': 'summary_large_image',
+      'twitter:title': title,
+      'twitter:description': description.substring(0, 160),
+      'twitter:image': imageUrl || url + '/og-image.jpg'
+    };
+  }
+
+  /**
+   * ADVANCED SEO: Analyze content for quality metrics
+   */
+  analyzeContentQuality(content, keyword) {
+    const text = content.replace(/<[^>]*>/g, '');
+    const wordCount = text.split(/\s+/).length;
+    const sentences = (text.match(/[.!?]+/g) || []).length || 1;
+    const paragraphs = (content.match(/<p>|<\/h[1-6]>/gi) || []).length || 1;
+    
+    // Check for keyword variations and LSI keywords
+    const keywordCount = (text.match(new RegExp('\\b' + keyword + '\\b', 'gi')) || []).length;
+    const keywordDensity = (keywordCount / wordCount * 100).toFixed(2);
+    const avgSentenceLength = wordCount / sentences;
+    
+    // H-tag structure check
+    const h1Count = (content.match(/<h1>/gi) || []).length;
+    const h2Count = (content.match(/<h2>/gi) || []).length;
+    const hasProperStructure = h1Count === 1 && h2Count >= 2;
+    
+    // Image analysis
+    const imageCount = (content.match(/<img[^>]*>/gi) || []).length;
+    const imagesWithAlt = (content.match(/<img[^>]*alt="[^"]*"[^>]*>/gi) || []).length;
+    
+    // Link analysis
+    const internalLinks = (content.match(/href="\/[^"]*"/gi) || []).length;
+    const externalLinks = (content.match(/href="https?:\/\/[^"]*"/gi) || []).length;
+    
+    // Content quality score (0-100)
+    let qualityScore = 50;
+    if (wordCount >= 1500) qualityScore += 10;
+    if (keywordDensity >= 1 && keywordDensity <= 3) qualityScore += 10;
+    if (h1Count === 1) qualityScore += 5;
+    if (h2Count >= 2) qualityScore += 5;
+    if (imageCount >= 2) qualityScore += 5;
+    if (avgSentenceLength >= 12 && avgSentenceLength <= 20) qualityScore += 10;
+    if (internalLinks >= 2) qualityScore += 5;
+    
+    return {
+      wordCount: wordCount,
+      sentenceCount: sentences,
+      paragraphCount: paragraphs,
+      avgSentenceLength: avgSentenceLength.toFixed(1),
+      keywordCount: keywordCount,
+      keywordDensity: keywordDensity + '%',
+      h1Count: h1Count,
+      h2Count: h2Count,
+      hasProperStructure: hasProperStructure,
+      imageCount: imageCount,
+      imagesWithAlt: imagesWithAlt + ' of ' + imageCount,
+      internalLinks: internalLinks,
+      externalLinks: externalLinks,
+      qualityScore: Math.min(100, qualityScore)
+    };
+  }
+
+  /**
+   * ADVANCED SEO: Calculate comprehensive SEO Score (0-100)
+   */
+  calculateSEOScore(content, keyword, metaDescription, title) {
+    let score = 0;
+    const text = content.replace(/<[^>]*>/g, '');
+    const wordCount = text.split(/\s+/).length;
+    
+    // Title optimization (15 points)
+    if (title && title.length >= 30 && title.length <= 60) score += 10;
+    if (title && title.includes(keyword)) score += 5;
+    
+    // Meta description (15 points)
+    if (metaDescription && metaDescription.length >= 120 && metaDescription.length <= 160) score += 10;
+    if (metaDescription && metaDescription.includes(keyword)) score += 5;
+    
+    // Content length (15 points)
+    if (wordCount >= 1500) score += 15;
+    else if (wordCount >= 800) score += 10;
+    else if (wordCount >= 300) score += 5;
+    
+    // Keyword optimization (15 points)
+    const keywordDensity = (text.match(new RegExp('\\b' + keyword + '\\b', 'gi')) || []).length / wordCount * 100;
+    if (keywordDensity >= 1 && keywordDensity <= 3) score += 10;
+    if (keywordDensity >= 0.5 && keywordDensity < 1) score += 5;
+    
+    // Heading structure (15 points)
+    const h1Count = (content.match(/<h1>/gi) || []).length;
+    const h2Count = (content.match(/<h2>/gi) || []).length;
+    if (h1Count === 1) score += 10;
+    if (h2Count >= 2) score += 5;
+    
+    // Media optimization (10 points)
+    const images = (content.match(/<img[^>]*>/gi) || []).length;
+    if (images >= 2) score += 5;
+    const imagesWithAlt = (content.match(/<img[^>]*alt="[^"]*"[^>]*>/gi) || []).length;
+    if (imagesWithAlt === images) score += 5;
+    
+    // Readability (15 points)
+    const readability = this.calculateReadabilityScore(text);
+    if (readability.grade >= 6 && readability.grade <= 10) score += 15;
+    else if (readability.grade >= 4 && readability.grade < 6) score += 10;
+    else score += 5;
+    
+    return Math.min(100, Math.max(0, score));
+  }
+
+  /**
+   * Enhanced optimizeSEO with advanced metrics
+   */
+  async optimizeSEO(content, keyword) {
+    const wordCount = content.split(/\s+/).length;
+    const keywordDensity = ((content.match(new RegExp(keyword, 'gi')) || []).length / wordCount * 100).toFixed(2);
+    const metaDescription = `Learn about ${keyword}. Our comprehensive guide covers everything you need to know.`;
+    const title = `Complete Guide to ${keyword}`;
+    
+    const readability = this.calculateReadabilityScore(content);
+    const qualityMetrics = this.analyzeContentQuality(content, keyword);
+    const seoScore = this.calculateSEOScore(content, keyword, metaDescription, title);
+    const schema = this.generateSchemaMarkup(title, content, 'https://example.com/page');
+    const ogTags = this.generateOpenGraphTags(title, metaDescription, 'https://example.com/page');
+    
+    return {
+      metaDescription: metaDescription,
+      metaKeywords: [keyword, `what is ${keyword}`, `${keyword} guide`, `${keyword} tips`],
+      wordCount: wordCount,
+      keywordDensity: keywordDensity + '%',
+      readabilityScore: readability.score,
+      readabilityGrade: readability.grade,
+      readabilityLetter: readability.letterGrade,
+      qualityMetrics: qualityMetrics,
+      seoScore: seoScore,
+      schemaMarkup: schema,
+      openGraphTags: ogTags
+    };
+  }
 }
 
 // Initialize when DOM is ready (renderer.js will call this on view switch)
 console.log('[WordPressMaker] Script loaded');
+
+// Inject CSS dynamically
+function injectWordPressMakerCSS() {
+  if (!document.getElementById('wordpress-page-maker-styles')) {
+    const link = document.createElement('link');
+    link.id = 'wordpress-page-maker-styles';
+    link.rel = 'stylesheet';
+    link.href = 'wordpress-page-maker.css';
+    document.head.appendChild(link);
+    console.log('[WordPressMaker] CSS injected dynamically');
+  }
+}
+
 // Only auto-initialize if container exists AND DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('wordpress-page-maker');
     if (container) {
       console.log('[WordPressMaker] Auto-initializing on DOMContentLoaded');
+      injectWordPressMakerCSS();
       window.wordPressPageMaker = new WordPressPageMaker();
       window.wordPressPageMaker.initialize();
     }
@@ -454,6 +720,7 @@ if (document.readyState === 'loading') {
   const container = document.getElementById('wordpress-page-maker');
   if (container) {
     console.log('[WordPressMaker] Auto-initializing (DOM already ready)');
+    injectWordPressMakerCSS();
     window.wordPressPageMaker = new WordPressPageMaker();
     window.wordPressPageMaker.initialize();
   } else {
