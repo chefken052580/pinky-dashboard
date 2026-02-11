@@ -17,6 +17,44 @@ class TasksBot {
   }
 
   /**
+   * Format timestamp to EST 12-hour format
+   */
+  formatTimeEST(timestamp) {
+    if (!timestamp) return 'unknown';
+    try {
+      let date;
+      // If it's already a Date object
+      if (timestamp instanceof Date) {
+        date = timestamp;
+      } else if (typeof timestamp === 'string') {
+        // Try to parse ISO string or other formats
+        date = new Date(timestamp);
+      } else if (typeof timestamp === 'number') {
+        date = new Date(timestamp);
+      } else {
+        return 'unknown';
+      }
+
+      // If invalid date
+      if (isNaN(date.getTime())) return 'unknown';
+
+      // Format as 12-hour EST with AM/PM
+      return date.toLocaleString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'America/New_York'
+      }) + ' EST';
+    } catch (e) {
+      console.error('[TasksBot] Time format error:', e);
+      return String(timestamp);
+    }
+  }
+
+  /**
    * Initialize TasksBot
    */
   async init() {
@@ -312,7 +350,7 @@ class TasksBot {
                 <div class="completed-content">
                   <div class="completed-title">✓ ${this.escapeHtml(task.name)}</div>
                   <div class="completed-meta">
-                    <span class="completed-date">📅 Completed: ${task.updated}</span>
+                    <span class="completed-date">📅 Completed: ${this.formatTimeEST(task.updated)}</span>
                   </div>
                 </div>
                 <button class="task-btn delete-btn" onclick="window.tasksBotInstance.deleteTask(${task.id}, true)" title="Remove">
