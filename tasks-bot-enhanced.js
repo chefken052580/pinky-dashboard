@@ -750,7 +750,7 @@ class TasksBotEnhanced {
         if (commitHash) {
           html += '<button onclick="event.stopPropagation();window.tasksBotEnhanced.revertTask(\'' + this.escapeAttr(task.name).replace(/'/g, "\\'") + '\',\'' + commitHash + '\');" title="Revert this commit" style="background:linear-gradient(135deg,#ff9500,#ff6b6b);color:#fff;border:none;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:0.75em;font-weight:500;flex-shrink:0;">↩ Revert</button>';
         }
-        html += '<span class="task-name" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + this.escapeAttr(task.name) + '</span>';
+        html += '<span class="task-name completed-task-name" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:1.06em;font-weight:700;letter-spacing:0.4px;color:var(--success,#4ade80);text-shadow:0 0 12px rgba(74,222,128,0.5),0 0 6px rgba(74,222,128,0.3);filter:brightness(1.15);transition:all 0.2s ease;">' + this.escapeAttr(task.name) + '</span>';
         // View Log toggle
         if (task.notes) {
           html += '<span onclick="event.stopPropagation();var el=document.getElementById(\'' + taskUniqueId + '-log\');if(el){el.style.display=el.style.display===\'none\'?\'block\':\'none\';}" style="color:#00d4ff;cursor:pointer;font-size:0.75em;flex-shrink:0;white-space:nowrap;text-decoration:underline;">📋 View Log</span>';
