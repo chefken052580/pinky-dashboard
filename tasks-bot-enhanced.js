@@ -1663,6 +1663,39 @@ class TasksBotEnhanced {
       this.showFileNotification('Error updating priority: ' + err.message, 'error');
     }
   }
+
+  /**
+   * Cycle priority on individual task: P1 → P2 → P3 → P1
+   */
+  async cyclePriority(taskName, currentPriority) {
+    const priorityCycle = { 'P1': 'P2', 'P2': 'P3', 'P3': 'P1' };
+    const newPriority = priorityCycle[currentPriority] || 'P2';
+    
+    try {
+      const response = await this.fetchWithRetry(this.apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_priority',
+          taskName: taskName,
+          newPriority: newPriority
+        })
+      }, 2);
+      
+      if (response.ok) {
+        console.log('[TasksBot] Priority changed: ' + taskName + ' from ' + currentPriority + ' to ' + newPriority);
+        await this.loadTasks();
+        this.render(true);
+        this.showFileNotification('✅ Priority changed to ' + newPriority, 'success');
+      } else {
+        console.error('[TasksBot] Failed to update priority:', response.statusText);
+        this.showFileNotification('❌ Failed to update priority', 'error');
+      }
+    } catch (err) {
+      console.error('[TasksBot] Error cycling priority:', err);
+      this.showFileNotification('Error updating priority: ' + err.message, 'error');
+    }
+  }
 }
 
 // Initialize globally
