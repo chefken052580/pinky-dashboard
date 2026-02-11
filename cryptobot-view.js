@@ -586,6 +586,118 @@
         ctx.stroke();
     }
 
+    /**
+     * Launch Coin Modal Functions
+     */
+    window.launchCoinModal = function() {
+        const modal = document.querySelector('.launch-coin-modal');
+        if (modal) modal.style.display = 'flex';
+    };
+
+    window.closeLaunchModal = function() {
+        const modal = document.querySelector('.launch-coin-modal');
+        if (modal) modal.style.display = 'none';
+    };
+
+    window.submitTokenLaunch = async function() {
+        const name = document.getElementById('coin-name')?.value;
+        const symbol = document.getElementById('coin-symbol')?.value;
+        const supply = document.getElementById('coin-supply')?.value;
+        const decimals = document.getElementById('coin-decimals')?.value;
+        const network = document.getElementById('coin-network')?.value;
+        const description = document.getElementById('coin-description')?.value;
+
+        if (!name || !symbol || !supply) {
+            alert('⚠️ Please fill in all required fields');
+            return;
+        }
+
+        try {
+            // Show launching state
+            const btn = document.querySelector('.btn-launch');
+            btn.disabled = true;
+            btn.innerText = '⏳ Launching...';
+
+            // Call API to launch token
+            const response = await fetch(CONFIG.API_BASE + '/launch-token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name,
+                    symbol,
+                    supply: parseInt(supply),
+                    decimals: parseInt(decimals),
+                    network,
+                    description
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert(`✅ Token ${symbol} launched successfully!\nContract: ${data.contractAddress}`);
+                closeLaunchModal();
+                // Reset form
+                document.querySelector('.launch-coin-form').reset();
+                // Refresh launched coins
+                renderLaunchedCoins();
+            } else {
+                alert(`❌ Launch failed: ${data.error}`);
+            }
+        } catch (error) {
+            console.error('[CryptoBot] Launch error:', error);
+            alert(`❌ Error: ${error.message}`);
+        } finally {
+            const btn = document.querySelector('.btn-launch');
+            btn.disabled = false;
+            btn.innerText = '🚀 Launch Token';
+        }
+    };
+
+    /**
+     * Render launched coins section
+     */
+    function renderLaunchedCoins() {
+        const container = document.querySelector('.launch-coins-grid');
+        if (!container) return;
+
+        if (state.launchedCoins && state.launchedCoins.length > 0) {
+            container.innerHTML = state.launchedCoins.map(coin => `
+                <div class="launched-coin-card">
+                    <div class="coin-header">
+                        <span class="coin-symbol">${coin.symbol}</span>
+                        <span class="coin-chain">${coin.network}</span>
+                    </div>
+                    <div class="coin-name">${coin.name}</div>
+                    <div class="coin-supply">Supply: ${coin.supply.toLocaleString()}</div>
+                    <div class="coin-address">
+                        <code>${coin.contractAddress.substring(0, 10)}...</code>
+                    </div>
+                    <div class="coin-actions">
+                        <button class="btn-view" onclick="alert('Track coin feature coming soon!')">📊 Track</button>
+                        <button class="btn-share" onclick="alert('Share feature coming soon!')">🔗 Share</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">No launched coins yet. Create your first token to get started.</p>';
+        }
+    }
+
+    // Initialize launched coins state
+    state.launchedCoins = JSON.parse(localStorage.getItem('cryptoBot_launchedCoins') || '[]');
+
+    // Modal close event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        const modals = document.querySelectorAll('.wallet-modal, .launch-coin-modal');
+        modals.forEach(modal => {
+            const closeBtn = modal.querySelector('.modal-close');
+            const overlay = modal.querySelector('.modal-overlay');
+            if (closeBtn) closeBtn.addEventListener('click', () => modal.style.display = 'none');
+            if (overlay) overlay.addEventListener('click', () => modal.style.display = 'none');
+        });
+    });
+
     // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initCryptoBot);
@@ -599,7 +711,9 @@
         fetchWallets,
         fetchTokenPrices,
         connectWallet,
-        state
+        state,
+        launchCoin: window.submitTokenLaunch,
+        renderLaunchedCoins
     };
 
 })();

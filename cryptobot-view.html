@@ -69,6 +69,17 @@
     </div>
 </div>
 
+<!-- Launch Coins Section (BullX/Axiom Style) -->
+<div class="crypto-launch-section">
+    <div class="section-header">
+        <h3>🚀 Launch Coins</h3>
+        <button class="btn-launch-coin" onclick="launchCoinModal()">+ Create New Token</button>
+    </div>
+    <div class="launch-coins-grid">
+        <p style="color: rgba(255,255,255,0.5); text-align: center; padding: 20px;">No launched coins yet. Create your first token to get started.</p>
+    </div>
+</div>
+
 <!-- Wallet Connect Modal -->
 <div class="wallet-modal" style="display:none;">
     <div class="modal-overlay"></div>
@@ -87,8 +98,65 @@
             <div class="wallet-option" data-wallet="solflare">
                 <span>☀️</span> Solflare (Solana)
             </div>
+            <div class="wallet-option" data-wallet="jupiter">
+                <span>🪐</span> Jupiter (Solana DEX)
+            </div>
             <div class="wallet-option" data-wallet="walletconnect">
                 <span>🔗</span> WalletConnect
+            </div>
+            <div class="wallet-option" data-wallet="trustwallet">
+                <span>✅</span> Trust Wallet (Multi-Chain)
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Launch Coin Modal -->
+<div class="launch-coin-modal" style="display:none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>🚀 Launch New Token</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="launch-coin-form">
+            <div class="form-group">
+                <label>Token Name *</label>
+                <input type="text" id="coin-name" placeholder="e.g., Pinky Coin" required>
+            </div>
+            <div class="form-group">
+                <label>Token Symbol *</label>
+                <input type="text" id="coin-symbol" placeholder="e.g., PINKY" maxlength="10" required>
+            </div>
+            <div class="form-group">
+                <label>Initial Supply *</label>
+                <input type="number" id="coin-supply" placeholder="1000000" min="1" required>
+            </div>
+            <div class="form-group">
+                <label>Decimals *</label>
+                <select id="coin-decimals">
+                    <option value="6">6 (Standard)</option>
+                    <option value="8">8 (Bitcoin-style)</option>
+                    <option value="9">9 (Solana-style)</option>
+                    <option value="18">18 (Ethereum-style)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Network *</label>
+                <select id="coin-network">
+                    <option value="solana">Solana</option>
+                    <option value="ethereum">Ethereum</option>
+                    <option value="polygon">Polygon</option>
+                    <option value="arbitrum">Arbitrum</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="coin-description" placeholder="Describe your token..." rows="3"></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn-cancel" onclick="closeLaunchModal()">Cancel</button>
+                <button class="btn-launch" onclick="submitTokenLaunch()">🚀 Launch Token</button>
             </div>
         </div>
     </div>
