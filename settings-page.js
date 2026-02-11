@@ -664,6 +664,114 @@ class SettingsPageUI {
             this.cancelSubscription();
         });
         
+        // HB#126: Add real-time change listeners to form inputs (apply changes immediately)
+        // Theme dropdown - apply immediately
+        document.getElementById('ui-theme')?.addEventListener('change', (e) => {
+            const theme = e.target.value;
+            this.settings.updateSetting('ui.theme', theme);
+            if (window.themeManager) {
+                window.themeManager.setTheme(theme);
+            }
+            console.log('[Settings] Theme changed to:', theme);
+        });
+        
+        // Layout dropdown - apply immediately via CSS class
+        document.getElementById('ui-layout')?.addEventListener('change', (e) => {
+            const layout = e.target.value;
+            this.settings.updateSetting('ui.layout', layout);
+            document.documentElement.setAttribute('data-layout', layout);
+            console.log('[Settings] Layout changed to:', layout);
+        });
+        
+        // Sound effects checkbox - apply immediately
+        document.getElementById('ui-sound')?.addEventListener('change', (e) => {
+            const enabled = e.target.checked;
+            this.settings.updateSetting('ui.soundEnabled', enabled);
+            console.log('[Settings] Sound effects:', enabled ? 'enabled' : 'disabled');
+        });
+        
+        // Notification badges checkbox - apply immediately
+        document.getElementById('ui-notifications')?.addEventListener('change', (e) => {
+            const enabled = e.target.checked;
+            this.settings.updateSetting('ui.notificationBadges', enabled);
+            console.log('[Settings] Notification badges:', enabled ? 'enabled' : 'disabled');
+        });
+        
+        // Auto-refresh checkbox - apply immediately
+        document.getElementById('ui-autorefresh')?.addEventListener('change', (e) => {
+            const enabled = e.target.checked;
+            this.settings.updateSetting('ui.autoRefresh', enabled);
+            console.log('[Settings] Auto-refresh:', enabled ? 'enabled' : 'disabled');
+            // NOTE: Actual refresh interval is controlled by GlobalRefresh system
+        });
+        
+        // Refresh interval input - apply immediately
+        document.getElementById('ui-refresh-interval')?.addEventListener('change', (e) => {
+            const interval = parseInt(e.target.value) || 5000;
+            this.settings.updateSetting('ui.refreshInterval', interval);
+            console.log('[Settings] Refresh interval changed to:', interval + 'ms');
+        });
+        
+        // API settings
+        document.getElementById('api-baseurl')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('api.baseUrl', e.target.value);
+            console.log('[Settings] API base URL changed');
+        });
+        
+        document.getElementById('api-timeout')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('api.timeout', parseInt(e.target.value) || 5000);
+            console.log('[Settings] API timeout changed');
+        });
+        
+        document.getElementById('api-retry')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('api.retryAttempts', parseInt(e.target.value) || 3);
+            console.log('[Settings] API retry attempts changed');
+        });
+        
+        // Notification settings
+        document.getElementById('notif-task')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('notifications.taskAlerts', e.target.checked);
+        });
+        
+        document.getElementById('notif-error')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('notifications.errorAlerts', e.target.checked);
+        });
+        
+        document.getElementById('notif-complete')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('notifications.completionChimes', e.target.checked);
+        });
+        
+        document.getElementById('notif-desktop')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('notifications.desktopNotifications', e.target.checked);
+        });
+        
+        // Dashboard settings
+        document.getElementById('dash-heartbeat')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('dashboard.showHeartbeatWidget', e.target.checked);
+            this.applyDashboardSettings();
+        });
+        
+        document.getElementById('dash-system')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('dashboard.showSystemMonitor', e.target.checked);
+            this.applyDashboardSettings();
+        });
+        
+        document.getElementById('dash-activity')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('dashboard.showActivityFeed', e.target.checked);
+            this.applyDashboardSettings();
+        });
+        
+        document.getElementById('dash-stats')?.addEventListener('change', (e) => {
+            this.settings.updateSetting('dashboard.showTaskStatistics', e.target.checked);
+            this.applyDashboardSettings();
+        });
+        
+        document.getElementById('dash-compact')?.addEventListener('change', (e) => {
+            const enabled = e.target.checked;
+            this.settings.updateSetting('dashboard.compactMode', enabled);
+            document.documentElement.setAttribute('data-compact', enabled ? 'true' : 'false');
+        });
+
         // Load current license status
         this.loadLicenseStatus();
         
@@ -673,6 +781,39 @@ class SettingsPageUI {
         // Update last saved time
         this.updateLastSavedTime();
         this.updateSettingsSize();
+        
+        // Apply current layout setting
+        const currentLayout = this.settings.getSetting('ui.layout');
+        if (currentLayout) {
+            document.documentElement.setAttribute('data-layout', currentLayout);
+        }
+        
+        // Apply current compact mode setting
+        const compactMode = this.settings.getSetting('dashboard.compactMode');
+        if (compactMode) {
+            document.documentElement.setAttribute('data-compact', 'true');
+        }
+    }
+
+    /**
+     * HB#126: Apply dashboard visibility settings
+     */
+    applyDashboardSettings() {
+        const widgets = {
+            'heartbeat': '#heartbeat-status-container',
+            'system': '.system-monitor-container',
+            'activity': '#activity-feed',
+            'stats': '.stats-container'
+        };
+        
+        for (const [setting, selector] of Object.entries(widgets)) {
+            const show = this.settings.getSetting(`dashboard.show${setting.charAt(0).toUpperCase() + setting.slice(1)}Widget`);
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.display = show ? 'block' : 'none';
+                console.log('[Settings] Dashboard widget', setting, 'set to', show ? 'visible' : 'hidden');
+            }
+        }
     }
 
     /**
