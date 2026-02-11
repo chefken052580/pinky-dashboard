@@ -784,22 +784,45 @@ class TasksBotEnhanced {
         }
         // Clean up completedTime: remove any military time duplication and ensure standard time format only
         if (completedTime && completedTime !== 'unknown') {
-          // If it's just a date and military time (HH:MM format), parse and convert to standard time
-          var dateTimeMatch = completedTime.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})/);
-          if (dateTimeMatch) {
-            var year = dateTimeMatch[1];
-            var month = dateTimeMatch[2];
-            var day = dateTimeMatch[3];
-            var hours = parseInt(dateTimeMatch[4]);
-            var mins = dateTimeMatch[5];
-            // Parse as EST time
-            var dateStr = year + '-' + month + '-' + day + 'T' + dateTimeMatch[4] + ':' + mins + ':00-05:00';
+          // Handle military time format (YYYY-MM-DD HH:MM)
+          var militaryMatch = completedTime.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})/);
+          if (militaryMatch) {
             try {
-              var d = new Date(dateStr);
+              var year = militaryMatch[1];
+              var month = militaryMatch[2];
+              var day = militaryMatch[3];
+              var hours = militaryMatch[4];
+              var mins = militaryMatch[5];
+              // Create ISO string in UTC (will be converted to America/New_York below)
+              var isoStr = year + '-' + month + '-' + day + 'T' + hours + ':' + mins + ':00Z';
+              var d = new Date(isoStr);
               if (!isNaN(d.getTime())) {
-                completedTime = d.toLocaleString('en-US', {month:'2-digit',day:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'America/New_York'}) + ' EST';
+                // Format as standard 12-hour time with AM/PM in EST
+                completedTime = d.toLocaleString('en-US', {
+                  month: '2-digit',
+                  day: '2-digit',
+                  year: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit',
+                  hour12: true,
+                  timeZone: 'America/New_York'
+                }) + ' EST';
               }
-            } catch(e) {}
+            } catch(e) {
+              // If parsing fails, leave completedTime as-is
+            }
+          }
+          // Remove any remaining military time notation and ensure AM/PM format
+          else if (!/[AP]M/.test(completedTime) && /\d{1,2}:\d{2}/.test(completedTime)) {
+            // This is likely military time without proper AM/PM - try to fix it
+            var timeOnly = completedTime.match(/(\d{1,2}):(\d{2})/);
+            if (timeOnly) {
+              var h = parseInt(timeOnly[1]);
+              var m = timeOnly[2];
+              var ampm = h >= 12 ? 'PM' : 'AM';
+              var h12 = h > 12 ? h - 12 : h === 0 ? 12 : h;
+              completedTime = completedTime.replace(/\d{1,2}:\d{2}/, (h12 < 10 ? ' ' + h12 : h12) + ':' + m + ' ' + ampm);
+            }
           }
         }
         if (!completedTime) completedTime = 'unknown';
