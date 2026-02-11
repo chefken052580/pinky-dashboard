@@ -733,6 +733,92 @@
         loadSessions();
     }
 
+    /**
+     * Clear all messages from all chats (sidebar)
+     * Preserves chat sessions but removes message content
+     */
+    function clearAllMessages() {
+        if (!confirm('🗑️ This will clear ALL messages from all conversations.\n\nChat sessions will remain, but all message history will be deleted.\n\nContinue?')) {
+            return;
+        }
+
+        try {
+            // Clear in-memory messages
+            allMessages = [];
+            pinnedMessages = [];
+            messageMetadata = {};
+            
+            // Load sessions to get list
+            var sessions = JSON.parse(localStorage.getItem('pinkyChat_sessions') || '[]');
+            
+            // Clear messages for each session
+            sessions.forEach(function(session) {
+                localStorage.removeItem('pinkyChat_' + session.id);
+            });
+            
+            // Refresh UI
+            renderMessages();
+            loadSessions();
+            toggleSidebarMenu();
+            
+            // Show confirmation
+            alert('✅ All messages cleared successfully!\n\nChat sessions remain intact. Message history has been removed.');
+            console.log('[PinkyChat] Cleared all messages across', sessions.length, 'sessions');
+        } catch (error) {
+            console.error('[PinkyChat] Error clearing messages:', error);
+            alert('❌ Error clearing messages: ' + error.message);
+        }
+    }
+
+    /**
+     * Archive all chats (moves to archived section)
+     */
+    function archiveAllChats() {
+        if (!confirm('📦 Archive all conversations?\n\nYou can restore them later from the archive.')) {
+            return;
+        }
+
+        try {
+            var sessions = JSON.parse(localStorage.getItem('pinkyChat_sessions') || '[]');
+            var archivedCount = 0;
+            
+            sessions.forEach(function(session) {
+                session.archived = true;
+                session.archivedAt = new Date().toISOString();
+                archivedCount++;
+            });
+            
+            localStorage.setItem('pinkyChat_sessions', JSON.stringify(sessions));
+            loadSessions();
+            toggleSidebarMenu();
+            
+            alert('✅ ' + archivedCount + ' conversations archived successfully!');
+            console.log('[PinkyChat] Archived', archivedCount, 'conversations');
+        } catch (error) {
+            console.error('[PinkyChat] Error archiving chats:', error);
+            alert('❌ Error archiving: ' + error.message);
+        }
+    }
+
+    /**
+     * Toggle sidebar menu visibility
+     */
+    function toggleSidebarMenu() {
+        var menu = document.getElementById('chat-sidebar-menu');
+        if (menu) {
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+    }
+
+    // Close sidebar menu when clicking outside
+    document.addEventListener('click', function(e) {
+        var menu = document.getElementById('chat-sidebar-menu');
+        var menuBtn = document.querySelector('.chat-action-menu-btn');
+        if (menu && menuBtn && !menu.contains(e.target) && !menuBtn.contains(e.target)) {
+            menu.style.display = 'none';
+        }
+    });
+
     // ─── Public API ───
     window.PinkyChat = {
         init: init,
@@ -746,7 +832,10 @@
         closeSearch: closeSearch,
         showPinned: showPinned,
         pinMessage: pinMessage,
-        clearChat: clearChat
+        clearChat: clearChat,
+        clearAllMessages: clearAllMessages,
+        archiveAllChats: archiveAllChats,
+        toggleSidebarMenu: toggleSidebarMenu
     };
 
     // Auto-init when chat view becomes visible
