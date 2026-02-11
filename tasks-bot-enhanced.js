@@ -974,6 +974,14 @@ class TasksBotEnhanced {
       }
     }
 
+    // HB#125: Scroll to top after render to ensure fresh view starts at the beginning
+    // When TasksBot refreshes, the session should start at the top, not the bottom
+    if (this.container) {
+      this.container.scrollTop = 0;
+    }
+    // Also scroll the main window to top if container is the full page
+    window.scrollTo(0, 0);
+    
     // Re-attach drag-drop handlers after render since DOM was rebuilt
     this.setupDragDrop();
   }
