@@ -789,7 +789,20 @@
   function mr(l,v){return '<div class="bot-metric-row"><span class="bot-metric-label">'+l+'</span><span class="bot-metric-value">'+v+'</span></div>';}
   function ti(t,s){var n=(t.name||'Unnamed').substring(0,55),a=t.updated?ta(t.updated):'';
     var editBtn = (s==='pending') ? '<button onclick="event.stopPropagation();editTask(\'' + (t.name||'').replace(/'/g,"\\'") + '\',\'' + (t.priority||'P2') + '\',\'' + (t.notes||'').replace(/'/g,"\\'").replace(/\n/g,' ').substring(0,100) + '\')" style="padding:2px 8px;border-radius:4px;border:1px solid rgba(139,92,246,0.3);background:rgba(139,92,246,0.1);color:#a78bfa;cursor:pointer;font-size:0.7em;flex-shrink:0;">\u270f\ufe0f Edit</button>' : '';
-    return '<div class="bot-task-item '+s+'"><span class="bot-task-item-name">'+n+'</span>'+editBtn+'<span class="bot-task-item-status '+s+'">'+s+'</span>'+(a?'<span style="font-size:0.7em;color:var(--text-muted,#888);">'+a+'</span>':'')+'</div>';}
+    // Live timer for running tasks
+    var timerHtml = '';
+    if (s === 'running') {
+      var startMatch = (t.notes||'').match(/\[STARTED:([^\]]+)\]/);
+      if (startMatch) {
+        var elapsed = Math.round((Date.now() - new Date(startMatch[1]).getTime()) / 1000);
+        var m = Math.floor(elapsed / 60), sec = elapsed % 60;
+        timerHtml = '<span style="font-size:0.72em;color:#22d3ee;font-weight:600;text-shadow:0 0 6px rgba(6,182,212,0.3);">\u23f1 ' + m + 'm ' + sec + 's</span>';
+      }
+    }
+    // Show duration for completed tasks
+    var durMatch = (t.notes||'').match(/\[Duration:\s*([^\]]+)\]/);
+    var durHtml = (s==='completed' && durMatch) ? '<span style="font-size:0.7em;color:#34d399;">\u2705 '+durMatch[1]+'</span>' : '';
+    return '<div class="bot-task-item '+s+'"><span class="bot-task-item-name">'+n+'</span>'+editBtn+timerHtml+durHtml+'<span class="bot-task-item-status '+s+'">'+s+'</span>'+(a?'<span style="font-size:0.7em;color:var(--text-muted,#888);">'+a+'</span>':'')+'</div>';}
   function em(m){return '<div style="text-align:center;color:var(--text-muted,#888);padding:12px;font-size:0.82em;">'+m+'</div>';}
   function fs(v,l){return '<div class="fleet-stat"><span class="fleet-stat-value">'+v+'</span><span class="fleet-stat-label">'+l+'</span></div>';}
   function ta(d){var s=Math.floor((Date.now()-new Date(d).getTime())/1000);if(s<60)return 'now';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d';}
