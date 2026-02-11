@@ -38,7 +38,7 @@
     refreshTimer = setInterval(async function() {
       await loadAll();
       showSection(currentTab);
-    }, 20000);
+    }, 5000);
   }
 
   // ============================================
@@ -88,7 +88,7 @@
       navBtn('backend','\u2699\ufe0f Backend Controls') + navBtn('network','\ud83d\udd78\ufe0f Bot Network') +
       navBtn('costs','\ud83d\udcb0 Cost Center') + navBtn('addbot','\u2795 Add Bot') + navBtn('marketplace','\ud83d\udee0\ufe0f Modules') +
       '<div style="flex:1;"></div>' +
-      '<button onclick="refreshBotManager()" style="padding:6px 14px;border:1px solid rgba(139,92,246,0.3);border-radius:8px;background:rgba(139,92,246,0.1);color:#eee;cursor:pointer;font-size:0.8em;">\ud83d\udd04 Refresh</button>' +
+      '<button class="bm-nav-btn" onclick="refreshBotManager()">\ud83d\udd04 Refresh</button>' +
     '</div>';
   }
   function navBtn(id,label) {
@@ -100,12 +100,9 @@
     var el = document.getElementById('bm-content');
     if (!el) return;
     // Highlight active nav
-    document.querySelectorAll('[id^="bm-nav-"]').forEach(function(b) {
-      b.style.background = 'rgba(255,255,255,0.03)'; b.style.color = 'var(--text-muted,#888)';
-      b.style.borderColor = 'rgba(255,255,255,0.08)';
-    });
+    document.querySelectorAll('.bm-nav-btn').forEach(function(b) { b.classList.remove('active'); });
     var active = document.getElementById('bm-nav-'+section);
-    if (active) { active.style.background = 'rgba(139,92,246,0.2)'; active.style.color = '#8b5cf6'; active.style.borderColor = '#8b5cf6'; }
+    if (active) active.classList.add('active');
 
     if (section === 'fleet') el.innerHTML = renderFleet();
     else if (section === 'bots') el.innerHTML = renderBotsGrid();
@@ -134,12 +131,13 @@
 
     // System Status Banner
     html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;">';
-    html += statusCard('\ud83d\udc9a Pinky', pinky.running && !pinky.stopped_by_user ? 'RUNNING' : 'STOPPED', pinky.running && !pinky.stopped_by_user ? '#10b981' : '#ef4444');
-    html += statusCard('\ud83d\udc93 Heartbeat', '#' + (hb.heartbeatCount||0) + ' beats', '#8b5cf6');
-    html += statusCard('\ud83e\udd16 Fleet', active + '/' + total + ' active', '#06b6d4');
-    html += statusCard('\ud83d\udee0\ufe0f Working', working + ' bots now', working > 0 ? '#f59e0b' : '#6b7280');
-    html += statusCard('\ud83d\udcca Tasks', tR+' running, '+tP+' queued', '#60a5fa');
-    html += statusCard('\u2705 Completed', tC + ' total', '#10b981');
+    var pinkyLive = pinky.running && !pinky.stopped_by_user;
+    html += statusCard('\ud83d\udc9a Pinky', (pinkyLive?'<span class="live-dot green"></span>RUNNING':'<span class="live-dot red"></span>STOPPED'), pinkyLive?'#10b981':'#ef4444', pinkyLive?'neon-green':'neon-red');
+    html += statusCard('\ud83d\udc93 Heartbeat', '#' + (hb.heartbeatCount||0) + ' beats', '#8b5cf6', 'neon-purple');
+    html += statusCard('\ud83e\udd16 Fleet', active + '/' + total + ' active', '#06b6d4', 'neon-cyan');
+    html += statusCard('\ud83d\udee0\ufe0f Working', working + ' bots now', working>0?'#f59e0b':'#6b7280', working>0?'neon-amber':'');
+    html += statusCard('\ud83d\udcca Tasks', tR+' running, '+tP+' queued', '#60a5fa', 'neon-blue');
+    html += statusCard('\u2705 Completed', tC + ' total', '#10b981', 'neon-green');
     html += '</div>';
 
     // Heartbeat Intelligence
@@ -186,10 +184,11 @@
     return html;
   }
 
-  function statusCard(label, value, color) {
-    return '<div style="padding:14px 16px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);">' +
-      '<div style="font-size:0.75em;color:var(--text-muted,#888);margin-bottom:6px;">'+label+'</div>' +
-      '<div style="font-size:1.1em;font-weight:700;color:'+color+';">'+value+'</div></div>';
+  function statusCard(label, value, color, neonClass) {
+    neonClass = neonClass || '';
+    return '<div class="status-card '+neonClass+'" id="sc-'+label.replace(/[^a-zA-Z]/g,'')+'">' +
+      '<div class="status-card-label">'+label+'</div>' +
+      '<div class="status-card-value">'+value+'</div></div>';
   }
   function miniStat(l,v) { return '<div><span style="color:var(--text-muted,#888);">'+l+':</span> <strong>'+v+'</strong></div>'; }
 
@@ -730,7 +729,7 @@
   // ============================================
   // HELPERS
   // ============================================
-  function sec(t){return '<div style="font-size:0.8em;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted,#888);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.05);">'+t+'</div>';}
+  function sec(t){return '<div class="bm-section-title">'+t+'</div>';}
   function mr(l,v){return '<div class="bot-metric-row"><span class="bot-metric-label">'+l+'</span><span class="bot-metric-value">'+v+'</span></div>';}
   function ti(t,s){var n=(t.name||'Unnamed').substring(0,55),a=t.updated?ta(t.updated):'';return '<div class="bot-task-item '+s+'"><span class="bot-task-item-name">'+n+'</span><span class="bot-task-item-status '+s+'">'+s+'</span>'+(a?'<span style="font-size:0.7em;color:var(--text-muted,#888);">'+a+'</span>':'')+'</div>';}
   function em(m){return '<div style="text-align:center;color:var(--text-muted,#888);padding:12px;font-size:0.82em;">'+m+'</div>';}
