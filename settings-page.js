@@ -986,51 +986,6 @@ class SettingsPageUI {
     }
     
     /**
-     * Open Stripe customer portal for subscription management
-     */
-    async openStripeCustomerPortal() {
-        try {
-            const email = localStorage.getItem('pinky_user_email');
-            if (!email) {
-                alert('No email found. Please configure your account email first.');
-                return;
-            }
-            
-            // Get customer ID from Stripe
-            const customerResponse = await fetch(`${API_BASE}/stripe/customer/${email}`);
-            const customerData = await customerResponse.json();
-            
-            if (!customerData.customer || !customerData.customer.id) {
-                alert('No Stripe subscription found for this account.');
-                return;
-            }
-            
-            // Create portal session
-            const portalResponse = await fetch(`${API_BASE}/stripe/portal`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    customerId: customerData.customer.id,
-                    returnUrl: window.location.href
-                })
-            });
-            
-            const portalData = await portalResponse.json();
-            
-            if (portalData.url) {
-                // Open portal in new tab
-                window.open(portalData.url, '_blank');
-            } else {
-                alert('Failed to open customer portal. Please try again.');
-            }
-            
-        } catch (error) {
-            console.error('[Settings] Failed to open customer portal:', error);
-            alert('Error opening customer portal: ' + error.message);
-        }
-    }
-    
-    /**
      * Show license status UI
      */
     showLicenseStatus(status, license = null) {
