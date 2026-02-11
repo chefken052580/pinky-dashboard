@@ -42,7 +42,7 @@ class HeartbeatManager {
         this.metrics = Object.assign(this.metrics, data);
       }
       // Also sync with activity JSON for accurate counts
-      fetch('pinky-activity.json?t=' + Date.now())
+      fetch((typeof API_BASE !== 'undefined' ? API_BASE : 'http://192.168.254.4:3030') + '/api/activity')
         .then(r => r.json())
         .then(data => {
           if (data.heartbeatCount) this.metrics.heartbeatsCompleted = data.heartbeatCount;

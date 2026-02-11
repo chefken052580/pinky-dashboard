@@ -293,3 +293,47 @@
   background: url('images/pinky-mouse-loader.svg') no-repeat center center;
   background-size: 55%;
 }
+
+/* === Pinky Hamster Wheel Loading Animation === */
+.api-loading-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 14, 23, 0.85);
+    border-radius: inherit;
+    z-index: 10;
+}
+.pinky-wheel-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.wheel-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.hamster-wheel-spin {
+    width: 80px;
+    height: 80px;
+    animation: wheelSpin 2s linear infinite;
+}
+.pinky-running {
+    position: absolute;
+    width: 35px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pinkyBob 0.3s ease-in-out infinite alternate;
+}
+@keyframes wheelSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+@keyframes pinkyBob {
+    from { transform: translate(-50%, -52%); }
+    to { transform: translate(-50%, -48%); }
+}

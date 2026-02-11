@@ -233,6 +233,9 @@ function switchView(viewId) {
         if (viewId === 'filesystem-view' && window.filesystemBotPro) {
             window.filesystemBotPro.renderUI();
         }
+        if (viewId === 'botbuilder-view' && window.initBotBuilder) {
+            window.initBotBuilder();
+        }
         targetView.classList.add('active');
         currentView = viewId;
     }

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📁 FileSystemBot — Command Center</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&display=swap');
+
+        :root {
+            --bg:#0a0e17; --card:#0d1220; --bdr:#1a2332;
+            --cyan:#00d4ff; --grn:#00ff88; --pink:#ff6b9d;
+            --amb:#ffd93d; --red:#ff4757; --purp:#c77dff;
+            --org:#ff8c42; --teal:#4ecdc4; --mint:#06d6a0;
+            --txt:#c9d1d9; --brt:#e6f1ff; --dim:#4a5568; --mid:#8892b0;
+            --font:'JetBrains Mono','Courier New',monospace;
+        }
+
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--txt);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+
+        body::before{content:'';position:fixed;inset:0;opacity:0.025;pointer-events:none;z-index:0;
+            background-image:linear-gradient(rgba(0,212,255,0.3) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.3) 1px,transparent 1px);
+            background-size:40px 40px}
+
+        ::-webkit-scrollbar{width:5px}
+        ::-webkit-scrollbar-track{background:var(--bg)}
+        ::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+
+        @keyframes pd{0%,100%{opacity:1}50%{opacity:.35}}
+        @keyframes si{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* HEADER */
+        .hdr{padding:14px 24px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(13,18,32,.8),transparent);position:relative;z-index:10}
+        .hdr-l{display:flex;align-items:center;gap:12px}
+        .hdr-ico{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(0,212,255,.13),rgba(0,255,136,.13));border:1px solid rgba(0,212,255,.2);display:flex;align-items:center;justify-content:center;font-size:20px}
+        .hdr-t{font-size:18px;font-weight:800;letter-spacing:1px;background:linear-gradient(135deg,var(--cyan),var(--grn));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .hdr-s{font-size:10px;color:var(--dim);letter-spacing:2px}
+        .hdr-r{display:flex;align-items:center;gap:10px}
+
+        /* TABS */
+        .tabs{display:flex;gap:2px;padding:0 24px;border-bottom:1px solid rgba(26,35,50,.5);background:var(--bg);position:relative;z-index:10}
+        .tab{padding:11px 14px;font-size:11px;font-weight:600;font-family:var(--font);background:transparent;border:none;border-bottom:2px solid transparent;color:var(--dim);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+        .tab:hover{color:var(--mid)}
+        .tab.on{background:var(--card);border-bottom-color:var(--cyan);color:var(--cyan)}
+        .tab-badge{background:var(--amb);color:var(--bg);font-size:9px;font-weight:800;padding:1px 5px;border-radius:8px}
+
+        /* CONTENT */
+        .content{padding:24px;max-height:calc(100vh - 115px);overflow-y:auto;position:relative;z-index:10}
+        .panel{display:none;animation:si .3s ease}
+        .panel.on{display:block}
+
+        /* CARD */
+        .crd{background:var(--card);border-radius:12px;border:1px solid rgba(26,35,50,.55);padding:20px;transition:all .3s;margin-bottom:8px}
+        .crd.gl-g{border-color:rgba(0,255,136,.2);box-shadow:0 0 15px rgba(0,255,136,.07)}
+        .crd.gl-c{border-color:rgba(0,212,255,.2);box-shadow:0 0 15px rgba(0,212,255,.07)}
+        .crd.gl-r{border-color:rgba(255,71,87,.2);box-shadow:0 0 15px rgba(255,71,87,.07)}
+        .crd.sm{padding:12px}
+
+        /* GRID */
+        .g{display:grid;gap:10px}
+        .g6{grid-template-columns:repeat(6,1fr)}
+        .g5{grid-template-columns:repeat(5,1fr)}
+        .g4{grid-template-columns:repeat(4,1fr)}
+        .g3{grid-template-columns:repeat(3,1fr)}
+        .g2{grid-template-columns:1.3fr 1fr}
+        .g2e{grid-template-columns:1fr 1fr}
+
+        /* STAT */
+        .st{text-align:center;padding:12px}
+        .st-i{font-size:20px;margin-bottom:4px}
+        .st-v{font-size:24px;font-weight:800}
+        .st-l{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+
+        /* DOT */
+        .dot{display:inline-block;width:8px;height:8px;border-radius:50%}
+        .dot.sm{width:5px;height:5px}
+        .dot.grn{background:var(--grn);box-shadow:0 0 6px rgba(0,255,136,.5)}
+        .dot.red{background:var(--red);box-shadow:0 0 6px rgba(255,71,87,.5)}
+        .dot.amb{background:var(--amb);box-shadow:0 0 6px rgba(255,217,61,.5)}
+        .dot.dim{background:var(--dim)}
+        .dot.cyan{background:var(--cyan);box-shadow:0 0 6px rgba(0,212,255,.5)}
+        .dot.pulse{animation:pd 2s infinite}
+
+        /* BADGE */
+        .bdg{padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:var(--font);display:inline-block}
+        .bdg.p0{background:rgba(255,71,87,.1);color:var(--red);border:1px solid rgba(255,71,87,.2)}
+        .bdg.p1{background:rgba(255,217,61,.1);color:var(--amb);border:1px solid rgba(255,217,61,.2)}
+        .bdg.p2{background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.2)}
+
+        /* BTN */
+        .btn{padding:4px 10px;font-size:11px;font-weight:600;font-family:var(--font);border-radius:6px;cursor:pointer;transition:all .2s}
+        .btn.cy{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.2);color:var(--cyan)}
+        .btn.cy:hover{background:rgba(0,212,255,.15)}
+        .btn.gn{background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.2);color:var(--grn)}
+        .btn.gn:hover{background:rgba(0,255,136,.15)}
+        .btn.gh{background:transparent;border:1px solid transparent;color:var(--dim)}
+        .btn.gh:hover{background:rgba(255,255,255,.03)}
+
+        /* PROGRESS */
+        .prog{width:100%;height:6px;background:var(--bdr);border-radius:3px;overflow:hidden}
+        .prog-fill{height:100%;border-radius:3px;transition:width .6s ease}
+
+        /* SECTION */
+        .sec{font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+
+        /* TASK ROW */
+        .task-row{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;margin-bottom:4px;background:var(--card);border:1px solid rgba(26,35,50,.4)}
+        .task-row.running{border-color:rgba(0,255,136,.2);box-shadow:0 0 10px rgba(0,255,136,.05)}
+        .task-row .name{flex:1;font-size:12px;color:var(--brt)}
+        .task-row .meta{font-size:10px;color:var(--dim)}
+        .task-row.done .name{text-decoration:line-through;color:var(--mid);text-decoration-color:var(--dim)}
+
+        /* CONN ROW */
+        .conn{display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:6px;border-radius:8px}
+        .conn-label{font-size:12px;font-weight:600;color:var(--brt)}
+        .conn-desc{font-size:10px;color:var(--dim)}
+
+        /* BOT CARD */
+        .bot-card{position:relative;overflow:hidden;padding:14px}
+        .bot-card .stripe{position:absolute;top:0;left:0;right:0;height:3px}
+        .bot-perf{display:flex;gap:8px;margin-bottom:6px}
+        .bot-perf div{flex:1;text-align:center}
+        .bot-perf .v{font-size:18px;font-weight:800}
+        .bot-perf .l{font-size:9px;color:var(--dim);text-transform:uppercase}
+
+        /* FILE TREE */
+        .ftree{font-size:11px;color:var(--mid);line-height:1.9}
+        .ftree .dir{color:var(--teal);font-weight:600}
+        .ftree .note{color:var(--dim);font-size:10px}
+
+        /* FOOTER */
+        .ftr{position:fixed;bottom:0;left:0;right:0;padding:6px 24px;background:rgba(10,14,23,.93);border-top:1px solid rgba(26,35,50,.4);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--dim);z-index:20;backdrop-filter:blur(8px)}
+
+        /* INPUT */
+        .inp{flex:1;padding:8px 12px;font-size:12px;font-family:var(--font);background:var(--bg);border:1px solid var(--bdr);border-radius:6px;color:var(--txt);outline:none}
+        .inp:focus{border-color:var(--cyan)}
+
+        /* Quick action card */
+        .qa{text-align:center;padding:16px;cursor:pointer;transition:all .2s}
+        .qa:hover{border-color:rgba(0,212,255,.3)}
+        .qa-ico{font-size:28px;margin-bottom:8px}
+        .qa-lbl{font-size:12px;color:var(--brt);font-weight:600}
+
+        @media(max-width:900px){
+            .g6,.g5{grid-template-columns:repeat(3,1fr)}
+            .g4,.g3{grid-template-columns:repeat(2,1fr)}
+            .g2{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="hdr">
+    <div class="hdr-l">
+        <div class="hdr-ico">📁</div>
+        <div>
+            <div class="hdr-t">FILESYSTEM BOT</div>
+            <div class="hdr-s" id="hdr-sub">COMMAND CENTER • Connecting...</div>
+        </div>
+    </div>
+    <div class="hdr-r">
+        <div class="live-ind" style="display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;background:var(--card);border:1px solid var(--bdr);font-size:10px">
+            <span class="dot sm grn pulse" id="live-dot"></span>
+            <span id="live-text">Connecting...</span>
+        </div>
+        <button class="btn cy" onclick="syncAll()">⟳ Sync</button>
+    </div>
+</div>
+
+<!-- ═══ TABS ═══ -->
+<div class="tabs" id="tab-bar">
+    <button class="tab on" data-tab="overview" onclick="switchTab('overview')">📊 Overview</button>
+    <button class="tab" data-tab="projects" onclick="switchTab('projects')">📂 Projects <span class="tab-badge" id="pending-badge" style="display:none">0</span></button>
+    <button class="tab" data-tab="bots" onclick="switchTab('bots')">🤖 Bot Network</button>
+    <button class="tab" data-tab="activity" onclick="switchTab('activity')">💓 Activity</button>
+    <button class="tab" data-tab="features" onclick="switchTab('features')">✅ Features</button>
+    <button class="tab" data-tab="files" onclick="switchTab('files')">🗂️ File Manager</button>
+</div>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="content">
+
+    <!-- ──── OVERVIEW ──── -->
+    <div class="panel on" id="panel-overview">
+        <div class="g g6" id="overview-stats" style="margin-bottom:20px"></div>
+
+        <div class="g g2">
+            <div>
+                <div class="sec" style="color:var(--cyan)">📋 TASK QUEUE (LIVE)</div>
+                <div id="overview-running"></div>
+                <div id="overview-pending"></div>
+            </div>
+            <div>
+                <div class="sec" style="color:var(--purp)">🤖 BOT STATUS (LIVE)</div>
+                <div id="overview-bots"></div>
+                <div style="margin-top:14px">
+                    <div class="sec" style="color:var(--amb)">🔔 NOTIFICATIONS</div>
+                    <div id="overview-notifs"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="crd" style="margin-top:16px;padding:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <span style="font-size:12px;color:var(--brt)">Overall Completion: <span id="ov-rate" style="color:var(--cyan)">—</span></span>
+                <span style="font-size:10px;color:var(--dim)" id="ov-counts"></span>
+            </div>
+            <div class="prog" style="height:8px"><div class="prog-fill" id="ov-bar" style="width:0%;background:var(--cyan);box-shadow:0 0 8px rgba(0,212,255,.3)"></div></div>
+        </div>
+    </div>
+
+    <!-- ──── PROJECTS ──── -->
+    <div class="panel" id="panel-projects">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <div>
+                <h3 style="font-size:14px;color:var(--brt);display:flex;align-items:center;gap:8px">📂 Projects <span style="font-size:11px;color:var(--dim);font-weight:400">— Subcategory of FileSystem</span></h3>
+                <div style="font-size:10px;color:var(--dim)">Live from /api/tasks • Task queue from memory/projects.md</div>
+            </div>
+            <button class="btn cy" onclick="syncAll()">⟳ Refresh</button>
+        </div>
+
+        <div class="g g5" id="proj-stats" style="margin-bottom:16px"></div>
+
+        <div style="display:flex;gap:4px;margin-bottom:14px" id="proj-filters"></div>
+
+        <div id="proj-running"></div>
+        <div id="proj-tasks" style="max-height:420px;overflow-y:auto"></div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+            <input class="inp" id="new-task" placeholder="New task name..." onkeydown="if(event.key==='Enter')addTask()">
+            <button class="btn gn" onclick="addTask()">+ Add</button>
+        </div>
+    </div>
+
+    <!-- ──── BOT NETWORK ──── -->
+    <div class="panel" id="panel-bots">
+        <div style="margin-bottom:16px">
+            <h3 style="font-size:14px;color:var(--brt);display:flex;align-items:center;gap:8px">🤖 Bot Network <span style="font-size:11px;color:var(--dim);font-weight:400">— All bots talk. All bots share.</span></h3>
+            <div style="font-size:10px;color:var(--dim)">Live from /api/bots/learning • Research ↔ Business data pipeline</div>
+        </div>
+
+        <div class="g g3" id="bot-grid" style="margin-bottom:20px"></div>
+
+        <div class="sec" style="color:var(--cyan)">🔗 DATA FLOW CONNECTIONS</div>
+        <div id="bot-connections"></div>
+
+        <div id="bot-assignments" style="margin-top:16px"></div>
+    </div>
+
+    <!-- ──── ACTIVITY ──── -->
+    <div class="panel" id="panel-activity">
+        <div style="margin-bottom:16px">
+            <h3 style="font-size:14px;color:var(--brt)">💓 Activity Feed</h3>
+            <div style="font-size:10px;color:var(--dim)">Live from /api/activity • Heartbeats, thinking, tokens</div>
+        </div>
+
+        <div class="g g2e" style="margin-bottom:14px" id="act-stats"></div>
+
+        <div class="sec" style="color:var(--cyan)">🧠 Recent Thinking</div>
+        <div id="act-thinking" style="max-height:140px;overflow-y:auto;margin-bottom:14px"></div>
+
+        <div class="sec" style="color:var(--grn)">💓 Heartbeat Log</div>
+        <div id="act-heartbeats" style="max-height:300px;overflow-y:auto"></div>
+
+        <div class="crd" style="margin-top:16px" id="act-usage"></div>
+    </div>
+
+    <!-- ──── FEATURES ──── -->
+    <div class="panel" id="panel-features">
+        <div style="margin-bottom:16px">
+            <h3 style="font-size:14px;color:var(--brt)">✅ Features Delivered</h3>
+            <div style="font-size:10px;color:var(--dim)">Live from /api/bots/features</div>
+        </div>
+        <div id="feat-count" style="font-size:12px;color:var(--grn);margin-bottom:10px"></div>
+        <div id="feat-list" style="max-height:500px;overflow-y:auto"></div>
+    </div>
+
+    <!-- ──── FILE MANAGER ──── -->
+    <div class="panel" id="panel-files">
+        <div style="margin-bottom:16px">
+            <h3 style="font-size:14px;color:var(--brt)">🗂️ File Manager</h3>
+            <div style="font-size:10px;color:var(--dim)">FileSystemBot workspace operations</div>
+        </div>
+
+        <div class="g g4" style="margin-bottom:20px">
+            <div class="crd qa" onclick="execBot('filesystem','organize')">
+                <div class="qa-ico">🗂️</div>
+                <div class="qa-lbl">Organize Workspace</div>
+                <button class="btn cy" style="margin-top:8px">Execute</button>
+            </div>
+            <div class="crd qa" onclick="execBot('filesystem','cleanup')">
+                <div class="qa-ico">🧹</div>
+                <div class="qa-lbl">Clean Memory</div>
+                <button class="btn cy" style="margin-top:8px">Execute</button>
+            </div>
+            <div class="crd qa" onclick="execBot('filesystem','search')">
+                <div class="qa-ico">🔍</div>
+                <div class="qa-lbl">Search Files</div>
+                <button class="btn cy" style="margin-top:8px">Execute</button>
+            </div>
+            <div class="crd qa" onclick="execBot('filesystem','backup')">
+                <div class="qa-ico">💾</div>
+                <div class="qa-lbl">Backup Workspace</div>
+                <button class="btn cy" style="margin-top:8px">Execute</button>
+            </div>
+        </div>
+
+        <div class="crd">
+            <div style="font-size:12px;color:var(--teal);margin-bottom:10px;font-weight:700">📂 Workspace Structure</div>
+            <div class="ftree" id="file-tree"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="ftr">
+    <div style="display:flex;gap:14px;align-items:center">
+        <span><span class="dot sm" id="ftr-dot"></span> API: <span id="ftr-api"></span></span>
+        <span>📋 <span id="ftr-tasks">0</span> tasks</span>
+        <span>🤖 <span id="ftr-bots">0</span> bots</span>
+        <span>💓 <span id="ftr-hb">0</span> heartbeats</span>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center">
+        <span>All data live from /api/*</span>
+        <span style="color:var(--cyan)">🐭 NARF!</span>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// 📁 FileSystemBot — ALL LIVE DATA, ZERO FAKES
+// ═══════════════════════════════════════════════════════
+
+const API = window.PINKY_API || 'http://' + location.hostname + ':3030';
+document.getElementById('ftr-api').textContent = API;
+
+// Bot metadata
+const BOTS = {
+    DocsBot:      {icon:'📝', color:'var(--grn)'},
+    ResearchBot:  {icon:'🔍', color:'var(--pink)'},
+    CodeBot:      {icon:'💻', color:'var(--cyan)'},
+    SocialBot:    {icon:'📱', color:'var(--amb)'},
+    BusinessBot:  {icon:'💼', color:'var(--purp)'},
+    FileSystemBot:{icon:'📁', color:'var(--teal)'},
+    TasksBot:     {icon:'📋', color:'var(--cyan)'},
+    CryptoBot:    {icon:'🪙', color:'var(--org)'},
+    ServerBot:    {icon:'🖥️', color:'var(--mint)'}
+};
+
+const DATA_FLOWS = [
+    {from:'ResearchBot', to:'BusinessBot', label:'Market Intel → Strategy', desc:'Research findings feed business opportunity analysis', color:'var(--pink)'},
+    {from:'BusinessBot', to:'SocialBot', label:'Strategy → Campaigns', desc:'Business goals drive social content strategy', color:'var(--purp)'},
+    {from:'ResearchBot', to:'SocialBot', label:'Trends → Content', desc:'Trend research informs social posting', color:'var(--amb)'},
+    {from:'CodeBot', to:'DocsBot', label:'Code → Documentation', desc:'Code changes auto-trigger doc updates', color:'var(--cyan)'},
+    {from:'BusinessBot', to:'CodeBot', label:'Features → Implementation', desc:'Business priorities become dev tasks', color:'var(--grn)'},
+    {from:'ResearchBot', to:'CodeBot', label:'Tech Intel → Architecture', desc:'Technical research guides implementation', color:'var(--teal)'}
+];
+
+const FILE_TREE = [
+    {p:'~/.openclaw/workspace/', d:1, note:''},
+    {p:'├── bot-backend/', d:1, note:'API server (port 3030)', dir:1},
+    {p:'├── pinky-dashboard/', d:1, note:'Dashboard frontend', dir:1},
+    {p:'├── bots/', d:1, note:'Bot scripts', dir:1},
+    {p:'├── scripts/', d:1, note:'Cron & utilities', dir:1},
+    {p:'├── projects/', d:1, note:'📂 PROJECT FILES', dir:1},
+    {p:'│   ├── PHASE-2-LAUNCH-SPRINT.md', d:2, note:''},
+    {p:'│   ├── PINKY-TOKEN-LAUNCH.md', d:2, note:''},
+    {p:'│   ├── CRYPTOBOT-SPEC.md', d:2, note:''},
+    {p:'│   └── PROJECTSBOT-SPEC.md', d:2, note:''},
+    {p:'├── memory/', d:1, note:"Pinky's memory system", dir:1},
+    {p:'│   ├── projects.md', d:2, note:'← TASK QUEUE (/api/tasks reads this)'},
+    {p:'│   ├── journal.md', d:2, note:''},
+    {p:'│   ├── bot-assignments.json', d:2, note:''},
+    {p:'│   ├── features-delivered.json', d:2, note:''},
+    {p:'│   └── token-usage.json', d:2, note:''},
+    {p:'├── MEMORY.md', d:1, note:"Pinky's brain"},
+    {p:'├── AGENTS.md', d:1, note:'Session startup'},
+    {p:'└── SOUL.md', d:1, note:'Identity'}
+];
+
+// ═══ STATE ═══
+let S = { tasks:[], bots:{}, activity:{}, features:[], assignments:[], notifs:[], health:null, usage:null, filter:'all' };
+
+// ═══ API ═══
+async function GET(path) {
+    try {
+        const r = await fetch(API + path, {headers:{Accept:'application/json'}});
+        if (!r.ok) return null;
+        return await r.json();
+    } catch(e) { return null; }
+}
+async function POST(path, body) {
+    try {
+        const r = await fetch(API + path, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+        if (!r.ok) return null;
+        return await r.json();
+    } catch(e) { return null; }
+}
+
+// ═══ TAB SWITCHING ═══
+function switchTab(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === id));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('on', p.id === 'panel-' + id));
+}
+
+// ═══ DATA FETCH ═══
+async function fetchAll() {
+    const [tasks, health, bots, activity, features, assigns, notifs, usage] = await Promise.all([
+        GET('/api/tasks'), GET('/api/health'), GET('/api/bots/learning'),
+        GET('/api/activity'), GET('/api/bots/features'), GET('/api/bots/assignments'),
+        GET('/api/notify/history'), GET('/api/usage')
+    ]);
+
+    if (tasks) S.tasks = Array.isArray(tasks) ? tasks : (tasks.tasks || []);
+    if (health) S.health = health;
+    if (bots) S.bots = bots;
+    if (activity) S.activity = activity;
+    if (features) S.features = Array.isArray(features) ? features : [];
+    if (assigns) S.assignments = assigns.assignments || [];
+    if (notifs) S.notifs = (notifs.notifications || []);
+    if (usage) S.usage = usage;
+
+    render();
+}
+
+async function syncAll() { await fetchAll(); }
+
+// ═══ RENDER ═══
+function render() {
+    const tasks = S.tasks;
+    const pending = tasks.filter(t => t.status === 'pending');
+    const running = tasks.filter(t => t.status === 'running');
+    const completed = tasks.filter(t => t.status === 'completed');
+    const rejected = tasks.filter(t => t.status === 'rejected');
+    const total = tasks.length;
+    const botKeys = Object.keys(S.bots);
+    const onlineBots = Object.values(S.bots).filter(b => b.tasksCompleted > 0).length;
+    const totalTokens = (S.activity.heartbeats || []).reduce((a, h) => a + (h.tokens || 0), 0);
+    const rate = total > 0 ? Math.round((completed.length / total) * 100) : 0;
+
+    // Header sub
+    document.getElementById('hdr-sub').textContent = 'COMMAND CENTER • ' + total + ' tasks • ' + botKeys.length + ' bots • ' + (S.health ? 'ONLINE' : 'CONNECTING...');
+    const liveDot = document.getElementById('live-dot');
+    liveDot.className = 'dot sm ' + (running.length > 0 ? 'grn pulse' : 'amb') ;
+    document.getElementById('live-text').textContent = running.length > 0 ? running.length + ' running' : pending.length + ' queued';
+
+    // Pending badge
+    const badge = document.getElementById('pending-badge');
+    if (pending.length > 0) { badge.style.display = ''; badge.textContent = pending.length; }
+    else { badge.style.display = 'none'; }
+
+    // Footer
+    document.getElementById('ftr-dot').className = 'dot sm ' + (S.health ? 'grn' : 'red');
+    document.getElementById('ftr-tasks').textContent = total;
+    document.getElementById('ftr-bots').textContent = onlineBots + '/' + botKeys.length;
+    document.getElementById('ftr-hb').textContent = S.activity.heartbeatCount || 0;
+
+    // ── OVERVIEW ──
+    document.getElementById('overview-stats').innerHTML = [
+        {l:'Tasks',v:total,i:'📋',c:'var(--cyan)'}, {l:'Running',v:running.length,i:'⚡',c:'var(--grn)'},
+        {l:'Pending',v:pending.length,i:'⏳',c:'var(--amb)'}, {l:'Done',v:completed.length,i:'✅',c:'var(--teal)'},
+        {l:'Bots',v:onlineBots+'/'+botKeys.length,i:'🤖',c:'var(--purp)'},
+        {l:'Tokens',v:totalTokens>1000?(totalTokens/1000).toFixed(1)+'K':totalTokens,i:'🎯',c:'var(--pink)'}
+    ].map((s,i) => `<div class="crd sm st ${i===1&&running.length>0?'gl-g':''}"><div class="st-i">${s.i}</div><div class="st-v" style="color:${s.c};text-shadow:0 0 15px ${s.c}33">${s.v}</div><div class="st-l">${s.l}</div></div>`).join('');
+
+    document.getElementById('overview-running').innerHTML = running.map(t =>
+        `<div class="task-row running"><span class="dot grn pulse"></span><div class="name">${esc(t.name||'').substring(0,60)}</div><div class="meta">${t.priority||''} • ${t.updated?new Date(t.updated).toLocaleTimeString():''}</div></div>`
+    ).join('') || '<div style="color:var(--dim);font-size:11px;padding:8px">No tasks running</div>';
+
+    document.getElementById('overview-pending').innerHTML = pending.slice(0,5).map((t,i) =>
+        `<div class="task-row"><span style="font-size:10px;color:var(--amb);font-weight:800">#${i+1}</span><div class="name" style="font-size:11px">${esc(t.name||'').substring(0,55)}</div>${badge_html(t.priority)}</div>`
+    ).join('') + (pending.length > 5 ? `<div style="text-align:center;margin-top:6px"><button class="btn gh" onclick="switchTab('projects')">+ ${pending.length-5} more → View Projects</button></div>` : '');
+
+    // Overview bots
+    document.getElementById('overview-bots').innerHTML = botKeys.slice(0,7).map(name => {
+        const d = S.bots[name]; const m = BOTS[name]||{icon:'🤖',color:'var(--dim)'};
+        return `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;margin-bottom:3px;border-radius:6px;background:${m.color.replace('var(--','rgba(').replace(')','')},0.04);border:1px solid ${m.color.replace('var(--','rgba(').replace(')','')},0.08)">
+            <span style="font-size:14px">${m.icon}</span><span style="flex:1;font-size:11px;color:var(--brt)">${name}</span>
+            <span style="font-size:10px;color:${m.color}">${d.level||'—'}</span>
+            <span style="font-size:10px;color:var(--dim)">${d.tasksCompleted||0}✓</span>
+            <span class="dot sm ${d.tasksCompleted>0?'grn':'dim'}"></span></div>`;
+    }).join('') || '<div style="color:var(--dim);font-size:11px">Loading bots...</div>';
+
+    // Overview notifications
+    document.getElementById('overview-notifs').innerHTML = S.notifs.slice(-5).reverse().map(n =>
+        `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bdr)">
+            <span style="font-size:14px">${n.priority==='urgent'?'🚨':n.priority==='warning'?'⚠️':'ℹ️'}</span>
+            <div style="flex:1;font-size:11px;color:${n.priority==='urgent'?'var(--red)':'var(--txt)'}">${esc(n.title||n.message||'')}</div>
+            <span style="font-size:9px;color:var(--dim)">${n.timestamp?new Date(n.timestamp).toLocaleTimeString():''}</span></div>`
+    ).join('') || '<div style="color:var(--dim);font-size:11px;padding:6px">No notifications</div>';
+
+    // Overview completion bar
+    document.getElementById('ov-rate').textContent = rate + '%';
+    document.getElementById('ov-counts').textContent = completed.length + ' / ' + total + ' tasks';
+    document.getElementById('ov-bar').style.width = rate + '%';
+
+    // ── PROJECTS ──
+    document.getElementById('proj-stats').innerHTML = [
+        {l:'Total',v:total,i:'📋',c:'var(--cyan)'}, {l:'Running',v:running.length,i:'⚡',c:'var(--grn)'},
+        {l:'Pending',v:pending.length,i:'⏳',c:'var(--amb)'}, {l:'Done',v:completed.length,i:'✅',c:'var(--teal)'},
+        {l:'Rate',v:rate+'%',i:'📊',c:'var(--cyan)'}
+    ].map(s => `<div class="crd sm st"><div style="font-size:20px">${s.i}</div><div style="font-size:22px;font-weight:800;color:${s.c}">${s.v}</div><div class="st-l">${s.l}</div></div>`).join('');
+
+    // Filters
+    const fCounts = {all:total, running:running.length, pending:pending.length, completed:completed.length, rejected:rejected.length};
+    document.getElementById('proj-filters').innerHTML = ['all','running','pending','completed','rejected'].map(f =>
+        `<button class="btn ${S.filter===f?'cy':'gh'}" onclick="S.filter='${f}';render()">${f.toUpperCase()} (${fCounts[f]})</button>`
+    ).join('');
+
+    // Running tasks
+    document.getElementById('proj-running').innerHTML = (S.filter==='all'||S.filter==='running') ? running.map(t =>
+        `<div class="task-row running" style="margin-bottom:6px"><div style="width:28px;height:28px;border-radius:7px;background:rgba(0,255,136,.13);border:1px solid rgba(0,255,136,.27);display:flex;align-items:center;justify-content:center;font-size:13px;animation:pd 2s infinite">⚡</div>
+        <div style="flex:1"><div class="name">${esc(t.name||'')}</div><div class="meta">${badge_html(t.priority)} ${t.updated?'Updated '+new Date(t.updated).toLocaleString():''}</div></div></div>`
+    ).join('') : '';
+
+    // Task list
+    let shown = S.filter==='all' ? tasks : S.filter==='running' ? running : S.filter==='pending' ? pending : S.filter==='completed' ? completed : rejected;
+    if (S.filter==='all') shown = pending.concat(completed.slice(-20).reverse());
+    document.getElementById('proj-tasks').innerHTML = shown.map((t,i) => {
+        if (t.status==='completed') return `<div class="task-row done" style="opacity:.6"><span style="font-size:14px">✅</span><div class="name">${esc(t.name||'')}</div>${badge_html(t.priority,'dim')}</div>`;
+        if (t.status==='running') return '';
+        return `<div class="task-row"><span style="font-size:10px;color:var(--amb);font-weight:800">#${i+1}</span><div style="flex:1"><div style="font-size:11px;color:var(--txt)">${esc(t.name||'')}</div></div>${badge_html(t.priority)}<button class="btn gn" onclick="startTask('${esc(t.name||'')}')">▶</button></div>`;
+    }).join('');
+
+    // ── BOT NETWORK ──
+    document.getElementById('bot-grid').innerHTML = botKeys.map(name => {
+        const d = S.bots[name]; const m = BOTS[name]||{icon:'🤖',color:'var(--dim)'};
+        const total_t = (d.tasksCompleted||0)+(d.tasksFailed||0);
+        const rate_b = total_t > 0 ? Math.round((d.tasksCompleted/total_t)*100) : 0;
+        return `<div class="crd bot-card"><div class="stripe" style="background:linear-gradient(90deg,${m.color},transparent)"></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;margin-top:4px"><span style="font-size:18px">${m.icon}</span><div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--brt)">${name}</div><div style="font-size:10px;color:var(--dim)">Level: <span style="color:${m.color}">${d.level||'—'}</span> • Streak: ${d.consecutiveSuccesses||0}</div></div></div>
+            <div class="bot-perf"><div><div class="v" style="color:var(--grn)">${d.tasksCompleted||0}</div><div class="l">Done</div></div><div><div class="v" style="color:var(--red)">${d.tasksFailed||0}</div><div class="l">Fail</div></div><div><div class="v" style="color:${m.color}">${rate_b}%</div><div class="l">Rate</div></div></div>
+            <div class="prog" style="height:4px"><div class="prog-fill" style="width:${rate_b}%;background:${m.color};box-shadow:0 0 6px ${m.color}44"></div></div></div>`;
+    }).join('');
+
+    document.getElementById('bot-connections').innerHTML = DATA_FLOWS.map(c => {
+        const f = BOTS[c.from]||{}, t = BOTS[c.to]||{};
+        return `<div class="conn" style="background:${c.color.replace('var(--','rgba(').replace(')','')},0.04);border:1px solid ${c.color.replace('var(--','rgba(').replace(')','')},0.1)">
+            <span style="font-size:16px">${f.icon||'🤖'}</span><span style="font-size:11px;color:${c.color};font-weight:700">→</span><span style="font-size:16px">${t.icon||'🤖'}</span>
+            <div style="flex:1;margin-left:4px"><div class="conn-label">${c.label}</div><div class="conn-desc">${c.desc}</div></div>
+            <span class="dot sm cyan pulse"></span></div>`;
+    }).join('');
+
+    // Assignments
+    if (S.assignments.length > 0) {
+        document.getElementById('bot-assignments').innerHTML = `<div class="crd"><div style="font-size:12px;color:var(--cyan);margin-bottom:10px;font-weight:700">📌 Active Assignments (${S.assignments.length})</div>` +
+            S.assignments.map(a => `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:11px"><span>${(BOTS[a.bot]||{}).icon||'🤖'}</span><span style="color:var(--brt);flex:1">${esc(a.task||a.name||'')}</span><span style="color:var(--dim)">${a.bot||''}</span></div>`).join('') + '</div>';
+    } else { document.getElementById('bot-assignments').innerHTML = ''; }
+
+    // ── ACTIVITY ──
+    const hb = (S.activity.heartbeats || []).slice(-30).reverse();
+    const think = (S.activity.thinking || []).slice(-10).reverse();
+    const hbTokens = hb.reduce((a,h) => a+(h.tokens||0), 0);
+
+    document.getElementById('act-stats').innerHTML = `<div class="crd sm st"><div style="font-size:24px;font-weight:800;color:var(--cyan)">${S.activity.heartbeatCount||hb.length}</div><div class="st-l">Total Heartbeats</div></div>` +
+        `<div class="crd sm st"><div style="font-size:24px;font-weight:800;color:var(--grn)">${hbTokens.toLocaleString()}</div><div class="st-l">Tokens (last 30)</div></div>`;
+
+    document.getElementById('act-thinking').innerHTML = think.map(t =>
+        `<div style="padding:6px 0;border-bottom:1px solid var(--bdr);font-size:11px;color:var(--mid)">${esc(t.task||'')} <span style="color:var(--dim);font-size:10px">• ${t.duration?Math.round(t.duration/60000)+'m':'—'}</span></div>`
+    ).join('') || '<div style="color:var(--dim);font-size:11px">No thinking sessions</div>';
+
+    document.getElementById('act-heartbeats').innerHTML = hb.map(h =>
+        `<div style="padding:6px 0;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:8px">
+            <span class="dot sm ${h.tokens>0?'grn':'dim'}"></span>
+            <div style="flex:1;font-size:11px;color:var(--txt)">${esc(h.activity||'')}</div>
+            <span style="font-size:9px;color:var(--dim);white-space:nowrap">${h.tokens>0?h.tokens+' tok':''} ${h.timestamp?new Date(h.timestamp).toLocaleTimeString():''}</span></div>`
+    ).join('');
+
+    // Usage
+    if (S.usage) {
+        document.getElementById('act-usage').innerHTML = `<div style="font-size:12px;color:var(--cyan);margin-bottom:10px;font-weight:700">🎯 Token Usage</div><div class="g g3">` +
+            [{l:'Total Tokens',v:fmt(S.usage.totalTokens||S.usage.tokens),c:'var(--cyan)'},
+             {l:'Total Cost',v:S.usage.totalCost?'$'+S.usage.totalCost.toFixed(2):(S.usage.cost?'$'+S.usage.cost:'—'),c:'var(--grn)'},
+             {l:'Sessions',v:S.usage.sessions||'—',c:'var(--amb)'}
+            ].map(s => `<div style="text-align:center"><div style="font-size:20px;font-weight:800;color:${s.c}">${s.v}</div><div style="font-size:9px;color:var(--dim);text-transform:uppercase">${s.l}</div></div>`).join('') + '</div>';
+    }
+
+    // ── FEATURES ──
+    document.getElementById('feat-count').textContent = '✅ ' + S.features.length + ' features shipped';
+    document.getElementById('feat-list').innerHTML = S.features.slice(-20).reverse().map(f =>
+        `<div style="padding:8px 12px;margin-bottom:4px;border-radius:6px;background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.08)">
+            <div style="font-size:12px;color:var(--brt);font-weight:600">${esc(f.feature||f.name||'Feature')}</div>
+            <div style="font-size:10px;color:var(--dim)">${esc(f.bot||'Pinky')} • ${f.date||f.timestamp?new Date(f.date||f.timestamp).toLocaleDateString():'—'}${f.description?' • '+esc(f.description).substring(0,60):''}</div></div>`
+    ).join('') || '<div style="color:var(--dim);font-size:11px">No features logged yet</div>';
+
+    // ── FILE TREE ──
+    document.getElementById('file-tree').innerHTML = FILE_TREE.map(f =>
+        `<div style="padding-left:${(f.d||0)*16}px"><span class="${f.dir?'dir':''}">${f.p}</span>${f.note?' <span class="note">'+f.note+'</span>':''}</div>`
+    ).join('');
+}
+
+// ═══ ACTIONS ═══
+async function addTask() {
+    const inp = document.getElementById('new-task');
+    const name = inp.value.trim();
+    if (!name) return;
+    await POST('/api/tasks', {action:'create', name:name, priority:'P1', notes:'Created from ProjectsBot UI'});
+    inp.value = '';
+    fetchAll();
+}
+
+async function startTask(name) {
+    await POST('/api/tasks', {action:'update', taskName:name, newStatus:'running'});
+    fetchAll();
+}
+
+async function execBot(bot, cmd) {
+    await POST('/api/bot/execute', {bot:bot, command:cmd});
+}
+
+// ═══ HELPERS ═══
+function esc(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function fmt(n) { return n ? (n>1000?(n/1000).toFixed(1)+'K':n.toString()) : '—'; }
+function badge_html(p, cls) {
+    if (!p) return '';
+    const c = p==='P0'?'p0':p==='P1'?'p1':'p2';
+    return '<span class="bdg '+(cls||c)+'">'+p+'</span>';
+}
+
+// ═══ BOOT ═══
+fetchAll();
+setInterval(fetchAll, 8000);
+</script>
+</body>
+</html>

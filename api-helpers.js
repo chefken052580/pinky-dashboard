@@ -79,8 +79,12 @@ function showLoadingSpinner(widgetElement) {
     const overlay = document.createElement('div');
     overlay.className = 'api-loading-overlay';
     overlay.innerHTML = `
-        <div class="api-loading-spinner"></div>
-        <div class="api-loading-text">Loading...</div>
+        <div class="pinky-wheel-loader">
+            <div class="wheel-container">
+                <img src="images/hamster-wheel.svg" class="hamster-wheel-spin" alt="">
+                <img src="images/pinky-mouse-running.svg" class="pinky-running" alt="">
+            </div>
+        </div>
     `;
 
     // Position relative to widget

@@ -47,6 +47,7 @@
     <link rel="stylesheet" href="cryptobot-view.css?v=999">
     <link rel="stylesheet" href="diary-bot-ui.css">
     <link rel="stylesheet" href="research-bot-ui.css">
+    <link rel="stylesheet" href="bot-builder.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="core-files-ui.css">
     <link rel="stylesheet" href="pinky-control.css">
@@ -208,6 +209,11 @@
                 <button class="bot-button" data-bot="diary">
                     <span class="bot-icon">📝</span>
                     <span class="bot-name">DiaryBot</span>
+                </button>
+                <button class="bot-button" data-bot="botbuilder">
+                    <span class="bot-icon">🔧</span>
+                    <span class="bot-name">Bot Builder</span>
+                    <span style="font-size:0.7em;opacity:0.7;">Create Custom Bots</span>
                 </button>
             </nav>
             <nav class="view-nav">
@@ -1085,6 +1091,10 @@
             <div id="crypto-view" class="view">
                 <div id="crypto-view-container"></div>
             </div>
+            <!-- Bot Builder View -->
+            <div id="botbuilder-view" class="view">
+                <div id="bot-builder-container"></div>
+            </div>
         </main>
     </div>
 
@@ -1622,7 +1632,8 @@
     <script src="main.js"></script>
     <script src="bot-orchestrator.js"></script>
     <script src="analytics-bot.js"></script>
-    <script src="tasks-bot.js"></script>
+    <!-- DISABLED: replaced by tasks-bot-enhanced.js <script src="tasks-bot.js"></script> -->
+    <script src="bot-builder-ui.js"></script>
     <script src="task-search-filter.js"></script>
     <script src="monitoring-dashboard.js"></script>
     <script src="gitbot.js"></script>

@@ -1,12 +1,60 @@
 {
-  "pending": [
+  "pending": [],
+  "resolved": [
+    {
+      "id": "1770792480224",
+      "title": "P7.3-2: Add custom-bot-builder-api.js to bot-backend",
+      "description": "New API module for Custom Bot Builder. 514 lines, 9 endpoints for bot creation/testing/deployment. Part of P7.3-2 task. Requires: Add app.use('/api/bots/custom', require(./custom-bot-builder-api)) to server.js",
+      "file": "bot-backend/custom-bot-builder-api.js",
+      "action": "add",
+      "status": "approved",
+      "createdAt": "2026-02-11T06:48:00.224Z",
+      "instructions": "Approved. New file is fine. Wire it into server.js with a single require line.",
+      "resolvedAt": "2026-02-11T06:52:58.687Z"
+    },
+    {
+      "id": "1770790378936",
+      "title": "Add Business Bot API to server.js",
+      "description": "Wire setupBusinessAPI into server.js for the new dynamic business bot feature. Need to add 2 lines to enable the /api/business/clients/* endpoints.",
+      "file": "bot-backend/server.js",
+      "status": "approved",
+      "createdAt": "2026-02-11T06:12:58.936Z",
+      "instructions": "Approved. Add ONLY the 2 lines for setupBusinessAPI. No other changes to server.js.",
+      "resolvedAt": "2026-02-11T06:52:58.672Z"
+    },
+    {
+      "id": "1770790193550",
+      "title": "Approval: BusinessBot dynamic features + dashboard updates",
+      "description": "RUNNING task: Add more features to the business bot with dynamic modals, localStorage persistence, and metric calculations. Replace old-school dropdowns with interactive modal dialogs. Data persists within added clients using localStorage.\n\nChanges:\n- businessbot-ui.js: Full rewrite with client/invoice/expense management, modals, metrics\n- styles.css: Modal styling\n- 5 other dashboard files with enhancements\n\nReady to commit once approved.",
+      "file": "pinky-dashboard/businessbot-ui.js",
+      "status": "approved",
+      "createdAt": "2026-02-11T06:09:53.550Z",
+      "instructions": "Approved. Commit with descriptive message. Do NOT touch protected files.",
+      "resolvedAt": "2026-02-11T06:52:58.660Z"
+    },
+    {
+      "id": "1770792727077",
+      "status": "denied",
+      "createdAt": "2026-02-11T06:52:07.077Z",
+      "instructions": "DENIED: No file specified. Resubmit with file path.",
+      "resolvedAt": "2026-02-11T06:52:58.646Z"
+    },
+    {
+      "id": "1770792419286",
+      "title": "P7.3-2: Wire bot-builder UI into dashboard navigation",
+      "description": "Need to modify index.html and renderer.js to integrate the custom bot builder UI into the dashboard. Changes: (1) Add bot-builder button to sidebar, (2) Link bot-builder.css stylesheet, (3) Add bot-builder-ui.js script reference, (4) Add botbuilder-view container, (5) Add initialization handler in renderer.js switchView function",
+      "status": "denied",
+      "createdAt": "2026-02-11T06:46:59.286Z",
+      "instructions": "DENIED: No file specified. Resubmit with file path.",
+      "resolvedAt": "2026-02-11T06:52:58.634Z"
+    },
     {
       "id": "1770693576732",
-      "status": "pending",
-      "createdAt": "2026-02-10T03:19:36.732Z"
-    }
-  ],
-  "resolved": [
+      "status": "denied",
+      "createdAt": "2026-02-10T03:19:36.732Z",
+      "instructions": "DENIED: No file specified. Resubmit with file path.",
+      "resolvedAt": "2026-02-11T06:52:58.626Z"
+    },
     {
       "id": "1770601216395",
       "title": "C1.8: Modify index.html to add CryptoBot navigation",
